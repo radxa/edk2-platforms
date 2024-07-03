@@ -1,0 +1,34 @@
+/** @file
+
+  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+
+**/
+
+#ifndef CSU_PM_IPC_LIB
+#define CSU_PM_IPC_LIB
+
+#include <Base.h>
+#include <Uefi.h>
+
+EFI_STATUS
+CsuPmMsgClockCountDecrase (
+  IN UINT32  ClockId
+  );
+
+EFI_STATUS
+CsuPmMsgGetFirmwareVersion (
+  );
+
+EFI_STATUS
+CsuPmIpcCommandGetPayload (
+  OUT UINT32  **Payload
+  );
+
+EFI_STATUS
+CsuPmIpcCommandExecute (
+  IN     UINT32  MsgId,
+  IN OUT UINT32  *PayloadLength,
+  OUT    UINT32  **ReturnValues OPTIONAL
+  );
+#endif // CSU_PM_IPC_LIB

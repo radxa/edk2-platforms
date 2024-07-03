@@ -1,0 +1,81 @@
+## @file
+#  
+#  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PlatformAcpiTables
+  FILE_GUID                      = 7E374E25-8E01-4FEE-87F2-390C23C606CD
+  MODULE_TYPE                    = USER_DEFINED
+  VERSION_STRING                 = 1.0
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = AARCH64
+#
+
+[Sources]
+  Dsdt.asl
+  ../Common/Fadt.aslc
+  ../Common/Gtdt.aslc
+  #../Common/Madt.aslc
+  # Mcfg.aslc
+  ../Common/Dbg2.aslc
+  ../Common/Iort.aslc
+  #Csrt.aslc
+
+[Packages]
+  ArmPkg/ArmPkg.dec
+  ArmPlatformPkg/ArmPlatformPkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  Silicon/CIX/Sky1/CixPkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+
+[FixedPcd]
+  gArmPlatformTokenSpaceGuid.PcdClusterCount
+  gArmPlatformTokenSpaceGuid.PcdCoreCount
+  gArmTokenSpaceGuid.PcdGicDistributorBase
+  gArmTokenSpaceGuid.PcdGicRedistributorsBase
+  gArmTokenSpaceGuid.PcdArmPrimaryCore
+
+  gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum
+  gArmTokenSpaceGuid.PcdArmArchTimerIntrNum
+  gArmTokenSpaceGuid.PcdArmArchTimerHypIntrNum
+  gArmTokenSpaceGuid.PcdArmArchTimerVirtIntrNum
+  gArmPlatformTokenSpaceGuid.PL011UartInterrupt
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterBase
+
+  gArmPlatformTokenSpaceGuid.PcdWatchdogCount
+  gArmTokenSpaceGuid.PcdGenericWatchdogControlBase
+  gArmTokenSpaceGuid.PcdGenericWatchdogRefreshBase
+  gArmTokenSpaceGuid.PcdGenericWatchdogEl2IntrNum
+
+  gCixTokenSpaceGuid.PcdPcieRootPort0Enable
+  gCixTokenSpaceGuid.PcdPcieRootPort1Enable
+  gCixTokenSpaceGuid.PcdPcieRootPort2Enable
+  gCixTokenSpaceGuid.PcdPcieRootPort3Enable
+  gCixTokenSpaceGuid.PcdPcieRootPort4Enable
+
+  gCixTokenSpaceGuid.PcdGpuReservedMemoryBase
+  gCixTokenSpaceGuid.PcdGpuReservedMemorySize
+  gCixTokenSpaceGuid.PcdNpuReservedMemoryBase
+  gCixTokenSpaceGuid.PcdNpuReservedMemorySize
+
+  gCixTokenSpaceGuid.PcdEcI2cBaseAddress
+  gCixTokenSpaceGuid.PcdEcI2cSlaveAddress
+
+  gCixTokenSpaceGuid.PcdAcpiEcBatterySupport
+  gCixTokenSpaceGuid.PcdAcpiEcThermalSupport
+  gCixTokenSpaceGuid.PcdAcpiEcLidSupport
+  gCixTokenSpaceGuid.PcdAcpiEcPowerButtonSupport
+
+[BuildOptions]
+  *_*_*_ASLCC_FLAGS = -DACPI_WINDOWS_BOOT
+  *_*_*_ASLPP_FLAGS = -DACPI_WINDOWS_BOOT

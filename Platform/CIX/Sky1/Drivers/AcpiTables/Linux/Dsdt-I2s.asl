@@ -1,0 +1,240 @@
+/** @file
+
+  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+
+**/
+
+Device (I2S0) {
+  Name (_HID, "CIXH6010")
+  Name (_UID, 0x0)
+  Name (_STA, 0x0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, AUDIO_I2S0_BASE, AUDIO_I2S0_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_SC0_INTERRUPT_ID }
+    FixedDMA (32, 0, Width32Bit, ) // 0 + CSRT_AUD_REQUEST_BASE(32), idx 0 as tx
+    FixedDMA (33, 1, Width32Bit, ) // 1 + CSRT_AUD_REQUEST_BASE(32), idx 1 as rx
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_substrate_i2s0", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "id", 0 },
+      Package () { "dma-names", Package () { "tx", "rx" } },
+      Package () { "cdns,mclk-idx", 0 },
+      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+    }
+  })
+}
+
+Device (I2S1) {
+  Name (_HID, "CIXH6010")
+  Name (_UID, 0x1)
+  Name (_STA, 0x0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, AUDIO_I2S1_BASE, AUDIO_I2S1_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_SC1_INTERRUPT_ID }
+    FixedDMA (34, 2, Width32Bit, ) // 2 + CSRT_AUD_REQUEST_BASE(32), idx 0 as tx
+    FixedDMA (35, 3, Width32Bit, ) // 3 + CSRT_AUD_REQUEST_BASE(32), idx 1 as rx
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_substrate_i2s1", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "id", 1 },
+      Package () { "dma-names", Package () { "tx", "rx" } },
+      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+    }
+  })
+}
+
+Device (I2S2) {
+  Name (_HID, "CIXH6010")
+  Name (_UID, 0x2)
+  Name (_STA, 0x0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, AUDIO_I2S2_BASE, AUDIO_I2S2_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_SC2_INTERRUPT_ID }
+    FixedDMA (37, 4, Width32Bit, ) // 5 + CSRT_AUD_REQUEST_BASE(32), idx 0 as rx
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "id", 2 },
+      Package () { "dma-names", Package () { "rx" } },
+      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+    }
+  })
+}
+
+Device (I2S3) {
+  Name (_HID, "CIXH6011")
+  Name (_UID, 0x3)
+  Name (_STA, 0x0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, AUDIO_I2S3_BASE, AUDIO_I2S3_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_MC2A_INTERRUPT_ID }
+    FixedDMA (38, 5, Width32Bit, )  // 6 + CSRT_AUD_REQUEST_BASE(32)
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_substrate_i2s2", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "id", 3 },
+      Package () { "dma-names", Package () { "tx" } },
+      Package () { "cdns,pin-out-num", 6 },
+      Package () { "cdns,pin-rx-mask", 0 },
+      Package () { "cdns,pin-tx-mask", 60 },
+      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+    }
+  })
+}
+
+Device (I2S4) {
+  Name (_HID, "CIXH6011")
+  Name (_UID, 0x4)
+  Name (_STA, 0x0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, AUDIO_I2S4_BASE, AUDIO_I2S4_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_MC2B_INTERRUPT_ID }
+    FixedDMA (41, 6, Width32Bit, )  // 9 + CSRT_AUD_REQUEST_BASE(32)
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_substrate_i2s3", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "id", 4 },
+      Package () { "dma-names", Package () { "rx" } },
+      Package () { "cdns,pin-out-num", 4 },
+      Package () { "cdns,pin-rx-mask", 15 },
+      Package () { "cdns,pin-tx-mask", 0 },
+      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+    }
+  })
+}
+
+Device (I2S5) {
+  Name (_HID, "CIXH6011")
+  Name (_UID, 0x5)
+  Name (_STA, 0x0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, AUDIO_I2S5_BASE, AUDIO_I2S5_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_MC5A_INTERRUPT_ID }
+    FixedDMA (42, 7, Width32Bit, )  // 10 + CSRT_AUD_REQUEST_BASE(32)
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_substrate_i2s5_dbg", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "id", 5 },
+      Package () { "dma-names", Package () { "tx" } },
+      Package () { "cdns,pin-out-num", 4 },
+      Package () { "cdns,pin-rx-mask", 0 },
+      Package () { "cdns,pin-tx-mask", 15 },
+      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+    }
+  })
+}
+
+Device (I2S6) {
+  Name (_HID, "CIXH6011")
+  Name (_UID, 0x6)
+  Name (_STA, 0x0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, AUDIO_I2S6_BASE, AUDIO_I2S6_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_MC5B_INTERRUPT_ID }
+    FixedDMA (44, 7, Width32Bit, )  // 12 + CSRT_AUD_REQUEST_BASE(32)
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_substrate_i2s6_dbg", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "id", 6 },
+      Package () { "dma-names", Package () { "tx" } },
+      Package () { "cdns,pin-out-num", 4 },
+      Package () { "cdns,pin-rx-mask", 0 },
+      Package () { "cdns,pin-tx-mask", 15 },
+      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+    }
+  })
+}
+
+Device (I2S7) {
+  Name (_HID, "CIXH6011")
+  Name (_UID, 0x7)
+  Name (_STA, 0x0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, AUDIO_I2S7_BASE, AUDIO_I2S7_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_MC5C_INTERRUPT_ID }
+    FixedDMA (46, 7, Width32Bit, )  // 14 + CSRT_AUD_REQUEST_BASE(32)
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_substrate_i2s7_dbg", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "id", 7 },
+      Package () { "dma-names", Package () { "tx" } },
+      Package () { "cdns,pin-out-num", 4 },
+      Package () { "cdns,pin-rx-mask", 0 },
+      Package () { "cdns,pin-tx-mask", 15 },
+      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+    }
+  })
+}
+
+Device (I2S8) {
+  Name (_HID, "CIXH6011")
+  Name (_UID, 0x8)
+  Name (_STA, 0x0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, AUDIO_I2S8_BASE, AUDIO_I2S8_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_MC5D_INTERRUPT_ID }
+    FixedDMA (48, 7, Width32Bit, )  // 16 + CSRT_AUD_REQUEST_BASE(32)
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_substrate_i2s8_dbg", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "id", 8 },
+      Package () { "dma-names", Package () { "tx" } },
+      Package () { "cdns,pin-out-num", 4 },
+      Package () { "cdns,pin-rx-mask", 0 },
+      Package () { "cdns,pin-tx-mask", 15 },
+      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+    }
+  })
+}
+
+Device (I2S9) {
+  Name (_HID, "CIXH6011")
+  Name (_UID, 0x9)
+  Name (_STA, 0x0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, AUDIO_I2S9_BASE, AUDIO_I2S9_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_MC5E_INTERRUPT_ID }
+    FixedDMA (50, 7, Width32Bit, )  // 18 + CSRT_AUD_REQUEST_BASE(32)
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_substrate_i2s9_dbg", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "id", 9 },
+      Package () { "dma-names", Package () { "tx" } },
+      Package () { "cdns,pin-out-num", 4 },
+      Package () { "cdns,pin-rx-mask", 0 },
+      Package () { "cdns,pin-tx-mask", 15 },
+      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+    }
+  })
+}
