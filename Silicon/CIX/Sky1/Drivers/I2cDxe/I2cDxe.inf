@@ -1,0 +1,50 @@
+#  @file
+#
+#  Component description file for I2c driver
+#
+#  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#
+
+[Defines]
+  INF_VERSION                    = 0x0001001A
+  BASE_NAME                      = I2cDxe
+  FILE_GUID                      = 6D5E4989-3AEE-4B1F-9844-4F0A76D45B4D
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = I2cDxeEntryPoint
+
+[Sources.common]
+  I2cDxe.c
+
+[LibraryClasses]
+  BaseMemoryLib
+  DevicePathLib
+  I2cLib
+  IoLib
+  MemoryAllocationLib
+  PcdLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiLib
+  UefiRuntimeLib
+  PostCodeLib
+
+[Guids]
+  gCixI2cDevicePathGuid
+
+[Packages]
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+  Silicon/CIX/Sky1/CixPkg.dec
+
+[Pcd]
+
+[Protocols]
+  gEfiI2cMasterProtocolGuid                      ## BY_START
+  gCixConfigParamsManageProtocolGuid
+
+[Depex]
+  TRUE

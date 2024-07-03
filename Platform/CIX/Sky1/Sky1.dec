@@ -1,0 +1,157 @@
+## @file
+#  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright (c) 2016, Linaro, Ltd. All rights reserved.
+#  Copyright (c) 2017-2018, Andrei Warkentin <andrey.warkentin@gmail.com>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  DEC_SPECIFICATION              = 0x0001001A
+  PACKAGE_NAME                   = Sky1
+  PACKAGE_GUID                   = 24159790-1eb1-432b-ac48-0b4cabb9bc34
+  PACKAGE_VERSION                = 1.0
+
+[Includes]
+  Include
+  Include/Library
+  Library
+  Silicon/CIX/Sky1/Include
+
+[Protocols]
+  gCixBoardInitProtocolGuid = { 0x281e0db1, 0x761, 0x41c7, { 0xad, 0x62, 0x1d, 0x5c, 0xe5, 0xa1, 0xb7, 0xa1 } }
+  gCixEcPlatformProtocolGuid = { 0x1422C857, 0x10C5, 0x43C5, { 0xAB, 0x6D, 0x47, 0x15, 0x5A, 0xD1, 0x3D, 0xC5 } }
+  gRa8900ceRealTimeClockLibI2cMasterProtocolGuid = {0x80446A89, 0xF6A7, 0x4A73, {0xBB, 0xAD, 0x6F, 0x17, 0xCB, 0x91, 0x89, 0xB2}}
+  gEfiUsbDeviceControlGuid = {0x0ab19ff5, 0x8cc0, 0x467c, {0x94, 0xc9, 0x92, 0x53, 0x6a, 0x8d, 0x08, 0xf2}}
+  gEfiUsbfnIoProtocolGuid = {0xafb1216e, 0x988c, 0x49c0, {0x87, 0xb3, 0x80, 0x83, 0x42, 0x59, 0x3f, 0x64}}
+  gCixFirmwareUpdateProtocolGuid = {0xb1cccd1c, 0xc853, 0x45cf, {0x82, 0x5d, 0x90, 0x29, 0x12, 0x55, 0x80, 0x54}}
+  gCixPlatformConfigParamsManageProtocolGuid = {0xC8723B5F, 0x2550, 0x498E, {0xB1, 0x1F, 0x4D, 0x05, 0x25, 0x8C, 0x31, 0x57}}
+  gCixHidServiceProtocolGuid = { 0xe3f5cc15, 0x9635, 0x4346, { 0x86, 0xa1, 0x83, 0x27, 0xde, 0x48, 0x23, 0x1c } }
+  gCixHidDeviceProtocolGuid = { 0xa6fdad2a, 0xa56f, 0x45f8, { 0x80, 0xd3, 0x2c, 0xff, 0xf4, 0x91, 0xcd, 0xc2 } }
+  gCixTypecPhyProtocolGuid = {0xAFC9EECB, 0xC5F1, 0x3EDE, {0xA6, 0x1F, 0x28, 0x4F, 0x38, 0xE2, 0x78, 0x32}}
+  gCixSetupVarInitCompleteProtocolGuid = {0x3638a3b3, 0x60e6, 0x4f76, {0xb1, 0xac, 0x47, 0x9d, 0xcd, 0xc6, 0xf8, 0x8d}}
+
+[Guids]
+  gCixTokenSpaceGuid = {0xc5795c94, 0x4e06, 0x4590, {0x88, 0xa0, 0xcb, 0xce, 0xfb, 0x41, 0xa8, 0x95}}
+  gEfiAcpiTableStorageGuid = { 0x7e374e25, 0x8e01, 0x4fee, { 0x87, 0xf2, 0x39, 0x0c, 0x23, 0xc6, 0x06, 0xcd } }
+  gEfiPartitionTypeGuid = {0x6848de61, 0xeb61, 0x4def, {0x9a, 0x8e, 0x38, 0x17, 0xcb, 0xeb, 0x8f, 0x1c}}
+  gCixAndroidLoaderGuid = {0xf536d559, 0x459f, 0x48fa, {0x8b, 0xbc, 0x43, 0xb5, 0x54, 0xec, 0xae, 0x8d}}
+  gCixAbselectGuid = {0xe16fce27, 0xbc22, 0xc37d, {0x56, 0x63, 0x34, 0xa1, 0xc2, 0x3f, 0x31, 0x5b}}
+  #C0903BAC-CC0D-C264-B85B-70F1821A45C6
+  gEcFirmwareFileGuid = { 0xC0903BAC, 0xCC0D, 0xC264,{0xB8, 0x5B, 0x70, 0xF1, 0x82, 0x1A, 0x45, 0xC6 }}
+  gPlatformSetupVariableGuid = {0x5E5B2ABF, 0x599A, 0x4329, {0xBA, 0xA4, 0x6D, 0x6E, 0xAA, 0xAC, 0x8B, 0xC1}}
+  gPlatformAcpiConfigProtocolGuid = {0x1B5EE0D9, 0x1145, 0x42B9, {0x93, 0x33, 0xF9, 0x8B, 0x3D, 0x60, 0xF7, 0x03}}
+  gCixVariableVerificationGuid = {0xB5DAB733, 0x403A, 0x4D43, {0xEA, 0xF0, 0x89, 0xA4, 0xAE, 0x5C, 0x41, 0x5A}}
+  gCixSetupSaveVariableGuid = {0x6ea036ed, 0xdee0, 0x54b4, { 0x08, 0x22, 0x7c, 0x8a, 0x47, 0x3e, 0xa5, 0xaa }}
+  gCixI2cHidDevicePathGuid = { 0xdeb15fae, 0xc007, 0x4a82, { 0xb7, 0x2f, 0x2e, 0x6e, 0x39, 0xc0, 0x2f, 0xf5 } }
+  gCixPrivateSetupFormsetGuid = { 0x3182bd97, 0x77ea, 0x44ab, { 0x84, 0xa4, 0x8d, 0x21, 0xd, 0x10, 0xbb, 0x4c } }
+
+[PcdsFixedAtBuild.common]
+
+  gCixTokenSpaceGuid.PcdPostCodeApAddr|0x05030F00|UINT32|0x01C1
+  gCixTokenSpaceGuid.PcdPostCodeSeAddr|0x05040108|UINT32|0x01C2
+  gCixTokenSpaceGuid.PcdRamLogBaseAddress|0x83DB0000|UINT64|0x000001C3
+  gCixTokenSpaceGuid.PcdRamLogSize|0x00004000|UINT32|0x000001C4
+  #The memory range for linux
+  gCixTokenSpaceGuid.PcdKernelBootImgBase|0xA0000000|UINT32|0x1C5
+  gCixTokenSpaceGuid.PcdKernelBootImgSize|0x08000000|UINT32|0x1C6
+  gCixTokenSpaceGuid.PcdReservedShareMemoryBase|0x80000000|UINT32|0x1C7
+  gCixTokenSpaceGuid.PcdReservedShareMemorySize|0x04400000|UINT32|0x1C8
+  gCixTokenSpaceGuid.PcdReservedLinuxBase|0x86000000|UINT32|0x1C9
+  gCixTokenSpaceGuid.PcdReservedLinuxSize|0x06200000|UINT32|0x1CA
+  gCixTokenSpaceGuid.PcdReservedAndroidBase|0x160000000|UINT64|0x1CB
+  gCixTokenSpaceGuid.PcdReservedAndroidSize|0x100000000|UINT64|0x1CC
+  gCixTokenSpaceGuid.PcdRamLogLastBootSaveAddress|0x83DB2000|UINT64|0x000001CD
+  gCixTokenSpaceGuid.PcdDramHighSpaceBase|0x8000000000|UINT64|0x000001CE
+
+  # LinuxLoaderCommon
+  gCixTokenSpaceGuid.KernelLoadAddress|0x86000000|UINT32|0x00000100
+  gCixTokenSpaceGuid.RamdiskLoadAddress|0x8A200000|UINT32|0x00000101
+  gCixTokenSpaceGuid.KernelEndAddr|0x89FFFFFF|UINT32|0x00000102
+  gCixTokenSpaceGuid.KernelLoadAddress32|0x86000000|UINT32|0x00000103
+  gCixTokenSpaceGuid.DeviceTreeLoadAddr|0x8A000000|UINT32|0x00000104
+  gCixTokenSpaceGuid.EnableNewNodeSearchFuc|TRUE|BOOLEAN|0x00000105
+
+  # AvbCommon
+  gCixTokenSpaceGuid.AvbDisableVerification|TRUE|BOOLEAN|0x00000112
+  gCixTokenSpaceGuid.BootAndroidRecovery|FALSE|BOOLEAN|0x00000113
+  gCixTokenSpaceGuid.BootImgBackDoorAddr|0x85FFF000|UINT32|0x00000114
+  gCixTokenSpaceGuid.VendorBootImgBackDoorAddr|0x8A1FF000|UINT32|0x00000115
+  gCixTokenSpaceGuid.DtboImgBackDoorAddr|0xC0000000|UINT32|0x00000116
+  gCixTokenSpaceGuid.VbmetaImgBackDoorAddr|0xC8000000|UINT32|0x00000117
+
+  # I2C Ra8900ce
+  gCixTokenSpaceGuid.PcdRa8900ceI2cBus|3|UINT8|0x00000129  # I2C3
+  gCixTokenSpaceGuid.PcdRa8900ceI2cSlaveAddress|0x32|UINT8|0x00000130
+
+  # I2C EC ITE5570
+  gCixTokenSpaceGuid.PcdEcI2cBus|6|UINT8|0x00000132  # I2C6
+  gCixTokenSpaceGuid.PcdEcI2cSlaveAddress|0x76|UINT8|0x00000133
+
+  # GPU
+  gCixTokenSpaceGuid.PcdGpuEnable|FALSE|BOOLEAN|0x00000136
+  gCixTokenSpaceGuid.PcdGpuReservedMemoryBase|0xBCE00000|UINT32|0x00000137
+  gCixTokenSpaceGuid.PcdGpuReservedMemorySize|0x1000000|UINT32|0x00000138
+
+  # NPU
+  gCixTokenSpaceGuid.PcdNpuEnable|FALSE|BOOLEAN|0x00000139
+  gCixTokenSpaceGuid.PcdNpuReservedMemoryBase|0x90000000|UINT32|0x0000013A
+  gCixTokenSpaceGuid.PcdNpuReservedMemorySize|0x2000000|UINT32|0x0000013B
+
+  # PD Dev
+  gCixTokenSpaceGuid.PcdPdDevCount|4|UINT8|0x0000013C
+  # Refer to TYPEC_MODE enum
+  gCixTokenSpaceGuid.PcdTypecPortDefaultModes|{ 1, 1, 1, 1 }|VOID*|0x0000013D
+  # Refer to TYPEC_ORIENTATION enum
+  gCixTokenSpaceGuid.PcdTypecPortDefaultOrientations|{ 1, 1, 1, 1 }|VOID*|0x0000013E
+  gCixTokenSpaceGuid.PcdPdDevAlertPins|{ 8, 8, 9, 9 }|VOID*|0x0000013F
+  gCixTokenSpaceGuid.PcdPdDevI2cBuses|{ 0x7, 0x7, 0x1, 0x1 }|VOID*|0x00000140
+  gCixTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0x30, 0x31, 0x30, 0x31 }|VOID*|0x00000141
+
+  #Memory config
+  gCixTokenSpaceGuid.PcdMemBreakPoint|0xFF|UINT8|0x0000202B
+  gCixTokenSpaceGuid.PcdMemEyeScan|0xFF|UINT8|0x0000202C
+  gCixTokenSpaceGuid.PcdMemFreq|0xFFFF|UINT16|0x0000202D
+  gCixTokenSpaceGuid.PcdMemHarvesting|0xFF|UINT8|0x0000202E
+  gCixTokenSpaceGuid.PcdMemWrLEcc|0xFF|UINT8|0x0000202F
+  gCixTokenSpaceGuid.PcdMemRdLEcc|0xFF|UINT8|0x00002030
+  gCixTokenSpaceGuid.PcdMemPortPriority|0xFF|UINT8|0x00002031
+  gCixTokenSpaceGuid.PcdMemBdwP0|30|UINT8|0x00002032
+  gCixTokenSpaceGuid.PcdMemBdwP1|70|UINT8|0x00002033
+  gCixTokenSpaceGuid.PcdMemRPriorityP0|4|UINT8|0x00002034
+  gCixTokenSpaceGuid.PcdMemWPriorityP0|4|UINT8|0x00002035
+  gCixTokenSpaceGuid.PcdMemBdwOvflowP0|0xFF|UINT8|0x00002036
+  gCixTokenSpaceGuid.PcdMemRPriorityP1|4|UINT8|0x00002037
+  gCixTokenSpaceGuid.PcdMemWPriorityP1|4|UINT8|0x00002038
+  gCixTokenSpaceGuid.PcdMemBdwOvflowP1|0xFF|UINT8|0x00002039
+  gCixTokenSpaceGuid.PcdMemWckAlwaysOn|0xFF|UINT8|0x0000203A
+  gCixTokenSpaceGuid.PcdMemDataMask|0xFF|UINT8|0x0000203B
+  gCixTokenSpaceGuid.PcdMemRfmEn|0xFF|UINT8|0x0000203C
+  gCixTokenSpaceGuid.PcdMemAutoPrechargeEn|0xFF|UINT8|0x0000203D
+  gCixTokenSpaceGuid.PcdMemPbrEn|0xFF|UINT8|0x0000203E
+  gCixTokenSpaceGuid.PcdMemMbistEn|0xFF|UINT8|0x0000203F
+  gCixTokenSpaceGuid.PcdMemMbistMode|0xFF|UINT8|0x00002040
+
+  gCixTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"SKY1-EVB.DTB"|VOID*|0x0000A301
+  gCixTokenSpaceGuid.PcdSiliconDtbUpdateEnable|FALSE|BOOLEAN|0x0000A302
+
+  # I2C EC ITE5570
+  gCixTokenSpaceGuid.PcdEcAcpiI2cEn|FALSE|BOOLEAN|0x00000135
+
+  # ACPI
+  gCixTokenSpaceGuid.PcdAcpiEcBatterySupport|FALSE|BOOLEAN|0x0000A001
+  gCixTokenSpaceGuid.PcdAcpiEcThermalSupport|FALSE|BOOLEAN|0x0000A002
+  gCixTokenSpaceGuid.PcdAcpiEcLidSupport|FALSE|BOOLEAN|0x0000A003
+  gCixTokenSpaceGuid.PcdAcpiEcPowerButtonSupport|FALSE|BOOLEAN|0x0000A004
+  #RTC Wakeup
+  gCixTokenSpaceGuid.PcdRtcWakeup|0x00|UINT8|0x00002001
+  #Ligt Sensor Control
+  gCixTokenSpaceGuid.PcdLightSensorCtrl|0x01|UINT8|0x00002002
+[PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
+
+[PcdsDynamic]
+  # I2C EC ITE5570
+  gCixTokenSpaceGuid.PcdEcI2cHostInitialized|FALSE|BOOLEAN|0x00000160
+  gCixTokenSpaceGuid.AvbWithBackDoor|TRUE|BOOLEAN|0x00000110
+
