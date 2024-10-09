@@ -185,3 +185,11 @@
   gCixTokenSpaceGuid.PcdSocWatchdogTimer
   # CPU LPI state
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
+
+  # DPU Config
+  gCixTokenSpaceGuid.PcdGopDisplaySelect
+  gCixTokenSpaceGuid.PcdDP0HwProfile
+  gCixTokenSpaceGuid.PcdDP1HwProfile
+  gCixTokenSpaceGuid.PcdDP2HwProfile
+  gCixTokenSpaceGuid.PcdDP3HwProfile
+  gCixTokenSpaceGuid.PcdDP4HwProfile

@@ -236,5 +236,11 @@
   gCixTokenSpaceGuid.PcdCpuCore10En
   gCixTokenSpaceGuid.PcdCpuCore11En
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
+  gCixTokenSpaceGuid.PcdDP0HwProfile
+  gCixTokenSpaceGuid.PcdDP1HwProfile
+  gCixTokenSpaceGuid.PcdDP2HwProfile
+  gCixTokenSpaceGuid.PcdDP3HwProfile
+  gCixTokenSpaceGuid.PcdDP4HwProfile
+  gCixTokenSpaceGuid.PcdGopDisplaySelect
 [Depex]
   TRUE

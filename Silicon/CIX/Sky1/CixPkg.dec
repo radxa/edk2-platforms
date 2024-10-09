@@ -298,6 +298,13 @@
   gCixTokenSpaceGuid.PcdCpuCore11En|TRUE|BOOLEAN|0x00002037
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState|0x01|UINT8|0x00002038       # ACPI CPU LPI State, 0-disable, 1-LPI0, 2-LPI1, 3-LPI2
 
+  gCixTokenSpaceGuid.PcdDP0HwProfile|0x01|UINT8|0x00002039          # 0-no display, 1-typec, 2-edp/dp
+  gCixTokenSpaceGuid.PcdDP1HwProfile|0x01|UINT8|0x0000203A          # 0-no display, 1-typec, 2-edp/dp
+  gCixTokenSpaceGuid.PcdDP2HwProfile|0x02|UINT8|0x0000203B          # 0-no display, 1-typec, 2-edp/dp
+  gCixTokenSpaceGuid.PcdDP3HwProfile|0x01|UINT8|0x0000203C          # 0-no display, 1-typec, 2-edp/dp
+  gCixTokenSpaceGuid.PcdDP4HwProfile|0x01|UINT8|0x0000203D          # 0-no display, 1-typec, 2-edp/dp
+  gCixTokenSpaceGuid.PcdGopDisplaySelect|0x02|UINT8|0x0000203E      # 0-4
+
   gCixTokenSpaceGuid.PcdSpi0En|FALSE|BOOLEAN|0x00000122
   gCixTokenSpaceGuid.PcdSpi1En|FALSE|BOOLEAN|0x00000123
   gCixTokenSpaceGuid.PcdSpi0BusFreqMHz|25|UINT32|0x00000124

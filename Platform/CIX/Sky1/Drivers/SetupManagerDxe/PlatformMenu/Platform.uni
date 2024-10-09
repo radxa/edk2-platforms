@@ -134,3 +134,11 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_TABLE_1                                      #language en-US "Table 1"
 #string STR_TABLE_2                                      #language en-US "Table 2"
 #string STR_TABLE_3                                      #language en-US "Table 3"
+
+#string STR_GOP_PROMPT                                   #language en-US "GOP DISPLAY SELECT"
+#string STR_GOP_PROMPT_HELP                              #language en-US "Select port for GOP Display"
+#string STR_DP0                                          #language en-US "DP0"
+#string STR_DP1                                          #language en-US "DP1"
+#string STR_DP2                                          #language en-US "DP2"
+#string STR_DP3                                          #language en-US "DP3"
+#string STR_DP4                                          #language en-US "DP4"

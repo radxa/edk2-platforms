@@ -14,6 +14,7 @@
 #define MAX_I2C_CTRL_NUM    8
 #define MAX_USB_PORT_NUM    10
 #define MAX_GMAC_PORT_NUM   2
+#define MAX_DPU_PORT_NUM    5
 #pragma pack(1)
 typedef struct {
   UINT8     PcieRpEnable[MAX_PCIE_PORT_NUM];
@@ -117,6 +118,8 @@ typedef struct {
   UINT8     RtcWakeup;
   UINT8     LightSensorCtrl;
   UINT8     CpuLpiState;
+  UINT8     DPHwProfile[MAX_DPU_PORT_NUM];
+  UINT8     GopDisplaySelect;
 } PLATFORM_SETUP_DATA;
 #pragma pack()
 

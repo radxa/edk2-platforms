@@ -21,16 +21,9 @@
 #define ROUNDDOWN(x, y)     ((x) & ~__ROUND_MASK(x, y))
 #define ALIGN(x, a)         (((x) + (a) - 1) & ~((a) - 1))
 
-#define INLINE  static inline
-
 #define BIT(x)  (1 << x)
 
 #define EDID_SIZE  128
-
-typedef enum {
-  CIX_DISPLAY_FULLSCREEN,
-  CIX_DISPLAY_CENTER,
-} LOGO_DISPLAY_MODE;
 
 typedef enum {
   CIX_FMT_ARGB8888 = 0,
@@ -41,34 +34,6 @@ typedef enum {
   CIX_FMT_YUV444SP,
 } DATA_FORMAT;
 
-/*
- * display output interface
- */
-#define CIX_OUT_MODE_P888        0
-#define CIX_OUT_MODE_BT1120      0
-#define CIX_OUT_MODE_P666        1
-#define CIX_OUT_MODE_P565        2
-#define CIX_OUT_MODE_BT656       5
-#define CIX_OUT_MODE_S888        8
-#define CIX_OUT_MODE_S888_DUMMY  12
-#define CIX_OUT_MODE_YUV420      14
-/* for use special outface */
-#define CIX_OUT_MODE_AAAA  15
-
-#define VOP_OUTPUT_IF_RGB     BIT(0)
-#define VOP_OUTPUT_IF_BT1120  BIT(1)
-#define VOP_OUTPUT_IF_BT656   BIT(2)
-#define VOP_OUTPUT_IF_LVDS0   BIT(3)
-#define VOP_OUTPUT_IF_LVDS1   BIT(4)
-#define VOP_OUTPUT_IF_MIPI0   BIT(5)
-#define VOP_OUTPUT_IF_MIPI1   BIT(6)
-#define VOP_OUTPUT_IF_eDP0    BIT(7)
-#define VOP_OUTPUT_IF_eDP1    BIT(8)
-#define VOP_OUTPUT_IF_DP0     BIT(9)
-#define VOP_OUTPUT_IF_DP1     BIT(10)
-#define VOP_OUTPUT_IF_HDMI0   BIT(11)
-#define VOP_OUTPUT_IF_HDMI1   BIT(12)
-
 typedef struct {
   UINT32     Mode;
   UINT32     Offset;
@@ -78,11 +43,6 @@ typedef struct {
   CHAR8      *Memory;
   BOOLEAN    YMirror;
 } LOGO_INFO;
-
-typedef struct {
-  UINT32    Width;
-  UINT32    Height;
-} VOP_RECT;
 
 typedef struct {
   UINT32    LeftMargin;
@@ -127,69 +87,41 @@ typedef struct {
 } DRM_DISPLAY_MODE;
 
 typedef struct {
-  UINT16    Brightness;
-  UINT16    Contrast;
-  UINT16    Saturation;
-  UINT16    Hue;
-} BASE_BCSH_INFO;
-
-typedef struct {
-  INT8              DispHeadFlag[6];
-  /* struct base2_screen_info screen_info[4]; --- check later */
-  BASE_BCSH_INFO    BCSHInfo;
-  /* struct base_overscan overscan_info; --- check later */
-  /* struct base2_gamma_lut_data gamma_lut_data; --- check later */
-  /* struct base2_cubic_lut_data cubic_lut_data; --- check later */
-  /* struct framebuffer_info framebuffer_info; --- check later */
-  UINT32            Reserved[244];
-  UINT32            CRC;
-} BASE2_DISP_INFO;
-
-typedef struct {
   VOID                *Connector;
+  UINT8               ConnectorID;
   OVER_SCAN           OverScan;
   DRM_DISPLAY_MODE    DisplayMode;
-  BASE2_DISP_INFO     *DispInfo;         /* disp_info from baseparameter 2.0 */
+  VOID                *DispInfo;
   UINT8               EDID[EDID_SIZE * 4];
-  UINT8               Dpcd[16];
   UINT32              BusFormat;
-  UINT32              OutputMode;
-  UINT32              Type;
-  UINT32              OutputInterface;
-  UINT32              OutputFlags;
-  UINT32              ColorSpace;
-  UINT32              BPC;
+  UINT8               OutputMode;
+  UINT8               Type;
+  UINT8               OutputFlags;
+  UINT8               ColorSpace;
+  UINT8               BPC;
 
-  /**
-   * @hold_mode: enabled when it's:
-   * (1) mcu hold mode
-   * (2) mipi dsi cmd mode
-   * (3) edp psr mode
-   */
-  BOOLEAN             hold_mode;
   VOID                *Dptx;
 } CONNECTOR_STATE;
 
 typedef struct {
-  VOID        *Crtc;
-  VOID        *Private;
-  UINT32      CrtcID;
-  UINT32      Format;
-  UINT32      YMirror;
-  UINT32      RBSwap;
-  UINT32      XVirtual;
-  UINT32      SrcX;
-  UINT32      SrcY;
-  UINT32      SrcW;
-  UINT32      SrcH;
-  UINT32      CrtcX;
-  UINT32      CrtcY;
-  UINT32      CrtcW;
-  UINT32      CrtcH;
-  UINT32      Feature;
-  UINT32      DMAAddress;
-  BOOLEAN     YUVOverlay;
-  VOP_RECT    MaxOutput;
+  VOID       *Crtc;
+  VOID       *Private;
+  UINT32     CrtcID;
+  UINT32     Format;
+  UINT32     YMirror;
+  UINT32     RBSwap;
+  UINT32     XVirtual;
+  UINT32     SrcX;
+  UINT32     SrcY;
+  UINT32     SrcW;
+  UINT32     SrcH;
+  UINT32     CrtcX;
+  UINT32     CrtcY;
+  UINT32     CrtcW;
+  UINT32     CrtcH;
+  UINT32     Feature;
+  UINT32     DMAAddress;
+  BOOLEAN    YUVOverlay;
 } CRTC_STATE;
 
 typedef struct {
@@ -203,11 +135,12 @@ typedef struct {
   VOID               *MemoryBase;
   UINT32             MemorySize;
 
-  BOOLEAN            IsInit;
-  BOOLEAN            IsEnable;
+  BOOLEAN            IsEnable; /* SW */
+
+  UINT8              Preferred;
+  UINT8              Status[5]; /* HW: 0, disabled; 1, TypeC; 2, edp or DP */
 
   BOOLEAN            IsForceOutput;
-  UINT32             ForceOutputFormat;
 } DISPLAY_STATE;
 
 EFIAPI
