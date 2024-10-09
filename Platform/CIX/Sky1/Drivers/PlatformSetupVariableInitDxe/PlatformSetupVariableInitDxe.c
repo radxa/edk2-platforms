@@ -149,6 +149,8 @@ UpdateConfigParams (
     ConfigData->S5.SocWatchdogTimer = PlatformSetupVar.SocWatchdogTimer;
 
     ConfigData->Cpu.LpiState = PlatformSetupVar.CpuLpiState;
+
+    ConfigData->Dpu.GopDisplaySelect = PlatformSetupVar.GopDisplaySelect;
   }
 }
 
@@ -430,6 +432,12 @@ ConstructSetupVariable (
   PlatformSetupVar->CpuCoreNum              = CpuCoreNum;
   PlatformSetupVar->CpuShareInfo            = CpuShareInfo;
   PlatformSetupVar->CpuLpiState             = FixedPcdGet8 (PcdAcpiCpuLpiState);
+  PlatformSetupVar->DPHwProfile[0]          = FixedPcdGet8 (PcdDP0HwProfile);
+  PlatformSetupVar->DPHwProfile[1]          = FixedPcdGet8 (PcdDP1HwProfile);
+  PlatformSetupVar->DPHwProfile[2]          = FixedPcdGet8 (PcdDP2HwProfile);
+  PlatformSetupVar->DPHwProfile[3]          = FixedPcdGet8 (PcdDP3HwProfile);
+  PlatformSetupVar->DPHwProfile[4]          = FixedPcdGet8 (PcdDP4HwProfile);
+  PlatformSetupVar->GopDisplaySelect        = FixedPcdGet8 (PcdGopDisplaySelect);
 }
 
 VOID

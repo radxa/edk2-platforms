@@ -129,10 +129,23 @@ drm_dp_link_rate_to_bw_code (
   INT32  link_rate
   );
 
-INT32
+STATIC INT32
 drm_dp_bw_code_to_link_rate (
   UINT8  link_bw
-  );
+  )
+{
+  switch (link_bw) {
+    case DP_LINK_BW_10:
+      return 1000000;
+    case DP_LINK_BW_13_5:
+      return 1350000;
+    case DP_LINK_BW_20:
+      return 2000000;
+    default:
+      /* Spec says link_rate = link_bw * 0.27Gbps */
+      return link_bw * 27000;
+  }
+}
 
 // const char *
 // drm_dp_phy_name (

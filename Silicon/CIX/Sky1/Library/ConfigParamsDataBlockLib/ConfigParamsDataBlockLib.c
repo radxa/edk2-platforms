@@ -121,6 +121,14 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
   },
   {
     // CONFIG_PARAMS_DPU
+    FixedPcdGet8 (PcdGopDisplaySelect),
+    {
+      FixedPcdGet8 (PcdDP0HwProfile),
+      FixedPcdGet8 (PcdDP1HwProfile),
+      FixedPcdGet8 (PcdDP2HwProfile),
+      FixedPcdGet8 (PcdDP3HwProfile),
+      FixedPcdGet8 (PcdDP4HwProfile),
+    },
   },
   {
     // CONFIG_PARAMS_NPU
@@ -429,7 +437,13 @@ CONFIG_PARAMS_DATA_ENTRY  mConfigDataEntryTable[] = {
   { PARAMS_DATA_USB_32_DRD_1_DATAROLE_ID,      PARAMS_DATA_OFFSET_SIZE (Usb32Drd[1].DataRole),        PARAMS_DATA_BOOLEAN_TYPE,      L"USB3.0 Control1 data role",    L"0:host, 1:device"                                                                },
   { PARAMS_DATA_USB_TYPE_C_DRD_0_DATAROLE,     PARAMS_DATA_OFFSET_SIZE (UsbCDrd[0].DataRole),         PARAMS_DATA_BOOLEAN_TYPE,      L"USBC Drd Control data role",   L"0:host, 1:device"                                                                },
   { PARAMS_DATA_SOC_WATCH_DOG_TIMER_ID,        PARAMS_DATA_OFFSET_SIZE (S5.SocWatchdogTimer),         PARAMS_DATA_BOOLEAN_TYPE,      L"SOC Watchdog  Timer",          L"0:Disable, 1:Enable"                                                             },
-  { PARAMS_DATA_CPU_LPI_STATE_ID,              PARAMS_DATA_OFFSET_SIZE (Cpu.LpiState),                PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU LPI State ",               L"0:Disable, 1:LPI0, 2:LPI1, 1:LPI2"                                               },
+  { PARAMS_DATA_CPU_LPI_STATE_ID,              PARAMS_DATA_OFFSET_SIZE (Cpu.LpiState),                PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU LPI State ",               L"0:Disable, 1:LPI0, 2:LPI1, 3:LPI2"                                               },
+  { PARAMS_DATA_DPU_GOP_DISPLAY_SELECT_ID,     PARAMS_DATA_OFFSET_SIZE (Dpu.GopDisplaySelect),        PARAMS_DATA_MULTI_OPTION_TYPE, L"DGOP Display Select",          L"0:DPU0, 1:DPU1, 2:DPU2, 3:DPU3, 4:DPU4"                                          },
+  { PARAMS_DATA_DPU_DP0_HW_PROFILE_ID,         PARAMS_DATA_OFFSET_SIZE (Dpu.DpuHwProfiles[0]),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Dpu Hardware Profile 0",       L"0:edp, 1:dp, 2:typec"                                                            },
+  { PARAMS_DATA_DPU_DP1_HW_PROFILE_ID,         PARAMS_DATA_OFFSET_SIZE (Dpu.DpuHwProfiles[1]),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Dpu Hardware Profile 1",       L"0:edp, 1:dp, 2:typec"                                                            },
+  { PARAMS_DATA_DPU_DP2_HW_PROFILE_ID,         PARAMS_DATA_OFFSET_SIZE (Dpu.DpuHwProfiles[2]),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Dpu Hardware Profile 2",       L"0:edp, 1:dp, 2:typec"                                                            },
+  { PARAMS_DATA_DPU_DP3_HW_PROFILE_ID,         PARAMS_DATA_OFFSET_SIZE (Dpu.DpuHwProfiles[3]),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Dpu Hardware Profile 3",       L"0:edp, 1:dp, 2:typec"                                                            },
+  { PARAMS_DATA_DPU_DP4_HW_PROFILE_ID,         PARAMS_DATA_OFFSET_SIZE (Dpu.DpuHwProfiles[4]),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Dpu Hardware Profile 4",       L"0:edp, 1:dp, 2:typec"                                                            },
 };
 
 UINT32  mConfigDataEntryNum = sizeof (mConfigDataEntryTable) / sizeof (CONFIG_PARAMS_DATA_ENTRY);

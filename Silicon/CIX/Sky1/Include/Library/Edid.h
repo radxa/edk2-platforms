@@ -27,10 +27,6 @@ typedef struct {
 } EDID_TIMING;
 
 struct VideoMode {
-  UINT8     Reserved1;       /* Reserved - must be 0. */
-  UINT8     Reserved2;       /* Reserved - must be 2. */
-
-  // Values matching the EDID Detailed Timing Descriptor spec
   UINT16    PixelClock;
   UINT16    HActive;
   UINT16    HBlanking;
@@ -43,18 +39,11 @@ struct VideoMode {
   // End of Edid Detailed Timing Descriptor
 
   UINT16    Flags /*ModeFlags*/;
-  UINT16    Accumulate;
-  UINT16    Reserved3;
-  UINT16    Reserved4;
   UINT16    InsetLeft;
   UINT16    InsetTop;
   UINT16    InsetRight;
   UINT16    InsetBottom;
-  UINT32    FillValue;
-  UINT32    Reserved5;
   UINT8     Vic;
-  UINT8     ActiveFormat;
-  UINT16    Reserved6;
 };
 
 EFI_STATUS

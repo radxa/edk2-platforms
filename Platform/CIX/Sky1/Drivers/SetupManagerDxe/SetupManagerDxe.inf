@@ -234,6 +234,7 @@
   gCixTokenSpaceGuid.PcdRtcWakeup
   gCixTokenSpaceGuid.PcdLightSensorCtrl
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
+  gCixTokenSpaceGuid.PcdGopDisplaySelect
 
 [Depex]
   TRUE
