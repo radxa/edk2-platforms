@@ -1,0 +1,11 @@
+## @file
+#
+#  Copyright 2024 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
+#  Copyright (c) 2018, Linaro Ltd. All rights reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+  INF Platform/Radxa/Drivers/Logo/LogoDxe.inf
+  INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
