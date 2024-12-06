@@ -17,6 +17,15 @@
   # PCD scope GUID
   gRadxaTokenSpaceGuid = { 0xdc7cd9a4, 0x4210, 0x46c6, { 0xb8, 0x49, 0x41, 0xaf, 0x5d, 0xc8, 0x9b, 0x23 } }
 
+  # HII form set GUID for SystemInfoDxe driver
+  gSystemInfoFormSetGuid = { 0xdbb34835, 0x1a17, 0x4f04, { 0xb0, 0x0f, 0x57, 0xdb, 0xa4, 0xd1, 0x3c, 0x98 } }
+
 [PcdsFixedAtBuild.common]
   # I2C HYM8563
   gRadxaTokenSpaceGuid.PcdRtc8563I2cBus|3|UINT8|0x00000000
+
+  # Code info
+  gRadxaTokenSpaceGuid.PcdEdk2CixCommitHash|L""|VOID*|0x00000001
+  gRadxaTokenSpaceGuid.PcdEdk2CommitHash|L""|VOID*|0x00000002
+  gRadxaTokenSpaceGuid.PcdEdk2NonOSICommitHash|L""|VOID*|0x00000003
+  gRadxaTokenSpaceGuid.PcdEdk2PlatformsCommitHash|L""|VOID*|0x00000004
