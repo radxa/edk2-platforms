@@ -76,7 +76,6 @@
   DEFINE SECURE_BOOT_ENABLE         = TRUE
   DEFINE DEFAULT_KEYS               = TRUE
   DEFINE UEFI_FW_STAGE              = Beta1
-  DEFINE BOOT_LOGO_ENABLE           = TRUE
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
   DEFINE PCIE_HOST_ENABLE           = TRUE

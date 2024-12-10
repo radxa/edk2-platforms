@@ -1,0 +1,43 @@
+/** @file
+*
+*  Copyright 2024 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
+*  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+*  Copyright (c) 2017, Linaro, Ltd. All rights reserved.
+*
+*  SPDX-License-Identifier: BSD-2-Clause-Patent
+*
+**/
+
+#langdef en-US  "English"
+
+#string STR_FORM_SET_TITLE              #language en-US "Platform Configuration"
+#string STR_FORM_SET_TITLE_HELP         #language en-US "Press <Enter> to configure platform settings."
+
+#string STR_MAIN_FORM_TITLE             #language en-US "Platform Configuration"
+#string STR_EMPTY_STRING                #language en-US ""
+#string STR_EXIT_STRING                 #language en-US  "Press ESC to exit."
+
+#string STR_ENABLED                     #language en-US "Enabled"
+#string STR_DISABLED                    #language en-US "Disabled"
+
+#string STR_SYSTEM_TABLE_PROMPT         #language en-US "System Table Selection"
+#string STR_SYSTEM_TABLE_HELP           #language en-US "ACPI/DT choice for specific OS"
+#string STR_SYSTEM_TABLE_ACPI           #language en-US "ACPI"
+#string STR_SYSTEM_TABLE_DT             #language en-US "Device Tree"
+
+#string STR_NETWORK_STACK_PROMPT        #language en-US "Network Stack"
+#string STR_NETWORK_STACK_PROMPT_HELP   #language en-US "Enable/Disable the network stack"
+#string STR_IPV4_PXE_BOOT_PROMPT        #language en-US "Ipv4 Pxe Boot"
+#string STR_IPV4_PXE_BOOT_PROMPT_HELP   #language en-US "Enable/Disable Ipv4 PXE boot"
+#string STR_IPV6_PXE_BOOT_PROMPT        #language en-US "Ipv6 Pxe Boot"
+#string STR_IPV6_PXE_BOOT_PROMPT_HELP   #language en-US "Enable/Disable Ipv6 PXE boot"
+#string STR_IPV4_HTTP_BOOT_PROMPT       #language en-US "Ipv4 Http Boot"
+#string STR_IPV4_HTTP_BOOT_PROMPT_HELP  #language en-US "Enable/Disable Ipv4 Http boot"
+#string STR_IPV6_HTTP_BOOT_PROMPT       #language en-US "Ipv6 Http Boot"
+#string STR_IPV6_HTTP_BOOT_PROMPT_HELP  #language en-US "Enable/Disable Ipv6 Http boot"
+
+#string STR_RESTORE_AC_POWER_LOSS       #language en-US "Restore AC Power Loss"
+#string STR_RESTORE_AC_POWER_LOSS_HELP  #language en-US "Select AC power state when power is re-applied after a power failure."
+#string STR_S0_AFTER_G3_STRING          #language en-US "Power On"
+#string STR_S5_AFTER_G3_STRING          #language en-US "Power Off"
+#string STR_LASTSTATE_AFTER_G3_STRING   #language en-US "Last State"

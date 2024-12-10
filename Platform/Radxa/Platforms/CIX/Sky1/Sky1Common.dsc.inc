@@ -27,3 +27,8 @@
   MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
 
   Platform/Radxa/Platforms/CIX/Sky1/Drivers/SystemInfoDxe/SystemInfoDxe.inf
+
+!if $(TOKEN_SETUP_SUPPORT) == FALSE
+  Platform/CIX/Sky1/Drivers/PlatformSetupVariableInitDxe/PlatformSetupVariableInitDxe.inf
+  Platform/Radxa/Platforms/CIX/Sky1/Drivers/PlatformConfigDxe/PlatformConfigDxe.inf
+!endif
