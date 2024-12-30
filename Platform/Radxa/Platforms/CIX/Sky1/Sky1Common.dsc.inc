@@ -24,7 +24,6 @@
 !endif
 
   Platform/Radxa/Drivers/Logo/LogoDxe.inf
-  MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
 
   Platform/Radxa/Platforms/CIX/Sky1/Drivers/SystemInfoDxe/SystemInfoDxe.inf
 

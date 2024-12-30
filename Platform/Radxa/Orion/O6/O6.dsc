@@ -43,7 +43,7 @@
 # Define override here for evb
 ##################################################
   DEFINE DTB_UPDATE_ENABLE          = FALSE
-  DEFINE SMBIOS_ENABLE              = FALSE
+  DEFINE SMBIOS_ENABLE              = TRUE
   DEFINE ACPI_ENABLE                = FALSE
   DEFINE TOKEN_CONSOLE_PREF_SUPPORT = FALSE
   DEFINE FW_VERSION_ENABLE          = TRUE
@@ -190,7 +190,6 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   Platform/CIX/Sky1/Merak/ACPI/AcpiPlatformDxe/AcpiPlatformDxe.inf
 !endif
 !if $(SMBIOS_ENABLE) == TRUE
-  # Platform/CIX/Sky1/Merak/PlatformSmbios/PlatformSmbios.inf
   Platform/Radxa/Orion/O6/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
 !endif
 
