@@ -20,11 +20,6 @@
 #string STR_ENABLED                     #language en-US "Enabled"
 #string STR_DISABLED                    #language en-US "Disabled"
 
-#string STR_SYSTEM_TABLE_PROMPT         #language en-US "System Table Selection"
-#string STR_SYSTEM_TABLE_HELP           #language en-US "ACPI/DT choice for specific OS"
-#string STR_SYSTEM_TABLE_ACPI           #language en-US "ACPI"
-#string STR_SYSTEM_TABLE_DT             #language en-US "Device Tree"
-
 #string STR_NETWORK_STACK_PROMPT        #language en-US "Network Stack"
 #string STR_NETWORK_STACK_PROMPT_HELP   #language en-US "Enable/Disable the network stack"
 #string STR_IPV4_PXE_BOOT_PROMPT        #language en-US "Ipv4 Pxe Boot"

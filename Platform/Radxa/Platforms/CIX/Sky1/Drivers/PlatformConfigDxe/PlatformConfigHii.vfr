@@ -36,14 +36,6 @@ formset
     title  = STRING_TOKEN(STR_MAIN_FORM_TITLE);
     subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
 
-    oneof varid     = SystemTableVar.SystemTableSelect,
-      prompt        = STRING_TOKEN(STR_SYSTEM_TABLE_PROMPT),
-      help          = STRING_TOKEN(STR_SYSTEM_TABLE_HELP),
-      default       = FixedPcdGet8 (PcdSystemTableSelect),
-      option text   = STRING_TOKEN(STR_SYSTEM_TABLE_ACPI), value = 0, flags = RESET_REQUIRED;
-      option text   = STRING_TOKEN(STR_SYSTEM_TABLE_DT),   value = 1, flags = RESET_REQUIRED;
-    endoneof;
-
     oneof varid     = PlatformSetupVar.StateAfterG3,
       questionid    = QUESTION_STATE_AFTER_G3_ID,
       prompt        = STRING_TOKEN(STR_RESTORE_AC_POWER_LOSS),

@@ -14,3 +14,5 @@
   INF Platform/CIX/Sky1/Drivers/PlatformSetupVariableInitDxe/PlatformSetupVariableInitDxe.inf
   INF Platform/Radxa/Platforms/CIX/Sky1/Drivers/PlatformConfigDxe/PlatformConfigDxe.inf
 !endif
+
+  INF EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf

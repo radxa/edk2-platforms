@@ -160,6 +160,8 @@ READ_LOCK_STATUS   = TRUE
 
   INF Platform/Radxa/Drivers/RTL8126/RtkUndiDxe.inf
 
+  INF Platform/Radxa/Orion/O6/DeviceTree/DeviceTree.inf
+
 [FV.FVMAIN_COMPACT]
 FvAlignment        = 16
 ERASE_POLARITY     = 1
@@ -309,4 +311,16 @@ READ_LOCK_STATUS   = TRUE
     DXE_DEPEX DXE_DEPEX Optional      |.depex
     PE32      PE32                    |.efi
     UI        STRING="$(MODULE_NAME)" Optional
+  }
+
+[Rule.Common.USER_DEFINED]
+  FILE FREEFORM = $(NAMED_GUID) {
+    UI  STRING="$(MODULE_NAME)" Optional
+    RAW BIN                |.bin
+  }
+
+[Rule.Common.USER_DEFINED.BINARY]
+  FILE FREEFORM = $(NAMED_GUID) {
+    UI  STRING="$(MODULE_NAME)" Optional
+    RAW BIN                |.bin
   }

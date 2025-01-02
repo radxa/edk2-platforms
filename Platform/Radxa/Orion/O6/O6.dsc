@@ -192,7 +192,7 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 !if $(SMBIOS_ENABLE) == TRUE
   Platform/Radxa/Orion/O6/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
 !endif
-
+  Platform/Radxa/Orion/O6/DeviceTree/DeviceTree.inf
 
 ###################################################################################################
 # BuildOptions Section - Define the module specific tool chain flags that should be used as

@@ -9,9 +9,6 @@
   # Default State After G3 is Power On
   gCixTokenSpaceGuid.PcdStateAfterG3|0x01
 
-  # Currently we only support Device Tree boot
-  gCixTokenSpaceGuid.PcdSystemTableSelect|0x01
-
 [Components.common]
 
 !if $(DEBUG_ON_UART3) == FALSE
@@ -31,3 +28,8 @@
   Platform/CIX/Sky1/Drivers/PlatformSetupVariableInitDxe/PlatformSetupVariableInitDxe.inf
   Platform/Radxa/Platforms/CIX/Sky1/Drivers/PlatformConfigDxe/PlatformConfigDxe.inf
 !endif
+
+  EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf {
+    <LibraryClasses>
+      DtPlatformDtbLoaderLib|EmbeddedPkg/Library/DxeDtPlatformDtbLoaderLibDefault/DxeDtPlatformDtbLoaderLibDefault.inf
+  }

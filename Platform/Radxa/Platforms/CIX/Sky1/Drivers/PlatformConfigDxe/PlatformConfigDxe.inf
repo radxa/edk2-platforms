@@ -60,7 +60,6 @@
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4HttpSupport
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6HttpSupport
   gCixTokenSpaceGuid.PcdStateAfterG3
-  gCixTokenSpaceGuid.PcdSystemTableSelect
 
 [Depex]
   TRUE
