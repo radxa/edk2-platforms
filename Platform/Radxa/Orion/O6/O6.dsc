@@ -75,7 +75,7 @@
   DEFINE DYNAMIC_GET_MEM_SIZE       = TRUE
   DEFINE SECURE_BOOT_ENABLE         = TRUE
   DEFINE DEFAULT_KEYS               = TRUE
-  DEFINE UEFI_FW_STAGE              = Beta1
+  DEFINE UEFI_FW_STAGE              = Beta2
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
   DEFINE PCIE_HOST_ENABLE           = TRUE
