@@ -191,7 +191,7 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   Platform/CIX/Sky1/Merak/ACPI/AcpiPlatformDxe/AcpiPlatformDxe.inf
 !endif
 !if $(SMBIOS_ENABLE) == TRUE
-  Platform/Radxa/Orion/O6/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
+  Platform/Radxa/Orion/O6/Drivers/PlatformSmbios/PlatformSmbios.inf
 !endif
   Platform/Radxa/Orion/O6/DeviceTree/DeviceTree.inf
 

@@ -155,7 +155,7 @@ READ_LOCK_STATUS   = TRUE
       SECTION RAW = Platform/CIX/Sky1/Bin/ntroot.cer //root pubkey
   }
 !if $(SMBIOS_ENABLE) == TRUE
-  INF Platform/Radxa/Orion/O6/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
+  INF Platform/Radxa/Orion/O6/Drivers/PlatformSmbios/PlatformSmbios.inf
 !endif
 
   INF Platform/Radxa/Drivers/RTL8126/RtkUndiDxe.inf
