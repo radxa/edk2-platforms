@@ -60,6 +60,8 @@
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4HttpSupport
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6HttpSupport
   gCixTokenSpaceGuid.PcdStateAfterG3
+  gCixPlatformTokenSpaceGuid.PcdCpuFMax
+  gCixPlatformTokenSpaceGuid.PcdGpuFMax
 
 [Depex]
   TRUE

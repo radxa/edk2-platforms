@@ -75,6 +75,7 @@
   DEFINE DYNAMIC_GET_MEM_SIZE       = TRUE
   DEFINE SECURE_BOOT_ENABLE         = TRUE
   DEFINE DEFAULT_KEYS               = TRUE
+  DEFINE FW_CONFIG_UPDATE_SUPPORT   = TRUE
   DEFINE UEFI_FW_STAGE              = Beta2
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
@@ -265,6 +266,11 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 
 !if $(STMM_SUPPORT) == TRUE
   GCC:*_*_*_CC_FLAGS              = -DSTMM_SUPPORT
+!endif
+
+!if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
+  GCC:*_*_*_CC_FLAGS          = -DFW_CONFIG_UPDATE_SUPPORT
+  GCC:*_*_*_VFRPP_FLAGS       = -DFW_CONFIG_UPDATE_SUPPORT=1
 !endif
 
 ################################################################################

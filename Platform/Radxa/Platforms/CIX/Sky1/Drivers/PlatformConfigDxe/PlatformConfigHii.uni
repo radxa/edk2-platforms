@@ -36,3 +36,14 @@
 #string STR_S0_AFTER_G3_STRING          #language en-US "Power On"
 #string STR_S5_AFTER_G3_STRING          #language en-US "Power Off"
 #string STR_LASTSTATE_AFTER_G3_STRING   #language en-US "Last State"
+
+#string STR_CPU_FREQ_MAX_PROMPT         #language en-US "CPU Max Frequency"
+#string STR_CPU_FREQ_MAX_PROMPT_HELP    #language en-US "Select Max Frequency of CPU"
+#string STR_CPU_FREQ_0                  #language en-US "2.5G"
+#string STR_CPU_FREQ_1                  #language en-US "2.6G"
+
+#string STR_GPU_FREQ_MAX_PROMPT         #language en-US "GPU Max Frequency"
+#string STR_GPU_FREQ_MAX_PROMPT_HELP    #language en-US "Select Max Frequency of GPU"
+#string STR_GPU_FREQ_0                  #language en-US "900M"
+#string STR_GPU_FREQ_1                  #language en-US "1G"
+#string STR_GPU_FREQ_2                  #language en-US "1.1G"

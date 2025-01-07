@@ -46,6 +46,25 @@ formset
       option text   = STRING_TOKEN(STR_S0_AFTER_G3_STRING),        value = 1, flags = RESET_REQUIRED;
     endoneof;
 
+  #if (FW_CONFIG_UPDATE_SUPPORT == 1)
+    oneof varid   = PlatformSetupVar.CpuFMax,
+      prompt      = STRING_TOKEN(STR_CPU_FREQ_MAX_PROMPT),
+      help        = STRING_TOKEN(STR_CPU_FREQ_MAX_PROMPT_HELP),
+      default     = FixedPcdGet8 (PcdCpuFMax),
+      option text = STRING_TOKEN(STR_CPU_FREQ_0), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_CPU_FREQ_1), value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid   = PlatformSetupVar.GpuFMax,
+      prompt      = STRING_TOKEN(STR_GPU_FREQ_MAX_PROMPT),
+      help        = STRING_TOKEN(STR_GPU_FREQ_MAX_PROMPT_HELP),
+      default     = FixedPcdGet8 (PcdGpuFMax),
+      option text = STRING_TOKEN(STR_GPU_FREQ_0), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_GPU_FREQ_1), value = 1, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_GPU_FREQ_2), value = 2, flags = RESET_REQUIRED;
+    endoneof;
+  #endif
+
     oneof varid     = NetworkStackVar.Enable,
       prompt        = STRING_TOKEN(STR_NETWORK_STACK_PROMPT),
       help          = STRING_TOKEN(STR_NETWORK_STACK_PROMPT_HELP),
