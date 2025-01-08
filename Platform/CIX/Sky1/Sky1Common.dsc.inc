@@ -127,12 +127,10 @@
 
   PartitionLib|Platform/CIX/Sky1/Library/PartitionLib/PartitionLib.inf
   FlashUpdateLib|Platform/CIX/Sky1/Library/FlashUpdateLib/FlashUpdateLib.inf
-!if $(SOC_USB_DEVICE_ENABLE) == TRUE
   AvbLib|Platform/CIX/Sky1/Library/avb/AvbLib.inf
   BootLib|Platform/CIX/Sky1/Library/BootLib/BootLib.inf
   LaunchEfiLib|Platform/CIX/Sky1/Library/LaunchEfiLib/LaunchEfiLib.inf
   MiniFastbootLib|Platform/CIX/Sky1/Library/FastbootLib/MiniFastbootLib.inf
-!endif
   OpteeLib|Platform/CIX/Sky1/Library/OpteeLib/OpteeLib.inf
 
   #
@@ -317,7 +315,7 @@
   BaseHidParseReportLib|Platform/CIX/Sky1/Library/BaseHidParseReportLib/BaseHidParseReportLib.inf
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
-!if $(STMM_SUPPORT) == TRUE
+!if $(STMM_SUPPORT) == TRUE && $(RUNTIME_DEBUG_MSG_ENABLE) == TRUE
   DebugLib|Platform/CIX/Sky1/Library/DxeRuntimeDebugLibSerialPort/DxeRuntimeDebugLibSerialPort.inf
   SerialOutStmmLib|Silicon/CIX/Sky1/Library/SerialOutStmmLib/SerialOutStmmRuntimeLib.inf
 !else
@@ -328,6 +326,8 @@
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
   EfiResetSystemLib|ArmPkg/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
   ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
+  PinMuxLib|Silicon/CIX/Sky1/Library/PinMuxLib/PinMuxRuntimeLib.inf
+  GpioLib|Silicon/CIX/Sky1/Library/GpioLib/GpioRuntimeLib.inf
   VariablePolicyLib|MdeModulePkg/Library/VariablePolicyLib/VariablePolicyLibRuntimeDxe.inf
 
 !if $(SECURE_BOOT_ENABLE) == TRUE
@@ -458,8 +458,10 @@
   !endif
   gCixPlatformTokenSpaceGuid.PcdKernelBootImgBase|0xA0000000
   gCixPlatformTokenSpaceGuid.PcdKernelBootImgSize|0x08000000
-  gCixPlatformTokenSpaceGuid.PcdReservedShareMemoryBase|0x80000000
-  gCixPlatformTokenSpaceGuid.PcdReservedShareMemorySize|0x04400000
+  gCixPlatformTokenSpaceGuid.PcdReservedSecureMemoryBase|0x80000000
+  gCixPlatformTokenSpaceGuid.PcdReservedSecureMemorySize|0x02500000
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemoryBase|0x82500000
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemorySize|0x01F00000
   gArmPlatformTokenSpaceGuid.PcdArmLcdDdrFrameBufferBase|0x84800000
   gArmPlatformTokenSpaceGuid.PcdArmLcdDdrFrameBufferSize|0x00800000
   gCixPlatformTokenSpaceGuid.PcdReservedLinuxBase|0x86000000

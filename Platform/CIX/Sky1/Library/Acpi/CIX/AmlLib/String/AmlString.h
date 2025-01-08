@@ -1,5 +1,6 @@
 /** @file
   AML String.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Copyright (c) 2010 - 2018, Intel Corporation. All rights reserved. <BR>
   Copyright (c) 2019 - 2020, Arm Limited. All rights reserved.<BR>

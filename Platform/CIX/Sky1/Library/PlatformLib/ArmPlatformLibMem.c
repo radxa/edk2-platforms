@@ -81,6 +81,14 @@ ArmPlatformGetVirtualMemoryMap (
 
   DramHigh = ReportDramHighSpace (&DramHighSize);
 
+  // Reserved secure memory
+  BuildResourceDescriptorHob (
+    EFI_RESOURCE_SYSTEM_MEMORY,
+    ResourceAttributes,
+    PcdGet32 (PcdReservedSecureMemoryBase),
+    PcdGet32 (PcdReservedSecureMemorySize)
+    );
+
   // Reserved share memory
   BuildResourceDescriptorHob (
     EFI_RESOURCE_SYSTEM_MEMORY,
@@ -149,7 +157,12 @@ ArmPlatformGetVirtualMemoryMap (
     );
   */
   // reserved 0x80000000 ~ 0x824fffff secure memory
-  // reserved 0x82500000 ~ 0x843fffff shared no secure memory
+  VirtualMemoryTable[Index].PhysicalBase = FixedPcdGet32 (PcdReservedSecureMemoryBase);
+  VirtualMemoryTable[Index].VirtualBase  = FixedPcdGet32 (PcdReservedSecureMemoryBase);
+  VirtualMemoryTable[Index].Length       = FixedPcdGet32 (PcdReservedSecureMemorySize);
+  VirtualMemoryTable[Index++].Attributes = ARM_MEMORY_REGION_ATTRIBUTE_UNCACHED_UNBUFFERED;
+
+  // reserved 0x82500000 ~ 0x843fffff shared non secure memory
   VirtualMemoryTable[Index].PhysicalBase = FixedPcdGet32 (PcdReservedShareMemoryBase);
   VirtualMemoryTable[Index].VirtualBase  = FixedPcdGet32 (PcdReservedShareMemoryBase);
   VirtualMemoryTable[Index].Length       = FixedPcdGet32 (PcdReservedShareMemorySize);

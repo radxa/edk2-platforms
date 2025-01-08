@@ -1,5 +1,6 @@
 /** @file
   Head file for BDS Platform specific code
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Copyright (C) 2015-2016, Red Hat, Inc.
   Copyright (c) 2004 - 2008, Intel Corporation. All rights reserved.<BR>

@@ -59,6 +59,8 @@
   gCixTokenSpaceGuid.PcdNpuEnable
   gCixTokenSpaceGuid.PcdNpuReservedMemoryBase
   gCixTokenSpaceGuid.PcdNpuReservedMemorySize
+  gCixPlatformTokenSpaceGuid.PcdReservedSecureMemoryBase
+  gCixPlatformTokenSpaceGuid.PcdReservedSecureMemorySize
   gCixPlatformTokenSpaceGuid.PcdReservedShareMemoryBase
   gCixPlatformTokenSpaceGuid.PcdReservedShareMemorySize
 

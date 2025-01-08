@@ -484,8 +484,8 @@ typedef struct {
 
 NpuCoreStatus NpuStatus[] = {
   {3, 0},
-  {2, 1},
-  {1, 2},
+  {2, 2},
+  {1, 1},
   {0, 3}
 };
 
@@ -503,15 +503,13 @@ UpdateDtbStatus (
 
   // NPU
   NpuHarvestStatus = (IsIpHarvested (NpuCore0)<<1)|IsIpHarvested (NpuCore1_2);
-  if (NpuHarvestStatus) {
-    for(UINT32 i = 0; i < 4; i++) {
-      if (NpuHarvestStatus == NpuStatus[i].HarvestStatus) {
-        HarvestInfoValue = NpuStatus[i].HarvestInfoValue;
-        break;
-      }
+  for(UINT32 i = 0; i < 4; i++) {
+    if (NpuHarvestStatus == NpuStatus[i].HarvestStatus) {
+      HarvestInfoValue = NpuStatus[i].HarvestInfoValue;
+      break;
     }
-    NpuHarvest (fdt, DT_NODE_AIPU, HarvestInfoValue);
   }
+  NpuHarvest (fdt, DT_NODE_AIPU, HarvestInfoValue);
 
   // AUDIO
   if (IsIpHarvested (Audio)) {

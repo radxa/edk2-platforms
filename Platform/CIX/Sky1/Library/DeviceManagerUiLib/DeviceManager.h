@@ -1,5 +1,6 @@
 /** @file
 The device manager reference implement
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
 Copyright (c) 2004 - 2015, Intel Corporation. All rights reserved.<BR>
 SPDX-License-Identifier: BSD-2-Clause-Patent

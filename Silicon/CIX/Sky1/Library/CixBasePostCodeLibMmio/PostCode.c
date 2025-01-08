@@ -73,8 +73,11 @@ POST_CODE_KEY_TO_VAL  PostCodeMapTable[] =
   { PdDxeEnd,                           0xE700, L"PdDxeEnd"                           },
   { DxeCoreDispatcherEnd,               0xE1FE, L"DxeCoreDispatcherEnd"               },
   { DxeMainEnd,                         0xE1FF, L"DxeMainEnd"                         },
-  //  { bds ,0xE200~},
-  { DxeReadyToBoot,                     0xEF01, L"DxeReadyToBoot"                     },
+  //boot manager	0xE541 ~0xE580	64
+  { BdsStart,                           0xE541, L"BdsStart"                           },
+  { BootLogo,                           0xE543, L"BootLogo"                           },
+  { BMAfterConsole,                     0xE550, L"BmAfterConsole"                     },
+  { DxeReadyToBoot,                     0xE580, L"DxeReadyToBoot"                     },
 
   { 0,                                  0,      NULL                                  }
 };

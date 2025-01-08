@@ -1,3 +1,8 @@
+/** @file
+
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
+
+**/
 #ifndef __PLATFORM_ACPI_CONFIG_PROTOCOL_H__
 #define __PLATFORM_ACPI_CONFIG_PROTOCOL_H__
 #include <Uefi.h>

@@ -62,6 +62,9 @@ typedef enum {
   DxeCoreDispatcherEnd = 120,
   DxeMainEnd,
 
+  BdsStart,
+  BootLogo,
+  BMAfterConsole,
   DxeReadyToBoot
 } POST_CODE_KEY;
 

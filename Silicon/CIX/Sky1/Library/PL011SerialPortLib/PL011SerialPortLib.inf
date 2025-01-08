@@ -1,7 +1,7 @@
 #/** @file
 #
 #  Component description file for PL011SerialPortLib module
-#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 #  Copyright (c) 2011-2016, ARM Ltd. All rights reserved.<BR>
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -23,14 +23,12 @@
   PL011UartClockLib
   PL011UartLib
   PcdLib
-  SocInitLib
 
 [Packages]
   EmbeddedPkg/EmbeddedPkg.dec
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
-  Silicon/CIX/Sky1/CixPkg.dec
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterBase

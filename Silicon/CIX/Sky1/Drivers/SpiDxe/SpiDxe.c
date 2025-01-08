@@ -1,5 +1,6 @@
 /**
   SPI driver APIs for transfer, initialize, set speed
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Copyright 2023-2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 

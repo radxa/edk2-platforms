@@ -1,5 +1,6 @@
 /** @file
   UncachedMemoryAllocation lib that uses DXE Service to change cachability for
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   a buffer.
   Copyright (c) 2015,2016 Qualcomm Technologies, Inc. All rights reserved.<BR>
   Portions Copyright (c) 2008 - 2010, Apple Inc. All rights reserved.<BR>

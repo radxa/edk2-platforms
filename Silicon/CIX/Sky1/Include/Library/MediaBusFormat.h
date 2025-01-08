@@ -1,5 +1,6 @@
 /*
  * Media Bus API header
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
  *
  * Copyright (C) 2009, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
  * Copyright (c) 2022 Rockchip Electronics Co. Ltd.

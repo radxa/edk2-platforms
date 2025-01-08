@@ -1,5 +1,6 @@
 /** @file
   Implementation for PlatformBootManagerLib library class interfaces.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Copyright (C) 2015-2016, Red Hat, Inc.
   Copyright (c) 2014 - 2021, ARM Ltd. All rights reserved.<BR>
@@ -34,7 +35,7 @@
 #include <Guid/NonDiscoverableDevice.h>
 #include <Guid/TtyTerm.h>
 #include <Guid/SerialPortLibVendor.h>
-
+#include <Library/CixPostCodeLib.h>
 #include "PlatformBm.h"
 
 #define DP_NODE_LEN(Type)  { (UINT8)sizeof (Type), (UINT8)(sizeof (Type) >> 8) }
@@ -765,6 +766,7 @@ PlatformBootManagerBeforeConsole (
   // Register platform-specific boot options and keyboard shortcuts.
   //
   PlatformRegisterOptionsAndKeys ();
+  POST_CODE(DxeMainEnd);
 }
 
 STATIC
@@ -981,7 +983,7 @@ PlatformBootManagerAfterConsole (
         );
     }
 
-    Print (L"Press ESCAPE for boot options ");
+    Print (L"Press ESCAPE for boot options \n");
   } else if (FirmwareVerLength > 0) {
     Status = gBS->HandleProtocol (
                     gST->ConsoleOutHandle,
@@ -1026,6 +1028,7 @@ PlatformBootManagerAfterConsole (
   Key.ScanCode    = SCAN_NULL;
   Key.UnicodeChar = L's';
   PlatformRegisterFvBootOption (&gUefiShellFileGuid, L"UEFI Shell", 0, &Key);
+  POST_CODE(BMAfterConsole);
 }
 
 /**

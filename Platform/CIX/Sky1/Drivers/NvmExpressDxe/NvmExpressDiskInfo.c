@@ -1,5 +1,6 @@
 /** @file
   This file is used to implement the EFI_DISK_INFO_PROTOCOL interface..
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Copyright (c) 2013, Intel Corporation. All rights reserved.<BR>
   SPDX-License-Identifier: BSD-2-Clause-Patent

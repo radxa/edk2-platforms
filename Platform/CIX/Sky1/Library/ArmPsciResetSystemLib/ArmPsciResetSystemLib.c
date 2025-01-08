@@ -1,5 +1,6 @@
 /** @file
   Support ResetSystem Runtime call using PSCI calls
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Note: A similar library is implemented in
   ArmVirtPkg/Library/ArmVirtualizationPsciResetSystemLib

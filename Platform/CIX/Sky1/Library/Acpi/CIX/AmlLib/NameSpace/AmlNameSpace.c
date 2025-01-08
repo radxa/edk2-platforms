@@ -1,5 +1,6 @@
 /** @file
   AML NameSpace.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Copyright (c) 2019 - 2021, Arm Limited. All rights reserved.<BR>
 

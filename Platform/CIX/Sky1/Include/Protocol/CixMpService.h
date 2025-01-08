@@ -1,5 +1,6 @@
 /** @file
   When installed, the MP Services Protocol produces a collection of services
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   that are needed for MP management.
 
   The MP Services Protocol provides a generalized way of performing following tasks:

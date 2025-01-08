@@ -1,5 +1,6 @@
 /** @file
 
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   Copyright 2024 Cix Technology Group Co., Ltd.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -23,4 +24,13 @@ cix_set_boot_phase (
   )
 {
 
+}
+
+UINT64
+cix_get_boot_phase (
+  enum FW_BOOT_PHASE  phase,
+  enum RECORD_POINT   point
+  )
+{
+  return 0;
 }

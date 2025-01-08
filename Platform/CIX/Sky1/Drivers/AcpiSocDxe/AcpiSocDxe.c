@@ -21,8 +21,8 @@ typedef struct {
 
 NpuCoreStatus  NpuStatus[] = {
   { 3, 0 },
-  { 2, 1 },
-  { 1, 2 },
+  { 2, 2 },
+  { 1, 1 },
   { 0, 3 }
 };
 
@@ -665,12 +665,10 @@ InitializeSystemAcpiRam (
 
   // NPU
   NpuSupportStatus = (IsIpHarvested (NpuCore0)<<1)|IsIpHarvested (NpuCore1_2);
-  if (NpuSupportStatus) {
-    for (UINT32 i = 0; i < 4; i++) {
-      if (NpuSupportStatus == NpuStatus[i].SupportStatus) {
-        SupportInfoValue = NpuStatus[i].SupportInfoValue;
-        break;
-      }
+  for (UINT32 i = 0; i < 4; i++) {
+    if (NpuSupportStatus == NpuStatus[i].SupportStatus) {
+      SupportInfoValue = NpuStatus[i].SupportInfoValue;
+      break;
     }
   }
 

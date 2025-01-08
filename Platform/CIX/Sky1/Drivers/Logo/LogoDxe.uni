@@ -1,5 +1,6 @@
 // /** @file
 // The default logo bitmap picture shown on setup screen.
+// Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 //
 // This module provides the default logo bitmap picture shown on setup screen, through EDKII Platform Logo protocol.
 //

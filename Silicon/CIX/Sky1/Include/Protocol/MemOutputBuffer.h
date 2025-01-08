@@ -1,3 +1,8 @@
+/**
+
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
+
+**/
 #ifndef _MEM_OUTPUT_BUFFER_H_
 #define _MEM_OUTPUT_BUFFER_H_
 

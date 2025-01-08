@@ -1,5 +1,6 @@
 /** @file
   PCI emumeration support functions implementation for PCI Bus module.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
 Copyright (c) 2006 - 2021, Intel Corporation. All rights reserved.<BR>
 (C) Copyright 2015 Hewlett Packard Enterprise Development LP<BR>

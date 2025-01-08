@@ -227,6 +227,12 @@ MemoryPeim (
  #endif
 
   BuildMemoryAllocationHob (
+    FixedPcdGet64 (PcdReservedSecureMemoryBase),
+    FixedPcdGet64 (PcdReservedSecureMemorySize),
+    EfiReservedMemoryType
+    );
+
+  BuildMemoryAllocationHob (
     FixedPcdGet64 (PcdReservedShareMemoryBase),
     FixedPcdGet64 (PcdReservedShareMemorySize),
     EfiRuntimeServicesData

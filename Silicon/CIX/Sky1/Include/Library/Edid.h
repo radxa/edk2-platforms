@@ -1,5 +1,6 @@
 /** @file Edid.h
  * @brief Helper routine and corresponding data struct used by USB DisplayLink Driver.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
  * Reads and parses the EDID, checks if a requested video mode is in the supplied EDID
  *
  * Copyright (c) 2018-2019, DisplayLink (UK) Ltd. All rights reserved.

@@ -1,3 +1,8 @@
+/**
+
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
+
+**/
 #ifndef USB_DP_PHY_H_
 #define USB_DP_PHY_H_
 

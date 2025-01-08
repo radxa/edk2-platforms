@@ -1,5 +1,6 @@
 /** @file
 *  OemMiscLib.c
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 *
 *  Copyright (c) 2024, Cix Technology Group Co., Ltd. All Rights Reserved.
 *  Copyright (c) 2022, Ampere Computing LLC. All rights reserved.

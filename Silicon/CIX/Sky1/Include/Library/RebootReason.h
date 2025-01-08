@@ -1,3 +1,8 @@
+/**
+
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
+
+**/
 #ifndef __REBOOT_REASON__
 #define __REBOOT_REASON__
 #include <PiDxe.h>

@@ -1,5 +1,6 @@
 /** @file
   Supporting functions implementation for PCI devices management.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
 Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
 (C) Copyright 2018 Hewlett Packard Enterprise Development LP<BR>

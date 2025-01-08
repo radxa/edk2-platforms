@@ -1,5 +1,6 @@
 //
 //  Copyright (c) 2011 - 2020, Arm Limited. All rights reserved.<BR>
+// Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 //
 //  SPDX-License-Identifier: BSD-2-Clause-Patent
 //

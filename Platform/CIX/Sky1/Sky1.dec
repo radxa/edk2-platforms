@@ -52,13 +52,15 @@
 
 [PcdsFixedAtBuild.common]
 
+  gCixPlatformTokenSpaceGuid.PcdReservedSecureMemoryBase|0x80000000|UINT32|0x1C1
+  gCixPlatformTokenSpaceGuid.PcdReservedSecureMemorySize|0x02500000|UINT32|0x1C2
   gCixPlatformTokenSpaceGuid.PcdRamLogBaseAddress|0x83DB0000|UINT64|0x000001C3
   gCixPlatformTokenSpaceGuid.PcdRamLogSize|0x00004000|UINT32|0x000001C4
   #The memory range for linux
   gCixPlatformTokenSpaceGuid.PcdKernelBootImgBase|0xA0000000|UINT32|0x1C5
   gCixPlatformTokenSpaceGuid.PcdKernelBootImgSize|0x08000000|UINT32|0x1C6
-  gCixPlatformTokenSpaceGuid.PcdReservedShareMemoryBase|0x80000000|UINT32|0x1C7
-  gCixPlatformTokenSpaceGuid.PcdReservedShareMemorySize|0x04400000|UINT32|0x1C8
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemoryBase|0x82500000|UINT32|0x1C7
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemorySize|0x01F00000|UINT32|0x1C8
   gCixPlatformTokenSpaceGuid.PcdReservedLinuxBase|0x86000000|UINT32|0x1C9
   gCixPlatformTokenSpaceGuid.PcdReservedLinuxSize|0x06200000|UINT32|0x1CA
   gCixPlatformTokenSpaceGuid.PcdReservedAndroidBase|0x160000000|UINT64|0x1CB

@@ -1,5 +1,6 @@
 /** @file
   Base Debug library instance base on Serial Port library.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   It uses PrintLib to send debug messages to serial port device.
 
   NOTE: If the Serial Port library enables hardware flow control, then a call

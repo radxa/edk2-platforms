@@ -1,5 +1,6 @@
 /** @file
   PCI eunmeration implementation on entire PCI bus system for PCI Bus module.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
 Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
 (C) Copyright 2015 Hewlett Packard Enterprise Development LP<BR>

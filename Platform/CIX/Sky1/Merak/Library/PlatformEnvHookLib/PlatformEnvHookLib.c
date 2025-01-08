@@ -18,6 +18,7 @@
 #include <Library/EcLib.h>
 #include <Library/MailBoxLib.h>
 #include <Library/CixFwBootPerfLib.h>
+#include <Library/CixPostCodeLib.h>
 #include <Guid/NetworkStackSetup.h>
 #include <PlatformSetupVar.h>
 
@@ -650,7 +651,7 @@ CixFwBootPerfEndNotify (
   IN VOID       *Context
   )
 {
-
+  POST_CODE (DxeReadyToBoot);
   cix_set_boot_phase (BLOADER_PHASE, RECORD_END);
 }
 

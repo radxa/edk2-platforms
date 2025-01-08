@@ -1,5 +1,6 @@
 ## @file
 #  Implementation for PlatformBootManagerLib library class interfaces.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 #
 #  Copyright (C) 2015-2016, Red Hat, Inc.
 #  Copyright (c) 2014, ARM Ltd. All rights reserved.<BR>
@@ -33,6 +34,7 @@
   MdeModulePkg/MdeModulePkg.dec
   MdePkg/MdePkg.dec
   ShellPkg/ShellPkg.dec
+  Silicon/CIX/Sky1/CixPkg.dec
 
 [LibraryClasses]
   BaseLib
@@ -50,6 +52,7 @@
   UefiBootServicesTableLib
   UefiLib
   UefiRuntimeServicesTableLib
+  PostCodeLib
 
 [FeaturePcd]
   gEfiMdePkgTokenSpaceGuid.PcdUgaConsumeSupport

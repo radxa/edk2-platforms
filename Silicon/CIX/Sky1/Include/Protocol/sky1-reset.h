@@ -1,3 +1,8 @@
+/**
+
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
+
+**/
 /* SPDX-License-Identifier: GPL-2.0-only */ /* * Author: Jerry Zhu <jerry.zhu@cixtech.com> */
 #ifndef DT_BINDING_RESET_SKY1_H
 #define DT_BINDING_RESET_SKY1_H
