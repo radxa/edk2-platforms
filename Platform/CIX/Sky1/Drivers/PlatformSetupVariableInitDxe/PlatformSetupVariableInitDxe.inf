@@ -208,6 +208,7 @@
   gCixTokenSpaceGuid.PcdMemMbistMode
   gCixTokenSpaceGuid.PcdMemWrLEcc
   gCixTokenSpaceGuid.PcdMemRdLEcc
+  gCixTokenSpaceGuid.PcdMemIEcc
   gCixTokenSpaceGuid.PcdMemPortPriority
   gCixTokenSpaceGuid.PcdMemBdwP0
   gCixTokenSpaceGuid.PcdMemBdwP1
@@ -221,8 +222,8 @@
   gCixTokenSpaceGuid.PcdGmac1Enable
   gCixTokenSpaceGuid.PcdGmac0MacAddress
   gCixTokenSpaceGuid.PcdGmac1MacAddress
-  gCixTokenSpaceGuid.PcdRtcWakeup
-  gCixTokenSpaceGuid.PcdLightSensorCtrl
+  gCixPlatformTokenSpaceGuid.PcdRtcWakeup
+  gCixPlatformTokenSpaceGuid.PcdLightSensorCtrl
   #ACPI CPU Core
   gCixTokenSpaceGuid.PcdCpuCore1En
   gCixTokenSpaceGuid.PcdCpuCore2En
@@ -236,11 +237,7 @@
   gCixTokenSpaceGuid.PcdCpuCore10En
   gCixTokenSpaceGuid.PcdCpuCore11En
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
-  gCixTokenSpaceGuid.PcdDP0HwProfile
-  gCixTokenSpaceGuid.PcdDP1HwProfile
-  gCixTokenSpaceGuid.PcdDP2HwProfile
-  gCixTokenSpaceGuid.PcdDP3HwProfile
-  gCixTokenSpaceGuid.PcdDP4HwProfile
+  gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable
   gCixTokenSpaceGuid.PcdGopDisplaySelect
 [Depex]
   TRUE

@@ -8,12 +8,16 @@
 #include "AcpiPlatformDxe.h"
 #include <PlatformSetupVar.h>
 #include <AcpiRamVariable.h>
+#include <Library/SerialPortLib.h>
+#include <Library/PL011UartClockLib.h>
+#include <Library/PL011UartLib.h>
+#include <Protocol/PlatformConfigParamsManageProtocol.h>
 
 EFI_ACPI_TABLE_PROTOCOL         *AcpiTableProtocol = NULL;
 static EFI_ACPI_SDT_PROTOCOL    *mAcpiSdt          = NULL;
 static EFI_ACPI_TABLE_PROTOCOL  *mAcpiTable        = NULL;
 
-ACPI_FUNCTION_ON_READ_TO_BOOT_HOOK  mAcpiFunctionOReadyToBootHook[] = { InstallAcpiOnReadyToBoot, NULL };
+ACPI_FUNCTION_ON_READ_TO_BOOT_HOOK  mAcpiFunctionOReadyToBootHook[] = { InstallAcpiOnReadyToBoot, SpcrDisable, NULL };
 
 EFI_ACPI_MEMORY_MAPPED_CONFIGURATION_BASE_ADDRESS_TABLE_HEADER  McfgHeader = {
   {
@@ -417,6 +421,108 @@ UpdateAcpiOnExitBootServices (
     Status = pPlatformAcpiConfigProtocol->UpdateNameAslCode (pPlatformAcpiConfigProtocol, SIGNATURE_32 ('G', 'N', 'V', 'L'), &Length, sizeof (UINT16));
     // ASSERT_EFI_ERROR (Status);
   }
+}
+
+/** Initialise the serial port for SPCR table.
+
+  @retval RETURN_SUCCESS            The serial device was initialised.
+  @retval RETURN_INVALID_PARAMETER  One or more of the default settings
+                                    has an unsupported value.
+ **/
+EFI_STATUS
+EFIAPI
+SpcrSerialPortInitialize (
+  VOID
+  )
+{
+  UINT64              BaudRate;
+  UINT32              ReceiveFifoDepth;
+  EFI_PARITY_TYPE     Parity;
+  UINT8               DataBits;
+  EFI_STOP_BITS_TYPE  StopBits;
+  UINT32              PL011Base;
+
+  BaudRate         = FixedPcdGet64 (PcdSerialDbgUartBaudRate);
+  ReceiveFifoDepth = 0;         // Use default FIFO depth
+  Parity           = (EFI_PARITY_TYPE)1;
+  DataBits         = 8;
+  StopBits         = (EFI_STOP_BITS_TYPE)1;
+  PL011Base        = FixedPcdGet64 (PcdSerialDbgRegisterBase);
+  return PL011UartInitializePort (
+           (UINTN)PL011Base,
+           PL011UartClockGetFreq (),
+           &BaudRate,
+           &ReceiveFifoDepth,
+           &Parity,
+           &DataBits,
+           &StopBits
+           );
+}
+
+EFI_STATUS
+EFIAPI
+UninstallSpcrTable (
+  VOID
+  )
+{
+  EFI_STATUS                   Status      = EFI_SUCCESS;
+  EFI_ACPI_TABLE_PROTOCOL      *pAcpiTable = NULL;
+  EFI_ACPI_DESCRIPTION_HEADER  *Table      = NULL;
+  UINTN                        Handle      = 0;
+
+  if (pPlatformAcpiConfigProtocol == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a: Not find pPlatformAcpiConfigProtocol\n", __FUNCTION__));
+    return EFI_NOT_FOUND;
+  }
+
+  // Check if SPCR Table Exist
+  Status = pPlatformAcpiConfigProtocol->GetAcpiTableBySignature (
+                                          pPlatformAcpiConfigProtocol,
+                                          EFI_ACPI_6_0_SERIAL_PORT_CONSOLE_REDIRECTION_TABLE_SIGNATURE,
+                                          (EFI_ACPI_DESCRIPTION_HEADER **)&Table,
+                                          &Handle
+                                          );
+
+  if (EFI_ERROR (Status)) {
+    DEBUG ((EFI_D_ERROR, "GetAcpiTableBySignature 'SPCR' failed"));
+    return EFI_NOT_FOUND;
+  }
+
+  pAcpiTable = pPlatformAcpiConfigProtocol->pAcpiTableProtocol;
+  Status     = pAcpiTable->UninstallAcpiTable (
+                             pAcpiTable,
+                             Handle
+                             );
+  return Status;
+}
+
+EFI_STATUS
+EFIAPI
+SpcrDisable (
+  VOID
+  )
+{
+  EFI_STATUS                                  Status;
+  CIX_PLATFORM_CONFIG_PARAMS_MANAGE_PROTOCOL  *PlatformConfigManage;
+
+  Status = gBS->LocateProtocol (
+                  &gCixPlatformConfigParamsManageProtocolGuid,
+                  NULL,
+                  (VOID **)&PlatformConfigManage
+                  );
+
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: platform config parameters invalid %r\n", __FUNCTION__, Status));
+  } else {
+    if (PlatformConfigManage->Data->SpcrEnable) {
+      SpcrSerialPortInitialize ();
+    } else {
+      // Uninstall SPCR Table
+      UninstallSpcrTable ();
+    }
+  }
+
+  return Status;
 }
 
 EFI_STATUS

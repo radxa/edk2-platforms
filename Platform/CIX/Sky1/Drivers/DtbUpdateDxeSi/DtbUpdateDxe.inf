@@ -41,8 +41,8 @@
   gEfiSimpleFileSystemProtocolGuid
 
 [FixedPcd]
-  gCixTokenSpaceGuid.PcdSiliconDtbUpdateFileName
-  gCixTokenSpaceGuid.PcdSiliconDtbUpdateEnable
+  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName
+  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateEnable
 
 [Depex]
   TRUE

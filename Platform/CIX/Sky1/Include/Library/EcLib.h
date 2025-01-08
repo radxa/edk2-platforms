@@ -49,10 +49,8 @@
 #define EC_RES_INVALID_DATA_CRC        19 /* Data CRC invalid */
 #define EC_RES_DUP_UNAVAILABLE         20 /* Can't resend response */
 
-#define EC_CMD_INT_GET_INFO         0x0055
-#define EC_CMD_BATTERY_GET_STATIC   0x0600
-#define EC_CMD_BATTERY_GET_DYNAMIC  0x0601
-
+#define EC_CMD_BATTERY_GET_STATIC      0x0600
+#define EC_CMD_BATTERY_GET_DYNAMIC     0x0601
 #define EC_CMD_PWM_GET_FAN_TARGET_RPM  0x0020
 #define EC_CMD_PWM_SET_FAN_TARGET_RPM  0x0021
 #define EC_CMD_PWM_SET_DUTY            0x0025
@@ -73,7 +71,7 @@
 #define EC_CMD_SET_PD_UPDATE_INFO      0x3E0D
 #define EC_CMD_GET_PD_UPDATE_STATE     0x3E0E
 #define EC_CMD_TRANS_PD_FW_BIN         0x3E10
-#define EC_CMD_FORCE_EC_FW_MIRROR      0x3E19
+#define EC_CMD_FORCE_EC_RESET          0x3E19
 #define EC_CMD_SET_AUTO_ALS_CTRL       0x3E21
 #define EC_CMD_GET_EC_VERSION          0x3FFF
 
@@ -123,8 +121,8 @@ typedef struct  {
 } EC_HOST_RESPONSE_I2C;
 
 typedef struct {
-  CHAR8    Version[EC_VER_TEXT_SIZE];
-} EC_RESPONSE_EC_VERSION_INFO;
+  CHAR8    String[EC_VER_TEXT_SIZE];
+} EC_RESPONSE_EC_VERSION;
 
 typedef union {
   UINT16    Value;
@@ -136,7 +134,7 @@ typedef union {
     UINT16    Rev    : 2;
     UINT16    Rsvd   : 6;
   } Id;
-} EC_RESPONSE_BOARD_ID_INFO;
+} EC_RESPONSE_BOARD_ID;
 
 typedef struct {
   UINT8    Index;
@@ -167,90 +165,90 @@ typedef struct  {
 } EC_RESPONSE_BATTERY_DYNAMIC_INFO;
 
 typedef struct {
-  UINT8    FRAM_ID;
-} EC_RESPONSE_FRAM_ID_INFO;
+  UINT8    Id;
+} EC_RESPONSE_FARM_ID;
 
 typedef struct {
-  UINT8    GPIO_NUM;
-  UINT8    GPIO_VAL;
-} EC_W_GPIO_INFO;
+  UINT8    GpioNum;
+  UINT8    GpioVal;
+} EC_PARAMS_GPIO;
 
 typedef struct {
-  UINT8    GPIO_NUM;
-  UINT8    GPIO_VAL;
-} EC_R_GPIO_INFO;
+  UINT8    GpioNum;
+  UINT8    GpioVal;
+} EC_RESPONSE_GPIO;
 
 typedef struct {
   UINT8    Pmic1Ver;
   UINT8    Pmic2Ver;
   UINT8    Pmic3Ver;
-} EC_RESPONSE_PMIC_VER_INFO;
+} EC_RESPONSE_PMIC_VER;
 
 typedef struct {
   UINT16    Pd1Ver;
   UINT16    Pd2Ver;
-} EC_RESPONSE_PD_VER_INFO;
+} EC_RESPONSE_PD_VER;
 
 typedef struct {
   UINT8    GreenpakVer;
-} EC_RESPONSE_GREENPAK_VER_INFO;
+} EC_RESPONSE_GREENPAK_VER;
 
 typedef struct {
-  CHAR8    name[7]; // charger ic name. SC8886
-  CHAR8    type[3]; // PD
-  UINT8    online;  // 0:offline 1:online.
+  CHAR8    Name[7]; // charger ic name. SC8886
+  CHAR8    Type[3]; // PD
+  UINT8    Online;  // 0:offline 1:online.
 } EC_RESPONSE_CHARGER_INFO;
 
 typedef struct {
-  UINT32    rpm;
-  UINT8     fan_idx;
-} EC_FAN_SET_RPM;
+  UINT32    Rpm;
+  UINT8     FanIdx;
+} EC_PARAMS_FAN_SET_RPM;
 
-struct ec_response_pwm_get_fan_rpm {
-  UINT32    rpm;
-};
+typedef struct {
+  UINT32    Rpm;
+} EC_RRESPONSE_PWM_GET_FAN_RPM;
 
 typedef union {
-  UINT8                                 dat[4];
-  struct ec_response_pwm_get_fan_rpm    fan_rpm;
+  UINT8                           dat[4];
+  EC_RRESPONSE_PWM_GET_FAN_RPM    FanRpm;
 } EC_RESPONSE_FAN_GET_RPM;
 
-typedef struct ec_params_pwm_set_duty {
-  UINT16    duty;     /* Duty cycle, EC_PWM_MAX_DUTY = 100% */
-  UINT8     pwm_type; /* ec_pwm_type */
-  UINT8     index;    /* Type-specific index, or 0 if unique */
-} EC_PWM_SET_DUTY;
+typedef struct {
+  UINT16    Duty;     /* Duty cycle, EC_PWM_MAX_DUTY = 100% */
+  UINT8     PwmType;
+  UINT8     Index;    /* Type-specific index, or 0 if unique */
+} EC_PARAMS_PWM_SET_DUTY;
 
-typedef struct ec_params_pwm_get_duty {
-  UINT8    pwm_type; /* ec_pwm_type */
-  UINT8    index;    /* Type-specific index, or 0 if unique */
-} EC_PWM_GET_DUTY;
+typedef struct {
+  UINT8    PwmType;
+  UINT8    Index;    /* Type-specific index, or 0 if unique */
+} EC_PARAMS_PWM_GET_DUTY;
 
-typedef struct ec_response_pwm_get_duty {
-  UINT16    duty;    /* Duty cycle, EC_PWM_MAX_DUTY = 100% */
+typedef struct {
+  UINT16    Duty;    /* Duty cycle, EC_PWM_MAX_DUTY = 100% */
 } EC_RESPONSE_PWM_GET_DUTY;
 
 typedef struct {
-  UINT8    FAN_AUTO_FLG;
-} EC_THERMAL_AUTO_FAN_CTL_INFO;
+  UINT8    FanAutoFlg;
+} EC_PARAMS_THERMAL_AUTO_FAN_CTL;
 
 typedef struct {
-  UINT8    PVT_TEMPH;
-  UINT8    PVT_TEMPL;
-} EC_RESPONSE_PVT_TEMP_INFO;
+  UINT8    PvtTempH;
+  UINT8    PvtTempL;
+} EC_RESPONSE_PVT_TEMP;
 
 typedef struct {
-  UINT8    POWER_OFF_RSN;
-} EC_RESPONSE_POWER_OFF_RSN_INFO;
+  UINT8    Reason;
+} EC_RESPONSE_POWER_OFF_RSN;
 
 typedef struct {
-  UINT8    EC_AUTO_POWER_ON_FLG;
-} EC_RESPONSE_EC_AUTO_POWER_ON_INFO;
+  UINT8    EcAutoPowerOnFlg;
+} EC_PARAMS_EC_AUTO_POWER_ON;
 
 typedef struct {
-  UINT8     TYPE;
-  UINT32    ACPI_INT_EVENT;
-} EC_RESPONSE_ACPI_INT_EVENT_INFO;
+  UINT8     Type;
+  UINT32    Event;
+} EC_RESPONSE_ACPI_INT_EVENT;
 
 typedef struct {
   UINT32    PdFwFlashAddr; // reserved, not used now
@@ -261,11 +259,11 @@ typedef struct {
 
 typedef struct {
   UINT8    Index;
-} EC_PARAMS_PD_FW_UPDATE_STATE_INFO;
+} EC_PARAMS_PD_FW_UPDATE_STATE;
 
 typedef struct {
   UINT8    PdUpdateState;
-} EC_RESPONSE_PD_FW_UPDATE_STATE_INFO;
+} EC_RESPONSE_PD_FW_UPDATE_STATE;
 
 typedef struct {
   UINT32    Address;
@@ -275,7 +273,7 @@ typedef struct {
 
 typedef struct {
   UINT8    Reserved;
-} EC_PARAMS_FORCE_MIRROR;
+} EC_PARAMS_FORCE_EC_RESET;
 
 typedef struct {
   UINT8    Mode;   // 1:AP, 0:EC
@@ -296,13 +294,13 @@ GetEcInfo (
 EFI_STATUS
 EFIAPI
 GetEcVersion (
-  IN OUT EC_RESPONSE_EC_VERSION_INFO  *Info
+  IN OUT EC_RESPONSE_EC_VERSION  *Info
   );
 
 EFI_STATUS
 EFIAPI
 GetBoardId (
-  IN OUT EC_RESPONSE_BOARD_ID_INFO  *Info
+  IN OUT EC_RESPONSE_BOARD_ID  *Info
   );
 
 EFI_STATUS
@@ -320,37 +318,37 @@ GetBatteryDynamicInfo (
 EFI_STATUS
 EFIAPI
 GetFarmId (
-  IN OUT EC_RESPONSE_FRAM_ID_INFO  *Info
+  IN OUT EC_RESPONSE_FARM_ID  *Info
   );
 
 EFI_STATUS
 EFIAPI
 SetGpio (
-  IN EC_W_GPIO_INFO  *Info
+  IN EC_PARAMS_GPIO  *Info
   );
 
 EFI_STATUS
 EFIAPI
 GetGpio (
-  IN OUT EC_R_GPIO_INFO  *Info
+  IN OUT EC_RESPONSE_GPIO  *Info
   );
 
 EFI_STATUS
 EFIAPI
 GetPmicVersion (
-  IN OUT EC_RESPONSE_PMIC_VER_INFO  *Info
+  IN OUT EC_RESPONSE_PMIC_VER  *Info
   );
 
 EFI_STATUS
 EFIAPI
 GetPdVersion (
-  IN OUT EC_RESPONSE_PD_VER_INFO  *Info
+  IN OUT EC_RESPONSE_PD_VER  *Info
   );
 
 EFI_STATUS
 EFIAPI
 GetGreenPakVersion (
-  IN OUT EC_RESPONSE_GREENPAK_VER_INFO  *Info
+  IN OUT EC_RESPONSE_GREENPAK_VER  *Info
   );
 
 EFI_STATUS
@@ -362,7 +360,7 @@ GetChagerInfo (
 EFI_STATUS
 EFIAPI
 SetFanRpm (
-  IN EC_FAN_SET_RPM  *Info
+  IN EC_PARAMS_FAN_SET_RPM  *Info
   );
 
 EFI_STATUS
@@ -374,44 +372,44 @@ GetFanRpm (
 EFI_STATUS
 EFIAPI
 SetPwmDuty (
-  IN OUT EC_PWM_SET_DUTY  *Info
+  IN OUT EC_PARAMS_PWM_SET_DUTY  *Info
   );
 
 EFI_STATUS
 EFIAPI
 GetPwmDuty (
-  IN  EC_PWM_GET_DUTY           *Param,
+  IN  EC_PARAMS_PWM_GET_DUTY    *Param,
   OUT EC_RESPONSE_PWM_GET_DUTY  *Info
   );
 
 EFI_STATUS
 EFIAPI
 SetThermalFanAutoCtl (
-  IN EC_THERMAL_AUTO_FAN_CTL_INFO  *Info
+  IN EC_PARAMS_THERMAL_AUTO_FAN_CTL  *Info
   );
 
 EFI_STATUS
 EFIAPI
 GetPvtTemp (
-  IN OUT EC_RESPONSE_PVT_TEMP_INFO  *Info
+  IN OUT EC_RESPONSE_PVT_TEMP  *Info
   );
 
 EFI_STATUS
 EFIAPI
 GetPoweroffRsn (
-  IN OUT EC_RESPONSE_POWER_OFF_RSN_INFO  *Info
+  IN OUT EC_RESPONSE_POWER_OFF_RSN  *Info
   );
 
 EFI_STATUS
 EFIAPI
 SetECAutoPowerOn (
-  IN EC_RESPONSE_EC_AUTO_POWER_ON_INFO  *Info
+  IN EC_PARAMS_EC_AUTO_POWER_ON  *Info
   );
 
 EFI_STATUS
 EFIAPI
 GetAcpiIntEvent (
-  IN OUT EC_RESPONSE_ACPI_INT_EVENT_INFO  *Info
+  IN OUT EC_RESPONSE_ACPI_INT_EVENT  *Info
   );
 
 EFI_STATUS
@@ -423,8 +421,8 @@ SetPdFwUpdateInfo (
 EFI_STATUS
 EFIAPI
 GetPdFwUpdateState (
-  IN  EC_PARAMS_PD_FW_UPDATE_STATE_INFO    *Param,
-  OUT EC_RESPONSE_PD_FW_UPDATE_STATE_INFO  *Info
+  IN  EC_PARAMS_PD_FW_UPDATE_STATE    *Param,
+  OUT EC_RESPONSE_PD_FW_UPDATE_STATE  *Info
   );
 
 EFI_STATUS
@@ -435,8 +433,8 @@ TransPdFwBin (
 
 EFI_STATUS
 EFIAPI
-ForceECMirror (
-  IN EC_PARAMS_FORCE_MIRROR  *Info
+ForceEcReset (
+  IN EC_PARAMS_FORCE_EC_RESET  *Info
   );
 
 EFI_STATUS

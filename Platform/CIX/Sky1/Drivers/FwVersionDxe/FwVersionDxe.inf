@@ -19,8 +19,10 @@
 
 [Packages]
   ArmPkg/ArmPkg.dec
+  ArmPlatformPkg/ArmPlatformPkg.dec
   MdeModulePkg/MdeModulePkg.dec
   MdePkg/MdePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
   Platform/CIX/Sky1/Sky1.dec
   Silicon/CIX/Sky1/CixPkg.dec
 
@@ -35,8 +37,10 @@
   UefiDriverEntryPoint
   UefiLib
   ShMemLib
+  CacheMaintenanceLib
 
 [Guids]
+  gEfiEventExitBootServicesGuid
 
 [Protocols]
   gCixFwVersionProtocolGuid
@@ -44,6 +48,9 @@
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
+  gArmTokenSpaceGuid.PcdFdBaseAddress
+  gArmTokenSpaceGuid.PcdFdSize
+  gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiLoaderCode
 
 [Depex]
   TRUE

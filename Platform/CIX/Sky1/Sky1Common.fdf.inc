@@ -19,6 +19,7 @@
   #
   INF ArmPkg/Drivers/CpuDxe/CpuDxe.inf
   INF MdeModulePkg/Core/RuntimeDxe/RuntimeDxe.inf
+  INF Platform/CIX/Sky1/Drivers/S3SaveStateDxe/S3SaveStateDxe.inf
 !if $(CFG_PARAM_MANAGE_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/PlatformConfigParamsManageDxe/PlatformConfigParamsManageDxe.inf
   INF Silicon/CIX/Sky1/Drivers/ConfigParamsManageDxe/ConfigParamsManageDxe.inf
@@ -51,7 +52,7 @@
 
 !if $(SOC_CDNSP_ENABLE) == TRUE || $(SOC_CDNSP_HOST_ENABLE) == TRUE
   INF Silicon/CIX/Sky1/Drivers/TypecPhyDxe/TypecPhyDxe.inf
-  INF Silicon/CIX/Sky1/Drivers/PdDxe/PdDxe.inf
+  INF Platform/CIX/Sky1/Drivers/PdDxe/PdDxe.inf
 !endif
 
 !if $(SOC_USB_DEVICE_ENABLE) == TRUE
@@ -87,7 +88,7 @@
   INF MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
 !endif
 !if $(VARIABLE_SUPPORT) == "SPI_SEC"
-  INF ArmPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
+  INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/MmCommunication.inf
 !endif
 !if $(VARIABLE_SUPPORT) == "SPI_SEC"
   INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmmRuntimeDxe.inf
@@ -183,15 +184,13 @@
    SECTION UI = "AmdGop"
  }
 !endif
-!if $(FW_VERSION_ENABLE) == TRUE
-  INF Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionDxe.inf
-!endif
   #
   # FAT filesystem + GPT/MBR partitioning
   #
   INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
   INF MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
   INF FatPkg/EnhancedFatDxe/Fat.inf
+
 !if $(NTFS_DRIVER_SUPPORT) == TRUE
  FILE DRIVER = D3E589F2-010A-4438-B4E5-7620C403D26F
  {
@@ -199,6 +198,11 @@
    SECTION UI = "NTFS"
  }
 !endif
+
+!if $(EXT4_DRIVER_SUPPORT) == TRUE
+!include Features/Ext4Pkg/Ext4.fdf.inc
+!endif
+
 !if $(REALTEK_LAN_DRIVER_SUPPORT) == TRUE
  FILE DRIVER = 785277C5-20B9-4940-8D9F-341AEAAB4DEF
  {
@@ -219,6 +223,7 @@
 !if $(COMPILE_SYSTEM_LOADER) == android
   INF Platform/CIX/Sky1/Application/LinuxLoader/LinuxLoader.inf
   INF Platform/CIX/Sky1/Application/ABSelect/ABSelect.inf
+  INF Platform/CIX/Sky1/Drivers/AndroidConfigDxe/AndroidConfigDxe.inf
 !endif
   #INF Platform/CIX/Sky1/Application/HelloWorld/HelloWorld.inf
   #INF MdeModulePkg/Application/HelloWorld/HelloWorld.inf
@@ -257,7 +262,7 @@
 !if $(PCIE_HOST_ENABLE) == TRUE
   INF ArmPkg/Drivers/ArmPciCpuIo2Dxe/ArmPciCpuIo2Dxe.inf
   INF MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridgeDxe.inf
-  INF MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+  INF Platform/CIX/Sky1/Drivers/Pci/PciBusDxe/PciBusDxe.inf
   INF EmbeddedPkg/Drivers/NonCoherentIoMmuDxe/NonCoherentIoMmuDxe.inf
   #
   # NVMe boot devices
@@ -301,7 +306,7 @@
   !include NetworkPkg/Network.fdf.inc
 !endif
   !if $(SETUP_DEBUG_CFG_ENABLE) == TRUE
-    INF Platform/CIX/Sky1/Library/DebugConfigLib/DebugConfigDxe.inf
+    INF Platform/CIX/Sky1/Drivers/DebugConfigDxe/DebugConfigDxe.inf
   !endif
   # Bds
   #
@@ -325,3 +330,4 @@
 !if $(I2S_MC_SUPPORT) == TRUE
   INF Silicon/CIX/Sky1/Drivers/I2sDxe/I2sDxe.inf
 !endif
+

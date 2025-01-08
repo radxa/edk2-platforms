@@ -56,13 +56,14 @@ AmlCreatePsdNode (
   OUT AML_OBJECT_NODE_HANDLE  *NewCpcNode   OPTIONAL
   );
 
-/** Create a CPUL node.
-
-  Creates and adds the following node
-  Name (CPUL, Package () { \_SB_.CPU0, \_SB_.CPU1, \_SB_.CPU2, \_SB_.CPU3 })
+/** Create a CPU passive thermal node.
 
   @ingroup CodeGenApis
 
+  @param [in]  NameString            The new variable name.
+                                     Must be a NULL-terminated ASL NameString
+                                     e.g.: "DEV0", "DV15.DEV0", etc.
+                                     The input string is copied.
   @param [in]  CpuNameStringPointer  The pinter point to cpu string list
   @param [in]  CpuNumber             The number of valid CPU
   @param [in]  CpuNameStringLength   The string length of cpu name
@@ -75,7 +76,8 @@ AmlCreatePsdNode (
 **/
 EFI_STATUS
 EFIAPI
-AmlCreateCpulNode (
+AmlCreateCpuPTNode (
+  IN  CONST CHAR8      *NameString,
   IN  CHAR8            *CpuNameStringPointer,
   IN  UINT32           CpuNumber,
   IN  UINT32           CpuNameStringLength,

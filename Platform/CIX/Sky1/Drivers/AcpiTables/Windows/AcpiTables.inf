@@ -28,6 +28,7 @@
   ../Common/Dbg2.aslc
   ../Common/Iort.aslc
   #Csrt.aslc
+  ../Common/Spcr.aslc
 
 [Packages]
   ArmPkg/ArmPkg.dec
@@ -69,13 +70,17 @@
   gCixTokenSpaceGuid.PcdNpuReservedMemorySize
 
   gCixTokenSpaceGuid.PcdEcI2cBaseAddress
-  gCixTokenSpaceGuid.PcdEcI2cSlaveAddress
+  gCixPlatformTokenSpaceGuid.PcdEcI2cSlaveAddress
 
-  gCixTokenSpaceGuid.PcdAcpiEcBatterySupport
-  gCixTokenSpaceGuid.PcdAcpiEcThermalSupport
-  gCixTokenSpaceGuid.PcdAcpiEcLidSupport
-  gCixTokenSpaceGuid.PcdAcpiEcPowerButtonSupport
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcBatterySupport
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcThermalSupport
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcLidSupport
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcPowerButtonSupport
+  gCixPlatformTokenSpaceGuid.PcdAcpiI2cKeyboardSupport
 
+  gArmPlatformTokenSpaceGuid.PcdSerialDbgRegisterBase
+  gArmPlatformTokenSpaceGuid.PcdSerialDbgInterrupt
+  gArmPlatformTokenSpaceGuid.PcdSerialDbgUartBaudRate
 [BuildOptions]
   *_*_*_ASLCC_FLAGS = -DACPI_WINDOWS_BOOT
   *_*_*_ASLPP_FLAGS = -DACPI_WINDOWS_BOOT

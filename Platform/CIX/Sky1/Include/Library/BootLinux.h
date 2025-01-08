@@ -95,6 +95,7 @@ typedef VOID (*LINUX_KERNEL32) (
 
 typedef enum {
   IMG_BOOT = 0,
+  IMG_INIT_BOOT,
   IMG_DTBO,
   IMG_VBMETA,
   IMG_VENDOR_BOOT,
@@ -141,6 +142,10 @@ typedef struct BootLinuxParamlist {
   VOID       *VendorImageBuffer;
   UINT64     VendorImageSize;
 
+  // Valid only for boot image header version greater than 2
+  VOID       *InitImageBuffer;
+  UINT64     InitImageSize;
+
   /* Load addresses for kernel, ramdisk, dt
    * These addresses are either predefined or get from UEFI core */
   UINT64     KernelLoadAddr;
@@ -153,11 +158,12 @@ typedef struct BootLinuxParamlist {
   // Get the below fields info from the bootimage header
   UINT32     PageSize;
   UINT32     KernelSize;
-  UINT32     SecondSize;
-  UINT32     RamdiskSize;
-  UINT32     RamdiskOffset;
   UINT32     PatchedKernelHdrSize;
   UINT32     DtbOffset;
+
+  // Get the below fields info from the init_boot image header
+  UINT32     RamdiskSize;
+  UINT32     RamdiskOffset;
 
   // Get the below fields info from the vendor_boot image header
   // Valid only for boot image header version greater than 2
@@ -165,6 +171,10 @@ typedef struct BootLinuxParamlist {
 
   // Kernel size rounded off based on the page size
   UINT32     KernelSizeActual;
+
+  // BootConfig
+  UINT32 BootConfigLoadAddr;
+  UINT32 BootConfigSize;
 
   CHAR8      *FinalCmdLine;
   CHAR8      *CmdLine;

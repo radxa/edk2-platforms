@@ -15,7 +15,6 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiLib.h>
-#include <Library/UefiRuntimeLib.h>
 #include <Library/PostCodeLib.h>
 #include <Protocol/ConfigParamsManageProtocol.h>
 #include "I2cDxe.h"
@@ -111,21 +110,10 @@ StartRequest (
 {
   EFI_STATUS              Status;
   I2C_CONTROLLER_CONTEXT  *I2c;
-  EFI_TPL                 Tpl;
-  BOOLEAN                 AtRuntime;
-
-  AtRuntime = EfiAtRuntime ();
-  if (!AtRuntime) {
-    Tpl = gBS->RaiseTPL (TPL_HIGH_LEVEL);
-  }
 
   I2c = I2C_CONTROLLER_FROM_THIS (This);
 
   Status = I2cMasterXfer (&I2c->Descriptor, SlaveAddress, RequestPacket);
-
-  if (!AtRuntime) {
-    gBS->RestoreTPL (Tpl);
-  }
 
   return Status;
 }

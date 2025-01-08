@@ -80,7 +80,11 @@ Device (SUB0)
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
-      Return (0xF)
+    If(\_SB.GETV(ARV_USB3_TYPEC_DRD_ENABLE_OFFSET)){
+      Return (0xB)
+    } else {
+      Return (0x0)
+    }
   }
 
   Name (_CRS, ResourceTemplate () {
@@ -99,6 +103,21 @@ Device (SUB0)
         }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB3C_DRD_CLK_SOF, "sof_clk", \_SB.SUB0},
+    Package() {CLK_TREE_USB3C_DRD_AXI_GATE, "usb_aclk", \_SB.SUB0},
+    Package() {CLK_TREE_USB3C_DRD_CLK_LPM, "lpm_clk", \_SB.SUB0},
+    Package() {CLK_TREE_USB3C_DRD_APB_GATE, "usb_pclk", \_SB.SUB0},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBC_SS0_PRST_N, \_SB.SUB0, "usb_preset"},
+    Package() {\_SB.RST0, SKY1_USBC_SS0_RST_N, \_SB.SUB0, "usb_reset"},
+  })
+  Name (RSNL, Package() {
+    Package() {\_SB.SUB0 , RESOURCE_MEM, 0, "axi_property"},
+    Package() {\_SB.SUB0 , RESOURCE_MEM, 1, "controller_status"},
+  })
+
   Device(CUB0)
   {
     Name (_HID, "CIXH2031")     // _HID: Hardware ID
@@ -106,7 +125,7 @@ Device (SUB0)
     Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
     Method (_STA)               // _STA: Device status
     {
-        Return (0xF)
+        Return (0xB)
     }
 
     Name (_CRS, ResourceTemplate () {
@@ -129,6 +148,19 @@ Device (SUB0)
       USB_REMOTE_PD_DSD("usb-role-switch")
     })
     USB_REMOTE_PD(\_SB.I2C7.PD00, "usbc_con0", "port@0", "endpoint@0")
+
+    Name (RSNL, Package() {
+      Package() {\_SB.SUB0.CUB0 , RESOURCE_IRQ, 0, "host"},
+      Package() {\_SB.SUB0.CUB0 , RESOURCE_IRQ, 1, "peripheral"},
+      Package() {\_SB.SUB0.CUB0 , RESOURCE_IRQ, 2, "otg"},
+      Package() {\_SB.SUB0.CUB0 , RESOURCE_IRQ, 3, "wakeup"},
+      Package() {\_SB.SUB0.CUB0 , RESOURCE_MEM, 0, "otg"},
+      Package() {\_SB.SUB0.CUB0 , RESOURCE_MEM, 1, "dev"},
+      Package() {\_SB.SUB0.CUB0 , RESOURCE_MEM, 2, "xhci"},
+    })
+    Name (DLKL, Package() {
+      Package() {\_SB.SUB0 , \_SB.SUB0.CUB0, 0},
+    })
   }
 }
 
@@ -137,7 +169,11 @@ Device (U2P4) //USB 2.0 PHY4
   Name (_HID, "CIXH2032")     // _HID: Hardware ID
   Name (_UID, 0x04)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_HS4_PRST_N, \_SB.U2P4, "preset"},
+  })
 }
 
 Device (UCP0) //USB 3.0 PHY0
@@ -145,7 +181,7 @@ Device (UCP0) //USB 3.0 PHY0
   Name (_HID, "CIXH2033")     // _HID: Hardware ID
   Name (_UID, 0x00)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
 
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, 0x09030000, 0x40000)
@@ -162,6 +198,14 @@ Device (UCP0) //USB 3.0 PHY0
     USB_PHY_REMOTE_PD_DSD("orientation-switch", "mode-switch"),
   })
   USB_PHY_REMOTE_PD(\_SB.I2C7.PD00, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB3C_DRD_PHY3_GATE, "pclk", \_SB.UCP0},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USB_DP_PHY0_PRST_N, \_SB.UCP0, "preset"},
+    Package() {\_SB.RST0, SKY1_USB_DP_PHY0_RST_N, \_SB.UCP0, "reset"},
+  })
 
   Device(USBP)
   {
@@ -180,7 +224,11 @@ Device (SUB1)
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
-      Return (0xF)
+    If(\_SB.GETV(ARV_USB3_TYPEC_HOST0_ENABLE_OFFSET)){
+      Return (0xB)
+    } else {
+      Return (0x0)
+    }
   }
 
   Name (_CRS, ResourceTemplate () {
@@ -199,6 +247,21 @@ Device (SUB1)
         }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB3C_H0_CLK_SOF, "sof_clk", \_SB.SUB1},
+    Package() {CLK_TREE_USB3C_0_AXI_GATE, "usb_aclk", \_SB.SUB1},
+    Package() {CLK_TREE_USB3C_H0_CLK_LPM, "lpm_clk", \_SB.SUB1},
+    Package() {CLK_TREE_USB3C_0_APB_GATE, "usb_pclk", \_SB.SUB1},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBC_SS1_PRST_N, \_SB.SUB1, "usb_preset"},
+    Package() {\_SB.RST0, SKY1_USBC_SS1_RST_N, \_SB.SUB1, "usb_reset"},
+  })
+  Name (RSNL, Package() {
+    Package() {\_SB.SUB1 , RESOURCE_MEM, 0, "axi_property"},
+    Package() {\_SB.SUB1 , RESOURCE_MEM, 1, "controller_status"},
+  })
+
   Device(CUB1)
   {
     Name (_HID, "CIXH2031")     // _HID: Hardware ID
@@ -206,7 +269,7 @@ Device (SUB1)
     Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
     Method (_STA)               // _STA: Device status
     {
-        Return (0xF)
+        Return (0xB)
     }
 
     Name (_CRS, ResourceTemplate () {
@@ -229,6 +292,19 @@ Device (SUB1)
       USB_REMOTE_PD_DSD("usb-role-switch")
     })
     USB_REMOTE_PD(\_SB.I2C7.PD01, "usbc_con0", "port@0", "endpoint@0")
+
+    Name (RSNL, Package() {
+      Package() {\_SB.SUB1.CUB1 , RESOURCE_IRQ, 0, "host"},
+      Package() {\_SB.SUB1.CUB1 , RESOURCE_IRQ, 1, "peripheral"},
+      Package() {\_SB.SUB1.CUB1 , RESOURCE_IRQ, 2, "otg"},
+      Package() {\_SB.SUB1.CUB1 , RESOURCE_IRQ, 3, "wakeup"},
+      Package() {\_SB.SUB1.CUB1 , RESOURCE_MEM, 0, "otg"},
+      Package() {\_SB.SUB1.CUB1 , RESOURCE_MEM, 1, "dev"},
+      Package() {\_SB.SUB1.CUB1 , RESOURCE_MEM, 2, "xhci"},
+    })
+    Name (DLKL, Package() {
+      Package() {\_SB.SUB1 , \_SB.SUB1.CUB1, 0},
+    })
   }
 }
 
@@ -237,7 +313,11 @@ Device (U2P5) //USB 2.0 PHY5
   Name (_HID, "CIXH2032")     // _HID: Hardware ID
   Name (_UID, 0x05)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_HS5_PRST_N, \_SB.U2P5, "preset"},
+  })
 }
 
 Device (UCP1) //USB 3.0 PHY0
@@ -245,7 +325,7 @@ Device (UCP1) //USB 3.0 PHY0
   Name (_HID, "CIXH2033")     // _HID: Hardware ID
   Name (_UID, 0x01)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
 
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, 0x090A0000, 0x40000)
@@ -262,6 +342,14 @@ Device (UCP1) //USB 3.0 PHY0
     USB_PHY_REMOTE_PD_DSD("orientation-switch", "mode-switch"),
   })
   USB_PHY_REMOTE_PD(\_SB.I2C7.PD01, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB3C_0_PHY3_GATE, "pclk", \_SB.UCP1},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USB_DP_PHY1_PRST_N, \_SB.UCP1, "preset"},
+    Package() {\_SB.RST0, SKY1_USB_DP_PHY1_RST_N, \_SB.UCP1, "reset"},
+  })
 
   Device(USBP)
   {
@@ -280,7 +368,11 @@ Device (SUB2)
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
-      Return (0xF)
+    If(\_SB.GETV(ARV_USB3_TYPEC_HOST1_ENABLE_OFFSET)){
+      Return (0xB)
+    } else {
+      Return (0x0)
+    }
   }
 
   Name (_CRS, ResourceTemplate () {
@@ -299,6 +391,21 @@ Device (SUB2)
         }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB3C_H1_CLK_SOF, "sof_clk", \_SB.SUB2},
+    Package() {CLK_TREE_USB3C_1_AXI_GATE, "usb_aclk", \_SB.SUB2},
+    Package() {CLK_TREE_USB3C_H1_CLK_LPM, "lpm_clk", \_SB.SUB2},
+    Package() {CLK_TREE_USB3C_1_APB_GATE, "usb_pclk", \_SB.SUB2},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBC_SS4_PRST_N, \_SB.SUB2, "usb_preset"},
+    Package() {\_SB.RST0, SKY1_USBC_SS4_RST_N, \_SB.SUB2, "usb_reset"},
+  })
+  Name (RSNL, Package() {
+    Package() {\_SB.SUB2 , RESOURCE_MEM, 0, "axi_property"},
+    Package() {\_SB.SUB2 , RESOURCE_MEM, 1, "controller_status"},
+  })
+
   Device(CUB2)
   {
     Name (_HID, "CIXH2031")     // _HID: Hardware ID
@@ -306,7 +413,7 @@ Device (SUB2)
     Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
     Method (_STA)               // _STA: Device status
     {
-        Return (0xF)
+        Return (0xB)
     }
 
     Name (_CRS, ResourceTemplate () {
@@ -329,6 +436,19 @@ Device (SUB2)
       USB_REMOTE_PD_DSD("usb-role-switch")
     })
     USB_REMOTE_PD(\_SB.I2C1.PD10, "usbc_con0", "port@0", "endpoint@0")
+
+    Name (RSNL, Package() {
+      Package() {\_SB.SUB2.CUB2 , RESOURCE_IRQ, 0, "host"},
+      Package() {\_SB.SUB2.CUB2 , RESOURCE_IRQ, 1, "peripheral"},
+      Package() {\_SB.SUB2.CUB2 , RESOURCE_IRQ, 2, "otg"},
+      Package() {\_SB.SUB2.CUB2 , RESOURCE_IRQ, 3, "wakeup"},
+      Package() {\_SB.SUB2.CUB2 , RESOURCE_MEM, 0, "otg"},
+      Package() {\_SB.SUB2.CUB2 , RESOURCE_MEM, 1, "dev"},
+      Package() {\_SB.SUB2.CUB2 , RESOURCE_MEM, 2, "xhci"},
+    })
+    Name (DLKL, Package() {
+      Package() {\_SB.SUB2 , \_SB.SUB2.CUB2, 0},
+    })
   }
 }
 
@@ -337,7 +457,11 @@ Device (U2P8) //USB 2.0 PHY8
   Name (_HID, "CIXH2032")     // _HID: Hardware ID
   Name (_UID, 0x08)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_HS8_PRST_N, \_SB.U2P8, "preset"},
+  })
 }
 
 Device (UCP2) //USB 3.0 PHY0
@@ -345,7 +469,7 @@ Device (UCP2) //USB 3.0 PHY0
   Name (_HID, "CIXH2033")     // _HID: Hardware ID
   Name (_UID, 0x02)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
 
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, 0x09110000, 0x40000)
@@ -362,6 +486,14 @@ Device (UCP2) //USB 3.0 PHY0
     USB_PHY_REMOTE_PD_DSD("orientation-switch", "mode-switch"),
   })
   USB_PHY_REMOTE_PD(\_SB.I2C1.PD10, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB3C_1_PHY3_GATE, "pclk", \_SB.UCP2},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USB_DP_PHY2_PRST_N, \_SB.UCP2, "preset"},
+    Package() {\_SB.RST0, SKY1_USB_DP_PHY2_RST_N, \_SB.UCP2, "reset"},
+  })
 
   Device(USBP)
   {
@@ -380,7 +512,11 @@ Device (SUB3)
   Name (_CCA, 0x0F)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
-      Return (0xF)
+    If(\_SB.GETV(ARV_USB3_TYPEC_HOST2_ENABLE_OFFSET)){
+      Return (0xB)
+    } else {
+      Return (0x0)
+    }
   }
 
   Name (_CRS, ResourceTemplate () {
@@ -399,6 +535,21 @@ Device (SUB3)
         }
   })
 
+  Name (CLKT, Package() {
+      Package() {CLK_TREE_USB3C_H2_CLK_SOF, "sof_clk", \_SB.SUB3},
+      Package() {CLK_TREE_USB3C_2_AXI_GATE, "usb_aclk", \_SB.SUB3},
+      Package() {CLK_TREE_USB3C_H2_CLK_LPM, "lpm_clk", \_SB.SUB3},
+      Package() {CLK_TREE_USB3C_2_APB_GATE, "usb_pclk", \_SB.SUB3},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBC_SS5_PRST_N, \_SB.SUB3, "usb_preset"},
+    Package() {\_SB.RST0, SKY1_USBC_SS5_RST_N, \_SB.SUB3, "usb_reset"},
+  })
+  Name (RSNL, Package() {
+    Package() {\_SB.SUB3 , RESOURCE_MEM, 0, "axi_property"},
+    Package() {\_SB.SUB3 , RESOURCE_MEM, 1, "controller_status"},
+  })
+
   Device(CUB3)
   {
     Name (_HID, "CIXH2031")     // _HID: Hardware ID
@@ -406,7 +557,7 @@ Device (SUB3)
     Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
     Method (_STA)               // _STA: Device status
     {
-        Return (0xF)
+        Return (0xB)
     }
 
     Name (_CRS, ResourceTemplate () {
@@ -429,6 +580,19 @@ Device (SUB3)
       USB_REMOTE_PD_DSD("usb-role-switch")
     })
     USB_REMOTE_PD(\_SB.I2C1.PD11, "usbc_con0", "port@0", "endpoint@0")
+
+    Name (RSNL, Package() {
+      Package() {\_SB.SUB3.CUB3 , RESOURCE_IRQ, 0, "host"},
+      Package() {\_SB.SUB3.CUB3 , RESOURCE_IRQ, 1, "peripheral"},
+      Package() {\_SB.SUB3.CUB3 , RESOURCE_IRQ, 2, "otg"},
+      Package() {\_SB.SUB3.CUB3 , RESOURCE_IRQ, 3, "wakeup"},
+      Package() {\_SB.SUB3.CUB3 , RESOURCE_MEM, 0, "otg"},
+      Package() {\_SB.SUB3.CUB3 , RESOURCE_MEM, 1, "dev"},
+      Package() {\_SB.SUB3.CUB3 , RESOURCE_MEM, 2, "xhci"},
+    })
+    Name (DLKL, Package() {
+      Package() {\_SB.SUB3 , \_SB.SUB3.CUB3, 0},
+    })
   }
 }
 
@@ -437,7 +601,11 @@ Device (U2P9) //USB 2.0 PHY9
   Name (_HID, "CIXH2032")     // _HID: Hardware ID
   Name (_UID, 0x09)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_HS9_PRST_N, \_SB.U2P9, "preset"},
+  })
 }
 
 Device (UCP3) //USB 3.0 PHY0
@@ -445,7 +613,7 @@ Device (UCP3) //USB 3.0 PHY0
   Name (_HID, "CIXH2033")     // _HID: Hardware ID
   Name (_UID, 0x03)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
 
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, 0x09180000, 0x40000)
@@ -462,6 +630,14 @@ Device (UCP3) //USB 3.0 PHY0
     USB_PHY_REMOTE_PD_DSD("orientation-switch", "mode-switch"),
   })
   USB_PHY_REMOTE_PD(\_SB.I2C1.PD11, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+
+  Name (CLKT, Package() {
+      Package() {CLK_TREE_USB3C_2_PHY3_GATE, "pclk", \_SB.UCP3},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USB_DP_PHY3_PRST_N, \_SB.UCP3, "preset"},
+    Package() {\_SB.RST0, SKY1_USB_DP_PHY3_RST_N, \_SB.UCP3, "reset"},
+  })
 
   Device(USBP)
   {
@@ -480,7 +656,11 @@ Device (SUB4)
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
-      Return (0xF)
+    If(\_SB.GETV(ARV_USB3_TYPEA_DRD0_ENABLE_OFFSET)){
+      Return (0xB)
+    } else {
+      Return (0x0)
+    }
   }
 
   Name (_CRS, ResourceTemplate () {
@@ -500,6 +680,21 @@ Device (SUB4)
         }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB3A_H0_CLK_SOF, "sof_clk", \_SB.SUB4},
+    Package() {CLK_TREE_USB3A_0_AXI_GATE, "usb_aclk", \_SB.SUB4},
+    Package() {CLK_TREE_USB3A_H0_CLK_LPM, "lpm_clk", \_SB.SUB4},
+    Package() {CLK_TREE_USB3A_0_APB_GATE, "usb_pclk", \_SB.SUB4},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBC_SS2_PRST_N, \_SB.SUB4, "usb_preset"},
+    Package() {\_SB.RST0, SKY1_USBC_SS2_RST_N, \_SB.SUB4, "usb_reset"},
+  })
+  Name (RSNL, Package() {
+    Package() {\_SB.SUB4 , RESOURCE_MEM, 0, "axi_property"},
+    Package() {\_SB.SUB4 , RESOURCE_MEM, 1, "controller_status"},
+  })
+
   Device(CUB4)
   {
     Name (_HID, "CIXH2031")     // _HID: Hardware ID
@@ -507,7 +702,7 @@ Device (SUB4)
     Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
     Method (_STA)               // _STA: Device status
     {
-        Return (0xF)
+        Return (0xB)
     }
 
     Name (_CRS, ResourceTemplate () {
@@ -528,6 +723,19 @@ Device (SUB4)
             Package () { "cdnsp,usb3-phy", \_SB.U3P4.USB0 },
           },
     })
+
+    Name (RSNL, Package() {
+      Package() {\_SB.SUB4.CUB4 , RESOURCE_IRQ, 0, "host"},
+      Package() {\_SB.SUB4.CUB4 , RESOURCE_IRQ, 1, "peripheral"},
+      Package() {\_SB.SUB4.CUB4 , RESOURCE_IRQ, 2, "otg"},
+      Package() {\_SB.SUB4.CUB4 , RESOURCE_IRQ, 3, "wakeup"},
+      Package() {\_SB.SUB4.CUB4 , RESOURCE_MEM, 0, "otg"},
+      Package() {\_SB.SUB4.CUB4 , RESOURCE_MEM, 1, "dev"},
+      Package() {\_SB.SUB4.CUB4 , RESOURCE_MEM, 2, "xhci"},
+    })
+    Name (DLKL, Package() {
+      Package() {\_SB.SUB4 , \_SB.SUB4.CUB4, 0},
+    })
   }
 }
 
@@ -538,7 +746,11 @@ Device (SUB5)
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
-      Return (0xF)
+    If(\_SB.GETV(ARV_USB3_TYPEA_DRD1_ENABLE_OFFSET)){
+      Return (0xB)
+    } else {
+      Return (0x0)
+    }
   }
 
   Name (_CRS, ResourceTemplate () {
@@ -558,6 +770,21 @@ Device (SUB5)
         }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB3A_H1_CLK_SOF, "sof_clk", \_SB.SUB5},
+    Package() {CLK_TREE_USB3A_1_AXI_GATE, "usb_aclk", \_SB.SUB5},
+    Package() {CLK_TREE_USB3A_H1_CLK_LPM, "lpm_clk", \_SB.SUB5},
+    Package() {CLK_TREE_USB3A_1_APB_GATE, "usb_pclk", \_SB.SUB5},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBC_SS3_PRST_N, \_SB.SUB5, "usb_preset"},
+    Package() {\_SB.RST0, SKY1_USBC_SS3_RST_N, \_SB.SUB5, "usb_reset"},
+  })
+  Name (RSNL, Package() {
+    Package() {\_SB.SUB5 , RESOURCE_MEM, 0, "axi_property"},
+    Package() {\_SB.SUB5 , RESOURCE_MEM, 1, "controller_status"},
+  })
+
   Device(CUB5)
   {
     Name (_HID, "CIXH2031")     // _HID: Hardware ID
@@ -565,7 +792,7 @@ Device (SUB5)
     Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
     Method (_STA)               // _STA: Device status
     {
-        Return (0xF)
+        Return (0xB)
     }
 
     Name (_CRS, ResourceTemplate () {
@@ -586,6 +813,19 @@ Device (SUB5)
             Package () { "cdnsp,usb3-phy", \_SB.U3P4.USB1 },
           },
     })
+
+    Name (RSNL, Package() {
+      Package() {\_SB.SUB5.CUB5 , RESOURCE_IRQ, 0, "host"},
+      Package() {\_SB.SUB5.CUB5 , RESOURCE_IRQ, 1, "peripheral"},
+      Package() {\_SB.SUB5.CUB5 , RESOURCE_IRQ, 2, "otg"},
+      Package() {\_SB.SUB5.CUB5 , RESOURCE_IRQ, 3, "wakeup"},
+      Package() {\_SB.SUB5.CUB5 , RESOURCE_MEM, 0, "otg"},
+      Package() {\_SB.SUB5.CUB5 , RESOURCE_MEM, 1, "dev"},
+      Package() {\_SB.SUB5.CUB5 , RESOURCE_MEM, 2, "xhci"},
+    })
+    Name (DLKL, Package() {
+      Package() {\_SB.SUB5 , \_SB.SUB5.CUB5, 0},
+    })
   }
 }
 
@@ -594,7 +834,11 @@ Device (U2P6) //USB 2.0 PHY6
   Name (_HID, "CIXH2032")     // _HID: Hardware ID
   Name (_UID, 0x06)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_HS6_PRST_N, \_SB.U2P6, "preset"},
+  })
 }
 
 Device (U2P7) //USB 2.0 PHY7
@@ -602,7 +846,11 @@ Device (U2P7) //USB 2.0 PHY7
   Name (_HID, "CIXH2032")     // _HID: Hardware ID
   Name (_UID, 0x07)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_HS7_PRST_N, \_SB.U2P7, "preset"},
+  })
 }
 
 Device (U3P4) //USB 3.0 PHY0
@@ -610,7 +858,7 @@ Device (U3P4) //USB 3.0 PHY0
   Name (_HID, "CIXH2034")     // _HID: Hardware ID
   Name (_UID, 0x04)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
 
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, 0x09210000, 0x40000)
@@ -621,6 +869,15 @@ Device (U3P4) //USB 3.0 PHY0
     Package () {
           Package () { "cix,usbphy_syscon", \_SB.CRU0 },
         },
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB3A_PHY3_GATE, "apb_clk", \_SB.U3P4},
+    Package() {CLK_TREE_USB3A_PHY_x2_REF, "ref_clk", \_SB.U3P4},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_SS_PST_N, \_SB.U3P4, "preset"},
+    Package() {\_SB.RST0, SKY1_USBPHY_SS_RST_N, \_SB.U3P4, "reset"},
   })
 
   Device(USB0)
@@ -640,7 +897,11 @@ Device (HUB0) //High Speed USB 0, USB2.0
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
-      Return (0xF)
+    If(\_SB.GETV(ARV_USB2_HOST0_ENABLE_OFFSET)){
+      Return (0xB)
+    } else {
+      Return (0x0)
+    }
   }
 
   Name (_CRS, ResourceTemplate () {
@@ -660,6 +921,21 @@ Device (HUB0) //High Speed USB 0, USB2.0
         }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB2_0_CLK_SOF, "sof_clk", \_SB.HUB0},
+    Package() {CLK_TREE_USB2_0_AXI_GATE, "usb_aclk", \_SB.HUB0},
+    Package() {CLK_TREE_USB2_0_CLK_LPM, "lpm_clk", \_SB.HUB0},
+    Package() {CLK_TREE_USB2_0_APB_GATE, "usb_pclk", \_SB.HUB0},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBC_HS0_PRST_N, \_SB.HUB0, "usb_preset"},
+    Package() {\_SB.RST0, SKY1_USBC_HS0_RST_N, \_SB.HUB0, "usb_reset"},
+  })
+  Name (RSNL, Package() {
+    Package() {\_SB.HUB0 , RESOURCE_MEM, 0, "axi_property"},
+    Package() {\_SB.HUB0 , RESOURCE_MEM, 1, "controller_status"},
+  })
+
   Device(CUB0)
   {
     Name (_HID, "CIXH2031")     // _HID: Hardware ID
@@ -667,7 +943,7 @@ Device (HUB0) //High Speed USB 0, USB2.0
     Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
     Method (_STA)               // _STA: Device status
     {
-        Return (0xF)
+        Return (0xB)
     }
 
     Name (_CRS, ResourceTemplate () {
@@ -687,6 +963,19 @@ Device (HUB0) //High Speed USB 0, USB2.0
             Package () { "dr_mode", "host" },
           },
     })
+
+    Name (RSNL, Package() {
+      Package() {\_SB.HUB0.CUB0 , RESOURCE_IRQ, 0, "host"},
+      Package() {\_SB.HUB0.CUB0 , RESOURCE_IRQ, 1, "peripheral"},
+      Package() {\_SB.HUB0.CUB0 , RESOURCE_IRQ, 2, "otg"},
+      Package() {\_SB.HUB0.CUB0 , RESOURCE_IRQ, 3, "wakeup"},
+      Package() {\_SB.HUB0.CUB0 , RESOURCE_MEM, 0, "otg"},
+      Package() {\_SB.HUB0.CUB0 , RESOURCE_MEM, 1, "dev"},
+      Package() {\_SB.HUB0.CUB0 , RESOURCE_MEM, 2, "xhci"},
+    })
+    Name (DLKL, Package() {
+      Package() {\_SB.HUB0 , \_SB.HUB0.CUB0, 0},
+    })
   }
 }
 
@@ -697,7 +986,11 @@ Device (HUB1) //High Speed USB 1, USB2.0
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
-      Return (0xF)
+    If(\_SB.GETV(ARV_USB2_HOST1_ENABLE_OFFSET)){
+      Return (0xB)
+    } else {
+      Return (0x0)
+    }
   }
 
   Name (_CRS, ResourceTemplate () {
@@ -717,6 +1010,21 @@ Device (HUB1) //High Speed USB 1, USB2.0
         }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB2_1_CLK_SOF, "sof_clk", \_SB.HUB1},
+    Package() {CLK_TREE_USB2_1_AXI_GATE, "usb_aclk", \_SB.HUB1},
+    Package() {CLK_TREE_USB2_1_CLK_LPM, "lpm_clk", \_SB.HUB1},
+    Package() {CLK_TREE_USB2_1_APB_GATE, "usb_pclk", \_SB.HUB1},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBC_HS1_PRST_N, \_SB.HUB1, "usb_preset"},
+    Package() {\_SB.RST0, SKY1_USBC_HS1_RST_N, \_SB.HUB1, "usb_reset"},
+  })
+  Name (RSNL, Package() {
+    Package() {\_SB.HUB1 , RESOURCE_MEM, 0, "axi_property"},
+    Package() {\_SB.HUB1 , RESOURCE_MEM, 1, "controller_status"},
+  })
+
   Device(CUB1)
   {
     Name (_HID, "CIXH2031")     // _HID: Hardware ID
@@ -724,7 +1032,7 @@ Device (HUB1) //High Speed USB 1, USB2.0
     Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
     Method (_STA)               // _STA: Device status
     {
-        Return (0xF)
+        Return (0xB)
     }
 
     Name (_CRS, ResourceTemplate () {
@@ -744,6 +1052,19 @@ Device (HUB1) //High Speed USB 1, USB2.0
             Package () { "dr_mode", "host" },
           },
     })
+
+    Name (RSNL, Package() {
+      Package() {\_SB.HUB1.CUB1 , RESOURCE_IRQ, 0, "host"},
+      Package() {\_SB.HUB1.CUB1 , RESOURCE_IRQ, 1, "peripheral"},
+      Package() {\_SB.HUB1.CUB1 , RESOURCE_IRQ, 2, "otg"},
+      Package() {\_SB.HUB1.CUB1 , RESOURCE_IRQ, 3, "wakeup"},
+      Package() {\_SB.HUB1.CUB1 , RESOURCE_MEM, 0, "otg"},
+      Package() {\_SB.HUB1.CUB1 , RESOURCE_MEM, 1, "dev"},
+      Package() {\_SB.HUB1.CUB1 , RESOURCE_MEM, 2, "xhci"},
+    })
+    Name (DLKL, Package() {
+      Package() {\_SB.HUB1 , \_SB.HUB1.CUB1, 0},
+    })
   }
 }
 
@@ -752,7 +1073,11 @@ Device (U2P0) //USB 2.0 PHY0
   Name (_HID, "CIXH2032")     // _HID: Hardware ID
   Name (_UID, 0x00)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_HS0_PRST_N, \_SB.U2P0, "preset"},
+  })
 }
 
 Device (U2P1) //USB 2.0 PHY1
@@ -760,7 +1085,11 @@ Device (U2P1) //USB 2.0 PHY1
   Name (_HID, "CIXH2032")     // _HID: Hardware ID
   Name (_UID, 0x01)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_HS1_PRST_N, \_SB.U2P1, "preset"},
+  })
 }
 
 Device (HUB2) //High Speed USB 2, USB2.0
@@ -770,7 +1099,11 @@ Device (HUB2) //High Speed USB 2, USB2.0
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
-      Return (0xF)
+    If(\_SB.GETV(ARV_USB2_HOST2_ENABLE_OFFSET)){
+      Return (0xB)
+    } else {
+      Return (0x0)
+    }
   }
 
   Name (_CRS, ResourceTemplate () {
@@ -790,6 +1123,21 @@ Device (HUB2) //High Speed USB 2, USB2.0
         }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB2_2_CLK_SOF, "sof_clk", \_SB.HUB2},
+    Package() {CLK_TREE_USB2_2_AXI_GATE, "usb_aclk", \_SB.HUB2},
+    Package() {CLK_TREE_USB2_2_CLK_LPM, "lpm_clk", \_SB.HUB2},
+    Package() {CLK_TREE_USB2_2_APB_GATE, "usb_pclk", \_SB.HUB2},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBC_HS2_PRST_N, \_SB.HUB2, "usb_preset"},
+    Package() {\_SB.RST0, SKY1_USBC_HS2_RST_N, \_SB.HUB2, "usb_reset"},
+  })
+  Name (RSNL, Package() {
+    Package() {\_SB.HUB2 , RESOURCE_MEM, 0, "axi_property"},
+    Package() {\_SB.HUB2 , RESOURCE_MEM, 1, "controller_status"},
+  })
+
   Device(CUB2)
   {
     Name (_HID, "CIXH2031")     // _HID: Hardware ID
@@ -797,7 +1145,7 @@ Device (HUB2) //High Speed USB 2, USB2.0
     Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
     Method (_STA)               // _STA: Device status
     {
-        Return (0xF)
+        Return (0xB)
     }
 
     Name (_CRS, ResourceTemplate () {
@@ -817,6 +1165,19 @@ Device (HUB2) //High Speed USB 2, USB2.0
             Package () { "dr_mode", "host" },
           },
     })
+
+    Name (RSNL, Package() {
+      Package() {\_SB.HUB2.CUB2 , RESOURCE_IRQ, 0, "host"},
+      Package() {\_SB.HUB2.CUB2 , RESOURCE_IRQ, 1, "peripheral"},
+      Package() {\_SB.HUB2.CUB2 , RESOURCE_IRQ, 2, "otg"},
+      Package() {\_SB.HUB2.CUB2 , RESOURCE_IRQ, 3, "wakeup"},
+      Package() {\_SB.HUB2.CUB2 , RESOURCE_MEM, 0, "otg"},
+      Package() {\_SB.HUB2.CUB2 , RESOURCE_MEM, 1, "dev"},
+      Package() {\_SB.HUB2.CUB2 , RESOURCE_MEM, 2, "xhci"},
+    })
+    Name (DLKL, Package() {
+      Package() {\_SB.HUB2 , \_SB.HUB2.CUB2, 0},
+    })
   }
 }
 
@@ -825,7 +1186,11 @@ Device (U2P2) //USB 2.0 PHY2
   Name (_HID, "CIXH2032")     // _HID: Hardware ID
   Name (_UID, 0x02)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_HS2_PRST_N, \_SB.U2P2, "preset"},
+  })
 }
 
 
@@ -836,7 +1201,11 @@ Device (HUB3) //High Speed USB 3, USB2.0
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
-      Return (0xF)
+    If(\_SB.GETV(ARV_USB2_HOST3_ENABLE_OFFSET)){
+      Return (0xB)
+    } else {
+      Return (0x0)
+    }
   }
 
   Name (_CRS, ResourceTemplate () {
@@ -856,6 +1225,21 @@ Device (HUB3) //High Speed USB 3, USB2.0
         }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_USB2_3_CLK_SOF, "sof_clk", \_SB.HUB3},
+    Package() {CLK_TREE_USB2_3_AXI_GATE, "usb_aclk", \_SB.HUB3},
+    Package() {CLK_TREE_USB2_3_CLK_LPM, "lpm_clk", \_SB.HUB3},
+    Package() {CLK_TREE_USB2_3_APB_GATE, "usb_pclk", \_SB.HUB3},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBC_HS3_PRST_N, \_SB.HUB3, "usb_preset"},
+    Package() {\_SB.RST0, SKY1_USBC_HS3_RST_N, \_SB.HUB3, "usb_reset"},
+  })
+  Name (RSNL, Package() {
+    Package() {\_SB.HUB3 , RESOURCE_MEM, 0, "axi_property"},
+    Package() {\_SB.HUB3 , RESOURCE_MEM, 1, "controller_status"},
+  })
+
   Device(CUB3)
   {
     Name (_HID, "CIXH2031")     // _HID: Hardware ID
@@ -863,7 +1247,7 @@ Device (HUB3) //High Speed USB 3, USB2.0
     Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
     Method (_STA)               // _STA: Device status
     {
-        Return (0xF)
+        Return (0xB)
     }
 
     Name (_CRS, ResourceTemplate () {
@@ -883,6 +1267,19 @@ Device (HUB3) //High Speed USB 3, USB2.0
             Package () { "dr_mode", "host" },
           },
     })
+
+    Name (RSNL, Package() {
+      Package() {\_SB.HUB3.CUB3 , RESOURCE_IRQ, 0, "host"},
+      Package() {\_SB.HUB3.CUB3 , RESOURCE_IRQ, 1, "peripheral"},
+      Package() {\_SB.HUB3.CUB3 , RESOURCE_IRQ, 2, "otg"},
+      Package() {\_SB.HUB3.CUB3 , RESOURCE_IRQ, 3, "wakeup"},
+      Package() {\_SB.HUB3.CUB3 , RESOURCE_MEM, 0, "otg"},
+      Package() {\_SB.HUB3.CUB3 , RESOURCE_MEM, 1, "dev"},
+      Package() {\_SB.HUB3.CUB3 , RESOURCE_MEM, 2, "xhci"},
+    })
+    Name (DLKL, Package() {
+      Package() {\_SB.HUB3 , \_SB.HUB3.CUB3, 0},
+    })
   }
 }
 
@@ -891,5 +1288,9 @@ Device (U2P3) //USB 2.0 PHY3
   Name (_HID, "CIXH2032")     // _HID: Hardware ID
   Name (_UID, 0x03)           // _UID: Unique ID
   Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
-  Name (_STA, 0x0F)           // _STA: Device status
+  Name (_STA, 0x0B)           // _STA: Device status
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_USBPHY_HS3_PRST_N, \_SB.U2P3, "preset"},
+  })
 }

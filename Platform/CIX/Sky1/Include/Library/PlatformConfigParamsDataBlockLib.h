@@ -63,6 +63,7 @@ typedef struct _PLATFORM_CONFIG_PARAMS_DATA_BLOCK {
   UINT8      StateAfterG3;
   UINT8      RtcWakeup;
   UINT8      LightSensorCtrl;
+  UINT8      SpcrEnable;
 } PLATFORM_CONFIG_PARAMS_DATA_BLOCK;
 
 typedef struct _PLATFORM_CONFIG_PARAMS_DATA_ENTRY {
@@ -111,6 +112,7 @@ typedef struct _PLATFORM_CONFIG_PARAMS_DATA_OPTIONS {
 #define  PARAMS_DATA_STATE_AFTER_G3_ID       (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0011)
 #define  PARAMS_DATA_RTC_WAKE_UP_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0012)
 #define  PARAMS_DATA_LIGHT_SENSOR_CTRL_ID    (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0013)
+#define  PARAMS_DATA_SPCR_ENABLE_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0014)
 extern PLATFORM_CONFIG_PARAMS_DATA_BLOCK  mPlatformConfigParamsDataBlock;
 extern PLATFORM_CONFIG_PARAMS_DATA_ENTRY  mPlatformConfigDataEntryTable[];
 extern UINT32                             mPlatformConfigDataEntryNum;

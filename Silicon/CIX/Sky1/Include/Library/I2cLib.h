@@ -31,6 +31,8 @@
 #define I2C_RD_OP_COUNT          1
 #define I2C_WR_THEN_RD_OP_COUNT  2
 
+extern BOOLEAN  mI2cLibAtRuntime;
+
 typedef struct _I2C_HOST_DESCRIPTOR {
   UINT8     Bus;
   UINTN     MemBase;
@@ -49,6 +51,11 @@ I2cEnvInit (
 
 UINTN
 I2cGetMemBase (
+  IN UINT8  Bus
+  );
+
+UINT32
+I2cGetBusClk (
   IN UINT8  Bus
   );
 

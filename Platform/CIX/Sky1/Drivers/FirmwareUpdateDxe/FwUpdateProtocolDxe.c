@@ -552,7 +552,7 @@ CixFlashReadWrapper (
   }
 
   Status = NorFlashDiskIo->ReadDisk (NorFlashDiskIo, MediaId, OffsetAddress, ImageBuffSize, pImageBuff);
-  DEBUG ((DEBUG_INFO, "[FwU]Read NorFlash status : %r\n", Status));
+  DebugPrint (DEBUG_INFO, "[FwU] Read NorFlash status : %r\n", Status);
 
   /*
   {
@@ -671,10 +671,11 @@ CixFirmwareVerify (
   }
 
   if (CompareMem (pImageBuff, pOnboardBuff, ImageBuffSize)) {
+    DebugPrint (DEBUG_ERROR, "[FwU] Verify failed.\n");
     return FALSE;
   }
 
-  DEBUG ((DEBUG_ERROR, "[FwU]Verify success.\n"));
+  DebugPrint (DEBUG_ERROR, "[FwU] Verify success.\n");
   return TRUE;
 }
 
@@ -699,7 +700,7 @@ CixFlashWriteWrapper (
   DoCallBack (&FwProgStatus);
   DEBUG ((DEBUG_INFO, "[FwU] Program entry %d, address 0x%08x\n", Type, OffsetAddress));
   Status = NorFlashDiskIo->WriteDisk (NorFlashDiskIo, MediaId, OffsetAddress, ImageBuffSize, pImageBuff);
-  DEBUG ((DEBUG_INFO, "[FwU] Write NorFlash status : %r\n", Status));
+  DebugPrint (DEBUG_INFO, "[FwU] Write NorFlash status : %r\n", Status);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: status %r\n", __FUNCTION__, Status));
     FwProgStatus.status_result = FIRMWARE_WRITE_FAILED;

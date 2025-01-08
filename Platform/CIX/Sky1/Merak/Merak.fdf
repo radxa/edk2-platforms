@@ -101,9 +101,10 @@ READ_LOCK_STATUS   = TRUE
 !endif
     # reset
     INF Silicon/CIX/Sky1/Drivers/ResetDxe/ResetDxe.inf
+    INF Platform/CIX/Sky1/Drivers/S3SaveStateDxe/S3SaveStateDxe.inf
     INF Silicon/CIX/Sky1/Drivers/SocDxe/SocDxe.inf
 !if $(VARIABLE_SUPPORT) == "SPI_SEC"
-  INF ArmPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
+  INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/MmCommunication.inf
 !endif
 !if $(VARIABLE_SUPPORT) == "SPI_SEC"
   INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashSmmRuntimeDxe.inf
@@ -118,6 +119,10 @@ READ_LOCK_STATUS   = TRUE
 !else
     INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
 !endif
+
+  INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
+  INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
+  INF Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf
   }
 
 # inf file list has be move to Sky1Common.fdf.inc
@@ -154,6 +159,9 @@ READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
   INF Platform/CIX/Sky1/PrePi/PeiUniCore.inf
+  !if $(FW_VERSION_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionDxe.inf
+  !endif
   FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {
     SECTION GUIDED EE4E5898-3914-4259-9D6E-DC7BD79403CF PROCESSING_REQUIRED = TRUE {
       SECTION FV_IMAGE = FVMAIN

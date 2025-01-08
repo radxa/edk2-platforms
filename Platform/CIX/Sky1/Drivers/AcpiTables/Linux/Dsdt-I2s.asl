@@ -27,6 +27,19 @@ Device (I2S0) {
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
   })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S0},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S0},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_I2S0_SW_RST_N ,\_SB.I2S0, "i2s"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.I2S0, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.I2S0, 0},
+    Package() {\_SB.DMA1, \_SB.I2S0, 0},
+  })
 }
 
 Device (I2S1) {
@@ -49,6 +62,19 @@ Device (I2S1) {
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
   })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S1},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S1},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_I2S1_SW_RST_N ,\_SB.I2S1, "i2s"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.I2S1, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.I2S1, 0},
+    Package() {\_SB.DMA1, \_SB.I2S1, 0},
+  })
 }
 
 Device (I2S2) {
@@ -68,6 +94,19 @@ Device (I2S2) {
       Package () { "dma-names", Package () { "rx" } },
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S2},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S2},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_I2S2_SW_RST_N ,\_SB.I2S2, "i2s"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.I2S2, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.I2S2, 0},
+    Package() {\_SB.DMA1, \_SB.I2S2, 0},
   })
 }
 
@@ -93,6 +132,21 @@ Device (I2S3) {
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
   })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S3},
+    Package() {CLK_TREE_AUDIO_CLK1, "audio_clk1", \_SB.I2S3},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S3},
+    Package() {CLK_TREE_AUDIO_CLK3, "audio_clk3", \_SB.I2S3},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_I2S3_SW_RST_N ,\_SB.I2S3, "i2s"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.I2S3, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.I2S3, 0},
+    Package() {\_SB.DMA1, \_SB.I2S3, 0},
+  })
 }
 
 Device (I2S4) {
@@ -116,6 +170,21 @@ Device (I2S4) {
       Package () { "cdns,pin-tx-mask", 0 },
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S4},
+    Package() {CLK_TREE_AUDIO_CLK1, "audio_clk1", \_SB.I2S4},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S4},
+    Package() {CLK_TREE_AUDIO_CLK3, "audio_clk3", \_SB.I2S4},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_I2S4_SW_RST_N ,\_SB.I2S4, "i2s"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.I2S4, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.I2S4, 0},
+    Package() {\_SB.DMA1, \_SB.I2S4, 0},
   })
 }
 
@@ -141,6 +210,19 @@ Device (I2S5) {
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
   })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S5},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S5},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_I2S5_SW_RST_N ,\_SB.I2S5, "i2s"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.I2S5, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.I2S5, 0},
+    Package() {\_SB.DMA1, \_SB.I2S5, 0},
+  })
 }
 
 Device (I2S6) {
@@ -164,6 +246,19 @@ Device (I2S6) {
       Package () { "cdns,pin-tx-mask", 15 },
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S6},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S6},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_I2S6_SW_RST_N ,\_SB.I2S6, "i2s"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.I2S6, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.I2S6, 0},
+    Package() {\_SB.DMA1, \_SB.I2S6, 0},
   })
 }
 
@@ -189,6 +284,19 @@ Device (I2S7) {
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
   })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S7},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S7},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_I2S7_SW_RST_N ,\_SB.I2S7, "i2s"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.I2S7, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.I2S7, 0},
+    Package() {\_SB.DMA1, \_SB.I2S7, 0},
+  })
 }
 
 Device (I2S8) {
@@ -213,6 +321,19 @@ Device (I2S8) {
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
   })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S8},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S8},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_I2S8_SW_RST_N ,\_SB.I2S8, "i2s"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.I2S8, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.I2S8, 0},
+    Package() {\_SB.DMA1, \_SB.I2S8, 0},
+  })
 }
 
 Device (I2S9) {
@@ -236,5 +357,18 @@ Device (I2S9) {
       Package () { "cdns,pin-tx-mask", 15 },
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S9},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S9},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_I2S9_SW_RST_N ,\_SB.I2S9, "i2s"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.I2S9, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.I2S9, 0},
+    Package() {\_SB.DMA1, \_SB.I2S9, 0},
   })
 }

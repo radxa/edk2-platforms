@@ -38,7 +38,23 @@ Device (MAC0) {
        GMAC_GMAC0_INTR_Q7_INTERRUPT_ID
     }
     // Pinctrl
-    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "gmac0", ResourceConsumer,)
+    PinGroupFunction(
+      Exclusive,
+      0x0,
+      "\\_SB.MUX0",
+      0,
+      "gmac0",
+      ResourceConsumer, ,
+      RawDataBuffer () { 0x0 }
+      )
+    PinGroupFunction(
+      Exclusive, 0x0,
+      "\\_SB.MUX0",
+      0,
+      "gmac0-init",
+      ResourceConsumer, ,
+      RawDataBuffer () { 0x1 }
+      )
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
                 "\\_SB.GPI0", 0, ResourceConsumer) { 0 }
   })
@@ -62,7 +78,17 @@ Device (MAC0) {
           Package () { "reset-gpio", Package () { ^MAC0, 0, 0, 1 } },
           Package () { "reset-delay-us", 20000 },
           Package () { "reset-post-delay-us", 100000 },
+          Package () { "pinctrl-names", Package () {"default", "init"}},
         }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_GMAC0_ACLK, "aclk", \_SB.MAC0},
+    Package() {CLK_TREE_GMAC0_PCLK, "pclk", \_SB.MAC0},
+    Package() {CLK_TREE_GMAC0_DIV_TXCLK, "tx_clk", \_SB.MAC0},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_GMAC0_RST_N, \_SB.MAC0, "gmac_rstn"},
   })
 }
 
@@ -107,5 +133,11 @@ Device (MAC1) {
           Package () { "phy-handle", PHY1},
           Package () { "cix,gmac-ctrl", GCRU },
         }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_GMAC1_ACLK, "aclk", \_SB.MAC1},
+    Package() {CLK_TREE_GMAC1_PCLK, "pclk", \_SB.MAC1},
+    Package() {CLK_TREE_GMAC1_DIV_TXCLK, "tx_clk", \_SB.MAC1},
   })
 }

@@ -70,6 +70,7 @@ typedef struct {
   UINT8     MemWPriorityP1Override;
   UINT8     MemWPriorityP1;
   UINT8     MemBdwOvflowP1;
+  UINT8     MemIEcc;
   UINT8     StateAfterG3;
   UINT8     SystemTableSelect;
   UINT8     PrimaryDisplay;
@@ -118,8 +119,10 @@ typedef struct {
   UINT8     RtcWakeup;
   UINT8     LightSensorCtrl;
   UINT8     CpuLpiState;
+  UINT8     SpcrEnable;
   UINT8     DPHwProfile[MAX_DPU_PORT_NUM];
   UINT8     GopDisplaySelect;
+
 } PLATFORM_SETUP_DATA;
 #pragma pack()
 

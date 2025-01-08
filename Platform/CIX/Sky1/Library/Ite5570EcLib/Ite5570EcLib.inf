@@ -18,6 +18,7 @@
 
 [Sources.common]
   Ite5570EcLib.c
+  Ite5570EcFunction.c
 
 [Packages]
   EmbeddedPkg/EmbeddedPkg.dec
@@ -39,8 +40,8 @@
 [Protocols]
 
 [FixedPcd]
-  gCixTokenSpaceGuid.PcdEcI2cBus
-  gCixTokenSpaceGuid.PcdEcI2cSlaveAddress
+  gCixPlatformTokenSpaceGuid.PcdEcI2cBus
+  gCixPlatformTokenSpaceGuid.PcdEcI2cSlaveAddress
   gCixTokenSpaceGuid.PcdI2c0BusFreq
   gCixTokenSpaceGuid.PcdI2c1BusFreq
   gCixTokenSpaceGuid.PcdI2c2BusFreq
@@ -51,4 +52,4 @@
   gCixTokenSpaceGuid.PcdI2c7BusFreq
 
 [Pcd]
-  gCixTokenSpaceGuid.PcdEcI2cHostInitialized
+  gCixPlatformTokenSpaceGuid.PcdEcI2cHostInitialized

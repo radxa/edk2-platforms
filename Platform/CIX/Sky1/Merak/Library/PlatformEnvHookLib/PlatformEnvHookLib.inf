@@ -54,8 +54,8 @@
   gCixEcPlatformProtocolGuid
 
 [FixedPcd]
-  gCixTokenSpaceGuid.PcdRa8900ceI2cBus
-  gCixTokenSpaceGuid.PcdRa8900ceI2cSlaveAddress
+  gCixPlatformTokenSpaceGuid.PcdRa8900ceI2cBus
+  gCixPlatformTokenSpaceGuid.PcdRa8900ceI2cSlaveAddress
   gArmTokenSpaceGuid.PcdSystemMemorySize
   gCixTokenSpaceGuid.PcdMemInfoBaseAddr
   gCixTokenSpaceGuid.PcdSocWatchdogTimer

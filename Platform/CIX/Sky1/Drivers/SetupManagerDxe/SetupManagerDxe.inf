@@ -136,6 +136,7 @@
   gCixTokenSpaceGuid.PcdI2c5BusFreq
   gCixTokenSpaceGuid.PcdI2c6BusFreq
   gCixTokenSpaceGuid.PcdI2c7BusFreq
+  gCixTokenSpaceGuid.PcdI2cCtrlEn
   gEfiNetworkPkgTokenSpaceGuid.PcdNetworkStackSupport
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport
@@ -196,6 +197,7 @@
   gCixTokenSpaceGuid.PcdMemMbistMode
   gCixTokenSpaceGuid.PcdMemWrLEcc
   gCixTokenSpaceGuid.PcdMemRdLEcc
+  gCixTokenSpaceGuid.PcdMemIEcc
   gCixTokenSpaceGuid.PcdMemPortPriority
   gCixTokenSpaceGuid.PcdMemBdwP0
   gCixTokenSpaceGuid.PcdMemBdwP1
@@ -231,10 +233,20 @@
   gCixTokenSpaceGuid.PcdCpuCore9En
   gCixTokenSpaceGuid.PcdCpuCore10En
   gCixTokenSpaceGuid.PcdCpuCore11En
-  gCixTokenSpaceGuid.PcdRtcWakeup
-  gCixTokenSpaceGuid.PcdLightSensorCtrl
+  gCixPlatformTokenSpaceGuid.PcdRtcWakeup
+  gCixPlatformTokenSpaceGuid.PcdLightSensorCtrl
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
+  gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable
+  gCixTokenSpaceGuid.PcdDP0HwProfile
+  gCixTokenSpaceGuid.PcdDP1HwProfile
+  gCixTokenSpaceGuid.PcdDP2HwProfile
+  gCixTokenSpaceGuid.PcdDP3HwProfile
+  gCixTokenSpaceGuid.PcdDP4HwProfile
   gCixTokenSpaceGuid.PcdGopDisplaySelect
+  gCixTokenSpaceGuid.PcdTypecPhy0Enable
+  gCixTokenSpaceGuid.PcdTypecPhy1Enable
+  gCixTokenSpaceGuid.PcdTypecPhy2Enable
+  gCixTokenSpaceGuid.PcdTypecPhy3Enable
 
 [Depex]
   TRUE

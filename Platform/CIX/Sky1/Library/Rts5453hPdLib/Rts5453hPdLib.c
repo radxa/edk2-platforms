@@ -12,7 +12,6 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/MemoryAllocationLib.h>
-#include <Library/DevicePathLib.h>
 #include <Library/PdLib.h>
 #include <Protocol/I2cMaster.h>
 #include <Protocol/I2cDevicePath.h>

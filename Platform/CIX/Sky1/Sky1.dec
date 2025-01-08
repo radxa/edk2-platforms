@@ -31,9 +31,10 @@
   gCixHidDeviceProtocolGuid = { 0xa6fdad2a, 0xa56f, 0x45f8, { 0x80, 0xd3, 0x2c, 0xff, 0xf4, 0x91, 0xcd, 0xc2 } }
   gCixTypecPhyProtocolGuid = {0xAFC9EECB, 0xC5F1, 0x3EDE, {0xA6, 0x1F, 0x28, 0x4F, 0x38, 0xE2, 0x78, 0x32}}
   gCixSetupVarInitCompleteProtocolGuid = {0x3638a3b3, 0x60e6, 0x4f76, {0xb1, 0xac, 0x47, 0x9d, 0xcd, 0xc6, 0xf8, 0x8d}}
+  gCixFwVersionProtocolGuid = {0xE1574F13, 0x5014, 0x41CA, {0x24, 0x59, 0xFF, 0x15, 0xCB, 0x0A, 0xDE, 0x33}}
+  gCixS3SaveStateProtocolGuid = {0xe5faf065, 0x1f34, 0x46a4, {0x80, 0xc5, 0xff, 0x66, 0xeb, 0x2b, 0x6a, 0xa1}}
 
 [Guids]
-  gCixTokenSpaceGuid = {0xc5795c94, 0x4e06, 0x4590, {0x88, 0xa0, 0xcb, 0xce, 0xfb, 0x41, 0xa8, 0x95}}
   gEfiAcpiTableStorageGuid = { 0x7e374e25, 0x8e01, 0x4fee, { 0x87, 0xf2, 0x39, 0x0c, 0x23, 0xc6, 0x06, 0xcd } }
   gEfiPartitionTypeGuid = {0x6848de61, 0xeb61, 0x4def, {0x9a, 0x8e, 0x38, 0x17, 0xcb, 0xeb, 0x8f, 0x1c}}
   gCixAndroidLoaderGuid = {0xf536d559, 0x459f, 0x48fa, {0x8b, 0xbc, 0x43, 0xb5, 0x54, 0xec, 0xae, 0x8d}}
@@ -46,112 +47,80 @@
   gCixSetupSaveVariableGuid = {0x6ea036ed, 0xdee0, 0x54b4, { 0x08, 0x22, 0x7c, 0x8a, 0x47, 0x3e, 0xa5, 0xaa }}
   gCixI2cHidDevicePathGuid = { 0xdeb15fae, 0xc007, 0x4a82, { 0xb7, 0x2f, 0x2e, 0x6e, 0x39, 0xc0, 0x2f, 0xf5 } }
   gCixPrivateSetupFormsetGuid = { 0x3182bd97, 0x77ea, 0x44ab, { 0x84, 0xa4, 0x8d, 0x21, 0xd, 0x10, 0xbb, 0x4c } }
+  gCixPlatformTokenSpaceGuid = { 0x36d559, 0x459f, 0x48fa, {0x8b, 0xbc, 0x43, 0xb5, 0x54, 0xec, 0xae, 0x8d}}
 
 [PcdsFixedAtBuild.common]
 
-  gCixTokenSpaceGuid.PcdPostCodeApAddr|0x05030F00|UINT32|0x01C1
-  gCixTokenSpaceGuid.PcdPostCodeSeAddr|0x05040108|UINT32|0x01C2
-  gCixTokenSpaceGuid.PcdRamLogBaseAddress|0x83DB0000|UINT64|0x000001C3
-  gCixTokenSpaceGuid.PcdRamLogSize|0x00004000|UINT32|0x000001C4
+  gCixPlatformTokenSpaceGuid.PcdRamLogBaseAddress|0x83DB0000|UINT64|0x000001C3
+  gCixPlatformTokenSpaceGuid.PcdRamLogSize|0x00004000|UINT32|0x000001C4
   #The memory range for linux
-  gCixTokenSpaceGuid.PcdKernelBootImgBase|0xA0000000|UINT32|0x1C5
-  gCixTokenSpaceGuid.PcdKernelBootImgSize|0x08000000|UINT32|0x1C6
-  gCixTokenSpaceGuid.PcdReservedShareMemoryBase|0x80000000|UINT32|0x1C7
-  gCixTokenSpaceGuid.PcdReservedShareMemorySize|0x04400000|UINT32|0x1C8
-  gCixTokenSpaceGuid.PcdReservedLinuxBase|0x86000000|UINT32|0x1C9
-  gCixTokenSpaceGuid.PcdReservedLinuxSize|0x06200000|UINT32|0x1CA
-  gCixTokenSpaceGuid.PcdReservedAndroidBase|0x160000000|UINT64|0x1CB
-  gCixTokenSpaceGuid.PcdReservedAndroidSize|0x100000000|UINT64|0x1CC
-  gCixTokenSpaceGuid.PcdRamLogLastBootSaveAddress|0x83DB2000|UINT64|0x000001CD
-  gCixTokenSpaceGuid.PcdDramHighSpaceBase|0x8000000000|UINT64|0x000001CE
+  gCixPlatformTokenSpaceGuid.PcdKernelBootImgBase|0xA0000000|UINT32|0x1C5
+  gCixPlatformTokenSpaceGuid.PcdKernelBootImgSize|0x08000000|UINT32|0x1C6
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemoryBase|0x80000000|UINT32|0x1C7
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemorySize|0x04400000|UINT32|0x1C8
+  gCixPlatformTokenSpaceGuid.PcdReservedLinuxBase|0x86000000|UINT32|0x1C9
+  gCixPlatformTokenSpaceGuid.PcdReservedLinuxSize|0x06200000|UINT32|0x1CA
+  gCixPlatformTokenSpaceGuid.PcdReservedAndroidBase|0x160000000|UINT64|0x1CB
+  gCixPlatformTokenSpaceGuid.PcdReservedAndroidSize|0x100000000|UINT64|0x1CC
+  gCixPlatformTokenSpaceGuid.PcdRamLogLastBootSaveAddress|0x83DB2000|UINT64|0x000001CD
+  gCixPlatformTokenSpaceGuid.PcdDramHighSpaceBase|0x8000000000|UINT64|0x000001CE
 
   # LinuxLoaderCommon
-  gCixTokenSpaceGuid.KernelLoadAddress|0x86000000|UINT32|0x00000100
-  gCixTokenSpaceGuid.RamdiskLoadAddress|0x8A200000|UINT32|0x00000101
-  gCixTokenSpaceGuid.KernelEndAddr|0x89FFFFFF|UINT32|0x00000102
-  gCixTokenSpaceGuid.KernelLoadAddress32|0x86000000|UINT32|0x00000103
-  gCixTokenSpaceGuid.DeviceTreeLoadAddr|0x8A000000|UINT32|0x00000104
-  gCixTokenSpaceGuid.EnableNewNodeSearchFuc|TRUE|BOOLEAN|0x00000105
+  gCixPlatformTokenSpaceGuid.KernelLoadAddress|0x86000000|UINT32|0x00000100
+  gCixPlatformTokenSpaceGuid.RamdiskLoadAddress|0x8A200000|UINT32|0x00000101
+  gCixPlatformTokenSpaceGuid.KernelEndAddr|0x89FFFFFF|UINT32|0x00000102
+  gCixPlatformTokenSpaceGuid.KernelLoadAddress32|0x86000000|UINT32|0x00000103
+  gCixPlatformTokenSpaceGuid.DeviceTreeLoadAddr|0x8A000000|UINT32|0x00000104
+  gCixPlatformTokenSpaceGuid.EnableNewNodeSearchFuc|TRUE|BOOLEAN|0x00000105
 
   # AvbCommon
-  gCixTokenSpaceGuid.AvbDisableVerification|TRUE|BOOLEAN|0x00000112
-  gCixTokenSpaceGuid.BootAndroidRecovery|FALSE|BOOLEAN|0x00000113
-  gCixTokenSpaceGuid.BootImgBackDoorAddr|0x85FFF000|UINT32|0x00000114
-  gCixTokenSpaceGuid.VendorBootImgBackDoorAddr|0x8A1FF000|UINT32|0x00000115
-  gCixTokenSpaceGuid.DtboImgBackDoorAddr|0xC0000000|UINT32|0x00000116
-  gCixTokenSpaceGuid.VbmetaImgBackDoorAddr|0xC8000000|UINT32|0x00000117
+  gCixPlatformTokenSpaceGuid.AvbDisableVerification|FALSE|BOOLEAN|0x00000112
+  gCixPlatformTokenSpaceGuid.BootAndroidRecovery|FALSE|BOOLEAN|0x00000113
+  gCixPlatformTokenSpaceGuid.BootImgBackDoorAddr|0x85FFF000|UINT32|0x00000114
+  gCixPlatformTokenSpaceGuid.VendorBootImgBackDoorAddr|0x8A1FF000|UINT32|0x00000115
+  gCixPlatformTokenSpaceGuid.DtboImgBackDoorAddr|0xC0000000|UINT32|0x00000116
+  gCixPlatformTokenSpaceGuid.VbmetaImgBackDoorAddr|0xC8000000|UINT32|0x00000117
 
   # I2C Ra8900ce
-  gCixTokenSpaceGuid.PcdRa8900ceI2cBus|3|UINT8|0x00000129  # I2C3
-  gCixTokenSpaceGuid.PcdRa8900ceI2cSlaveAddress|0x32|UINT8|0x00000130
+  gCixPlatformTokenSpaceGuid.PcdRa8900ceI2cBus|3|UINT8|0x00000129  # I2C3
+  gCixPlatformTokenSpaceGuid.PcdRa8900ceI2cSlaveAddress|0x32|UINT8|0x00000130
 
   # I2C EC ITE5570
-  gCixTokenSpaceGuid.PcdEcI2cBus|6|UINT8|0x00000132  # I2C6
-  gCixTokenSpaceGuid.PcdEcI2cSlaveAddress|0x76|UINT8|0x00000133
-
-  # GPU
-  gCixTokenSpaceGuid.PcdGpuEnable|FALSE|BOOLEAN|0x00000136
-  gCixTokenSpaceGuid.PcdGpuReservedMemoryBase|0xBCE00000|UINT32|0x00000137
-  gCixTokenSpaceGuid.PcdGpuReservedMemorySize|0x1000000|UINT32|0x00000138
-
-  # NPU
-  gCixTokenSpaceGuid.PcdNpuEnable|FALSE|BOOLEAN|0x00000139
-  gCixTokenSpaceGuid.PcdNpuReservedMemoryBase|0x90000000|UINT32|0x0000013A
-  gCixTokenSpaceGuid.PcdNpuReservedMemorySize|0x2000000|UINT32|0x0000013B
+  gCixPlatformTokenSpaceGuid.PcdEcI2cBus|6|UINT8|0x00000132  # I2C6
+  gCixPlatformTokenSpaceGuid.PcdEcI2cSlaveAddress|0x76|UINT8|0x00000133
 
   # PD Dev
-  gCixTokenSpaceGuid.PcdPdDevCount|4|UINT8|0x0000013C
+  gCixPlatformTokenSpaceGuid.PcdPdDevCount|4|UINT8|0x0000013C
   # Refer to TYPEC_MODE enum
-  gCixTokenSpaceGuid.PcdTypecPortDefaultModes|{ 1, 1, 1, 1 }|VOID*|0x0000013D
+  gCixPlatformTokenSpaceGuid.PcdTypecPortDefaultModes|{ 1, 1, 1, 1 }|VOID*|0x0000013D # 0: disconnect, 1: usb only, 3: usb+dp 4: dp only
   # Refer to TYPEC_ORIENTATION enum
-  gCixTokenSpaceGuid.PcdTypecPortDefaultOrientations|{ 1, 1, 1, 1 }|VOID*|0x0000013E
-  gCixTokenSpaceGuid.PcdPdDevAlertPins|{ 8, 8, 9, 9 }|VOID*|0x0000013F
-  gCixTokenSpaceGuid.PcdPdDevI2cBuses|{ 0x7, 0x7, 0x1, 0x1 }|VOID*|0x00000140
-  gCixTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0x30, 0x31, 0x30, 0x31 }|VOID*|0x00000141
+  gCixPlatformTokenSpaceGuid.PcdTypecPortDefaultOrientations|{ 1, 1, 1, 1 }|VOID*|0x0000013E # 0: none, 1: normal, 2: reverse
+  gCixPlatformTokenSpaceGuid.PcdPdDevAlertPins|{ 8, 8, 9, 9 }|VOID*|0x0000013F
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses|{ 0x7, 0x7, 0x1, 0x1 }|VOID*|0x00000140 # 0xFF: not actual pd device
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0x30, 0x31, 0x30, 0x31 }|VOID*|0x00000141  # 0xFF: not actual pd device
 
-  #Memory config
-  gCixTokenSpaceGuid.PcdMemBreakPoint|0xFF|UINT8|0x0000202B
-  gCixTokenSpaceGuid.PcdMemEyeScan|0xFF|UINT8|0x0000202C
-  gCixTokenSpaceGuid.PcdMemFreq|0xFFFF|UINT16|0x0000202D
-  gCixTokenSpaceGuid.PcdMemHarvesting|0xFF|UINT8|0x0000202E
-  gCixTokenSpaceGuid.PcdMemWrLEcc|0xFF|UINT8|0x0000202F
-  gCixTokenSpaceGuid.PcdMemRdLEcc|0xFF|UINT8|0x00002030
-  gCixTokenSpaceGuid.PcdMemPortPriority|0xFF|UINT8|0x00002031
-  gCixTokenSpaceGuid.PcdMemBdwP0|30|UINT8|0x00002032
-  gCixTokenSpaceGuid.PcdMemBdwP1|70|UINT8|0x00002033
-  gCixTokenSpaceGuid.PcdMemRPriorityP0|4|UINT8|0x00002034
-  gCixTokenSpaceGuid.PcdMemWPriorityP0|4|UINT8|0x00002035
-  gCixTokenSpaceGuid.PcdMemBdwOvflowP0|0xFF|UINT8|0x00002036
-  gCixTokenSpaceGuid.PcdMemRPriorityP1|4|UINT8|0x00002037
-  gCixTokenSpaceGuid.PcdMemWPriorityP1|4|UINT8|0x00002038
-  gCixTokenSpaceGuid.PcdMemBdwOvflowP1|0xFF|UINT8|0x00002039
-  gCixTokenSpaceGuid.PcdMemWckAlwaysOn|0xFF|UINT8|0x0000203A
-  gCixTokenSpaceGuid.PcdMemDataMask|0xFF|UINT8|0x0000203B
-  gCixTokenSpaceGuid.PcdMemRfmEn|0xFF|UINT8|0x0000203C
-  gCixTokenSpaceGuid.PcdMemAutoPrechargeEn|0xFF|UINT8|0x0000203D
-  gCixTokenSpaceGuid.PcdMemPbrEn|0xFF|UINT8|0x0000203E
-  gCixTokenSpaceGuid.PcdMemMbistEn|0xFF|UINT8|0x0000203F
-  gCixTokenSpaceGuid.PcdMemMbistMode|0xFF|UINT8|0x00002040
-
-  gCixTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"SKY1-EVB.DTB"|VOID*|0x0000A301
-  gCixTokenSpaceGuid.PcdSiliconDtbUpdateEnable|FALSE|BOOLEAN|0x0000A302
+  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"SKY1-EVB.DTB"|VOID*|0x0000A301
+  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateEnable|FALSE|BOOLEAN|0x0000A302
 
   # I2C EC ITE5570
-  gCixTokenSpaceGuid.PcdEcAcpiI2cEn|FALSE|BOOLEAN|0x00000135
+  gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn|FALSE|BOOLEAN|0x00000135
 
   # ACPI
-  gCixTokenSpaceGuid.PcdAcpiEcBatterySupport|FALSE|BOOLEAN|0x0000A001
-  gCixTokenSpaceGuid.PcdAcpiEcThermalSupport|FALSE|BOOLEAN|0x0000A002
-  gCixTokenSpaceGuid.PcdAcpiEcLidSupport|FALSE|BOOLEAN|0x0000A003
-  gCixTokenSpaceGuid.PcdAcpiEcPowerButtonSupport|FALSE|BOOLEAN|0x0000A004
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcBatterySupport|FALSE|BOOLEAN|0x0000A001
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcThermalSupport|FALSE|BOOLEAN|0x0000A002
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcLidSupport|FALSE|BOOLEAN|0x0000A003
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcPowerButtonSupport|FALSE|BOOLEAN|0x0000A004
+  gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable|FALSE|BOOLEAN|0x0000A005
+  gCixPlatformTokenSpaceGuid.PcdAcpiI2cKeyboardSupport|FALSE|BOOLEAN|0x0000A006
   #RTC Wakeup
-  gCixTokenSpaceGuid.PcdRtcWakeup|0x00|UINT8|0x00002001
+  gCixPlatformTokenSpaceGuid.PcdRtcWakeup|0x00|UINT8|0x00002001
   #Ligt Sensor Control
-  gCixTokenSpaceGuid.PcdLightSensorCtrl|0x01|UINT8|0x00002002
+  gCixPlatformTokenSpaceGuid.PcdLightSensorCtrl|0x01|UINT8|0x00002002
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 
 [PcdsDynamic]
   # I2C EC ITE5570
-  gCixTokenSpaceGuid.PcdEcI2cHostInitialized|FALSE|BOOLEAN|0x00000160
-  gCixTokenSpaceGuid.AvbWithBackDoor|TRUE|BOOLEAN|0x00000110
+  gCixPlatformTokenSpaceGuid.PcdEcI2cHostInitialized|FALSE|BOOLEAN|0x00000160
+  gCixPlatformTokenSpaceGuid.AvbWithBackDoor|TRUE|BOOLEAN|0x00000110
+  gCixPlatformTokenSpaceGuid.PcdDynamicUint64Test|0x11111111|UINT64|0x00003001
 

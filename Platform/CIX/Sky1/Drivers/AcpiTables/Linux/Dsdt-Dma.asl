@@ -23,6 +23,10 @@ Device (DMA0) {
       Package () { "dma-requests", 8 },
     }
   })
+
+  Name (RSTL, Package() {
+    Package() {\_SB.RST1, SW_DMA_RST_AXI_N, \_SB.DMA0, "dma_reset"},
+  })
 }
 
 Device (DMA1) {
@@ -44,5 +48,16 @@ Device (DMA1) {
       Package () { "arm,ram-map", Package () { 0xc0000000, 0x30000000 } },
       Package () { "arm,remote-ctrl", \_SB.ACRU },
     }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_DMA_ACLK, "", \_SB.DMA0},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_DMAC_SW_RST_N ,\_SB.DMA1, "dma_reset"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.ADSS.ACLK, \_SB.DMA1, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.DMA1, 0},
   })
 }

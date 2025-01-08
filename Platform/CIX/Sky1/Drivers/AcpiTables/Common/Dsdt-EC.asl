@@ -527,7 +527,21 @@ Device(BAT0) {
       )
   }
   Method (_STA,0) {
-      Return (0x1F)
+    Name(BUF0, Buffer(10){0xDA,0x03,0xF5,0x06,0x01,0x00,0x00,0x00,0x01,0x00})
+    Name(BUF1, Buffer(24){})
+
+    if(\_SB.EC0.TRAS(BUF0,Sizeof(BUF0),BUF1,24) == I2C_SUCCESS){
+      CreateWordField (BUF1, 0x12, FLAG)
+      Local0 = FLAG
+      FLAG = ((Local0 &0xff)<<8)| ((Local0&0xff00)>>8)
+
+      if(FLAG & EC_BATT_FLAG_BATT_PRESENT){
+        Return (0x1F)
+      }else{
+        Return (0x0F)
+      }
+    }
+    Return (0x0F)
   }
 
   Name(BIXP, Package() {
@@ -667,17 +681,7 @@ Device(ECFP)
 }
 
 ThermalZone(ECTZ) {
-  Method(_CRT) { Return(3880) } //Critical TemperaturM //114.85
-  Method(_HOT) { Return(3860) } //Hot Temperature //112.85
-  Method(_PSV) { Return(3500) } //Passive //76.85
-
-  Method(_TC1) { Return(4) } //Thermal Constant1
-  Method(_TC2) { Return(3) } //Thermal Constant2
-  Method(_TSP) { Return(200) } //Thermal Sampling Period
-
-  Method(_PSL) { Return( \_SB.CPUL) } //Passive List
-
-  Method(_AC0) { Return (3250)} //51.85
+  Method(_AC0) { Return (2732)} //0.05
   Name(_AL0, Package(){ECFP})
 
   Name (_TZD, Package () { \_SB} ) //Thermal Zone Devices
@@ -733,7 +737,11 @@ Device(LID)
     Name(BUF1, Buffer(11){})
     if(\_SB.EC0.TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1)) == I2C_SUCCESS){
       CreateByteField (BUF1, 0x0A, LIDS)
-      Return(LIDS)
+      if(LEqual(LIDS, One)){
+        Return(Zero)
+      }else{
+        Return(One)
+      }
     }
     Return(One)
   }

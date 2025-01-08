@@ -3524,13 +3524,14 @@ exit_handler:
   return Status;
 }
 
-/** Create a CPUL node.
-
-  Creates and adds the following node
-  Name (CPUL, Package () { \_SB_.CPU0, \_SB_.CPU1, \_SB_.CPU2, \_SB_.CPU3 })
+/** Create a CPU passive thermal node.
 
   @ingroup CodeGenApis
 
+  @param [in]  NameString            The new variable name.
+                                     Must be a NULL-terminated ASL NameString
+                                     e.g.: "DEV0", "DV15.DEV0", etc.
+                                     The input string is copied.
   @param [in]  CpuNameStringPointer  The pinter point to cpu string list
   @param [in]  CpuNumber             The number of valid CPU
   @param [in]  CpuNameStringLength   The string length of cpu name
@@ -3543,7 +3544,8 @@ exit_handler:
 **/
 EFI_STATUS
 EFIAPI
-AmlCreateCpulNode (
+AmlCreateCpuPTNode (
+  IN  CONST CHAR8      *NameString,
   IN  CHAR8            *CpuNameStringPointer,
   IN  UINT32           CpuNumber,
   IN  UINT32           CpuNameStringLength,
@@ -3551,46 +3553,53 @@ AmlCreateCpulNode (
   )
 {
   EFI_STATUS              Status;
-  CHAR8                   CpuNameStringList[CpuNumber][CpuNameStringLength];
   UINT32                  CpuIndex;
-  AML_OBJECT_NODE_HANDLE  CpulNode;
-  AML_OBJECT_NODE_HANDLE  CpulPackageNodeLevel;
+  AML_OBJECT_NODE_HANDLE  CpuPTNode;
+  AML_OBJECT_NODE_HANDLE  CpuPTPackageNodeLevel;
 
-  CopyMem (CpuNameStringList, CpuNameStringPointer, CpuNumber*CpuNameStringLength);
-  // Crete CPUL package node
-  Status = AmlCodeGenNamePackage ("CPUL", ParentNode, &CpulNode);
+  if (NameString == NULL) {
+    ASSERT (0);
+    return EFI_INVALID_PARAMETER;
+  }
+
+  // Crete CPUPT package node
+  Status = AmlCodeGenNamePackage (NameString, ParentNode, &CpuPTNode);
   if (EFI_ERROR (Status)) {
     ASSERT_EFI_ERROR (Status);
     goto error_handler;
   }
 
-  // Get the Package object node of the CPUL node,
+  // Get the Package object node of the CPUPT node,
   // which is the 2nd fixed argument (i.e. index 1).
-  CpulPackageNodeLevel = (AML_OBJECT_NODE_HANDLE)AmlGetFixedArgument (
-                                                   CpulNode,
-                                                   EAmlParseIndexTerm1
-                                                   );
-  if ((CpulPackageNodeLevel == NULL)                                              ||
-      (AmlGetNodeType ((AML_NODE_HANDLE)CpulPackageNodeLevel) != EAmlNodeObject)  ||
-      (!AmlNodeHasOpCode (CpulPackageNodeLevel, AML_PACKAGE_OP, 0)))
+  CpuPTPackageNodeLevel = (AML_OBJECT_NODE_HANDLE)AmlGetFixedArgument (
+                                                    CpuPTNode,
+                                                    EAmlParseIndexTerm1
+                                                    );
+  if ((CpuPTPackageNodeLevel == NULL)                                              ||
+      (AmlGetNodeType ((AML_NODE_HANDLE)CpuPTPackageNodeLevel) != EAmlNodeObject)  ||
+      (!AmlNodeHasOpCode (CpuPTPackageNodeLevel, AML_PACKAGE_OP, 0)))
   {
     ASSERT (0);
     Status = EFI_INVALID_PARAMETER;
     goto error_handler;
   }
 
-  // Add CPU name to Package node
-  for (CpuIndex = 0; CpuIndex < CpuNumber; CpuIndex++) {
-    Status = AmlAddNameStringToPackage (CpuNameStringList[CpuIndex], CpulPackageNodeLevel);
-    if (EFI_ERROR (Status)) {
-      ASSERT_EFI_ERROR (Status);
-      goto error_handler;
+  if (CpuNumber > 0) {
+    CHAR8  CpuNameStringList[CpuNumber][CpuNameStringLength];
+    CopyMem (CpuNameStringList, CpuNameStringPointer, CpuNumber*CpuNameStringLength);
+    // Add CPU name to Package node
+    for (CpuIndex = 0; CpuIndex < CpuNumber; CpuIndex++) {
+      Status = AmlAddNameStringToPackage (CpuNameStringList[CpuIndex], CpuPTPackageNodeLevel);
+      if (EFI_ERROR (Status)) {
+        ASSERT_EFI_ERROR (Status);
+        goto error_handler;
+      }
     }
   }
 
   return Status;
 
 error_handler:
-  AmlDeleteTree ((AML_NODE_HANDLE)CpulNode);
+  AmlDeleteTree ((AML_NODE_HANDLE)CpuPTNode);
   return Status;
 }

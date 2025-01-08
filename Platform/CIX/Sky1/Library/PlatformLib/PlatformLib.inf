@@ -56,15 +56,15 @@
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialClockRate
-  gCixTokenSpaceGuid.PcdReservedShareMemoryBase
-  gCixTokenSpaceGuid.PcdReservedShareMemorySize
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemoryBase
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemorySize
   gCixTokenSpaceGuid.PcdCixApToTfaMailBoxBase
   gCixTokenSpaceGuid.PcdCixApToTfaMailBoxSize
-  gCixTokenSpaceGuid.PcdRamLogBaseAddress
-  gCixTokenSpaceGuid.PcdRamLogSize
-  gCixTokenSpaceGuid.PcdRamLogLastBootSaveAddress
+  gCixPlatformTokenSpaceGuid.PcdRamLogBaseAddress
+  gCixPlatformTokenSpaceGuid.PcdRamLogSize
+  gCixPlatformTokenSpaceGuid.PcdRamLogLastBootSaveAddress
   gCixTokenSpaceGuid.PcdBootCorePmuCounterNum
-  gCixTokenSpaceGuid.PcdDramHighSpaceBase
+  gCixPlatformTokenSpaceGuid.PcdDramHighSpaceBase
 
 [Ppis]
   gArmMpCoreInfoPpiGuid

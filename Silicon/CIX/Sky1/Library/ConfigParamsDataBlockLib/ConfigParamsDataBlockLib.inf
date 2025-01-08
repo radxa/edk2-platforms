@@ -181,6 +181,13 @@
   gCixTokenSpaceGuid.PcdUsbCControl1MaxSpeed
   gCixTokenSpaceGuid.PcdUsbCControl2Enable
   gCixTokenSpaceGuid.PcdUsbCControl2MaxSpeed
+
+  #Typec Phy
+  gCixTokenSpaceGuid.PcdTypecPhy0Enable
+  gCixTokenSpaceGuid.PcdTypecPhy1Enable
+  gCixTokenSpaceGuid.PcdTypecPhy2Enable
+  gCixTokenSpaceGuid.PcdTypecPhy3Enable
+
   #Watchdog Timer
   gCixTokenSpaceGuid.PcdSocWatchdogTimer
   # CPU LPI state

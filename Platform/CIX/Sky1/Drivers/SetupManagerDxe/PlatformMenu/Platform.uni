@@ -135,7 +135,10 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_TABLE_2                                      #language en-US "Table 2"
 #string STR_TABLE_3                                      #language en-US "Table 3"
 
-#string STR_GOP_PROMPT                                   #language en-US "GOP DISPLAY SELECT"
+#string STR_ENABLE_SPCR_TABLE                            #language en-US "Support SPCR"
+#string STR_ENABLE_SPCR_TABLE_HELP                       #language en-US "Enable or Disable SPCR Table."
+
+#string STR_GOP_PROMPT                                   #language en-US "GOP Display Select"
 #string STR_GOP_PROMPT_HELP                              #language en-US "Select port for GOP Display"
 #string STR_DP0                                          #language en-US "DP0"
 #string STR_DP1                                          #language en-US "DP1"

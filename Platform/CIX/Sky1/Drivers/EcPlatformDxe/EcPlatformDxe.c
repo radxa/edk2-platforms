@@ -10,372 +10,203 @@ EFI_I2C_MASTER_PROTOCOL  *mI2cMaster = NULL;
 
 STATIC
 EFI_STATUS
-PlatformGetEcVersion (
-  IN     EC_PLATFORM_PROTOCOL         *This,
-  IN OUT EC_RESPONSE_EC_VERSION_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = GetEcVersion (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformGetBoardId (
-  IN     EC_PLATFORM_PROTOCOL       *This,
-  IN OUT EC_RESPONSE_BOARD_ID_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = GetBoardId (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformGetBatteryStaticInfo (
-  IN     EC_PLATFORM_PROTOCOL             *This,
-  IN OUT EC_RESPONSE_BATTERY_STATIC_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = GetBatteryStaticInfo (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformGetBatteryDynamicInfo (
-  IN     EC_PLATFORM_PROTOCOL              *This,
-  IN OUT EC_RESPONSE_BATTERY_DYNAMIC_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = GetBatteryDynamicInfo (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformGetFarmId (
-  IN     EC_PLATFORM_PROTOCOL      *This,
-  IN OUT EC_RESPONSE_FRAM_ID_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = GetFarmId (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformSetGpio (
+EcInfoTransfer (
   IN     EC_PLATFORM_PROTOCOL  *This,
-  IN OUT EC_W_GPIO_INFO        *Info
+  IN     EC_COMMAND_ID         Command,
+  IN     EC_PARAM              *Param,
+  OUT    EC_RESPONSE           *Response
   )
 {
-  EFI_STATUS  Status;
+  EFI_STATUS  Status = EFI_SUCCESS;
 
-  Status = SetGpio (Info);
+  switch (Command) {
+    case EC_COMMAND_GET_EC_VERSION:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  return Status;
-}
+      Status = GetEcVersion (&Response->Version);
+      break;
+    case EC_COMMAND_GET_BOARD_ID:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-STATIC
-EFI_STATUS
-PlatformGetGpio (
-  IN     EC_PLATFORM_PROTOCOL  *This,
-  IN OUT EC_R_GPIO_INFO        *Info
-  )
-{
-  EFI_STATUS  Status;
+      Status = GetBoardId (&Response->BoardId);
+      break;
+    case EC_COMMAND_GET_BATTTERY_STATIC_INFO:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  Status = GetGpio (Info);
+      Status = GetBatteryStaticInfo (&Response->BatteryStaticInfo);
+      break;
+    case EC_COMMAND_GET_BATTTERY_DYNAMIC_INFO:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  return Status;
-}
+      Status = GetBatteryDynamicInfo (&Response->BatteryDynamicInfo);
+      break;
+    case EC_COMMAND_GET_FARM_ID:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-STATIC
-EFI_STATUS
-PlatformGetPmicVersion (
-  IN     EC_PLATFORM_PROTOCOL       *This,
-  IN OUT EC_RESPONSE_PMIC_VER_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
+      Status = GetFarmId (&Response->FarmId);
+      break;
+    case EC_COMMAND_SET_GPIO:
+      if (Param == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  Status = GetPmicVersion (Info);
+      Status = SetGpio (&Param->Gpio);
+      break;
+    case EC_COMMAND_GET_GPIO:
+      if ((Param == NULL) || (Response == NULL)) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  return Status;
-}
+      Response->Gpio.GpioNum = Param->Gpio.GpioNum;
+      Status                 = GetGpio (&Response->Gpio);
+      break;
+    case EC_COMMAND_GET_PMIC_VERSION:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-STATIC
-EFI_STATUS
-PlatformGetPdVersion (
-  IN     EC_PLATFORM_PROTOCOL     *This,
-  IN OUT EC_RESPONSE_PD_VER_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
+      Status = GetPmicVersion (&Response->PmicVer);
+      break;
+    case EC_COMMAND_GET_PD_VERSION:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  Status = GetPdVersion (Info);
+      Status = GetPdVersion (&Response->PdVer);
+      break;
+    case EC_COMMAND_GET_GREENPAK_VERSION:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  return Status;
-}
+      Status = GetGreenPakVersion (&Response->GreenPakVer);
+      break;
+    case EC_COMMAND_GET_CHARGER_INFO:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-STATIC
-EFI_STATUS
-PlatformGetGreenPakVersion (
-  IN     EC_PLATFORM_PROTOCOL           *This,
-  IN OUT EC_RESPONSE_GREENPAK_VER_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
+      Status = GetChagerInfo (&Response->ChargerInfo);
+      break;
+    case EC_COMMAND_SET_FAN_RPM:
+      if (Param == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  Status = GetGreenPakVersion (Info);
+      Status = SetFanRpm (&Param->FanSetRpm);
+      break;
+    case EC_COMMAND_GET_FAN_RPM:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  return Status;
-}
+      Status = GetFanRpm (&Response->FanGetRpm);
+      break;
+    case EC_COMMAND_SET_FAN_DUTY:
+      if (Param == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-STATIC
-EFI_STATUS
-PlatformGetChagerInfo (
-  IN     EC_PLATFORM_PROTOCOL      *This,
-  IN OUT EC_RESPONSE_CHARGER_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
+      Status = SetPwmDuty (&Param->PwmSetDuty);
+      break;
+    case EC_COMMAND_GET_FAN_DUTY:
+      if ((Param == NULL) || (Response == NULL)) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  Status = GetChagerInfo (Info);
+      Status = GetPwmDuty (&Param->PwmGetDuty, &Response->PwmGetDuty);
+      break;
+    case EC_COMMAND_SET_THERMAL_AUTO_FAN_CTL:
+      if (Param == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  return Status;
-}
+      Status = SetThermalFanAutoCtl (&Param->ThermalAutoFanCtl);
+      break;
+    case EC_COMMAND_GET_PVT_TEMP:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-STATIC
-EFI_STATUS
-PlatformSetFanRpm (
-  IN     EC_PLATFORM_PROTOCOL  *This,
-  IN OUT EC_FAN_SET_RPM        *Info
-  )
-{
-  EFI_STATUS  Status;
+      Status = GetPvtTemp (&Response->PvtTemp);
+      break;
+    case EC_COMMAND_GET_POWER_OFF_RSN:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  Status = SetFanRpm (Info);
+      Status = GetPoweroffRsn (&Response->PowerOffRsn);
+      break;
+    case EC_COMMAND_SET_AUTO_POWER_ON:
+      if (Param == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  return Status;
-}
+      Status = SetECAutoPowerOn (&Param->EcAutoPowerOn);
+      break;
+    case EC_COMMAND_GET_ACPI_INT_EVENT:
+      if (Response == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-STATIC
-EFI_STATUS
-PlatformGetFanRpm (
-  IN     EC_PLATFORM_PROTOCOL     *This,
-  IN OUT EC_RESPONSE_FAN_GET_RPM  *Info
-  )
-{
-  EFI_STATUS  Status;
+      Status = GetAcpiIntEvent (&Response->AcpiIntEvent);
+      break;
+    case EC_COMMAND_SET_PD_FW_UPDATE_INFO:
+      if (Param == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  Status = GetFanRpm (Info);
+      Status = SetPdFwUpdateInfo (&Param->PdFwUpdateInfo);
+      break;
+    case EC_COMMAND_GET_PD_FW_UPDATE_STATE:
+      if ((Param == NULL) || (Response == NULL)) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  return Status;
-}
+      Status = GetPdFwUpdateState (&Param->PdFwUpdateState, &Response->PdFwUpdateState);
+      break;
+    case EC_COMMAND_TRANS_PD_FW_BIN:
+      if (Param == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-STATIC
-EFI_STATUS
-PlatformGSetPwmDuty (
-  IN     EC_PLATFORM_PROTOCOL  *This,
-  IN OUT EC_PWM_SET_DUTY       *Info
-  )
-{
-  EFI_STATUS  Status;
+      Status = TransPdFwBin (&Param->PdFwBinTransInfo);
+      break;
+    case EC_COMMAND_FORCE_EC_RESET:
+      if (Param == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  Status = SetPwmDuty (Info);
+      Status = ForceEcReset (&Param->ForceReset);
+      break;
+    case EC_COMMAND_SET_ALS_MODE:
+      if (Param == NULL) {
+        return EFI_INVALID_PARAMETER;
+      }
 
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformGetPwmDuty (
-  IN     EC_PLATFORM_PROTOCOL   *This,
-  IN  EC_PWM_GET_DUTY           *Param,
-  OUT EC_RESPONSE_PWM_GET_DUTY  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = GetPwmDuty (Param, Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformSetThermalFanAutoCtl (
-  IN     EC_PLATFORM_PROTOCOL          *This,
-  IN OUT EC_THERMAL_AUTO_FAN_CTL_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = SetThermalFanAutoCtl (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformGetPvtTemp (
-  IN     EC_PLATFORM_PROTOCOL       *This,
-  IN OUT EC_RESPONSE_PVT_TEMP_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = GetPvtTemp (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformGetPoweroffRsn (
-  IN     EC_PLATFORM_PROTOCOL            *This,
-  IN OUT EC_RESPONSE_POWER_OFF_RSN_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = GetPoweroffRsn (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformSetECAutoPowerOn (
-  IN     EC_PLATFORM_PROTOCOL               *This,
-  IN OUT EC_RESPONSE_EC_AUTO_POWER_ON_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = SetECAutoPowerOn (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformGetAcpiIntEvent (
-  IN     EC_PLATFORM_PROTOCOL             *This,
-  IN OUT EC_RESPONSE_ACPI_INT_EVENT_INFO  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = GetAcpiIntEvent (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformSetPdFwUpdateInfo (
-  IN     EC_PLATFORM_PROTOCOL         *This,
-  IN     EC_PARAMS_PD_FW_UPDATE_INFO  *Info
-  )
-{
-  return SetPdFwUpdateInfo (Info);
-}
-
-STATIC
-EFI_STATUS
-PlatformGetPdFwUpdateState (
-  IN     EC_PLATFORM_PROTOCOL                 *This,
-  IN     EC_PARAMS_PD_FW_UPDATE_STATE_INFO    *Param,
-  OUT    EC_RESPONSE_PD_FW_UPDATE_STATE_INFO  *Info
-  )
-{
-  return GetPdFwUpdateState (Param, Info);
-}
-
-STATIC
-EFI_STATUS
-PlatformTransPdFwBin (
-  IN  EC_PLATFORM_PROTOCOL            *This,
-  IN  EC_PARAMS_PD_FW_BIN_TRANS_INFO  *Param
-  )
-{
-  return TransPdFwBin (Param);
-}
-
-STATIC
-EFI_STATUS
-PlatformForceECMirror (
-  IN     EC_PLATFORM_PROTOCOL    *This,
-  IN     EC_PARAMS_FORCE_MIRROR  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = ForceECMirror (Info);
-
-  return Status;
-}
-
-STATIC
-EFI_STATUS
-PlatformSetAlsMode (
-  IN     EC_PLATFORM_PROTOCOL    *This,
-  IN     EC_PARAMS_ALS_MODE_CTL  *Info
-  )
-{
-  EFI_STATUS  Status;
-
-  Status = SetAlsMode (Info);
+      Status = SetAlsMode (&Param->AlsModeCtl);
+      break;
+    default:
+      break;
+  }
 
   return Status;
 }
 
 GLOBAL_REMOVE_IF_UNREFERENCED EC_PLATFORM_PROTOCOL  mEcPlatformProtocolInstance = {
   NULL,
-  EC_PROTOCOL_VERSION,
-  PlatformGetEcVersion,
-  PlatformGetBoardId,
-  PlatformGetBatteryStaticInfo,
-  PlatformGetBatteryDynamicInfo,
-  PlatformGetFarmId,
-  PlatformSetGpio,
-  PlatformGetGpio,
-  PlatformGetPmicVersion,
-  PlatformGetPdVersion,
-  PlatformGetGreenPakVersion,
-  PlatformGetChagerInfo,
-  PlatformSetFanRpm,
-  PlatformGetFanRpm,
-  PlatformGSetPwmDuty,
-  PlatformGetPwmDuty,
-  PlatformSetThermalFanAutoCtl,
-  PlatformGetPvtTemp,
-  PlatformGetPoweroffRsn,
-  PlatformSetECAutoPowerOn,
-  PlatformGetAcpiIntEvent,
-  PlatformSetPdFwUpdateInfo,
-  PlatformGetPdFwUpdateState,
-  PlatformTransPdFwBin,
-  PlatformForceECMirror,
-  PlatformSetAlsMode,
+  CIX_EC_PLATFORM_PROTOCOL_VERSION,
+  EcInfoTransfer,
 };
 
 /**

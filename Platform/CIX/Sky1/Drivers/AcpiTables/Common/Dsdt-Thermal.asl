@@ -38,20 +38,21 @@ Method(C2DK, 1, Serialized) {
   Return(Local0)
 }
 
-// TODO:Active cooling
+/*
+ * This Thermal Zone apply for all cpu devices.
+ * Passive trip point is 85C.
+ * K = 85 * 10 + 2732 = 3582.
+ * PVT sensor number is 11.
+ */
 ThermalZone(TZ00) {
-  Method(_CRT) { Return(3880) } //Critical TemperaturM
-  Method(_HOT) { Return(3860) } //Hot Temperature
-  Method(_PSV) { Return(3500) } //Passive
+  Method(_PSV) { Return(3582) } //Passive 85C
   Method(_TC1) { Return(4) } //Thermal Constant1
   Method(_TC2) { Return(3) } //Thermal Constant2
   Method(_TSP) { Return(200) } //Thermal Sampling Period
   Method(_PSL) { Return( Package(){\_SB.CPU0}) } //Passive List
-  /*Method(_AC0) {} //Active Cooling
-  Method(_AL0) {} //Active List
   Method(_TZD) {} //Thermal Zone Devices  */
   Method(_TMP, 0, Serialized) {
-    Store(\_SB.PMMX.SENG(0, 0),Local0)
+    Store(\_SB.PMMX.SENG(11, 0),Local0)
     CreateDWordField(Local0, 0x00, STAT)
     CreateQWordField(Local0, 0x04, TEMP)
     TEMP = ToInteger(TEMP)
@@ -59,34 +60,4 @@ ThermalZone(TZ00) {
   }
   Method(_SCP, 1, Serialized) {} //Set Cooling Policy
   Method(_TZP) { Return(300) } //Thermal Zone Polling
-}
-
-ThermalZone(TZ01){
-
-  Method(_CRT) { Return(3880) }//114.85
-  Name(_TZP, 300)
-
-  Method(_AC0) { Return (3250)} //51.85
-  Name(_AL0, Package(){FAN0})
-
-  Method(_PSV) { Return(3500) }//76.85
-  Method(_TC1) { Return (4) }
-  Method(_TC2) { Return (3) }
-  Method(_TSP) { Return (100) }
-//  Method(_PSL, 0, Serialized){ Return( Package(){\_SB.CPU0} )}
-  Method(_SCP, 1, Serialized)
-  {
-    If(LEqual(Arg0,0)){
-      printf ("CIX Debug: Active cooling")
-    }ElseIf(LEqual(Arg0,1)){
-      printf ("CIX Debug: Passive cooling")
-    }
-  }
-
-  Method(_TMP, 0, Serialized)
-  {
-    Add(TEMP,20,TEMP)
-    printf ("CIX Debug: Enter _TMP(%o)",TEMP)
-    Return(TEMP)
-  }
 }

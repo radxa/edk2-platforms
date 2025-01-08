@@ -90,4 +90,13 @@ Device (GPU) {
 
   Name(_PR0, Package(1){PPRS})
   Name(_PR3, Package(1){PPRS})
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_GPU_CLK_CORE, "gpu_clk_core", \_SB.GPU},
+    Package() {CLK_TREE_GPU_CLK_STACKS, "gpu_clk_stacks", \_SB.GPU},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_GPU_RESET_N, \_SB.GPU,  "gpu_reset"},
+    Package() {\_SB.RST0, SKY1_GPU_RCSU_RESET_N, \_SB.GPU,  "gpu_rcsu_reset"},
+  })
 }

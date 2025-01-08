@@ -39,6 +39,6 @@
   gEfiDevicePathProtocolGuid
 
 [FixedPcd]
-  gCixTokenSpaceGuid.PcdPdDevCount
-  gCixTokenSpaceGuid.PcdPdDevI2cBuses
-  gCixTokenSpaceGuid.PcdPdDevI2cSlaveAddresses
+  gCixPlatformTokenSpaceGuid.PcdPdDevCount
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses

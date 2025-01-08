@@ -55,9 +55,10 @@
   DEFINE SOC_GMAC_ENABLE            = TRUE
   DEFINE TOKEN_SETUP_SUPPORT        = TRUE
   DEFINE NTFS_DRIVER_SUPPORT        = FALSE
+  DEFINE EXT4_DRIVER_SUPPORT        = FALSE
   DEFINE AMD_GOP_DRIVER_SUPPORT     = TRUE
   DEFINE TOKEN_RAM_DISK_SUPPORT     = FALSE
-  DEFINE VARIABLE_SUPPORT           = SPI
+  DEFINE VARIABLE_SUPPORT           = $(COMPILE_NOR_VARIABLE)
   DEFINE REALTEK_LAN_DRIVER_SUPPORT = TRUE
   DEFINE PM_CONFIG_UPDATE_SUPPORT   = FALSE
   DEFINE DYNAMIC_ACPI_CPU_ENABLE    = TRUE
@@ -68,6 +69,7 @@
   DEFINE DYNAMIC_GET_MEM_SIZE       = TRUE
   DEFINE SECURE_BOOT_ENABLE         = TRUE
   DEFINE DEFAULT_KEYS               = TRUE
+  DEFINE UEFI_FW_STAGE              = Beta1
   DEFINE BOOT_LOGO_ENABLE           = TRUE
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
@@ -111,19 +113,14 @@
 !endif
 
 #ACPI Boot
-!if $(COMPILE_ACPI_ENABLE) == 1
   DEFINE ACPI_ENABLE                = TRUE
   DEFINE SMBIOS_ENABLE              = TRUE
-!endif
 
 # Windows Boot
-DEFINE WINDOWS_BOOT_ENABLE          = FALSE
-!if $(WINDOWS_BOOT_ENABLE) == TRUE
-  DEFINE BOOT_LOGO_ENABLE           = TRUE
-!endif
+  DEFINE WINDOWS_BOOT_ENABLE        = FALSE
 
-  DEFINE SPI_VARIABLE_BASE          = 0x00805000
-  DEFINE SPI_VARIABLE_SIZE          = 0x2000
+  DEFINE SPI_VARIABLE_BASE          = 0x007D5000
+  DEFINE SPI_VARIABLE_SIZE          = 0x10000
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
 !include NetworkPkg/NetworkDefines.dsc.inc
@@ -150,6 +147,10 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   TrngLib|Silicon/CIX/Sky1/Library/TrngLib/TrngLib.inf
   RngLib|Silicon/CIX/Sky1/Library/RngLib/RngLib.inf
   DtbUpdateLibSi|Platform/CIX/Sky1/Library/DtbUpdateLibSi/DtbUpdateLib.inf
+
+[LibraryClasses.common.DXE_RUNTIME_DRIVER]
+  EfiResetSystemLib|Platform/CIX/Sky1/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
+  EcLib|Platform/CIX/Sky1/Library/Ite5570EcLib/Ite5570EcRuntimeLib.inf
 
 ################################################################################
 #
@@ -196,6 +197,11 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 [BuildOptions]
   GCC:DEBUG_*_*_CC_FLAGS          = -DDEBUG_MODE
   GCC:RELEASE_*_*_CC_FLAGS        = -DMDEPKG_NDEBUG -DNDEBUG
+!if $(TARGET) == RELEASE
+  GCC:*_*_*_CC_FLAGS              = -DUEFI_FW_VERSION=$(UEFI_FW_STAGE)"-W"$(COMPILE_BUILD_DATE)
+!else
+  GCC:*_*_*_CC_FLAGS              = -DUEFI_FW_VERSION=$(UEFI_FW_STAGE)"-D"$(COMPILE_BUILD_DATE)
+!endif
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
   GCC:*_*_*_CC_FLAGS          = -DFASTBOOT_NVME
@@ -259,12 +265,12 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 ################################################################################
 [PcdsFixedAtBuild.common]
 !if $(TARGET) == RELEASE
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"Beta1-W$(COMPILE_BUILD_DATE)-$(COMPILE_COMMIT_HASH)"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"$(UEFI_FW_STAGE)-W$(COMPILE_BUILD_DATE)-$(COMPILE_COMMIT_HASH)"
 !else
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"Beta1-D$(COMPILE_BUILD_DATE)-$(COMPILE_COMMIT_HASH)"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"$(UEFI_FW_STAGE)-D$(COMPILE_BUILD_DATE)-$(COMPILE_COMMIT_HASH)"
 !endif
-  gCixTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"SKY1-EVB.DTB"
-  gCixTokenSpaceGuid.PcdSiliconDtbUpdateEnable|TRUE
+  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"SKY1-EVB.DTB"
+  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateEnable|TRUE
 
   gCixTokenSpaceGuid.PcdPcieRootPort0Enable|TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort1Enable|TRUE
@@ -287,6 +293,8 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   gCixTokenSpaceGuid.PcdPcieRootPort3PeResetPin|6
   gCixTokenSpaceGuid.PcdPcieRootPort4PeResetPin|5
 
+  gCixTokenSpaceGuid.PcdI2c0En|TRUE
+  gCixTokenSpaceGuid.PcdI2c0BusFreq|400000
   gCixTokenSpaceGuid.PcdI2c2En|TRUE
   gCixTokenSpaceGuid.PcdI2c2BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c3En|TRUE
@@ -297,6 +305,9 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   gCixTokenSpaceGuid.PcdI2c5BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c6En|TRUE
   gCixTokenSpaceGuid.PcdI2c6BusFreq|50000
+
+  # RTC I2C canot be controlled in setup
+  gCixTokenSpaceGuid.PcdI2cCtrlEn|0xF7
 
   # PD
   gCixTokenSpaceGuid.PcdI2c1En|TRUE
@@ -351,14 +362,15 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   gCixTokenSpaceGuid.PcdIspCamera2Power|0x00
   gCixTokenSpaceGuid.PcdIspCamera3Power|0x00
 
-  gCixTokenSpaceGuid.PcdEcAcpiI2cEn|TRUE
+  gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn|TRUE
 
 # ACPI
 !if $(ACPI_ENABLE) == TRUE
-  gCixTokenSpaceGuid.PcdAcpiEcBatterySupport|1
-  gCixTokenSpaceGuid.PcdAcpiEcThermalSupport|0
-  gCixTokenSpaceGuid.PcdAcpiEcLidSupport|1
-  gCixTokenSpaceGuid.PcdAcpiEcPowerButtonSupport|1
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcBatterySupport|1
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcThermalSupport|1
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcLidSupport|1
+  gCixPlatformTokenSpaceGuid.PcdAcpiEcPowerButtonSupport|1
+  gCixPlatformTokenSpaceGuid.PcdAcpiI2cKeyboardSupport|1
 !endif
 [PcdsDynamicDefault.common]
 
@@ -369,4 +381,5 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoHorizontalResolution|800
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|600
 
+  gCixPlatformTokenSpaceGuid.PcdDynamicUint64Test|0x11111111
 [PcdsDynamicHii.common.DEFAULT]

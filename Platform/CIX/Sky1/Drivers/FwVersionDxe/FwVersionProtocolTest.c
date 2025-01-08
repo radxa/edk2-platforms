@@ -21,10 +21,9 @@ EFIAPI
 DumpPlatformFwVersions (
   )
 {
-  EFI_STATUS                 Status;
-  EC_PLATFORM_PROTOCOL       *Ec;
-  EC_RESPONSE_PMIC_VER_INFO  PmicVer;
-  EC_RESPONSE_PD_VER_INFO    PdVer;
+  EFI_STATUS            Status;
+  EC_PLATFORM_PROTOCOL  *Ec;
+  EC_RESPONSE           EcResponse;
 
   Status = gBS->LocateProtocol (&gCixEcPlatformProtocolGuid, NULL, (VOID **)&Ec);
   if (EFI_ERROR (Status)) {
@@ -32,18 +31,18 @@ DumpPlatformFwVersions (
     return EFI_NOT_FOUND;
   }
 
-  Status = Ec->GetPdVersion (Ec, &PdVer);
+  Status = Ec->Transfer (Ec, EC_COMMAND_GET_PD_VERSION, NULL, &EcResponse);
   if (EFI_ERROR (Status)) {
     DebugPrint (DEBUG_INFO, "[VER] PD:failed\n");
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] PD:%d.%d %d.%d\n", PdVer.Pd2Ver & 0xFF, (PdVer.Pd2Ver & 0xFF00) >> 8, PdVer.Pd1Ver & 0xFF, (PdVer.Pd1Ver & 0xFF00) >> 8);
+    DebugPrint (DEBUG_INFO, "[VER] PD:%d.%d %d.%d\n", EcResponse.PdVer.Pd2Ver & 0xFF, (EcResponse.PdVer.Pd2Ver & 0xFF00) >> 8, EcResponse.PdVer.Pd1Ver & 0xFF, (EcResponse.PdVer.Pd1Ver & 0xFF00) >> 8);
   }
 
-  Status = Ec->GetPmicVersion (Ec, &PmicVer);
+  Status =  Ec->Transfer (Ec, EC_COMMAND_GET_PMIC_VERSION, NULL, &EcResponse);
   if (EFI_ERROR (Status)) {
     DebugPrint (DEBUG_INFO, "[VER] PMIC:failed\n");
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] PMIC: 0x%02x 0x%02x 0x%02x \n", PmicVer.Pmic1Ver, PmicVer.Pmic2Ver, PmicVer.Pmic3Ver);
+    DebugPrint (DEBUG_INFO, "[VER] PMIC: 0x%02x 0x%02x 0x%02x \n", EcResponse.PmicVer.Pmic1Ver, EcResponse.PmicVer.Pmic2Ver, EcResponse.PmicVer.Pmic3Ver);
   }
 
   return EFI_SUCCESS;
@@ -56,12 +55,12 @@ FwVersionProtocolTestEntryPoint (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  EFI_STATUS                 Status;
-  CIX_FW_VERSION_PROTOCOL    *pFwVerProtocol;
-  CHAR16                     *pFwVerBuff;
-  UINT32                     FwVerSize;
-  EC_RESPONSE_BOARD_ID_INFO  *pBoardId;
-  UINT16                     Sku;
+  EFI_STATUS               Status;
+  CIX_FW_VERSION_PROTOCOL  *pFwVerProtocol;
+  CHAR16                   *pFwVerBuff;
+  UINT32                   FwVerSize;
+  EC_RESPONSE_BOARD_ID     *pBoardId;
+  UINT16                   Sku;
 
   Status = gBS->LocateProtocol (
                   &gCixFwVersionProtocolGuid,
@@ -127,7 +126,7 @@ FwVersionProtocolTestEntryPoint (
   Status = pFwVerProtocol->GetFwVersion (FwVerBoardId, &pFwVerBuff, &FwVerSize);
   if (!EFI_ERROR (Status)) {
     DebugPrint (DEBUG_INFO, "[VER] Board Id:%x", *pFwVerBuff);
-    pBoardId = (EC_RESPONSE_BOARD_ID_INFO *)pFwVerBuff;
+    pBoardId = (EC_RESPONSE_BOARD_ID *)pFwVerBuff;
     Sku      = (pBoardId->Id.SkuExt << 3) + pBoardId->Id.Sku;
     switch (Sku) {
       case 0:

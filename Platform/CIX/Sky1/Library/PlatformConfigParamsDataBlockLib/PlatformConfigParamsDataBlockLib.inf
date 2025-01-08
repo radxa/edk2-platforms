@@ -47,5 +47,6 @@
   gCixTokenSpaceGuid.PcdIspCamera2Power
   gCixTokenSpaceGuid.PcdIspCamera3Power
   gCixTokenSpaceGuid.PcdStateAfterG3
-  gCixTokenSpaceGuid.PcdRtcWakeup
-  gCixTokenSpaceGuid.PcdLightSensorCtrl
+  gCixPlatformTokenSpaceGuid.PcdRtcWakeup
+  gCixPlatformTokenSpaceGuid.PcdLightSensorCtrl
+  gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable

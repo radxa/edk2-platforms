@@ -22,6 +22,7 @@ Device (NPU0) {
     Package () {
         Package () {"cluster-partition", Package (){0, 0}},
         Package () {"gm-policy", 1},
+        Package () {"core_mask", 3},
     }
   })
 

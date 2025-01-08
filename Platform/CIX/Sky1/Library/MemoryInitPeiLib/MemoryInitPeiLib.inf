@@ -26,6 +26,7 @@
   ArmPkg/ArmPkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
   Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
 
 [LibraryClasses]
   DebugLib
@@ -44,20 +45,22 @@
   gArmTokenSpaceGuid.PcdSystemMemorySize
   gArmTokenSpaceGuid.PcdFdBaseAddress
   gArmTokenSpaceGuid.PcdFdSize
-  gCixTokenSpaceGuid.PcdKernelBootImgBase
-  gCixTokenSpaceGuid.PcdKernelBootImgSize
+  gCixPlatformTokenSpaceGuid.PcdKernelBootImgBase
+  gCixPlatformTokenSpaceGuid.PcdKernelBootImgSize
   gArmPlatformTokenSpaceGuid.PcdArmLcdDdrFrameBufferBase
   gArmPlatformTokenSpaceGuid.PcdArmLcdDdrFrameBufferSize
-  gCixTokenSpaceGuid.PcdReservedLinuxBase
-  gCixTokenSpaceGuid.PcdReservedLinuxSize
-  gCixTokenSpaceGuid.PcdReservedAndroidBase
-  gCixTokenSpaceGuid.PcdReservedAndroidSize
+  gCixPlatformTokenSpaceGuid.PcdReservedLinuxBase
+  gCixPlatformTokenSpaceGuid.PcdReservedLinuxSize
+  gCixPlatformTokenSpaceGuid.PcdReservedAndroidBase
+  gCixPlatformTokenSpaceGuid.PcdReservedAndroidSize
   gCixTokenSpaceGuid.PcdGpuEnable
   gCixTokenSpaceGuid.PcdGpuReservedMemoryBase
   gCixTokenSpaceGuid.PcdGpuReservedMemorySize
   gCixTokenSpaceGuid.PcdNpuEnable
   gCixTokenSpaceGuid.PcdNpuReservedMemoryBase
   gCixTokenSpaceGuid.PcdNpuReservedMemorySize
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemoryBase
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemorySize
 
 [Depex]
   TRUE

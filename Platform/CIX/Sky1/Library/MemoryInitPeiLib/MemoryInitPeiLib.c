@@ -19,11 +19,14 @@
 
 VOID
 BuildMemoryTypeInformationHob (
-  VOID);
+  VOID
+  );
 
 STATIC
-VOID InitMmu (
-  IN ARM_MEMORY_REGION_DESCRIPTOR  *MemoryTable)
+VOID
+InitMmu (
+  IN ARM_MEMORY_REGION_DESCRIPTOR  *MemoryTable
+  )
 {
   RETURN_STATUS  Status;
 
@@ -39,7 +42,8 @@ VOID InitMmu (
 STATIC
 VOID
 AddBasicMemoryRegion (
-  IN ARM_MEMORY_REGION_DESCRIPTOR  *Desc)
+  IN ARM_MEMORY_REGION_DESCRIPTOR  *Desc
+  )
 {
   BuildResourceDescriptorHob (
     EFI_RESOURCE_SYSTEM_MEMORY,
@@ -50,26 +54,30 @@ AddBasicMemoryRegion (
     EFI_RESOURCE_ATTRIBUTE_WRITE_BACK_CACHEABLE |
     EFI_RESOURCE_ATTRIBUTE_TESTED,
     Desc->PhysicalBase,
-    Desc->Length);
+    Desc->Length
+    );
 }
 
 STATIC
 VOID
 AddRuntimeServicesRegion (
-  IN ARM_MEMORY_REGION_DESCRIPTOR  *Desc)
+  IN ARM_MEMORY_REGION_DESCRIPTOR  *Desc
+  )
 {
   AddBasicMemoryRegion (Desc);
 
   BuildMemoryAllocationHob (
     Desc->PhysicalBase,
     Desc->Length,
-    EfiRuntimeServicesData);
+    EfiRuntimeServicesData
+    );
 }
 
 STATIC
 VOID
 AddUnmappedMemoryRegion (
-  IN ARM_MEMORY_REGION_DESCRIPTOR  *Desc)
+  IN ARM_MEMORY_REGION_DESCRIPTOR  *Desc
+  )
 {
   // Do nothing
 }
@@ -77,23 +85,26 @@ AddUnmappedMemoryRegion (
 STATIC
 VOID
 AddReservedMemoryRegion (
-  IN ARM_MEMORY_REGION_DESCRIPTOR  *Desc)
+  IN ARM_MEMORY_REGION_DESCRIPTOR  *Desc
+  )
 {
   AddBasicMemoryRegion (Desc);
 
   BuildMemoryAllocationHob (
     Desc->PhysicalBase,
     Desc->Length,
-    EfiReservedMemoryType);
+    EfiReservedMemoryType
+    );
 }
 
-void  (*AddRegion[])(IN ARM_MEMORY_REGION_DESCRIPTOR  *Desc) = {
+void  (*AddRegion[])(
+  IN ARM_MEMORY_REGION_DESCRIPTOR  *Desc
+  ) = {
   AddUnmappedMemoryRegion,
   AddBasicMemoryRegion,
   AddRuntimeServicesRegion,
   AddReservedMemoryRegion,
 };
-
 
 EFI_STATUS
 ApPerformMemTest (
@@ -111,7 +122,7 @@ ApPerformMemTest (
   // }
 
   for (TargetAddr = StartAddr; TargetAddr < EndAddr; TargetAddr += sizeof (UINT64)) {
-    DEBUG ((DEBUG_INFO, "%lx\n",TargetAddr));
+    DEBUG ((DEBUG_INFO, "%lx\n", TargetAddr));
     *((UINT64 *)TargetAddr) = TargetAddr;
     if (*((UINT64 *)(UINT64)TargetAddr) != TargetAddr) {
       Pass = FALSE;
@@ -119,12 +130,13 @@ ApPerformMemTest (
   }
 
   if (Pass) {
-    //Print (L"\tAddr:0x%08x Pass\n", StartAddr);
-    DEBUG ((DEBUG_INFO, "Addr:0x%lx-%lx Pass\n", StartAddr,EndAddr));
+    // Print (L"\tAddr:0x%08x Pass\n", StartAddr);
+    DEBUG ((DEBUG_INFO, "Addr:0x%lx-%lx Pass\n", StartAddr, EndAddr));
   }
 
   return EFI_SUCCESS;
 }
+
 /*++
 
 Routine Description:
@@ -145,7 +157,8 @@ EFI_STATUS
 EFIAPI
 MemoryPeim (
   IN EFI_PHYSICAL_ADDRESS  UefiMemoryBase,
-  IN UINT64                UefiMemorySize)
+  IN UINT64                UefiMemorySize
+  )
 {
   ARM_MEMORY_REGION_DESCRIPTOR  *MemoryTable;
 
@@ -165,30 +178,35 @@ MemoryPeim (
       "\tLength: 0x%lX\n",
       MemoryTable[Index].PhysicalBase,
       MemoryTable[Index].VirtualBase,
-      MemoryTable[Index].Length));
+      MemoryTable[Index].Length
+      ));
   }
 
   // Mark the memory covering the Firmware Device as boot services data
   BuildMemoryAllocationHob (
     PcdGet64 (PcdFdBaseAddress),
     PcdGet32 (PcdFdSize),
-    EfiBootServicesData);
+    EfiBootServicesData
+    );
 
   BuildMemoryAllocationHob (
     FixedPcdGet32 (PcdKernelBootImgBase),
     FixedPcdGet32 (PcdKernelBootImgSize),
-    EfiReservedMemoryType);
+    EfiReservedMemoryType
+    );
  #if FixedPcdGetBool (PcdGpuEnable) == 1
   BuildMemoryAllocationHob (
     FixedPcdGet32 (PcdGpuReservedMemoryBase),
     FixedPcdGet32 (PcdGpuReservedMemorySize),
-    EfiReservedMemoryType);
+    EfiReservedMemoryType
+    );
  #endif
  #if FixedPcdGetBool (PcdNpuEnable) == 1
   BuildMemoryAllocationHob (
     FixedPcdGet32 (PcdNpuReservedMemoryBase),
     FixedPcdGet32 (PcdNpuReservedMemorySize),
-    EfiReservedMemoryType);
+    EfiReservedMemoryType
+    );
  #endif
   // BuildMemoryAllocationHob (
   //   FixedPcdGet32 (PcdReservedLinuxBase),
@@ -198,7 +216,8 @@ MemoryPeim (
   BuildMemoryAllocationHob (
     FixedPcdGet32 (PcdArmLcdDdrFrameBufferBase),
     FixedPcdGet32 (PcdArmLcdDdrFrameBufferSize),
-    EfiReservedMemoryType);
+    EfiReservedMemoryType
+    );
 
  #ifdef ANDROID_BOOT
   // BuildMemoryAllocationHob (
@@ -206,6 +225,12 @@ MemoryPeim (
   //   FixedPcdGet32 (PcdReservedAndroidSize),
   //   EfiReservedMemoryType);
  #endif
+
+  BuildMemoryAllocationHob (
+    FixedPcdGet64 (PcdReservedShareMemoryBase),
+    FixedPcdGet64 (PcdReservedShareMemorySize),
+    EfiRuntimeServicesData
+    );
 
   // Build Memory Allocation Hob
   InitMmu (MemoryTable);

@@ -65,10 +65,9 @@ InitEcDefaultSetting (
   IN VOID       *Context
   )
 {
-  EFI_STATUS                    Status = EFI_SUCCESS;
-  EC_PLATFORM_PROTOCOL          *Ec;
-  EC_THERMAL_AUTO_FAN_CTL_INFO  FanCtlInfo;
-  EC_PWM_SET_DUTY               SetDutyInfo;
+  EFI_STATUS            Status = EFI_SUCCESS;
+  EC_PLATFORM_PROTOCOL  *Ec;
+  EC_PARAM              Params;
 
   Status = gBS->LocateProtocol (&gCixEcPlatformProtocolGuid, NULL, (VOID **)&Ec);
   if (EFI_ERROR (Status)) {
@@ -76,16 +75,16 @@ InitEcDefaultSetting (
     return;
   }
 
-  FanCtlInfo.FAN_AUTO_FLG = 0; // manual mode
-  Status                  = Ec->SetThermalFanAutoCtl (Ec, &FanCtlInfo);
+  Params.ThermalAutoFanCtl.FanAutoFlg = 0; // manual mode
+  Status                              = Ec->Transfer (Ec, EC_COMMAND_SET_THERMAL_AUTO_FAN_CTL, &Params, NULL);
   DEBUG ((DEBUG_INFO, "EC Set Fan control manual mode Status:%r\n", Status));
 
-  SetDutyInfo.duty     = 100;
-  SetDutyInfo.index    = 0;
-  SetDutyInfo.pwm_type = 0;
-  Status               = Ec->SetPwmDuty (Ec, &SetDutyInfo);
+  Params.PwmSetDuty.Duty    = 100;
+  Params.PwmSetDuty.Index   = 0;
+  Params.PwmSetDuty.PwmType = 0;
+  Status                    = Ec->Transfer (Ec, EC_COMMAND_SET_FAN_DUTY, &Params, NULL);
 
-  DEBUG ((DEBUG_INFO, "EC Set Pwm Duty %d Status:%r\n", SetDutyInfo.duty, Status));
+  DEBUG ((DEBUG_INFO, "EC Set Pwm Duty %d Status:%r\n", Params.PwmSetDuty.Duty, Status));
 }
 
 VOID
@@ -201,7 +200,7 @@ OnboardDevicePowerOff (
   )
 {
   EFI_STATUS      Status = EFI_SUCCESS;
-  EC_W_GPIO_INFO  GpioInfo;
+  EC_PARAMS_GPIO  GpioInfo;
 
   DEBUG ((DEBUG_INFO, "[%a] EntryPoint\n", __FUNCTION__));
 
@@ -213,98 +212,98 @@ OnboardDevicePowerOff (
   if (ConfigData->PlatConfig->GfxPower == 0) {
     // EC GPIO205
     DEBUG ((DEBUG_INFO, "EC GPIO205 Output Low GFX Power Off\n"));
-    GpioInfo.GPIO_NUM = 205;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 205;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO205
     DEBUG ((DEBUG_INFO, "EC GPIO205 Output High GFX Power On\n"));
-    GpioInfo.GPIO_NUM = 205;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 205;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->TouchPanelPower == 0) {
     // EC GPIO203
     DEBUG ((DEBUG_INFO, "EC GPIO203 Output Low TouchPanelPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 203;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 203;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO203
     DEBUG ((DEBUG_INFO, "EC GPIO203 Output High TouchPanelPower Power On\n"));
-    GpioInfo.GPIO_NUM = 203;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 203;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->TpmPower == 0) {
     // EC GPIO213
     DEBUG ((DEBUG_INFO, "EC GPIO213 Output Low TpmPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 213;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 213;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO213
     DEBUG ((DEBUG_INFO, "EC GPIO213 Output High TpmPower Power On\n"));
-    GpioInfo.GPIO_NUM = 213;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 213;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->WwanPower == 0) {
     // EC GPIO215
     DEBUG ((DEBUG_INFO, "EC GPIO215 Output Low WwanPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 215;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 215;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO215
     DEBUG ((DEBUG_INFO, "EC GPIO215 Output High WwanPower Power On\n"));
-    GpioInfo.GPIO_NUM = 215;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 215;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->PcieX2SlotPower == 0) {
     // EC GPIO214
     DEBUG ((DEBUG_INFO, "EC GPIO214 Output Low PcieX2SlotPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 214;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 214;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO214
     DEBUG ((DEBUG_INFO, "EC GPIO214 Output High PcieX2SlotPower Power On\n"));
-    GpioInfo.GPIO_NUM = 214;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 214;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->FingerPrintPower == 0) {
-    // EC GPIO107
-    DEBUG ((DEBUG_INFO, "EC GPIO107 Output Low FingerPrintPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 107;
-    GpioInfo.GPIO_VAL = 0;
+    // EC GPIO36
+    DEBUG ((DEBUG_INFO, "EC GPIO36 Output Low FingerPrintPower Power Off\n"));
+    GpioInfo.GpioNum = 36;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
-    // EC GPIO107
-    DEBUG ((DEBUG_INFO, "EC GPIO107 Output High FingerPrintPower Power On\n"));
-    GpioInfo.GPIO_NUM = 107;
-    GpioInfo.GPIO_VAL = 1;
+    // EC GPIO36
+    DEBUG ((DEBUG_INFO, "EC GPIO36 Output High FingerPrintPower Power On\n"));
+    GpioInfo.GpioNum = 36;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->OnBoardLanPower == 0) {
     // EC GPIO202
     DEBUG ((DEBUG_INFO, "EC GPIO202 Output Low OnBoardLanPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 202;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 202;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO202
     DEBUG ((DEBUG_INFO, "EC GPIO202 Output High OnBoardLanPower Power On\n"));
-    GpioInfo.GPIO_NUM = 202;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 202;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
@@ -377,11 +376,11 @@ SetStateAfterG3 (
   IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
   )
 {
-  EFI_STATUS                         Status;
-  EC_RESPONSE_EC_AUTO_POWER_ON_INFO  AutoPowerOnInfo;
+  EFI_STATUS                  Status;
+  EC_PARAMS_EC_AUTO_POWER_ON  AutoPowerOnInfo;
 
-  AutoPowerOnInfo.EC_AUTO_POWER_ON_FLG = ConfigData->PlatConfig->StateAfterG3;
-  Status                               = SetECAutoPowerOn (&AutoPowerOnInfo);
+  AutoPowerOnInfo.EcAutoPowerOnFlg = ConfigData->PlatConfig->StateAfterG3;
+  Status                           = SetECAutoPowerOn (&AutoPowerOnInfo);
   if (EFI_ERROR (Status)) {
     DebugPrint (DEBUG_ERROR, "SetECAutoPowerOn Status:%r\n", Status);
   }
@@ -410,12 +409,12 @@ FarmFunctionControl (
   IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
   )
 {
-  EFI_STATUS                Status = EFI_SUCCESS;
-  UINTN                     VarSize;
-  NETWORK_STACK             NetworkStack;
-  PLATFORM_SETUP_DATA       PlatformSetupVar;
-  EC_RESPONSE_FRAM_ID_INFO  FarmIdInfo;
-  UINT8                     FarmEnableFlag;
+  EFI_STATUS           Status = EFI_SUCCESS;
+  UINTN                VarSize;
+  NETWORK_STACK        NetworkStack;
+  PLATFORM_SETUP_DATA  PlatformSetupVar;
+  EC_RESPONSE_FARM_ID  FarmIdInfo;
+  UINT8                FarmEnableFlag;
 
   Status = GetFarmId (&FarmIdInfo);
   if (EFI_ERROR (Status)) {
@@ -423,7 +422,7 @@ FarmFunctionControl (
     return Status;
   }
 
-  if (FarmIdInfo.FRAM_ID == 0) {
+  if (FarmIdInfo.Id == 0) {
     DebugPrint (DEBUG_INFO, "Farm Function Enable.\n");
     VarSize = sizeof (NETWORK_STACK);
     Status  = gRT->GetVariable (
@@ -505,7 +504,7 @@ FarmFunctionControl (
                      &FarmEnableFlag
                      );
     if (EFI_ERROR (Status)) {
-      DebugPrint (DEBUG_ERROR, "[%a] [%d]Get Farm Enable Flag Variable Status%r.\n", __FUNCTION__, __LINE__, Status);
+      DebugPrint (DEBUG_ERROR, "[%a] [%d]Get Farm Enable Flag Variable Status %r.\n", __FUNCTION__, __LINE__, Status);
       return Status;
     }
 
