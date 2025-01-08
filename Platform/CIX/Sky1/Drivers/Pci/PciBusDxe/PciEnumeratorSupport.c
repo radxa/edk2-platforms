@@ -1817,7 +1817,7 @@ PciParseBar (
     }
 
     //
-    // Workaround. Some platforms implement IO bar with 0 length
+    // Some platforms implement IO bar with 0 length
     // Need to treat it as no-bar
     //
     if (PciIoDevice->PciBar[BarIndex].Length == 0) {
