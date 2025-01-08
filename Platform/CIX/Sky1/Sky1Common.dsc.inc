@@ -525,7 +525,7 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosDocRev|0x0
 
   gArmTokenSpaceGuid.PcdProcessorManufacturer|L"Cix Technology Group Co., Ltd."
-  gArmTokenSpaceGuid.PcdProcessorVersion|L"CIX P1 CP8180"
+  gArmTokenSpaceGuid.PcdProcessorVersion|L"CIX P1 CD8180"
   gArmTokenSpaceGuid.PcdProcessorSerialNumber|L""
   gArmTokenSpaceGuid.PcdProcessorAssetTag|L" "
   gArmTokenSpaceGuid.PcdProcessorPartNumber|L" "
@@ -942,6 +942,9 @@
 !endif
 !if $(MEM_CONFIG_UPDATE_SUPPORT) == TRUE
   Platform/CIX/Sky1/Drivers/MemConfigUpdateDxe/MemConfigUpdateDxe.inf
+!endif
+!if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
+  Platform/CIX/Sky1/Drivers/FirmwareConfigUpdateDxe/FirmwareConfigUpdateDxe.inf
 !endif
   Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionDxe.inf
   Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionProtocolTest.inf

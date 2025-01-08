@@ -123,6 +123,15 @@ READ_LOCK_STATUS   = TRUE
   INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
   INF Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf
+
+!if $(CFG_PARAM_MANAGE_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PlatformConfigParamsManageDxe/PlatformConfigParamsManageDxe.inf
+  INF Silicon/CIX/Sky1/Drivers/ConfigParamsManageDxe/ConfigParamsManageDxe.inf
+!endif
+!if $(TOKEN_SETUP_SUPPORT) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PlatformSetupVariableInitDxe/PlatformSetupVariableInitDxe.inf
+!endif
+  INF Platform/CIX/Sky1/Drivers/PlatformDxe/PlatformDxe.inf
   }
 
 # inf file list has be move to Sky1Common.fdf.inc

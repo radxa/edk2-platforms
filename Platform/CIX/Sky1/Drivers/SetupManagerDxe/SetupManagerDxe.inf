@@ -237,6 +237,8 @@
   gCixPlatformTokenSpaceGuid.PcdLightSensorCtrl
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable
+  gCixPlatformTokenSpaceGuid.PcdCpuFMax
+  gCixPlatformTokenSpaceGuid.PcdGpuFMax
 
 [Depex]
   TRUE

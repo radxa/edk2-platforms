@@ -268,6 +268,11 @@
   GCC:*_*_*_CC_FLAGS              = -DSTMM_SUPPORT
 !endif
 
+!if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
+  GCC:*_*_*_CC_FLAGS          = -DFW_CONFIG_UPDATE_SUPPORT
+  GCC:*_*_*_VFRPP_FLAGS       = -DFW_CONFIG_UPDATE_SUPPORT=1
+!endif
+
 ################################################################################
 #
 # Pcd Section - list of all EDK II PCD Entries defined by this Platform
@@ -364,6 +369,8 @@
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio3IoMask|0x00018000 # pwm/edp en pin output
 
   gCixTokenSpaceGuid.PcdSocWatchdogTimer|0x01
+
+  gArmTokenSpaceGuid.PcdProcessorVersion|L"CIX P1 CP8180"
 [PcdsDynamicDefault.common]
 
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit|0x47fffffff

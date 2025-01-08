@@ -121,6 +121,10 @@
   gCixPlatformTokenSpaceGuid.PcdRtcWakeup|0x00|UINT8|0x00002001
   #Ligt Sensor Control
   gCixPlatformTokenSpaceGuid.PcdLightSensorCtrl|0x01|UINT8|0x00002002
+  #Cpu Max Frequency
+  gCixPlatformTokenSpaceGuid.PcdCpuFMax|0x00|UINT8|0x00002003
+  #Gpu Max Frequency
+  gCixPlatformTokenSpaceGuid.PcdGpuFMax|0x00|UINT8|0x00002004
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 
 [PcdsDynamic]

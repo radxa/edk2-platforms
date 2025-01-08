@@ -301,6 +301,9 @@
 !if $(MEM_CONFIG_UPDATE_SUPPORT) == TRUE
   INF Platform/CIX/Sky1/Drivers/MemConfigUpdateDxe/MemConfigUpdateDxe.inf
 !endif
+!if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
+  INF Platform/CIX/Sky1/Drivers/FirmwareConfigUpdateDxe/FirmwareConfigUpdateDxe.inf
+!endif
 !if $(FW_VERSION_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionProtocolTest.inf
 !endif
