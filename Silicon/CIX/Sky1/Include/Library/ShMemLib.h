@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
@@ -25,7 +25,8 @@ typedef enum {
   SMEM_VER_TEE,
   SMEM_VER_EC,
   SMEM_ADDR_UEFI_MEM_BOTTOM,
-
+  SMEM_VER_PD,
+  SMEM_FW_BOOT_PERF,
 
   SMEM_MAILBOX_AP_TO_ATF,//AP TO ATF
 

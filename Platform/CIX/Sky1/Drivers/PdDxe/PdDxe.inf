@@ -36,6 +36,7 @@
   PdLib
   TimerLib
   GpioLib
+  PostCodeLib
 
 [Guids]
 

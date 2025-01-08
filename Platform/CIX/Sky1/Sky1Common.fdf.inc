@@ -1,6 +1,6 @@
 ## @file
 #
-#  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -13,7 +13,9 @@
 !endif
 
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
-
+!if $(GLOBAL_WATCHDOG_ENABLE) == TRUE
+  INF Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GlobalWatchdogDxe.inf
+!endif
   #
   # PI DXE Drivers producing Architectural Protocols (EFI Services)
   #
@@ -52,7 +54,9 @@
 
 !if $(SOC_CDNSP_ENABLE) == TRUE || $(SOC_CDNSP_HOST_ENABLE) == TRUE
   INF Silicon/CIX/Sky1/Drivers/TypecPhyDxe/TypecPhyDxe.inf
+  !if $(PLATFORM_PD_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/PdDxe/PdDxe.inf
+  !endif
 !endif
 
 !if $(SOC_USB_DEVICE_ENABLE) == TRUE
@@ -79,18 +83,18 @@
   INF Silicon/CIX/Sky1/Drivers/Usb20HostDxe/Usb20HostDxe.inf
 !endif
 
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
+!if $(STMM_SUPPORT) == TRUE
+  INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/ArmMmCommunication.inf
+!endif
+!if $(STMM_SUPPORT) == TRUE
   INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashSmmRuntimeDxe.inf
-!elseif $(SOC_XSPI_ENABLE) == TRUE || $(VARIABLE_SUPPORT) == "SPI"
+!else
   INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashDxe.inf
 !endif
-!if $(VARIABLE_SUPPORT) == "SPI"
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == FALSE
   INF MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
 !endif
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
-  INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/MmCommunication.inf
-!endif
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
   INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmmRuntimeDxe.inf
 !else
   INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
@@ -150,10 +154,14 @@
 !endif
 !if $(SOC_I2C_ENABLE) == TRUE
   INF Silicon/CIX/Sky1/Drivers/I2cDxe/I2cDxe.inf
+  !if $(I2C_EC_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/EcPlatformDxe/EcPlatformDxe.inf
+  !endif
+  !if $(I2C_HID_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/I2cHidKeyboard/I2cHidKeyboard.inf
   INF Platform/CIX/Sky1/Drivers/I2cHidServiceDriver/I2cHidServiceDriver.inf
   INF Platform/CIX/Sky1/Drivers/I2cHidDeviceDxe/I2cHidDeviceDxe.inf
+  !endif
 !endif
 
 !if $(SOC_SPI_ENABLE) == TRUE
@@ -232,12 +240,8 @@
   #
 !if $(ACPI_ENABLE) == TRUE
   INF MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
-  !if $(WINDOWS_BOOT_ENABLE) == TRUE
-    INF RuleOverride = ACPITABLE Platform/CIX/Sky1/Drivers/AcpiTables/Windows/AcpiTables.inf
-  !else
-    INF RuleOverride = ACPITABLE Platform/CIX/Sky1/Drivers/AcpiTables/Linux/AcpiTables.inf
-  !endif
-  INF Platform/CIX/Sky1/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
+  INF RuleOverride = ACPITABLE Platform/CIX/Sky1/Drivers/AcpiSocTables/AcpiSocTables.inf
+  INF Platform/CIX/Sky1/Drivers/AcpiSocDxe/AcpiSocDxe.inf
 
   INF Platform/CIX/Sky1/Drivers/ConfigurationManagerDxe/ConfigurationManagerDxe.inf
   INF DynamicTablesPkg/Drivers/DynamicTableFactoryDxe/DynamicTableFactoryDxe.inf
@@ -254,7 +258,8 @@
   #
 !if $(SMBIOS_ENABLE) == TRUE
   INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
-  INF Platform/CIX/Sky1/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
+  INF ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassDxe.inf
+  INF Platform/CIX/Sky1/Drivers/CixSmbiosDxe/CixSmbiosDxe.inf
 !endif
   #
   # PCI Support
@@ -267,7 +272,7 @@
   #
   # NVMe boot devices
   #
-  INF MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+  INF Platform/CIX/Sky1/Drivers/NvmExpressDxe/NvmExpressDxe.inf
 !endif
 
 !if $(CAPSULE_ENABLE) == TRUE
@@ -283,7 +288,7 @@
      SECTION UI = "Pkcs7TestRoot"
      }
 !endif
-!if $(FW_UPDATE_ENABLE) == TRUE && $(SOC_XSPI_ENABLE) == TRUE
+!if $(FW_UPDATE_ENABLE) == TRUE
   # firmware update protocol
   INF Platform/CIX/Sky1/Drivers/FirmwareUpdateDxe/FwUpdateProtocolDxe.inf
   # FILE FREEFORM  = C0903BAC-CC0D-C264-B85B-70F1821A45C6 { # gEcFirmwareFileGuid
@@ -323,11 +328,13 @@
   INF ShellPkg/DynamicCommand/TftpDynamicCommand/TftpDynamicCommand.inf
   INF ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf
 !endif
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
 !else
   INF MdeModulePkg/Application/VariableInfo/VariableInfo.inf
 !endif
 !if $(I2S_MC_SUPPORT) == TRUE
   INF Silicon/CIX/Sky1/Drivers/I2sDxe/I2sDxe.inf
 !endif
-
+!if $(PI_TEST_SUPPORT) == TRUE
+  INF Platform/ARM/Drivers/ArmPsciMpServicesDxe/ArmPsciMpServicesDxe.inf
+!endif

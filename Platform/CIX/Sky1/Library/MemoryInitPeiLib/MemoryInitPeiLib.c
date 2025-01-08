@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *  Copyright (c) 2017-2018, Andrey Warkentin <andrey.warkentin@gmail.com>
  *  Copyright (c) 2011-2015, ARM Limited. All rights reserved.
  *

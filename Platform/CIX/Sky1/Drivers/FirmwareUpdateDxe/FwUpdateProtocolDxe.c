@@ -1,6 +1,6 @@
 /** @CixFwUpdateProtocolDxe.c
 
-  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -304,6 +304,7 @@ IfNeedToUpdate (
       break;
     case FIRMWARE_TYPE_MEM_CONF:
     case FIRMWARE_TYPE_PM_CONF:
+    case FIRMWARE_TYPE_BootLoader_3:
       NeedToUpdate = TRUE;
       break;
 
@@ -751,6 +752,7 @@ CixFirmwareSingleProgram (
        (Type != FIRMWARE_TYPE_BootLoader_2) &&
        (Type != FIRMWARE_TYPE_MEM_CONF) &&
        (Type != FIRMWARE_TYPE_PM_CONF) &&
+       (Type != FIRMWARE_TYPE_BootLoader_3) &&
        (Type != FIRMWARE_TYPE_UEFI_NVRAM)))
   {
     ReturnCode = Type << 8 | FIRMWARE_RET_TYPE_NOT_SUPPORT;
@@ -1006,6 +1008,7 @@ ReadFwVersionOnboard (
       FwVersion = ((CBFF_IMAGE_HEADER *)pBuff)->Cbff_version;
       break;
     case FIRMWARE_TYPE_BootLoader_2:
+    case FIRMWARE_TYPE_BootLoader_3:
       FwVersion = ((FIP_TOC_HEADER *)pBuff)->serial_number;
       break;
     case FIRMWARE_TYPE_MEM_CONF:
@@ -1022,12 +1025,13 @@ UINT16
 CixFirmwareGetVersion (
   UINT32  *HeaderOffset,
   UINT32  *Bootloader1Ver,
-  UINT32  *Bootloader2Ver
+  UINT32  *Bootloader2Ver,
+  UINT32  *Bootloader3Ver
   )
 {
   UINT16  ReturnCode;
 
-  if ((Bootloader1Ver == NULL) || (Bootloader2Ver == NULL) || (HeaderOffset == NULL)) {
+  if ((Bootloader1Ver == NULL) || (Bootloader2Ver == NULL) ||(Bootloader3Ver == NULL)|| (HeaderOffset == NULL)) {
     ReturnCode = FIRMWARE_RET_ERR_INPUT;
     return ReturnCode;
   }
@@ -1040,6 +1044,7 @@ CixFirmwareGetVersion (
   *HeaderOffset   = pFwPrivateData->HeaderOffset;
   *Bootloader1Ver = ReadFwVersionOnboard (FIRMWARE_TYPE_BootLoader_1);
   *Bootloader2Ver = ReadFwVersionOnboard (FIRMWARE_TYPE_BootLoader_2);
+  *Bootloader3Ver = ReadFwVersionOnboard (FIRMWARE_TYPE_BootLoader_3);
   return FIRMWARE_RET_SUCCESS;
 }
 

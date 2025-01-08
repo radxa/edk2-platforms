@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -121,13 +121,19 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
   },
   {
     // CONFIG_PARAMS_DPU
-    FixedPcdGet8 (PcdGopDisplaySelect),
     {
-      FixedPcdGet8 (PcdDP0HwProfile),
-      FixedPcdGet8 (PcdDP1HwProfile),
-      FixedPcdGet8 (PcdDP2HwProfile),
-      FixedPcdGet8 (PcdDP3HwProfile),
-      FixedPcdGet8 (PcdDP4HwProfile),
+      FixedPcdGetBool (PcdDP0Enable),
+      FixedPcdGetBool (PcdDP1Enable),
+      FixedPcdGetBool (PcdDP2Enable),
+      FixedPcdGetBool (PcdDP3Enable),
+      FixedPcdGetBool (PcdDP4Enable),
+    },
+    {
+      FixedPcdGet8 (PcdDPPriority0),
+      FixedPcdGet8 (PcdDPPriority1),
+      FixedPcdGet8 (PcdDPPriority2),
+      FixedPcdGet8 (PcdDPPriority3),
+      FixedPcdGet8 (PcdDPPriority4),
     },
   },
   {
@@ -157,7 +163,7 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
       FixedPcdGet8 (PcdUsb2Control2MaxSpeed),
     },
     {
-      FixedPcdGetBool (PcdUsb2Control2Enable),
+      FixedPcdGetBool (PcdUsb2Control3Enable),
       FixedPcdGet8 (PcdUsb2Control3MaxSpeed),
     },
   },
@@ -302,21 +308,6 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
   },
   {
     // CONFIG_PARAMS_MISC
-  },
-  {
-    // CONFIG_PARAMS_TYPE_C_PHY
-    {
-      FixedPcdGetBool (PcdTypecPhy0Enable),       // Enable
-    },
-    {
-      FixedPcdGetBool (PcdTypecPhy1Enable),       // Enable
-    },
-    {
-      FixedPcdGetBool (PcdTypecPhy2Enable),       // Enable
-    },
-    {
-      FixedPcdGetBool (PcdTypecPhy3Enable),       // Enable
-    }
   }
 };
 
@@ -453,16 +444,16 @@ CONFIG_PARAMS_DATA_ENTRY  mConfigDataEntryTable[] = {
   { PARAMS_DATA_USB_TYPE_C_DRD_0_DATAROLE,     PARAMS_DATA_OFFSET_SIZE (UsbCDrd[0].DataRole),         PARAMS_DATA_BOOLEAN_TYPE,      L"USBC Drd Control data role",   L"0:host, 1:device"                                                                },
   { PARAMS_DATA_SOC_WATCH_DOG_TIMER_ID,        PARAMS_DATA_OFFSET_SIZE (S5.SocWatchdogTimer),         PARAMS_DATA_BOOLEAN_TYPE,      L"SOC Watchdog  Timer",          L"0:Disable, 1:Enable"                                                             },
   { PARAMS_DATA_CPU_LPI_STATE_ID,              PARAMS_DATA_OFFSET_SIZE (Cpu.LpiState),                PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU LPI State ",               L"0:Disable, 1:LPI0, 2:LPI1, 3:LPI2"                                               },
-  { PARAMS_DATA_DPU_GOP_DISPLAY_SELECT_ID,     PARAMS_DATA_OFFSET_SIZE (Dpu.GopDisplaySelect),        PARAMS_DATA_MULTI_OPTION_TYPE, L"GOP Display Select",           L"0:DPU0, 1:DPU1, 2:DPU2, 3:DPU3, 4:DPU4"                                          },
-  { PARAMS_DATA_DPU_DP0_HW_PROFILE_ID,         PARAMS_DATA_OFFSET_SIZE (Dpu.DpuHwProfiles[0]),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Dpu Hardware Profile 0",       L"0:edp, 1:dp, 2:typec"                                                            },
-  { PARAMS_DATA_DPU_DP1_HW_PROFILE_ID,         PARAMS_DATA_OFFSET_SIZE (Dpu.DpuHwProfiles[1]),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Dpu Hardware Profile 1",       L"0:edp, 1:dp, 2:typec"                                                            },
-  { PARAMS_DATA_DPU_DP2_HW_PROFILE_ID,         PARAMS_DATA_OFFSET_SIZE (Dpu.DpuHwProfiles[2]),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Dpu Hardware Profile 2",       L"0:edp, 1:dp, 2:typec"                                                            },
-  { PARAMS_DATA_DPU_DP3_HW_PROFILE_ID,         PARAMS_DATA_OFFSET_SIZE (Dpu.DpuHwProfiles[3]),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Dpu Hardware Profile 3",       L"0:edp, 1:dp, 2:typec"                                                            },
-  { PARAMS_DATA_DPU_DP4_HW_PROFILE_ID,         PARAMS_DATA_OFFSET_SIZE (Dpu.DpuHwProfiles[4]),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Dpu Hardware Profile 4",       L"0:edp, 1:dp, 2:typec"                                                            },
-  { PARAMS_DATA_TYPE_C_PHY_0_ENABLE_ID,        PARAMS_DATA_OFFSET_SIZE (TypecPhy[0].Enable),          PARAMS_DATA_BOOLEAN_TYPE,      L"Typec Phy0 enable",            L"0:disable, 1:enable"                                                             },
-  { PARAMS_DATA_TYPE_C_PHY_1_ENABLE_ID,        PARAMS_DATA_OFFSET_SIZE (TypecPhy[1].Enable),          PARAMS_DATA_BOOLEAN_TYPE,      L"Typec Phy1 enable",            L"0:disable, 1:enable"                                                             },
-  { PARAMS_DATA_TYPE_C_PHY_2_ENABLE_ID,        PARAMS_DATA_OFFSET_SIZE (TypecPhy[2].Enable),          PARAMS_DATA_BOOLEAN_TYPE,      L"Typec Phy2 enable",            L"0:disable, 1:enable"                                                             },
-  { PARAMS_DATA_TYPE_C_PHY_3_ENABLE_ID,        PARAMS_DATA_OFFSET_SIZE (TypecPhy[3].Enable),          PARAMS_DATA_BOOLEAN_TYPE,      L"Typec Phy3 enable",            L"0:disable, 1:enable"                                                             },
+  { PARAMS_DATA_DPU0_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[0]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp0 Enable",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_DPU1_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[1]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp1 Enable",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_DPU2_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[2]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp2 Enable",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_DPU3_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[3]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp3 Enable",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_DPU4_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[4]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp4 Enable",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_DPU_PRIORITY_0_ID,             PARAMS_DATA_OFFSET_SIZE (Dpu.DpPriority[0]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"Display Priority0",            L"0:Dp0, 1:Dp1, 2:Dp2, 3:Dp3, 4:Dp4"                                               },
+  { PARAMS_DATA_DPU_PRIORITY_1_ID,             PARAMS_DATA_OFFSET_SIZE (Dpu.DpPriority[1]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"Display Priority1",            L"0:Dp0, 1:Dp1, 2:Dp2, 3:Dp3, 4:Dp4"                                               },
+  { PARAMS_DATA_DPU_PRIORITY_2_ID,             PARAMS_DATA_OFFSET_SIZE (Dpu.DpPriority[2]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"Display Priority2",            L"0:Dp0, 1:Dp1, 2:Dp2, 3:Dp3, 4:Dp4"                                               },
+  { PARAMS_DATA_DPU_PRIORITY_3_ID,             PARAMS_DATA_OFFSET_SIZE (Dpu.DpPriority[3]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"Display Priority3",            L"0:Dp0, 1:Dp1, 2:Dp2, 3:Dp3, 4:Dp4"                                               },
+  { PARAMS_DATA_DPU_PRIORITY_4_ID,             PARAMS_DATA_OFFSET_SIZE (Dpu.DpPriority[4]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"Display Priority4",            L"0:Dp0, 1:Dp1, 2:Dp2, 3:Dp3, 4:Dp4"                                               },
 };
 
 UINT32  mConfigDataEntryNum = sizeof (mConfigDataEntryTable) / sizeof (CONFIG_PARAMS_DATA_ENTRY);
@@ -503,9 +494,13 @@ ParseConfigDataOption (
       return EFI_UNSUPPORTED;
     }
 
-    *Head                = L'\0';
-    Location            += StrSize (Tail);
-    Options[Index].Value = StrDecimalToUint64 (Tail);
+    *Head     = L'\0';
+    Location += StrSize (Tail);
+    if ((StrStr (Tail, L"0x") == NULL) && (StrStr (Tail, L"0X") == NULL)) {
+      Options[Index].Value = StrDecimalToUint64 (Tail);
+    } else {
+      Options[Index].Value = StrHexToUint64 (Tail);
+    }
 
     Tail = Head + 1;
     Head = StrStr (Tail, L",");

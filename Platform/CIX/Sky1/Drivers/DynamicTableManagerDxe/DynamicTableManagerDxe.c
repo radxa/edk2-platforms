@@ -1,7 +1,7 @@
 /** @file
   Dynamic Table Manager Dxe
 
-  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   Copyright (c) 2017 - 2019, ARM Limited. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent

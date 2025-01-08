@@ -17,6 +17,9 @@
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/UefiLib.h>
 #include <Library/ArmGenericTimerCounterLib.h>
+#include <Library/ArmSmcLib.h>
+#include <IndustryStandard/ArmStdSmc.h>
+#include <Library/HwHarvestLib.h>
 
 #include <Protocol/HardwareInterrupt2.h>
 #include <Protocol/WatchdogTimer.h>
@@ -40,15 +43,36 @@ STATIC EFI_HARDWARE_INTERRUPT2_PROTOCOL  *mInterruptProtocol;
 STATIC EFI_WATCHDOG_TIMER_NOTIFY         mWatchdogNotify;
 
 STATIC
-VOID
-WatchdogWriteOffsetRegister (
-  UINT32  Value
+EFI_STATUS
+EFIAPI
+ResetSystemEarly (
   )
 {
-  MmioWrite32 (GENERIC_WDOG_OFFSET_REG, Value);
+  ARM_SMC_ARGS  ArmSmcArgs;
+
+      // Send a PSCI 0.2 SYSTEM_RESET command
+  ArmSmcArgs.Arg0 = ARM_SMC_ID_PSCI_SYSTEM_RESET;
+
+
+  ArmCallSmc (&ArmSmcArgs);
+
+  // We should never be here
+  DEBUG ((DEBUG_ERROR, "%a: PSCI Reset failed\n", __FUNCTION__));
+  CpuDeadLoop ();
+  return EFI_UNSUPPORTED;
 }
 
 STATIC
+VOID
+WatchdogWriteOffsetRegister (
+  UINT64  Value
+  )
+{
+  MmioWrite32 (GENERIC_WDOG_OFFSET_REG, Value & MAX_UINT32);
+  MmioWrite32 (GENERIC_WDOG_OFFSET_REG_HIGH, (Value >> 32) & MAX_UINT32);
+}
+
+
 VOID
 WatchdogWriteCompareRegister (
   UINT64  Value
@@ -74,6 +98,8 @@ WatchdogDisable (
   )
 {
   MmioWrite32 (GENERIC_WDOG_CONTROL_STATUS_REG, GENERIC_WDOG_DISABLED);
+  MmioWrite32 (GENERIC_WDOG_OFFSET_REG, 0);
+  MmioWrite32 (GENERIC_WDOG_OFFSET_REG_HIGH, 0);
 }
 
 /** On exiting boot services we must make sure the Watchdog Timer
@@ -102,11 +128,8 @@ WatchdogInterruptHandler (
   IN  EFI_SYSTEM_CONTEXT         SystemContext
   )
 {
-  STATIC CONST CHAR16                ResetString[] = L"The generic watchdog timer ran out.";
-  UINT64                             TimerPeriod;
-  EFI_STATUS                         Status;
-  CONFIG_PARAMS_DATA_BLOCK           *ConfigData = NULL;
-  CIX_CONFIG_PARAMS_MANAGE_PROTOCOL  *ConfigManage;
+  // STATIC CONST CHAR16  ResetString[] = L"The generic watchdog timer ran out.";
+  UINT64               TimerPeriod;
 
   WatchdogDisable ();
 
@@ -122,27 +145,14 @@ WatchdogInterruptHandler (
     TimerPeriod = ((TIME_UNITS_PER_SECOND / mTimerFrequencyHz) * mNumTimerTicks);
     mWatchdogNotify (TimerPeriod + 1);
   }
+#ifdef REBOOT_REASON_ENABLE
+  SET_REBOOT_REASON(WatchDogInterruptTrigger);
+#endif
 
-  Status = gBS->LocateProtocol (&gCixConfigParamsManageProtocolGuid, NULL, (VOID **)&ConfigManage);
-  if (!EFI_ERROR (Status)) {
-    ConfigData = ConfigManage->Data;
-  } else {
-    DebugPrint (DEBUG_ERROR, "%a LocateProtocol failed: %r\n", __FUNCTION__, Status);
-  }
+  ResetSystemEarly();
 
-  if (ConfigData->S5.SocWatchdogTimer == 1) {
- #ifdef REBOOT_REASON_ENABLE
-    SET_REBOOT_REASON (WatchDogInterruptTrigger);
- #endif
-    gRT->ResetSystem (
-           EfiResetCold,
-           EFI_TIMEOUT,
-           StrSize (ResetString),
-           (CHAR16 *)ResetString
-           );
-    // If we got here then the reset didn't work
-    ASSERT (FALSE);
-  }
+  // If we got here then the reset didn't work
+  ASSERT (FALSE);
 }
 
 /**
@@ -211,7 +221,7 @@ WatchdogSetTimerPeriod (
   IN UINT64                            TimerPeriod          // In 100ns units
   )
 {
-  UINTN  SystemCount;
+  // UINTN  SystemCount;
 
   // if TimerPeriod is 0, this is a request to stop the watchdog.
   if (TimerPeriod == 0) {
@@ -223,22 +233,10 @@ WatchdogSetTimerPeriod (
   // Work out how many timer ticks will equate to TimerPeriod
   mNumTimerTicks = (mTimerFrequencyHz * TimerPeriod) / TIME_UNITS_PER_SECOND;
 
-  /* If the number of required ticks is greater than the max the watchdog's
-     offset register (WOR) can hold, we need to manually compute and set
-     the compare register (WCV) */
-  if (mNumTimerTicks > MAX_UINT32) {
-    /* We need to enable the watchdog *before* writing to the compare register,
-       because enabling the watchdog causes an "explicit refresh", which
-       clobbers the compare register (WCV). In order to make sure this doesn't
-       trigger an interrupt, set the offset to max. */
-    WatchdogWriteOffsetRegister (MAX_UINT32);
-    WatchdogEnable ();
-    SystemCount = ArmGenericTimerGetSystemCount ();
-    WatchdogWriteCompareRegister (SystemCount + mNumTimerTicks);
-  } else {
-    WatchdogWriteOffsetRegister ((UINT32)mNumTimerTicks);
-    WatchdogEnable ();
-  }
+
+  WatchdogWriteOffsetRegister (mNumTimerTicks);
+  WatchdogEnable ();
+
 
   return EFI_SUCCESS;
 }
@@ -274,6 +272,70 @@ WatchdogGetTimerPeriod (
   *TimerPeriod = ((TIME_UNITS_PER_SECOND / mTimerFrequencyHz) * mNumTimerTicks);
 
   return EFI_SUCCESS;
+}
+
+void
+GlobalWatchdogStatusSwitch()
+{
+  EFI_STATUS Status;
+  CONFIG_PARAMS_DATA_BLOCK           *ConfigData = NULL;
+  CIX_CONFIG_PARAMS_MANAGE_PROTOCOL  *ConfigManage;
+
+  // DebugPrint (DEBUG_ERROR, " %a enter\n", __FUNCTION__);
+  Status = gBS->LocateProtocol (&gCixConfigParamsManageProtocolGuid, NULL, (VOID **)&ConfigManage);
+  if (!EFI_ERROR (Status)) {
+    ConfigData = ConfigManage->Data;
+  } else {
+    DebugPrint (DEBUG_ERROR, "%a LocateProtocol gCixConfigParamsManageProtocolGuid failed: %r\n", __FUNCTION__, Status);
+  }
+
+  if ((!ConfigData->S5.SocWatchdogTimer)||(!IsApWatchdogEnable ())) {
+    // clear fuse
+
+    // disable watchdog
+    WatchdogDisable ();
+    // unregister the watchdog handler
+    Status = gBS->LocateProtocol (
+                  &gHardwareInterrupt2ProtocolGuid,
+                  NULL,
+                  (VOID **)&mInterruptProtocol
+                  );
+    if (!EFI_ERROR (Status)) {
+      mInterruptProtocol->RegisterInterruptSource (
+                        mInterruptProtocol,
+                        FixedPcdGet32 (PcdGenericWatchdogEl2IntrNum),
+                        NULL
+                        );
+    }
+
+
+
+  }
+}
+
+void
+RegisterGlobalWatchdogCallback()
+{
+  EFI_STATUS  Status;
+  EFI_EVENT   Event;
+  VOID        *Registration;
+
+
+  Status = gBS->CreateEvent (
+                             EVT_NOTIFY_SIGNAL,
+                             TPL_CALLBACK,
+                             GlobalWatchdogStatusSwitch,
+                             NULL,
+                             &Event
+                             );
+
+  ASSERT_EFI_ERROR (Status);
+
+  Status = gBS->RegisterProtocolNotify (
+                                        &gCixSetupVarInitCompleteProtocolGuid,
+                                        Event,
+                                        &Registration
+                                        );
 }
 
 /**
@@ -384,6 +446,8 @@ GenericWatchdogEntry (
 
   mNumTimerTicks = 0;
   WatchdogDisable ();
+
+  RegisterGlobalWatchdogCallback();
 
   return EFI_SUCCESS;
 

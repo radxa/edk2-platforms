@@ -149,8 +149,6 @@ UpdateConfigParams (
     ConfigData->S5.SocWatchdogTimer = PlatformSetupVar.SocWatchdogTimer;
 
     ConfigData->Cpu.LpiState = PlatformSetupVar.CpuLpiState;
-
-    ConfigData->Dpu.GopDisplaySelect = PlatformSetupVar.GopDisplaySelect;
   }
 }
 
@@ -163,6 +161,8 @@ UpdatePlatformConfigParams (
   EFI_STATUS           Status;
   UINTN                VarSize;
   PLATFORM_SETUP_DATA  PlatformSetupVar;
+  SYSTEM_TABLE         SystemTableVar;
+  UINTN                SystemTableVarSize;
 
   VarSize = sizeof (PLATFORM_SETUP_DATA);
 
@@ -174,25 +174,37 @@ UpdatePlatformConfigParams (
                   &PlatformSetupVar
                   );
   if (!EFI_ERROR (Status) && !IsRtcPowerfailure ()) {
-    ConfigData->SystemTableSelect = PlatformSetupVar.SystemTableSelect;
-    ConfigData->DtbMenuEntry      = PlatformSetupVar.DtbMenuEntry;
-    ConfigData->GfxPower          = PlatformSetupVar.GfxPower;
-    ConfigData->TouchPanelPower   = PlatformSetupVar.TouchPanelPower;
-    ConfigData->TpmPower          = PlatformSetupVar.TpmPower;
-    ConfigData->WwanPower         = PlatformSetupVar.WwanPower;
-    ConfigData->PcieX2SlotPower   = PlatformSetupVar.PcieX2SlotPower;
-    ConfigData->FingerPrintPower  = PlatformSetupVar.FingerPrintPower;
-    ConfigData->WlanPower         = PlatformSetupVar.WlanPower;
-    ConfigData->M2SsdPower        = PlatformSetupVar.M2SsdPower;
-    ConfigData->OnBoardLanPower   = PlatformSetupVar.OnBoardLanPower;
-    ConfigData->IspCamera0Power   = PlatformSetupVar.IspCamera0Power;
-    ConfigData->IspCamera1Power   = PlatformSetupVar.IspCamera1Power;
-    ConfigData->IspCamera2Power   = PlatformSetupVar.IspCamera2Power;
-    ConfigData->IspCamera3Power   = PlatformSetupVar.IspCamera3Power;
-    ConfigData->StateAfterG3      = PlatformSetupVar.StateAfterG3;
-    ConfigData->RtcWakeup         = PlatformSetupVar.RtcWakeup;
-    ConfigData->LightSensorCtrl   = PlatformSetupVar.LightSensorCtrl;
-    ConfigData->SpcrEnable        = PlatformSetupVar.SpcrEnable;
+    ConfigData->DtbMenuEntry     = PlatformSetupVar.DtbMenuEntry;
+    ConfigData->GfxPower         = PlatformSetupVar.GfxPower;
+    ConfigData->TouchPanelPower  = PlatformSetupVar.TouchPanelPower;
+    ConfigData->TpmPower         = PlatformSetupVar.TpmPower;
+    ConfigData->WwanPower        = PlatformSetupVar.WwanPower;
+    ConfigData->PcieX2SlotPower  = PlatformSetupVar.PcieX2SlotPower;
+    ConfigData->FingerPrintPower = PlatformSetupVar.FingerPrintPower;
+    ConfigData->WlanPower        = PlatformSetupVar.WlanPower;
+    ConfigData->M2SsdPower       = PlatformSetupVar.M2SsdPower;
+    ConfigData->OnBoardLanPower  = PlatformSetupVar.OnBoardLanPower;
+    ConfigData->IspCamera0Power  = PlatformSetupVar.IspCamera0Power;
+    ConfigData->IspCamera1Power  = PlatformSetupVar.IspCamera1Power;
+    ConfigData->IspCamera2Power  = PlatformSetupVar.IspCamera2Power;
+    ConfigData->IspCamera3Power  = PlatformSetupVar.IspCamera3Power;
+    ConfigData->StateAfterG3     = PlatformSetupVar.StateAfterG3;
+    ConfigData->RtcWakeup        = PlatformSetupVar.RtcWakeup;
+    ConfigData->LightSensorCtrl  = PlatformSetupVar.LightSensorCtrl;
+    ConfigData->SpcrEnable       = PlatformSetupVar.SpcrEnable;
+  }
+
+  SystemTableVarSize = sizeof (SYSTEM_TABLE);
+
+  Status = gRT->GetVariable (
+                  SYSTEM_TABLE_VAR,
+                  &gCixGlobalVariableGuid,
+                  NULL,
+                  &SystemTableVarSize,
+                  &SystemTableVar
+                  );
+  if (!EFI_ERROR (Status) && !IsRtcPowerfailure ()) {
+    ConfigData->SystemTableSelect = SystemTableVar.SystemTableSelect;
   }
 }
 
@@ -362,10 +374,9 @@ ConstructSetupVariable (
   PlatformSetupVar->MemEyeScan      = FixedPcdGet8 (PcdMemEyeScan);
   PlatformSetupVar->MemIEcc         = FixedPcdGet8 (PcdMemIEcc);
 
-  PlatformSetupVar->StateAfterG3      = FixedPcdGet8 (PcdStateAfterG3);
-  PlatformSetupVar->SystemTableSelect = FixedPcdGet8 (PcdSystemTableSelect);
-  PlatformSetupVar->PrimaryDisplay    = FixedPcdGet8 (PcdPrimaryDisplay);
-  PlatformSetupVar->DtbMenuEntry      = FixedPcdGet8 (PcdDtbMenuEntry);
+  PlatformSetupVar->StateAfterG3   = FixedPcdGet8 (PcdStateAfterG3);
+  PlatformSetupVar->PrimaryDisplay = FixedPcdGet8 (PcdPrimaryDisplay);
+  PlatformSetupVar->DtbMenuEntry   = FixedPcdGet8 (PcdDtbMenuEntry);
 
   PlatformSetupVar->BiosReset             = FixedPcdGet8 (PcdBiosReset);
   PlatformSetupVar->SocWatchdogTimer      = FixedPcdGet8 (PcdSocWatchdogTimer);
@@ -435,35 +446,6 @@ ConstructSetupVariable (
   PlatformSetupVar->CpuCoreNum              = CpuCoreNum;
   PlatformSetupVar->CpuShareInfo            = CpuShareInfo;
   PlatformSetupVar->CpuLpiState             = FixedPcdGet8 (PcdAcpiCpuLpiState);
-  PlatformSetupVar->GopDisplaySelect        = FixedPcdGet8 (PcdGopDisplaySelect);
-}
-
-VOID
-EFIAPI
-SetSetupVariableCallBack (
-  IN EFI_EVENT  Event,
-  IN VOID       *Context
-  )
-{
-  EFI_STATUS           Status = EFI_SUCCESS;
-  UINTN                VarSize;
-  PLATFORM_SETUP_DATA  PlatformSetupVar;
-
-  if (Event != NULL) {
-    gBS->CloseEvent (Event);
-  }
-
-  VarSize = sizeof (PLATFORM_SETUP_DATA);
-  ZeroMem (&PlatformSetupVar, VarSize);
-  ConstructSetupVariable (&PlatformSetupVar);
-  Status = gRT->SetVariable (
-                  PLATFORM_SETUP_VAR,
-                  &gPlatformSetupVariableGuid,
-                  EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
-                  sizeof (PLATFORM_SETUP_DATA),
-                  &PlatformSetupVar
-                  );
-  ASSERT_EFI_ERROR (Status);
 }
 
 EFI_STATUS
@@ -472,7 +454,6 @@ PlatformSetupVariableInit (
   )
 {
   EFI_STATUS           Status = EFI_SUCCESS;
-  EFI_EVENT            Event;
   UINTN                VarSize;
   PLATFORM_SETUP_DATA  PlatformSetupVar;
 
@@ -489,6 +470,7 @@ PlatformSetupVariableInit (
     //
     // Variable does not exist yet - create it
     //
+    ZeroMem (&PlatformSetupVar, VarSize);
     ConstructSetupVariable (&PlatformSetupVar);
 
     Status = gRT->SetVariable (
@@ -500,16 +482,6 @@ PlatformSetupVariableInit (
                     );
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_INFO, "%a: EfiSetVariable failed - %r\n", __FUNCTION__, Status));
-      Status = gBS->CreateEventEx (
-                      EVT_NOTIFY_SIGNAL,
-                      TPL_CALLBACK,
-                      SetSetupVariableCallBack,
-                      NULL,
-                      &gEfiEndOfDxeEventGroupGuid,
-                      &Event
-                      );
-
-      ASSERT_EFI_ERROR (Status);
     }
   } else {
     DEBUG ((DEBUG_INFO, "%a: EfiGetVariable Success - %r\n", __FUNCTION__, Status));
@@ -537,6 +509,7 @@ NetworkStackVariableInit (
                   &NetworkStack
                   );
   if (EFI_ERROR (Status) || IsRtcPowerfailure ()) {
+    ZeroMem (&NetworkStack, VarSize);
     //
     // Variable does not exist yet - create it
     //
@@ -552,6 +525,47 @@ NetworkStackVariableInit (
                                    sizeof (NETWORK_STACK),
                                    &NetworkStack
                                    );
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_INFO, "%a: EfiSetVariable failed - %r\n", __FUNCTION__, Status));
+    }
+  } else {
+    DEBUG ((DEBUG_INFO, "%a: EfiGetVariable Success - %r\n", __FUNCTION__, Status));
+  }
+
+  return Status;
+}
+
+EFI_STATUS
+SystemTableVariableInit (
+  VOID
+  )
+{
+  EFI_STATUS    Status = EFI_SUCCESS;
+  UINTN         VarSize;
+  SYSTEM_TABLE  SystemTableVar;
+
+  VarSize = sizeof (SYSTEM_TABLE);
+
+  Status = gRT->GetVariable (
+                  SYSTEM_TABLE_VAR,
+                  &gCixGlobalVariableGuid,
+                  NULL,
+                  &VarSize,
+                  &SystemTableVar
+                  );
+
+  if (EFI_ERROR (Status) || IsRtcPowerfailure ()) {
+    //
+    // Variable does not exist yet - create it
+    //
+    SystemTableVar.SystemTableSelect = FixedPcdGet8 (PcdSystemTableSelect);
+    Status                           = gRT->SetVariable (
+                                              SYSTEM_TABLE_VAR,
+                                              &gCixGlobalVariableGuid,
+                                              EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
+                                              VarSize,
+                                              &SystemTableVar
+                                              );
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_INFO, "%a: EfiSetVariable failed - %r\n", __FUNCTION__, Status));
     }
@@ -593,6 +607,15 @@ PlatformSetupVariableInitDxeEntry (
     return Status;
   } else {
     DEBUG ((DEBUG_INFO, "%a: NetworkStackVariableInit Success - %r\n", __FUNCTION__, Status));
+  }
+
+  Status = SystemTableVariableInit ();
+
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_INFO, "%a: SystemTableVariableInit failed - %r\n", __FUNCTION__, Status));
+    return Status;
+  } else {
+    DEBUG ((DEBUG_INFO, "%a: SystemTableVariableInit Success - %r\n", __FUNCTION__, Status));
   }
 
   //

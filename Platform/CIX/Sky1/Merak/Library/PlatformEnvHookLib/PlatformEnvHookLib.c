@@ -1,6 +1,6 @@
 /**
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -16,6 +16,8 @@
 #include <Protocol/I2cDevicePath.h>
 #include <Library/CixSipLib.h>
 #include <Library/EcLib.h>
+#include <Library/MailBoxLib.h>
+#include <Library/CixFwBootPerfLib.h>
 #include <Guid/NetworkStackSetup.h>
 #include <PlatformSetupVar.h>
 
@@ -191,6 +193,41 @@ WakeupSourceInit (
   // WakeupCfg(S5_GPIO_U0,FALSE);//disable GPIO wakeup
 
   return Status;
+}
+
+EFI_STATUS
+EFIAPI
+PciePowerOffWith4sPowerOverride (
+  IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
+  )
+{
+  UINT32          Data32;
+  EC_PARAMS_GPIO  GpioInfo;
+
+  Data32  = MmioRead32 (0x16000218); // power override
+  Data32 &= 0x00000007;
+  if (Data32 == 0x00000007) {
+    // PCIE Port 0 PCIE_X8_SLOT
+    GpioInfo.GpioNum = 205;
+    GpioInfo.GpioVal = 0;
+    SetGpio (&GpioInfo);
+    // PCIE Port 1 M.2 SSD
+    GpioConfig (12, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
+    // PCIE Port  2 PCIE_X4_SLOT
+    GpioInfo.GpioNum = 214;
+    GpioInfo.GpioVal = 0;
+    SetGpio (&GpioInfo);
+    // PCIE Port  3 RJ45_2.5G
+    GpioInfo.GpioNum = 202;
+    GpioInfo.GpioVal = 0;
+    SetGpio (&GpioInfo);
+    // PCIE Port  4 M.2 WLAN/BT
+    GpioInfo.GpioNum = 215;
+    GpioInfo.GpioVal = 0;
+    SetGpio (&GpioInfo);
+  }
+
+  return EFI_SUCCESS;
 }
 
 EFI_STATUS
@@ -584,19 +621,77 @@ FarmFunctionControl (
   return Status;
 }
 
+#ifdef STMM_SUPPORT
+EFI_STATUS
+EFIAPI
+FenceFchXspiHost (
+  IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
+  )
+{
+  EFI_STATUS                     Status;
+  MBOX_GASKET_FENCING_PARAMETER  Params;
+  MBOX_GASKET_FENCING_RESPONSE   Respon;
+
+  Params.Id = FCH_XSPI_RANGE_ID;
+  Status    = MboxEnableGasketFencing (&Params, &Respon);
+  DEBUG ((DEBUG_INFO, "[%a] enable FCH XSPI gasket fencing status %r, response error code %d\n", __FUNCTION__, Status, Respon.ErrCode));
+
+  return Status;
+}
+
+#endif
+
+
+STATIC
+VOID
+EFIAPI
+CixFwBootPerfEndNotify (
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
+  )
+{
+
+  cix_set_boot_phase (BLOADER_PHASE, RECORD_END);
+}
+
+static EFI_EVENT  ReadyToBootEvent;
+EFI_STATUS
+EFIAPI
+CixFwBootPerfInit (
+  )
+{
+  EFI_STATUS  Status = EFI_SUCCESS;
+
+  Status = gBS->CreateEventEx (
+                               EVT_NOTIFY_SIGNAL,
+                               TPL_CALLBACK,
+                               CixFwBootPerfEndNotify,
+                               NULL,
+                               &gEfiEventReadyToBootGuid,
+                               &ReadyToBootEvent
+                               );
+  return Status;
+
+}
+
 STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
-  { NULL,                        NULL,                 InitGpio                },
-  { NULL,                        NULL,                 InitPinmux              },
-  { NULL,                        NULL,                 UpdatePcdDmaDeviceLimit },
-  { NULL,                        NULL,                 WakeupSourceInit        },
-  { NULL,                        NULL,                 OnboardDevicePowerOff   },
-  { NULL,                        NULL,                 SetStateAfterG3         },
-  { NULL,                        NULL,                 RtcWakupEnable          },
-  { NULL,                        NULL,                 FarmFunctionControl     },
-  { &gEfiI2cMasterProtocolGuid,  InstallRtcProtocol,   NULL                    },
-  { &gCixEcPlatformProtocolGuid, InitEcDefaultSetting, NULL                    },
+  { NULL,                        NULL,                 InitGpio                        },
+  { NULL,                        NULL,                 InitPinmux                      },
+  { NULL,                        NULL,                 PciePowerOffWith4sPowerOverride },
+  { NULL,                        NULL,                 UpdatePcdDmaDeviceLimit         },
+  { NULL,                        NULL,                 WakeupSourceInit                },
+  { NULL,                        NULL,                 OnboardDevicePowerOff           },
+  { NULL,                        NULL,                 SetStateAfterG3                 },
+  { NULL,                        NULL,                 RtcWakupEnable                  },
+  { NULL,                        NULL,                 FarmFunctionControl             },
+  { &gEfiI2cMasterProtocolGuid,  InstallRtcProtocol,   NULL                            },
+  { &gCixEcPlatformProtocolGuid, InitEcDefaultSetting, NULL                            },
+ #ifdef STMM_SUPPORT
+  { NULL,                        NULL,                 FenceFchXspiHost                },
+ #endif
+   { NULL,                        NULL,                 CixFwBootPerfInit              },
   // add platform initialization routines on ENV phase BEFORE this line, and they were invoked from top to down.
-  { NULL,                        NULL,                 NULL                    }
+  { NULL,                        NULL,                 NULL                            }
 };
 
 STATIC UINT32  mPlatformEnvInitTableSize = ARRAY_SIZE (mPlatformEnvInitTable);

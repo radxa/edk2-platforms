@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved. *
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved. *
  *
  *  SPDX-License-Identifier: BSD-2-Clause-Patent
  *
@@ -24,6 +24,8 @@
 #define BIT(x)  (1 << x)
 
 #define EDID_SIZE  128
+
+#define DISPLAY_PORT_COUNT  5
 
 typedef enum {
   CIX_FMT_ARGB8888 = 0,
@@ -137,8 +139,9 @@ typedef struct {
 
   BOOLEAN            IsEnable; /* SW */
 
-  UINT8              Preferred;
-  UINT8              Status[5]; /* HW: 0, disabled; 1, TypeC; 2, edp or DP */
+  UINT8              ID;                           /* expected port ID */
+  UINT8              HwStatus[DISPLAY_PORT_COUNT]; /* HW: 0, disabled; 1, enable */
+  UINT8              IDMap[DISPLAY_PORT_COUNT];    /* order -> ID */
 
   BOOLEAN            IsForceOutput;
 } DISPLAY_STATE;

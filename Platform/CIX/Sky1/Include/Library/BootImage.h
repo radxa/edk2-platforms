@@ -1,6 +1,6 @@
 /** @BootImage.h
  *
- *  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *  Copyright (c) 2014-2019, The Linux Foundation. All rights reserved.
  *  Copyright (C) 2008 The Android Open Source Project.
  *

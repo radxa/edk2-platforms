@@ -1,5 +1,5 @@
 /**
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -9,6 +9,7 @@
 #define _PLATFORM_SETUP_VAR_H_
 
 #define PLATFORM_SETUP_VAR  L"PlatformSetupVar"
+#define SYSTEM_TABLE_VAR    L"SystemTableVar"
 #define MAX_CPU_CORE_NUM    12
 #define MAX_PCIE_PORT_NUM   5
 #define MAX_I2C_CTRL_NUM    8
@@ -72,7 +73,6 @@ typedef struct {
   UINT8     MemBdwOvflowP1;
   UINT8     MemIEcc;
   UINT8     StateAfterG3;
-  UINT8     SystemTableSelect;
   UINT8     PrimaryDisplay;
   UINT8     DtbMenuEntry;
   UINT8     BiosReset;
@@ -120,10 +120,12 @@ typedef struct {
   UINT8     LightSensorCtrl;
   UINT8     CpuLpiState;
   UINT8     SpcrEnable;
-  UINT8     DPHwProfile[MAX_DPU_PORT_NUM];
-  UINT8     GopDisplaySelect;
-
 } PLATFORM_SETUP_DATA;
+
+typedef struct {
+  UINT8    SystemTableSelect;
+} SYSTEM_TABLE;
+
 #pragma pack()
 
 #endif

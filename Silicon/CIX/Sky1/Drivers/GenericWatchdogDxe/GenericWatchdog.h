@@ -15,6 +15,7 @@
 // Control Frame:
 #define GENERIC_WDOG_CONTROL_STATUS_REG      ((UINTN)FixedPcdGet64 (PcdGenericWatchdogControlBase) + 0x000)
 #define GENERIC_WDOG_OFFSET_REG              ((UINTN)FixedPcdGet64 (PcdGenericWatchdogControlBase) + 0x008)
+#define GENERIC_WDOG_OFFSET_REG_HIGH         ((UINTN)FixedPcdGet64 (PcdGenericWatchdogControlBase) + 0x00C)
 #define GENERIC_WDOG_COMPARE_VALUE_REG_LOW   ((UINTN)FixedPcdGet64 (PcdGenericWatchdogControlBase) + 0x010)
 #define GENERIC_WDOG_COMPARE_VALUE_REG_HIGH  ((UINTN)FixedPcdGet64 (PcdGenericWatchdogControlBase) + 0x014)
 

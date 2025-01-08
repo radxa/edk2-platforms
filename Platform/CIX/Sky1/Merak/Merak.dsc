@@ -1,6 +1,6 @@
 # @file
 #
-#  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #  Copyright (c) 2011 - 2020, ARM Limited. All rights reserved.
 #  Copyright (c) 2017 - 2018, Andrei Warkentin <andrey.warkentin@gmail.com>
 #  Copyright (c) 2015 - 2021, Intel Corporation. All rights reserved.
@@ -48,17 +48,20 @@
   DEFINE WATCH_DOG_ENABLE           = FALSE
   DEFINE NO_GIC_NO_TIMER            = FALSE
   DEFINE SOC_I2C_ENABLE             = TRUE
-  DEFINE SOC_XSPI_ENABLE            = TRUE
+  DEFINE I2C_EC_ENABLE              = TRUE
+  DEFINE I2C_HID_ENABLE             = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE PCIE_HOST_ENABLE           = TRUE
   DEFINE SOC_CDNSP_HOST_ENABLE      = TRUE
+  DEFINE PLATFORM_PD_ENABLE         = TRUE
   DEFINE SOC_GMAC_ENABLE            = TRUE
   DEFINE TOKEN_SETUP_SUPPORT        = TRUE
   DEFINE NTFS_DRIVER_SUPPORT        = FALSE
   DEFINE EXT4_DRIVER_SUPPORT        = FALSE
   DEFINE AMD_GOP_DRIVER_SUPPORT     = TRUE
   DEFINE TOKEN_RAM_DISK_SUPPORT     = FALSE
-  DEFINE VARIABLE_SUPPORT           = $(COMPILE_NOR_VARIABLE)
+  DEFINE VARIABLE_SUPPORT           = $(COMPILE_VARIABLE_TYPE)
+  DEFINE STMM_SUPPORT               = $(COMPILE_STMM_SUPPORT)
   DEFINE REALTEK_LAN_DRIVER_SUPPORT = TRUE
   DEFINE PM_CONFIG_UPDATE_SUPPORT   = FALSE
   DEFINE DYNAMIC_ACPI_CPU_ENABLE    = TRUE
@@ -69,24 +72,23 @@
   DEFINE DYNAMIC_GET_MEM_SIZE       = TRUE
   DEFINE SECURE_BOOT_ENABLE         = TRUE
   DEFINE DEFAULT_KEYS               = TRUE
-  DEFINE UEFI_FW_STAGE              = Beta1
+  DEFINE UEFI_FW_STAGE              = Beta2
   DEFINE BOOT_LOGO_ENABLE           = TRUE
+  DEFINE GLOBAL_WATCHDOG_ENABLE     = TRUE
+  DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
   DEFINE PCIE_HOST_ENABLE           = TRUE
-  DEFINE SOC_XSPI_ENABLE            = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE SOC_USB_DEVICE_ENABLE      = TRUE
   DEFINE SOC_CDNSP_ENABLE           = TRUE
 !elseif $(COMPILE_FASTBOOT_LOAD) == ddr
   DEFINE PCIE_HOST_ENABLE           = FALSE
-  DEFINE SOC_XSPI_ENABLE            = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE SOC_USB_DEVICE_ENABLE      = TRUE
   DEFINE SOC_CDNSP_ENABLE           = TRUE
 !elseif $(COMPILE_FASTBOOT_LOAD) == usb
   DEFINE SOC_CDNSP_HOST_ENABLE      = TRUE
-  DEFINE SOC_XSPI_ENABLE            = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE SOC_USB_DEVICE_ENABLE      = TRUE
   DEFINE SOC_CDNSP_ENABLE           = TRUE
@@ -116,8 +118,6 @@
   DEFINE ACPI_ENABLE                = TRUE
   DEFINE SMBIOS_ENABLE              = TRUE
 
-# Windows Boot
-  DEFINE WINDOWS_BOOT_ENABLE        = FALSE
 
   DEFINE SPI_VARIABLE_BASE          = 0x007D5000
   DEFINE SPI_VARIABLE_SIZE          = 0x10000
@@ -187,6 +187,13 @@
   }
 !endif
   Platform/CIX/Sky1/Drivers/DtbUpdateDxeSi/DtbUpdateDxe.inf
+!if $(ACPI_ENABLE) == TRUE
+  Platform/CIX/Sky1/Merak/ACPI/AcpiPlatfomTables/AcpiPlatfomTables.inf
+  Platform/CIX/Sky1/Merak/ACPI/AcpiPlatformDxe/AcpiPlatformDxe.inf
+!endif
+!if $(SMBIOS_ENABLE) == TRUE
+  Platform/CIX/Sky1/Merak/PlatformSmbios/PlatformSmbios.inf
+!endif
 
 ###################################################################################################
 # BuildOptions Section - Define the module specific tool chain flags that should be used as
@@ -255,6 +262,10 @@
 
 !if $(SOC_GPIO_INTR_ENABLE) == TRUE
   GCC:*_*_*_CC_FLAGS              = -DSOC_GPIO_INTR_ENABLE
+!endif
+
+!if $(STMM_SUPPORT) == TRUE
+  GCC:*_*_*_CC_FLAGS              = -DSTMM_SUPPORT
 !endif
 
 ################################################################################
@@ -329,26 +340,13 @@
   # USBC3
   gCixTokenSpaceGuid.PcdUsbCControl2Enable|TRUE
 
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000
-
-!if $(WINDOWS_BOOT_ENABLE) == TRUE
-  gArmTokenSpaceGuid.PcdArmPrimaryCore|0x000  #core0
-
-  gCixTokenSpaceGuid.PcdUsbCControl0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsbCControl1Enable|TRUE
-
-  gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|FALSE
-  gCixTokenSpaceGuid.PcdUsb3Control0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsb3Control0DataRole|FALSE
-  gCixTokenSpaceGuid.PcdUsb3Control1Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsb3Control1DataRole|FALSE
-
   gCixTokenSpaceGuid.PcdUsb2Control0Enable|TRUE
   gCixTokenSpaceGuid.PcdUsb2Control1Enable|TRUE
   gCixTokenSpaceGuid.PcdUsb2Control2Enable|TRUE
   gCixTokenSpaceGuid.PcdUsb2Control3Enable|TRUE
-!endif
+
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000
+
   gEfiNetworkPkgTokenSpaceGuid.PcdNetworkStackSupport|FALSE
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|TRUE
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|TRUE
@@ -363,15 +361,9 @@
   gCixTokenSpaceGuid.PcdIspCamera3Power|0x00
 
   gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn|TRUE
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio3IoMask|0x00018000 # pwm/edp en pin output
 
-# ACPI
-!if $(ACPI_ENABLE) == TRUE
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcBatterySupport|1
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcThermalSupport|1
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcLidSupport|1
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcPowerButtonSupport|1
-  gCixPlatformTokenSpaceGuid.PcdAcpiI2cKeyboardSupport|1
-!endif
+  gCixTokenSpaceGuid.PcdSocWatchdogTimer|0x01
 [PcdsDynamicDefault.common]
 
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit|0x47fffffff

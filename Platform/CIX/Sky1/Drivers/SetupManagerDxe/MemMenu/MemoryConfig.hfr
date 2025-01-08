@@ -1,5 +1,5 @@
 /**
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -30,10 +30,6 @@
             prompt  = STRING_TOKEN(STR_MEM_HARVESTING_PROMPT),
             help    = STRING_TOKEN(STR_MEM_HARVESTING_PROMPT_HELP),
             default     = FixedPcdGet8 (PcdMemHarvesting),
-            option text = STRING_TOKEN(STR_MEM_CH0),    value = 0x1,   flags = RESET_REQUIRED;
-            option text = STRING_TOKEN(STR_MEM_CH1),    value = 0x2,   flags = RESET_REQUIRED;
-            option text = STRING_TOKEN(STR_MEM_CH2),    value = 0x4,   flags = RESET_REQUIRED;
-            option text = STRING_TOKEN(STR_MEM_CH3),    value = 0x8,   flags = RESET_REQUIRED;
             option text = STRING_TOKEN(STR_MEM_CH23),   value = 0xC,   flags = RESET_REQUIRED;
             option text = STRING_TOKEN(STR_MEM_CH0123), value = 0xF,   flags = RESET_REQUIRED;
             option text = STRING_TOKEN(STR_AUTO),       value = 0xFF,  flags = RESET_REQUIRED;

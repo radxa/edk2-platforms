@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  **/
 
 #include "DtbUpdateDxe.h"
@@ -42,7 +42,7 @@ DtsImageUpdateCallBack (
                                     );
   DEBUG ((DEBUG_INFO, "%a HandleNum:%x\n", __FUNCTION__, HandleNum));
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_INFO, "%a %d %r\n", __FUNCTION__, __LINE__, Status));
+    DebugPrint (DEBUG_ERROR, "%a %d %r\n", __FUNCTION__, __LINE__, Status);
     return;
   }
 
@@ -62,7 +62,7 @@ DtsImageUpdateCallBack (
                                 EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL
                                 );
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_INFO, "%a %d %r\n", __FUNCTION__, __LINE__, Status));
+      DebugPrint (DEBUG_ERROR, "%a %d %r\n", __FUNCTION__, __LINE__, Status);
       return;
     }
 
@@ -95,37 +95,37 @@ DtsImageUpdateCallBack (
     if (EFI_ERROR (Status) && (Status == EFI_BUFFER_TOO_SMALL)) {
       FileInfo = AllocatePool (FileInfoSize);
       if (NULL == FileInfo) {
-        DEBUG ((DEBUG_INFO, "%a %d Allocate memory failed\n", __FUNCTION__, __LINE__));
+        DebugPrint (DEBUG_ERROR, "%a %d Allocate memory failed\n", __FUNCTION__, __LINE__);
         goto exit;
       }
 
       Status = pFile->GetInfo (pFile, &gEfiFileInfoGuid, &FileInfoSize, FileInfo);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_INFO, "%a %d Get file Info fail Status:%r\n", __FUNCTION__, __LINE__, Status));
+        DebugPrint (DEBUG_ERROR, "%a %d Get file Info fail Status:%r\n", __FUNCTION__, __LINE__, Status);
         goto exit;
       }
     } else {
-      DEBUG ((DEBUG_INFO, "%a %d Get file Info fail Status:%r\n", __FUNCTION__, __LINE__, Status));
+      DebugPrint (DEBUG_ERROR, "%a %d Get file Info fail Status:%r\n", __FUNCTION__, __LINE__, Status);
       goto exit;
     }
 
     ImageSize   = FileInfo->FileSize;
     ImageBuffer = AllocatePool (ImageSize + 2048);
     if (NULL == ImageBuffer) {
-      DEBUG ((DEBUG_INFO, "%a %d Allocate memory failed\n", __FUNCTION__, __LINE__));
+      DebugPrint (DEBUG_ERROR, "%a %d Allocate memory failed\n", __FUNCTION__, __LINE__);
       goto exit;
     }
 
     Status = pFile->Read (pFile, &ImageSize, ImageBuffer);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_INFO, "Read file %a faild", FileName));
+      DebugPrint (DEBUG_ERROR, "Read file %a faild", FileName);
       goto exit;
     }
 
     DEBUG ((DEBUG_INFO, "Before UpdateDeviceTree Data size :%d\n", ImageSize));
     Status = UpdateDtbSi (ImageBuffer, &ImageSize);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_INFO, "UpdateDeviceTree Status :%r\n", Status));
+      DebugPrint (DEBUG_ERROR, "UpdateDeviceTree Status :%r\n", Status);
       goto exit;
     }
 
@@ -133,26 +133,26 @@ DtsImageUpdateCallBack (
 
     Status = pFile->SetPosition (pFile, 0);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_INFO, "Cannot set file position to first byte :%r\n", Status));
+      DebugPrint (DEBUG_ERROR, "Cannot set file position to first byte :%r\n", Status);
       goto exit;
     }
 
     FileInfo->FileSize = ImageSize;
     Status             = pFile->SetInfo (pFile, &gEfiFileInfoGuid, FileInfoSize, FileInfo);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_INFO, "%a %d Set file Info fail Status:%r\n", __FUNCTION__, __LINE__, Status));
+      DebugPrint (DEBUG_ERROR, "%a %d Set file Info fail Status:%r\n", __FUNCTION__, __LINE__, Status);
       goto exit;
     }
 
     Status = pFile->Write (pFile, &ImageSize, ImageBuffer);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_INFO, "%a %d Write file fail Status:%r\n", __FUNCTION__, __LINE__, Status));
+      DebugPrint (DEBUG_ERROR, "%a %d Write file fail Status:%r\n", __FUNCTION__, __LINE__, Status);
       goto exit;
     }
 
     DEBUG ((DEBUG_INFO, "%a %d Update device tree completed %r\n", __FUNCTION__, __LINE__, Status));
   } else {
-    DEBUG ((DEBUG_INFO, "File not found\n"));
+    DebugPrint (DEBUG_ERROR, "Dtb file not found\n");
     return;
   }
 

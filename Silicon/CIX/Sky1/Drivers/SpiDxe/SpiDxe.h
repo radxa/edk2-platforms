@@ -19,6 +19,7 @@
 #include <Library/BaseMemoryLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/SpiLib.h>
+#include <Library/CixPostCodeLib.h>
 #include <Protocol/Spi.h>
 #include <Protocol/ConfigParamsManageProtocol.h>
 #include "Protocol/ClockId.h"

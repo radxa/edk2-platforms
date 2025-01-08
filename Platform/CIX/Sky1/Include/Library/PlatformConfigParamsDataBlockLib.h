@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *
  *  SPDX-License-Identifier: BSD-2-Clause-Patent
  *
@@ -64,6 +64,8 @@ typedef struct _PLATFORM_CONFIG_PARAMS_DATA_BLOCK {
   UINT8      RtcWakeup;
   UINT8      LightSensorCtrl;
   UINT8      SpcrEnable;
+  UINT8      GopDisplayPort;
+  UINT8      TypecMode[4];
 } PLATFORM_CONFIG_PARAMS_DATA_BLOCK;
 
 typedef struct _PLATFORM_CONFIG_PARAMS_DATA_ENTRY {
@@ -113,6 +115,11 @@ typedef struct _PLATFORM_CONFIG_PARAMS_DATA_OPTIONS {
 #define  PARAMS_DATA_RTC_WAKE_UP_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0012)
 #define  PARAMS_DATA_LIGHT_SENSOR_CTRL_ID    (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0013)
 #define  PARAMS_DATA_SPCR_ENABLE_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0014)
+#define  PARAMS_DATA_GOP_DISPAY_PORT_ID      (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0015)
+#define  PARAMS_DATA_TYPEC0_MODE_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0016)
+#define  PARAMS_DATA_TYPEC1_MODE_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0017)
+#define  PARAMS_DATA_TYPEC2_MODE_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0018)
+#define  PARAMS_DATA_TYPEC3_MODE_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0019)
 extern PLATFORM_CONFIG_PARAMS_DATA_BLOCK  mPlatformConfigParamsDataBlock;
 extern PLATFORM_CONFIG_PARAMS_DATA_ENTRY  mPlatformConfigDataEntryTable[];
 extern UINT32                             mPlatformConfigDataEntryNum;

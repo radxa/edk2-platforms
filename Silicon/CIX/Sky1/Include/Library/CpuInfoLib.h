@@ -1,5 +1,5 @@
 /*
-  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
  */
@@ -55,5 +55,25 @@ EFIAPI
 GetCpuShareInfo (
   IN OUT UINT32  *CpuShareInfo
   );
+
+/** Gets the max CPU frequency.
+  @return               CPU frequency in Hz
+**/
+UINTN
+EFIAPI
+GetMaxCpuFreq (
+  VOID
+  );
+
+/** Gets the current CPU frequency.
+  @return               CPU frequency in Hz
+**/
+UINTN
+EFIAPI
+GetCurrentCpuFreq (
+  VOID
+  );
+
+#define ROUND_DIVISION(a, b)  (((a) / (b)) + ((((a) % (b)) * 2 >= (b)) ? 1 : 0))
 
 #endif // CPU_INFO_LIB

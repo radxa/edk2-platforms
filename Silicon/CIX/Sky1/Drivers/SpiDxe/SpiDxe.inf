@@ -35,6 +35,7 @@
   UefiDriverEntryPoint
   UefiLib
   SpiLib
+  PostCodeLib
 
 [Guids]
   gCixSpiDevicePathGuid

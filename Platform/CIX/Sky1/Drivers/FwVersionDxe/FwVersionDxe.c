@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -274,7 +274,7 @@ SetBoardInfo (
   EC_PLATFORM_PROTOCOL  *Ec;
   EC_RESPONSE           EcResponse;
   UINT32                EcVersionSize;
-  void                  *FwVerAddrEc;
+  void                  *FwVerAddrEc,*VerAddrPd;
 
   DEBUG ((DEBUG_INFO, "%a Entry\n", __FUNCTION__));
 
@@ -315,6 +315,19 @@ SetBoardInfo (
 
   // UnicodeToAscii(FwVerUefiBuff,StrLen(FwVerUefiBuff),(CHAR8 *)FwVerAddrUefi);
   CopyMem (FwVerAddrEc, (CHAR8 *)EcResponse.Version.String, EcVersionSize);
+
+  Status = Ec->Transfer (Ec, EC_COMMAND_GET_PD_VERSION, NULL, &EcResponse);
+  if (EFI_ERROR (Status)) {
+    DebugPrint (DEBUG_INFO, "EC platform not ready.\n");
+    return;
+  }
+  VerAddrPd = SmemGetAddr (SMEM_VER_PD, &SmemSize);
+  if(VerAddrPd == NULL){
+    return;
+  }
+  //DebugPrint (DEBUG_INFO, "PdVer:0x%x 0x%x.\nPdAddr:0x%x\n",EcResponse.PdVer.Pd1Ver, EcResponse.PdVer.Pd2Ver,(UINTN)VerAddrPd);
+  ZeroMem (VerAddrPd, SmemSize);
+  MmioWrite32 ((UINTN)VerAddrPd, EcResponse.PdVer.Pd2Ver | EcResponse.PdVer.Pd1Ver);
 
   return;
 }

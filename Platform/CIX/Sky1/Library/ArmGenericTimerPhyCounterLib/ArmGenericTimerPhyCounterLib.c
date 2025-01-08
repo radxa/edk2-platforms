@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   Copyright (c) 2011 - 2014, ARM Ltd. All rights reserved.<BR>
   Copyright (c) 2014, Linaro Ltd. All rights reserved.<BR>
 

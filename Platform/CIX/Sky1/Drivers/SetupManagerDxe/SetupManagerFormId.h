@@ -1,5 +1,5 @@
 /**
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -60,4 +60,6 @@
 
 #define PLATFORM_SETUP_VARIABLE_GUID \
   {0x5E5B2ABF, 0x599A, 0x4329, {0xBA, 0xA4, 0x6D, 0x6E, 0xAA, 0xAC, 0x8B, 0xC1}}
-#endif /* _PLATFORM_SETUP_FORM_SET_GUID_H_ */
+#define CIX_GLOBAL_VARIABLE_GUID \
+  {0x31d1bbc6, 0xc793, 0x48af, {0x8d, 0xcf, 0xf9, 0x18, 0x38, 0xc7, 0x3a, 0x2e}}
+#endif /* _SETUP_MANAGER_FORM_ID_H_ */

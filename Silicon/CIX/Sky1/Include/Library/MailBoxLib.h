@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 - 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -26,10 +26,16 @@ typedef enum _MBOX_CHANNEL {
 } MBOX_CHANNEL;
 
 typedef enum _MBOX_COMMAND {
-  MBOX_ECHO_REQUEST   = 0x82000001,
-  MBOX_GET_FW_VERSION = 0x8200000F,
-  MBOX_GET_TRNG       = 0x82000010,
+  MBOX_ECHO_REQUEST          = 0x82000001,
+  MBOX_GET_FW_VERSION        = 0x8200000F,
+  MBOX_GET_TRNG              = 0x82000010,
+  MBOX_ENABLE_GASKET_FENCING = 0x82000012,
 } MBOX_COMMAND;
+
+typedef enum _GASKET_FENCE_RANGE_ID {
+  FCH_XSPI_RANGE_ID = 0x01,
+  MAX_RANGE_ID      = 0Xff,
+} GASKET_FENCE_RANGE_ID;
 
 #pragma pack(1)
 
@@ -56,6 +62,16 @@ typedef struct _MBOX_TRNG_RESPONSE {
   UINT32    TrngLen;
   UINT8     Trng[MAX_TRNG_SIZE];
 } MBOX_TRNG_RESPONSE;
+
+typedef struct _MBOX_GASKET_FENCING_PARAMETER {
+  UINT32    Id       : 8;
+  UINT32    Reserved : 24;
+} MBOX_GASKET_FENCING_PARAMETER;
+
+typedef struct _MBOX_GASKET_FENCING_RESPONSE {
+  UINT32    ErrCode;
+  UINT32    Reserved;
+} MBOX_GASKET_FENCING_RESPONSE;
 
 #pragma pack()
 
@@ -90,6 +106,13 @@ EFIAPI
 MboxGetTrng (
   MBOX_TRNG_PARAMETER  *Params,
   MBOX_TRNG_RESPONSE   *Respon
+  );
+
+EFI_STATUS
+EFIAPI
+MboxEnableGasketFencing (
+  MBOX_GASKET_FENCING_PARAMETER  *Params,
+  MBOX_GASKET_FENCING_RESPONSE   *Respon
   );
 
 #endif /* _MAIL_BOX_LIB_H_ */

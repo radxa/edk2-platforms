@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -42,7 +42,7 @@ GetBootloaderInfo (
   UINT32        HdrOffset;
   VERSION_INFO  OldBL1Version;
   VERSION_INFO  OldBL2Version;
-
+  VERSION_INFO  OldBL3Version;
   Status = gBS->LocateProtocol (&gCixFirmwareUpdateProtocolGuid, NULL, (VOID **)&FlashUpdateProtocol);
   if (EFI_ERROR (Status)) {
     Print (L"Firmware update protocol is not installed.\n");
@@ -50,7 +50,7 @@ GetBootloaderInfo (
   }
 
   // Get Onboard Image Header Info
-  Status = FlashUpdateProtocol->FirmwareGetVersion (&HdrOffset, &OldBL1Version.info, &OldBL2Version.info);
+  Status = FlashUpdateProtocol->FirmwareGetVersion (&HdrOffset, &OldBL1Version.info, &OldBL2Version.info, &OldBL3Version.info);
   if (Status != EFI_SUCCESS) {
     Print (L"Get Onboard Firmware version failed!\n");
     return EFI_NOT_FOUND;

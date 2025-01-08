@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ * Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -70,5 +70,9 @@ typedef union {
 UINT32
 IsIpHarvested (
   IN HARVEST_TYPE  IpType
+  );
+
+BOOLEAN
+IsApWatchdogEnable (
   );
 #endif /* __HARVEST_H__ */

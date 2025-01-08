@@ -1,7 +1,7 @@
 /** @file
   AML Code Generation.
 
-  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   Copyright (c) 2020 - 2022, Arm Limited. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent

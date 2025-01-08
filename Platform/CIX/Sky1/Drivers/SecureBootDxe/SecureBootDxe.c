@@ -1,6 +1,6 @@
 /**
   Enroll default PK, KEK, db, dbx.
-Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 Copyright (c) 2021, ARM Ltd. All rights reserved.<BR>
 Copyright (c) 2021, Semihalf All rights reserved.<BR>
 

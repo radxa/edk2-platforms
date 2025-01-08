@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 
 /*
- * Copyright 2022 Cix Technology (Shanghai) Co., Ltd.
+ * Copyright 2024 Cix Technology Group Co., Ltd.
  * All Rights Reserved.
  *
- * The following programs are the sole property of Cix Technology (Shanghai) Co., Ltd.,
+ * The following programs are the sole property of Cix Technology Group Co., Ltd.,
  * and contain its proprietary and confidential information.
  */
 
@@ -316,5 +316,6 @@ typedef struct {
 #define CLK_TREE_CI700_PLL             269
 #define CLK_TREE_MMHUB_PLL             270
 #define CLK_TREE_VPU_CLK               271
+#define CLK_TREE_GPU_CLK_200M          272
 
 #endif

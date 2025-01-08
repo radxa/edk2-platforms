@@ -1,0 +1,51 @@
+/** @file
+
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+
+**/
+
+Device (HDA) {
+  Name (_HID, "CIXH6020")
+  Name (_UID, 0x0)
+
+  Method (_STA, 0x0, Serialized) {
+    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+        Return (0xF)
+    } else {
+        Return (0x0)
+    }
+  }
+
+  Name (_CCA, 0)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (
+      ReadWrite,
+      0x070c0000,
+      0x10000
+      )
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_HDA_INTERRUPT_ID }
+    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+                "\\_SB.GPI3", 0, ResourceConsumer) {
+        5,
+    }
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_hda", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "pdb-gpios", Package () { ^HDA, 0, 0, 0 } },
+      Package () { "cru-ctrl", \_SB.ACRU },
+    }
+  })
+
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_HDA_SW_RST_N  ,\_SB.HDA, "hda"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.DMA1, \_SB.HDA, 0},
+  })
+}
+

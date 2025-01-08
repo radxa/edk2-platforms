@@ -290,7 +290,7 @@ OnboardDevicePowerOff (
   )
 {
   EFI_STATUS      Status = EFI_SUCCESS;
-  EC_W_GPIO_INFO  GpioInfo;
+  EC_PARAMS_GPIO  GpioInfo;
 
   DEBUG ((DEBUG_INFO, "[%a] EntryPoint\n", __FUNCTION__));
 
@@ -312,70 +312,70 @@ OnboardDevicePowerOff (
   if (ConfigData->PlatConfig->TouchPanelPower == 0) {
     // EC GPIO203
     DEBUG ((DEBUG_INFO, "EC GPIO203 Output Low TouchPanelPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 203;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 203;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO203
     DEBUG ((DEBUG_INFO, "EC GPIO203 Output High TouchPanelPower Power On\n"));
-    GpioInfo.GPIO_NUM = 203;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 203;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->TpmPower == 0) {
     // EC GPIO74
     DEBUG ((DEBUG_INFO, "EC GPIO74 Output Low TpmPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 74;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 74;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO74
     DEBUG ((DEBUG_INFO, "EC GPIO74 Output High TpmPower Power On\n"));
-    GpioInfo.GPIO_NUM = 74;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 74;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->WwanPower == 0) {
     // EC GPIO215
     DEBUG ((DEBUG_INFO, "EC GPIO215 Output Low WwanPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 215;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 215;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO215
     DEBUG ((DEBUG_INFO, "EC GPIO215 Output High WwanPower Power On\n"));
-    GpioInfo.GPIO_NUM = 215;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 215;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->PcieX2SlotPower == 0) {
     // EC GPIO214
     DEBUG ((DEBUG_INFO, "EC GPIO214 Output Low PcieX2SlotPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 214;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 214;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO214
     DEBUG ((DEBUG_INFO, "EC GPIO214 Output High PcieX2SlotPower Power On\n"));
-    GpioInfo.GPIO_NUM = 214;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 214;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->FingerPrintPower == 0) {
     // EC GPIO107
     DEBUG ((DEBUG_INFO, "EC GPIO107 Output Low FingerPrintPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 107;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 107;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO107
     DEBUG ((DEBUG_INFO, "EC GPIO107 Output High FingerPrintPower Power On\n"));
-    GpioInfo.GPIO_NUM = 107;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 107;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
@@ -465,9 +465,9 @@ SetStateAfterG3 (
   )
 {
   EFI_STATUS                         Status;
-  EC_RESPONSE_EC_AUTO_POWER_ON_INFO  AutoPowerOnInfo;
+  EC_PARAMS_EC_AUTO_POWER_ON  AutoPowerOnInfo;
 
-  AutoPowerOnInfo.EC_AUTO_POWER_ON_FLG = ConfigData->PlatConfig->StateAfterG3;
+  AutoPowerOnInfo.EcAutoPowerOnFlg = ConfigData->PlatConfig->StateAfterG3;
   Status                               = SetECAutoPowerOn (&AutoPowerOnInfo);
   if (EFI_ERROR (Status)) {
     DebugPrint (DEBUG_ERROR, "SetECAutoPowerOn Status:%r\n", Status);
@@ -501,7 +501,7 @@ FarmFunctionControl (
   UINTN                     VarSize;
   NETWORK_STACK             NetworkStack;
   PLATFORM_SETUP_DATA       PlatformSetupVar;
-  EC_RESPONSE_FRAM_ID_INFO  FarmIdInfo;
+  EC_RESPONSE_FARM_ID       FarmIdInfo;
   UINT8                     FarmEnableFlag;
 
   Status = GetFarmId (&FarmIdInfo);
@@ -510,7 +510,7 @@ FarmFunctionControl (
     return Status;
   }
 
-  if (FarmIdInfo.FRAM_ID == 0) {
+  if (FarmIdInfo.Id == 0) {
     DebugPrint (DEBUG_INFO, "Farm Function Enable.\n");
     VarSize = sizeof (NETWORK_STACK);
     Status  = gRT->GetVariable (

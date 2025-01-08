@@ -1,5 +1,5 @@
 /**
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -106,27 +106,7 @@ endif;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
       endoneof;
 
-      oneof varid   = PlatformSetupVar.GopDisplaySelect,
-        prompt      = STRING_TOKEN(STR_GOP_PROMPT),
-        help        = STRING_TOKEN(STR_GOP_PROMPT_HELP),
-        default     = FixedPcdGet8(PcdGopDisplaySelect),
-        suppressif  FixedPcdGet8(PcdDP0HwProfile) == 0;
-        option text = STRING_TOKEN(STR_DP0), value = 0, flags = RESET_REQUIRED;
-        endif;
-        suppressif FixedPcdGet8(PcdDP1HwProfile) == 0;
-        option text = STRING_TOKEN(STR_DP1), value = 1, flags = RESET_REQUIRED;
-        endif;
-        suppressif FixedPcdGet8(PcdDP2HwProfile) == 0;
-        option text = STRING_TOKEN(STR_DP2), value = 2, flags = RESET_REQUIRED;
-        endif;
-        suppressif FixedPcdGet8(PcdDP3HwProfile) == 0;
-        option text = STRING_TOKEN(STR_DP3), value = 3, flags = RESET_REQUIRED;
-        endif;
-        suppressif FixedPcdGet8(PcdDP4HwProfile) == 0;
-        option text = STRING_TOKEN(STR_DP4), value = 4, flags = RESET_REQUIRED;
-        endif;
-      endoneof;
-suppressif ideqval PlatformSetupVar.SystemTableSelect == 0x01;
+suppressif ideqval SystemTableVar.SystemTableSelect == 0x01;
       goto DEVICE_POWER_CONTROL_FORM_ID,
         prompt = STRING_TOKEN(STR_DEVICE_POWER_CONTROL_FORM_TITLE),
         help   = STRING_TOKEN(STR_DEVICE_POWER_CONTROL_FORM_TITLE_HELP);

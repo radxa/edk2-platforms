@@ -1,5 +1,5 @@
 ## @file
-#  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #  Copyright (c) 2016, Linaro, Ltd. All rights reserved.
 #  Copyright (c) 2017-2018, Andrei Warkentin <andrey.warkentin@gmail.com>
 #
@@ -44,10 +44,11 @@
   gPlatformSetupVariableGuid = {0x5E5B2ABF, 0x599A, 0x4329, {0xBA, 0xA4, 0x6D, 0x6E, 0xAA, 0xAC, 0x8B, 0xC1}}
   gPlatformAcpiConfigProtocolGuid = {0x1B5EE0D9, 0x1145, 0x42B9, {0x93, 0x33, 0xF9, 0x8B, 0x3D, 0x60, 0xF7, 0x03}}
   gCixVariableVerificationGuid = {0xB5DAB733, 0x403A, 0x4D43, {0xEA, 0xF0, 0x89, 0xA4, 0xAE, 0x5C, 0x41, 0x5A}}
-  gCixSetupSaveVariableGuid = {0x6ea036ed, 0xdee0, 0x54b4, { 0x08, 0x22, 0x7c, 0x8a, 0x47, 0x3e, 0xa5, 0xaa }}
   gCixI2cHidDevicePathGuid = { 0xdeb15fae, 0xc007, 0x4a82, { 0xb7, 0x2f, 0x2e, 0x6e, 0x39, 0xc0, 0x2f, 0xf5 } }
   gCixPrivateSetupFormsetGuid = { 0x3182bd97, 0x77ea, 0x44ab, { 0x84, 0xa4, 0x8d, 0x21, 0xd, 0x10, 0xbb, 0x4c } }
   gCixPlatformTokenSpaceGuid = { 0x36d559, 0x459f, 0x48fa, {0x8b, 0xbc, 0x43, 0xb5, 0x54, 0xec, 0xae, 0x8d}}
+  gCixGlobalVariableGuid = { 0x31d1bbc6, 0xc793, 0x48af, { 0x8d, 0xcf, 0xf9, 0x18, 0x38, 0xc7, 0x3a, 0x2e } }
+
 
 [PcdsFixedAtBuild.common]
 
@@ -106,12 +107,14 @@
   gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn|FALSE|BOOLEAN|0x00000135
 
   # ACPI
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcBatterySupport|FALSE|BOOLEAN|0x0000A001
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcThermalSupport|FALSE|BOOLEAN|0x0000A002
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcLidSupport|FALSE|BOOLEAN|0x0000A003
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcPowerButtonSupport|FALSE|BOOLEAN|0x0000A004
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable|FALSE|BOOLEAN|0x0000A005
-  gCixPlatformTokenSpaceGuid.PcdAcpiI2cKeyboardSupport|FALSE|BOOLEAN|0x0000A006
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio0IoMask|0x00000000|UINT32|0x0000A006
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio1IoMask|0x00000000|UINT32|0x0000A007
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio2IoMask|0x00000000|UINT32|0x0000A008
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio3IoMask|0x00000000|UINT32|0x0000A009
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio4IoMask|0x00000000|UINT32|0x0000A00A
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio5IoMask|0x00000000|UINT32|0x0000A00B
+
   #RTC Wakeup
   gCixPlatformTokenSpaceGuid.PcdRtcWakeup|0x00|UINT8|0x00002001
   #Ligt Sensor Control

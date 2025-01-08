@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   Copyright (c) 2021, ARM Limited. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -33,16 +33,16 @@ DumpPlatformFwVersions (
 
   Status = Ec->Transfer (Ec, EC_COMMAND_GET_PD_VERSION, NULL, &EcResponse);
   if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "[VER] PD:failed\n");
+    DebugPrint (DEBUG_INFO, " PD:failed\n");
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] PD:%d.%d %d.%d\n", EcResponse.PdVer.Pd2Ver & 0xFF, (EcResponse.PdVer.Pd2Ver & 0xFF00) >> 8, EcResponse.PdVer.Pd1Ver & 0xFF, (EcResponse.PdVer.Pd1Ver & 0xFF00) >> 8);
+    DebugPrint (DEBUG_INFO, " PD:%d.%d %d.%d\n", EcResponse.PdVer.Pd2Ver & 0xFF, (EcResponse.PdVer.Pd2Ver & 0xFF00) >> 8, EcResponse.PdVer.Pd1Ver & 0xFF, (EcResponse.PdVer.Pd1Ver & 0xFF00) >> 8);
   }
 
   Status =  Ec->Transfer (Ec, EC_COMMAND_GET_PMIC_VERSION, NULL, &EcResponse);
   if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "[VER] PMIC:failed\n");
+    DebugPrint (DEBUG_INFO, " PMIC:failed\n");
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] PMIC: 0x%02x 0x%02x 0x%02x \n", EcResponse.PmicVer.Pmic1Ver, EcResponse.PmicVer.Pmic2Ver, EcResponse.PmicVer.Pmic3Ver);
+    DebugPrint (DEBUG_INFO, " PMIC: 0x%02x 0x%02x 0x%02x \n", EcResponse.PmicVer.Pmic1Ver, EcResponse.PmicVer.Pmic2Ver, EcResponse.PmicVer.Pmic3Ver);
   }
 
   return EFI_SUCCESS;
@@ -76,56 +76,56 @@ FwVersionProtocolTestEntryPoint (
   DebugPrint (DEBUG_INFO, "------Begin firmware version dump------\n");
   Status = pFwVerProtocol->GetFwVersion (FwVerSE, &pFwVerBuff, &FwVerSize);
   if (!EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "[VER] SE:%s\n", pFwVerBuff);
+    DebugPrint (DEBUG_INFO, " SE:%s\n", pFwVerBuff);
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] SE:NULL\n");
+    DebugPrint (DEBUG_INFO, " SE:NULL\n");
   }
 
   Status = pFwVerProtocol->GetFwVersion (FwVerPM, &pFwVerBuff, &FwVerSize);
   if (!EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "[VER] PM:%s\n", pFwVerBuff);
+    DebugPrint (DEBUG_INFO, " PM:%s\n", pFwVerBuff);
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] PM:NULL\n");
+    DebugPrint (DEBUG_INFO, " PM:NULL\n");
   }
 
   Status = pFwVerProtocol->GetFwVersion (FwVerPBL, &pFwVerBuff, &FwVerSize);
   if (!EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "[VER] PBL:%s\n", pFwVerBuff);
+    DebugPrint (DEBUG_INFO, " PBL:%s\n", pFwVerBuff);
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] PBL:NULL\n");
+    DebugPrint (DEBUG_INFO, " PBL:NULL\n");
   }
 
   Status = pFwVerProtocol->GetFwVersion (FwVerATF, &pFwVerBuff, &FwVerSize);
   if (!EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "[VER] ATF:%s\n", pFwVerBuff);
+    DebugPrint (DEBUG_INFO, " ATF:%s\n", pFwVerBuff);
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] ATF:NULL\n");
+    DebugPrint (DEBUG_INFO, " ATF:NULL\n");
   }
 
   Status = pFwVerProtocol->GetFwVersion (FwVerTEE, &pFwVerBuff, &FwVerSize);
   if (!EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "[VER] TEE:%s\n", pFwVerBuff);
+    DebugPrint (DEBUG_INFO, " TEE:%s\n", pFwVerBuff);
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] TEE:NULL\n");
+    DebugPrint (DEBUG_INFO, " TEE:NULL\n");
   }
 
   Status = pFwVerProtocol->GetFwVersion (FwVerUEFI, &pFwVerBuff, &FwVerSize);
   if (!EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "[VER] UEFI:%s\n", pFwVerBuff);
+    DebugPrint (DEBUG_INFO, " UEFI:%s\n", pFwVerBuff);
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] UEFI:NULL\n");
+    DebugPrint (DEBUG_INFO, " UEFI:NULL\n");
   }
 
   Status = pFwVerProtocol->GetFwVersion (FwVerEC, &pFwVerBuff, &FwVerSize);
   if (!EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "[VER] EC:%s\n", pFwVerBuff);
+    DebugPrint (DEBUG_INFO, " EC:%s\n", pFwVerBuff);
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] EC:NULL\n");
+    DebugPrint (DEBUG_INFO, " EC:NULL\n");
   }
 
   Status = pFwVerProtocol->GetFwVersion (FwVerBoardId, &pFwVerBuff, &FwVerSize);
   if (!EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "[VER] Board Id:%x", *pFwVerBuff);
+    DebugPrint (DEBUG_INFO, " Board Id:%x", *pFwVerBuff);
     pBoardId = (EC_RESPONSE_BOARD_ID *)pFwVerBuff;
     Sku      = (pBoardId->Id.SkuExt << 3) + pBoardId->Id.Sku;
     switch (Sku) {
@@ -168,7 +168,7 @@ FwVersionProtocolTestEntryPoint (
         break;
     }
   } else {
-    DebugPrint (DEBUG_INFO, "[VER] Board Id:NULL\n");
+    DebugPrint (DEBUG_INFO, " Board Id:NULL\n");
   }
 
   DumpPlatformFwVersions ();

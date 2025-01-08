@@ -1,5 +1,5 @@
 /**
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -23,6 +23,11 @@ formset
     attribute = EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_NON_VOLATILE,
     name  = PlatformSetupVar,
     guid  = PLATFORM_SETUP_VARIABLE_GUID;
+
+  efivarstore SYSTEM_TABLE,
+    attribute = EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_NON_VOLATILE,
+    name  = SystemTableVar,
+    guid  = CIX_GLOBAL_VARIABLE_GUID;
 
   efivarstore NETWORK_STACK,
     attribute = EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_NON_VOLATILE,
@@ -90,7 +95,7 @@ formset
 
     SEPARATOR
 
-		oneof varid     =  PlatformSetupVar.SystemTableSelect,
+		oneof varid     =  SystemTableVar.SystemTableSelect,
             prompt      = STRING_TOKEN(STR_SYSTEM_TABLE_PROMPT),
             help        = STRING_TOKEN(STR_SYSTEM_TABLE_HELP),
             default     = FixedPcdGet8 (PcdSystemTableSelect),
@@ -102,7 +107,7 @@ formset
       prompt = STRING_TOKEN(STR_HARDWARE_INFO_FORM_SET_TITLE),
       help = STRING_TOKEN(STR_HARDWARE_INFO_FORM_SET_TITLE_HELP);
 
-suppressif ideqval PlatformSetupVar.SystemTableSelect == 0x01;
+suppressif ideqval SystemTableVar.SystemTableSelect == 0x01;
     goto SOC_FORM_SET_ID,
       prompt = STRING_TOKEN(STR_SOC_FORM_SET_TITLE),
       help = STRING_TOKEN(STR_SOC_FORM_SET_TITLE_HELP);

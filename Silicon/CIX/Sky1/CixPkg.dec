@@ -1,5 +1,5 @@
 ## @file
-#  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #  Copyright (c) 2016, Linaro, Ltd. All rights reserved.
 #  Copyright (c) 2017-2018, Andrei Warkentin <andrey.warkentin@gmail.com>
 #
@@ -33,13 +33,14 @@
   gCixSpiHostProtocolGuid = {0x79C83D2B, 0x8CE1, 0x4DD3, {0xAE, 0x24, 0x4B, 0xD2, 0xD8, 0x72, 0x36, 0xB1}}
   gCixPdProtocolGuid = {0x0ca5cc68, 0x66c7, 0x4e45, {0xa3, 0xf0, 0xe5, 0x3c, 0xc6, 0xdb, 0x51, 0x9a}}
   gEfiI2sMasterProtocolGuid = {0xf845b0dc, 0x3ab3, 0x11ef, { 0x87, 0xd4, 0xc3, 0xf6, 0xce, 0x87, 0xef, 0x83}}
-  gCixMmNorFlashProtocolGuid = { 0xD1CFF9E5, 0xE3CA, 0x459B, {0xAF, 0xDD, 0x74, 0x29, 0x2C, 0x25, 0xDF, 0x24 } }
 
 [Guids]
   gCixTokenSpaceGuid = {0xCF1B0CF3, 0x88C3, 0x7DBE, {0xF8, 0x6D, 0xB1, 0x6D, 0x4F, 0x06, 0x8F, 0xED}}
   gCixI2cDevicePathGuid = {0x85127A3C, 0x3F52, 0xA0F8, {0x3B, 0xE8, 0x03, 0xD5, 0xCC, 0x56, 0x26, 0x6F}}
   gCixNorFlashDevicePathGuid = {0x7D4BC61B, 0x2E8D, 0x4886, {0xBE, 0x2E, 0xAD, 0xF8, 0x91, 0x9E, 0x73, 0x8B}}
   gCixSpiDevicePathGuid = {0xEE36E7A4, 0xB9C2, 0x4978, {0x96, 0xBA, 0x2C, 0x92, 0x98, 0x2E, 0x37, 0xC5}}
+  gCixMmNorFlashCommunicateGuid = { 0xD1CFF9E5, 0xE3CA, 0x459B, {0xAF, 0xDD, 0x74, 0x29, 0x2C, 0x25, 0xDF, 0x24 } }
+  gCixMmSerialOutCommunicateGuid = { 0x2F2E4469, 0x149A, 0x49F4, {0xAD, 0xB3, 0x73, 0x21, 0x1D, 0x80, 0x83, 0xDF } }
 
 #Pcd token definition please refer to the following link:
 #https://confluence.cixtech.com/display/SW/SKY1+uefi+PCD+Token+definition
@@ -140,12 +141,6 @@
   gCixTokenSpaceGuid.PcdTypec0PhyBaseAddress|0x90a0000|UINT32|0x0000031c
   gCixTokenSpaceGuid.PcdTypec1PhyBaseAddress|0x9110000|UINT32|0x0000031d
   gCixTokenSpaceGuid.PcdTypec2PhyBaseAddress|0x9180000|UINT32|0x0000031e
-
-  #When set typec phy disable, we also need to set related usb disable and dpu hw profile 0.
-  gCixTokenSpaceGuid.PcdTypecPhy0Enable|TRUE|BOOLEAN|0x0000031F
-  gCixTokenSpaceGuid.PcdTypecPhy1Enable|TRUE|BOOLEAN|0x00000320
-  gCixTokenSpaceGuid.PcdTypecPhy2Enable|TRUE|BOOLEAN|0x00000321
-  gCixTokenSpaceGuid.PcdTypecPhy3Enable|TRUE|BOOLEAN|0x00000322
 
   gArmTokenSpaceGuid.PcdArmFreeUncachedMemorySizeThreshold|0x20000000|UINT64|0x00000380
 # PCIe Root Port Support
@@ -352,12 +347,18 @@
   gCixTokenSpaceGuid.PcdCpuCore11En|TRUE|BOOLEAN|0x00002037
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState|0x01|UINT8|0x00002038       # ACPI CPU LPI State, 0-disable, 1-LPI0, 2-LPI1, 3-LPI2
 
-  gCixTokenSpaceGuid.PcdDP0HwProfile|0x01|UINT8|0x00002039          # 0-no display, 1-typec, 2-edp/dp
-  gCixTokenSpaceGuid.PcdDP1HwProfile|0x01|UINT8|0x0000203A          # 0-no display, 1-typec, 2-edp/dp
-  gCixTokenSpaceGuid.PcdDP2HwProfile|0x02|UINT8|0x0000203B          # 0-no display, 1-typec, 2-edp/dp
-  gCixTokenSpaceGuid.PcdDP3HwProfile|0x01|UINT8|0x0000203C          # 0-no display, 1-typec, 2-edp/dp
-  gCixTokenSpaceGuid.PcdDP4HwProfile|0x01|UINT8|0x0000203D          # 0-no display, 1-typec, 2-edp/dp
-  gCixTokenSpaceGuid.PcdGopDisplaySelect|0x02|UINT8|0x0000203E      # 0-4
+  gCixTokenSpaceGuid.PcdDP0Enable|TRUE|BOOLEAN|0x00002039
+  gCixTokenSpaceGuid.PcdDP1Enable|TRUE|BOOLEAN|0x0000203A
+  gCixTokenSpaceGuid.PcdDP2Enable|TRUE|BOOLEAN|0x0000203B
+  gCixTokenSpaceGuid.PcdDP3Enable|TRUE|BOOLEAN|0x0000203C
+  gCixTokenSpaceGuid.PcdDP4Enable|TRUE|BOOLEAN|0x0000203D
+
+  # Fill in dpu index to config display priority
+  gCixTokenSpaceGuid.PcdDPPriority0|2|UINT8|0x0000203E  # highest priority
+  gCixTokenSpaceGuid.PcdDPPriority1|0|UINT8|0x0000203F  #
+  gCixTokenSpaceGuid.PcdDPPriority2|1|UINT8|0x00002040  #
+  gCixTokenSpaceGuid.PcdDPPriority3|3|UINT8|0x00002041  #
+  gCixTokenSpaceGuid.PcdDPPriority4|4|UINT8|0x00002042  # lowest priority
 
   gCixTokenSpaceGuid.PcdSpi0En|FALSE|BOOLEAN|0x00000122
   gCixTokenSpaceGuid.PcdSpi1En|FALSE|BOOLEAN|0x00000123

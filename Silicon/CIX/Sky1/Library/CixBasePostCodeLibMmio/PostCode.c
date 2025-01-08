@@ -1,13 +1,13 @@
 /** @file
 
-  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
 #include <Base.h>
-#include <Library/PostCodeLib.h>
+#include <Library/CixPostCodeLib.h>
 #include <Library/PcdLib.h>
 #include <Library/IoLib.h>
 #include <Library/SerialPortLib.h>
@@ -15,6 +15,7 @@
 #include <Library/DebugLib.h>
 #include <Library/TimerLib.h>
 #include <Library/BaseLib.h>
+#include <Library/CixFwBootPerfLib.h>
 
 typedef struct {
   POST_CODE_KEY    Key;
@@ -188,13 +189,16 @@ TimeStampPrint()
 {
   CHAR8  Buffer[32];
   UINT64 Ticker,TimeStamp,Second,Remainder,MicroSecond;
+  UINT64 TimeStampStart = 0;
+  TimeStampStart = cix_get_boot_phase(BLOADER_PHASE,RECORD_START)*1000000;
   Ticker    = GetPerformanceCounter ();
   TimeStamp = GetTimeInNanoSecond (Ticker);
+  TimeStamp = TimeStamp - TimeStampStart;
   Second   = TimeStamp/(1000*1000*1000);
   Remainder = TimeStamp%(1000*1000*1000);
-  MicroSecond = Remainder/(1000);
+  MicroSecond = Remainder/(1000*1000);
 
-  AsciiSPrint (Buffer, 13,"[%02lld.%06lld] ", Second,MicroSecond);
+  AsciiSPrint (Buffer, 13,"[%02d.%03d] ", Second,MicroSecond);
   SerialPortWrite ((UINT8 *)Buffer, AsciiStrLen (Buffer));
     // Index++;
 }

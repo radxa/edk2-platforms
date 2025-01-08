@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  **/
 
 #ifndef _PLATFORM_CONFIG_PARAMS_HOOK_LIB_H_

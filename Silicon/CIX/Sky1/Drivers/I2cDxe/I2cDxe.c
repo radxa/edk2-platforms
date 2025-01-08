@@ -1,7 +1,7 @@
 /** I2cDxe.c
   I2c driver APIs for read, write, initialize, set speed and reset
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -15,7 +15,7 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiLib.h>
-#include <Library/PostCodeLib.h>
+#include <Library/CixPostCodeLib.h>
 #include <Protocol/ConfigParamsManageProtocol.h>
 #include "I2cDxe.h"
 

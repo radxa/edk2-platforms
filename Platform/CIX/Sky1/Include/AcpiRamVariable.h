@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *
  *  SPDX-License-Identifier: BSD-2-Clause-Patent
  *
@@ -43,6 +43,14 @@
 #define ARV_CPU_LPI0_ENABLE_OFFSET          0x1F
 #define ARV_CPU_LPI1_ENABLE_OFFSET          0x20
 #define ARV_CPU_LPI2_ENABLE_OFFSET          0x21
+#define ARV_NPU_SUPPORT_INFO_OFFSET         0X22
+#define ARV_DPU_00_SUPPORT_OFFSET           0X23
+#define ARV_DPU_01_SUPPORT_OFFSET           0X24
+#define ARV_DPU_02_SUPPORT_OFFSET           0X25
+#define ARV_DPU_03_SUPPORT_OFFSET           0X26
+#define ARV_DPU_04_SUPPORT_OFFSET           0X27
+#define ARV_AUDIO_SUPPORT_OFFSET            0X28
+#define ARV_ISP_SUPPORT_OFFSET              0X29
 //
-#define ARV_VARIABLE_TABLE_TOTAL_SIZE  0x22
+#define ARV_VARIABLE_TABLE_TOTAL_SIZE  0x2A
 #endif

@@ -3,7 +3,7 @@
   to be replayed during an S3 resume. This library class maps directly on top
   of the IoLib class.
 
-  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 

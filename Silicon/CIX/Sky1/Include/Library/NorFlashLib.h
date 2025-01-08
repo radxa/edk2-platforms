@@ -12,6 +12,7 @@
 #include <Library/DebugLib.h>
 #include <Protocol/BlockIo.h>
 #include <Protocol/DiskIo.h>
+#include <Pi/PiFirmwareVolume.h>
 #include <Protocol/FirmwareVolumeBlock.h>
 #include "MemoryMap.h"
 

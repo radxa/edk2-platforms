@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 
 /*
- * Copyright 2023 Cix Technology (Shanghai) Co., Ltd.
+ * Copyright 2024 Cix Technology Group Co., Ltd.
  * All Rights Reserved.
  *
- * The following programs are the sole property of Cix Technology (Shanghai) Co., Ltd.,
+ * The following programs are the sole property of Cix Technology Group Co., Ltd.,
  * and contain its proprietary and confidential information.
  */
 

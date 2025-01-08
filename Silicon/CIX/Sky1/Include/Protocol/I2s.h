@@ -4,7 +4,7 @@
   @author Black.Li (black.li@cixtech.com)
 
 
-  *  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved. *
+  *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved. *
   *
   *  SPDX-License-Identifier: BSD-2-Clause-Patent
   *
