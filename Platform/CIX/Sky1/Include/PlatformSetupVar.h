@@ -120,10 +120,8 @@ typedef struct {
   UINT8     LightSensorCtrl;
   UINT8     CpuLpiState;
   UINT8     SpcrEnable;
-#ifdef FW_CONFIG_UPDATE_SUPPORT
   UINT8     CpuFMax;
   UINT8     GpuFMax;
-#endif
 } PLATFORM_SETUP_DATA;
 
 typedef struct {
