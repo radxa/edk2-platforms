@@ -11,11 +11,11 @@ main: $(OBJS)
 	$(CC) $^ -o $(BUILD_NAME)
 
 	@./$(BUILD_NAME)
-	@rm -f *.o ./*/*.o $(BUILD_NAME)
+	@rm -f $(OBJS) $(BUILD_NAME)
 
 $(OBJS): %.o: %.c
 	$(CC) $(INC_DIR) -c $< -o $@ $(CFLAG)
 
 .PHONY: clean
 clean:
-	@rm -f *.o ./*/*.o $(BUILD_NAME)
+	@rm -f $(OBJS) $(BUILD_NAME)

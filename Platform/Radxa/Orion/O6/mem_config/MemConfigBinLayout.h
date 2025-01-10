@@ -13,10 +13,12 @@ extern MEM_CONFIG_TRAIN_OPTIMIZE    MemTrainOptimize;
 extern MEM_CONFIG_TRACE_LEN_DIFF    MemTraceLenDiffCfg;
 extern MEM_CONFIG_BLOCK_BOARDID_MAP BoardIdMapBlock;
 
+extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_8G;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_12G;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_32G;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_64G;
+extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_32G_Lo;
 
 extern MEM_CONFIG_BUSCFG_LP5        MemLpddr5BusCfg_rs600_x8;
 extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_x8;
@@ -32,10 +34,12 @@ extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_x8;
   CDCB_BLOCK(DqDmMapBlock), \
   CDCB_BLOCK(MemTrainOptimize), \
   CDCB_BLOCK(MemTraceLenDiffCfg), \
+  CDCB_BLOCK(GlobalConfigBlock_8G), \
   CDCB_BLOCK(GlobalConfigBlock_12G), \
   CDCB_BLOCK(GlobalConfigBlock_16G), \
   CDCB_BLOCK(GlobalConfigBlock_32G), \
   CDCB_BLOCK(GlobalConfigBlock_64G), \
+  CDCB_BLOCK(GlobalConfigBlock_32G_Lo), \
   CDCB_BLOCK(MemLpddr5BusCfg_rs600_x8), \
   CDCB_BLOCK(MemPhyPadCfg_rs600_x8), \
 
