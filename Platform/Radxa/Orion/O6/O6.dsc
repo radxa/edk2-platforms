@@ -122,8 +122,8 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 !if $(WINDOWS_BOOT_ENABLE) == TRUE
 !endif
 
-  DEFINE SPI_VARIABLE_BASE          = 0x00805000
-  DEFINE SPI_VARIABLE_SIZE          = 0x2000
+  DEFINE SPI_VARIABLE_BASE          = 0x007D5000
+  DEFINE SPI_VARIABLE_SIZE          = 0x10000
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
 !include Platform/Radxa/RadxaCommon.dsc.inc
@@ -205,11 +205,6 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 [BuildOptions]
   GCC:DEBUG_*_*_CC_FLAGS          = -DDEBUG_MODE
   GCC:RELEASE_*_*_CC_FLAGS        = -DMDEPKG_NDEBUG -DNDEBUG
-!if $(TARGET) == RELEASE
-  GCC:*_*_*_CC_FLAGS              = -DUEFI_FW_VERSION=$(UEFI_FW_STAGE)"-W"$(COMPILE_BUILD_DATE)
-!else
-  GCC:*_*_*_CC_FLAGS              = -DUEFI_FW_VERSION=$(UEFI_FW_STAGE)"-D"$(COMPILE_BUILD_DATE)
-!endif
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
   GCC:*_*_*_CC_FLAGS          = -DFASTBOOT_NVME
@@ -281,12 +276,7 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 #
 ################################################################################
 [PcdsFixedAtBuild.common]
-!if $(TARGET) == RELEASE
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"$(UEFI_FW_STAGE)-W$(COMPILE_BUILD_DATE)-$(COMPILE_COMMIT_HASH)"
-!else
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"$(UEFI_FW_STAGE)-D$(COMPILE_BUILD_DATE)-$(COMPILE_COMMIT_HASH)"
-!endif
-  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"SKY1-EVB.DTB"
+  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"sky1-orion-o6.dtb"
   gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateEnable|TRUE
 
   gCixTokenSpaceGuid.PcdPcieRootPort0Enable|TRUE
@@ -377,6 +367,20 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 
   # RTC (taken from Phecda PcdI2c3BusFreq)
   gPcf8563RealTimeClockLibTokenSpaceGuid.PcdI2cBusFrequency|100000
+
+  # Fill in dpu index to config display priority
+  # Index | Output Name
+  # ------|------------
+  #     0 | USB-C 0
+  #     1 | HDMI
+  #     2 | eDP
+  #     3 | USB-C 1
+  #     4 | DP
+  gCixTokenSpaceGuid.PcdDPPriority0|1 # highest priority
+  gCixTokenSpaceGuid.PcdDPPriority1|4 #
+  gCixTokenSpaceGuid.PcdDPPriority2|0 #
+  gCixTokenSpaceGuid.PcdDPPriority3|3 #
+  gCixTokenSpaceGuid.PcdDPPriority4|2 # lowest priority
 
 [PcdsDynamicDefault.common]
 

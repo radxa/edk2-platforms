@@ -33,3 +33,7 @@
     <LibraryClasses>
       DtPlatformDtbLoaderLib|EmbeddedPkg/Library/DxeDtPlatformDtbLoaderLibDefault/DxeDtPlatformDtbLoaderLibDefault.inf
   }
+
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
+  MdeModulePkg/Application/VariableInfo/VariableInfo.inf
+!endif

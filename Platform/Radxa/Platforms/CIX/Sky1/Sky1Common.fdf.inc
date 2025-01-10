@@ -16,3 +16,7 @@
 !endif
 
   INF EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf
+
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
+  INF MdeModulePkg/Application/VariableInfo/VariableInfo.inf
+!endif

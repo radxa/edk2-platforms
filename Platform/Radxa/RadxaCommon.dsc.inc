@@ -9,6 +9,13 @@
 
 [Components.common]
 
+[BuildOptions]
+!if $(TARGET) == RELEASE
+  GCC:*_*_*_CC_FLAGS              = -DUEFI_FW_VERSION=$(COMPILE_DEB_VERSION)
+!else
+  GCC:*_*_*_CC_FLAGS              = -DUEFI_FW_VERSION=$(COMPILE_DEB_VERSION)"-"$(COMPILE_COMMIT_HASH)"-debug:"$(COMPILE_BUILD_DATE)
+!endif
+
 [PcdsFixedAtBuild.common]
   # Version string
 !if $(TARGET) == RELEASE
