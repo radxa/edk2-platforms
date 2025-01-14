@@ -119,8 +119,8 @@
   DEFINE SMBIOS_ENABLE              = TRUE
 
 
-  DEFINE SPI_VARIABLE_BASE          = 0x007D5000
-  DEFINE SPI_VARIABLE_SIZE          = 0x10000
+  DEFINE SPI_VARIABLE_BASE          = 0x00390000
+  DEFINE SPI_VARIABLE_SIZE          = 0x28000
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
 !include NetworkPkg/NetworkDefines.dsc.inc
@@ -269,7 +269,6 @@
 !endif
 
 !if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
-  GCC:*_*_*_CC_FLAGS          = -DFW_CONFIG_UPDATE_SUPPORT
   GCC:*_*_*_VFRPP_FLAGS       = -DFW_CONFIG_UPDATE_SUPPORT=1
 !endif
 

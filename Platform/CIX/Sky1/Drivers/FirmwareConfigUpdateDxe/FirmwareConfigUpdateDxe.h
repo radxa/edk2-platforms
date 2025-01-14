@@ -17,4 +17,7 @@
 #include <Library/BaseMemoryLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Protocol/CixFwUpdateProtocol.h>
+#include <Library/DevicePathLib.h>
+#include <Library/NorFlashLib.h>
+#include <Library/FirmwareParseLib.h>
 #endif

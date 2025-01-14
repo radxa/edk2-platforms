@@ -123,5 +123,5 @@
   DEFINE PK_DEFAULT_FILE         = Platform/CIX/Sky1/Drivers/SecureBootDxe/PK.cer
   DEFINE KEK_DEFAULT_FILE1       = Platform/CIX/Sky1/Drivers/SecureBootDxe/KEK.cer
   DEFINE DB_DEFAULT_FILE1        = Platform/CIX/Sky1/Drivers/SecureBootDxe/DB.cer
-  DEFINE SPI_VARIABLE_BASE       = 0x00605000
-  DEFINE SPI_VARIABLE_SIZE       = 0x2000
+  DEFINE SPI_VARIABLE_BASE       = 0x00390000
+  DEFINE SPI_VARIABLE_SIZE       = 0x28000

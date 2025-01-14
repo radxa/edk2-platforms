@@ -25,6 +25,7 @@
   MdeModulePkg/MdeModulePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
   Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
 
 [LibraryClasses]
   UefiLib
@@ -36,13 +37,16 @@
   UefiRuntimeServicesTableLib
   UefiBootServicesTableLib
   UefiDriverEntryPoint
+  FirmwareParseLib
 
 [Protocols]
   gCixFirmwareUpdateProtocolGuid
+  gEfiDiskIoProtocolGuid
 
 [Guids]
   gPlatformSetupVariableGuid
   gSetupSaveVariableCallBackGuid
+  gCixNorFlashDevicePathGuid
 
 [Depex]
   TRUE
