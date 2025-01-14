@@ -122,8 +122,8 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 !if $(WINDOWS_BOOT_ENABLE) == TRUE
 !endif
 
-  DEFINE SPI_VARIABLE_BASE          = 0x007D5000
-  DEFINE SPI_VARIABLE_SIZE          = 0x10000
+  DEFINE SPI_VARIABLE_BASE          = 0x00390000
+  DEFINE SPI_VARIABLE_SIZE          = 0x28000
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
 !include Platform/Radxa/RadxaCommon.dsc.inc
