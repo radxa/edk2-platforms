@@ -25,7 +25,7 @@ extern UINT64  mSystemMemoryEnd;
 
 BOOLEAN
 ReportDramHighSpace (
-  IN OUT UINT32  *DramHighSize
+  IN OUT UINT64  *DramHighSize
   )
 {
   MEM_INIT_OUTPUT_BUFFER  *MemInfoAddr = NULL;
@@ -36,7 +36,7 @@ ReportDramHighSpace (
 
   if (MemInfoAddr->Signature == MEM_OUTPUT_BUFFER_SIG) {
     if (MemInfoAddr->AvailableSize > 0x7800) {
-      *DramHighSize = (MemInfoAddr->AvailableSize-0x7800)<<20;
+      *DramHighSize = (UINT64)(((UINT64)(MemInfoAddr->AvailableSize-0x7800))<<20);
       return TRUE;
     } else {
       return FALSE;
@@ -64,7 +64,7 @@ ArmPlatformGetVirtualMemoryMap (
   )
 {
   UINTN    Index        = 0;
-  UINT32   DramHighSize = 0;
+  UINT64   DramHighSize = 0;
   BOOLEAN  DramHigh     = FALSE;
 
   ARM_MEMORY_REGION_DESCRIPTOR  *VirtualMemoryTable;

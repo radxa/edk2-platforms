@@ -78,6 +78,12 @@ VideoModeGetSupportedVideoMode (
   UINT32  Index
   );
 
+UINT32
+EdidGetPanelID (
+  IN CONST VOID  *EDID,
+  IN UINT32      EdidSize
+  );
+
 // EDID Detailed timings section - Features
 enum EdidDetailedTimingsFeatures {
   EdidDetailedTimingsFeaturesInterlaced             = 0x80,
@@ -94,13 +100,13 @@ enum VideoModeFlags {
   VideoModeFlagsVerticalSyncInverted   = 0x0200,
 };
 
-struct StandardTimingIdentification {
+struct __attribute__ ((__packed__)) StandardTimingIdentification {
   UINT8    HorizontalActivePixels;     // X resolution, from 256->2288 in increments of 8 pixels
   UINT8    ImageAspectRatioAndrefresh; // Bits 7,6 Aspect ratio - 0=16:10 1=4:3 2=5:4 3=16:9
   // Bits 5,0 Refresh rate Range 60->1213Hz
 };
 
-struct DetailedTimingIdentification {
+struct __attribute__ ((__packed__)) DetailedTimingIdentification {
   UINT16    PixelClock;               // wPixelClock in VideoMode struct
   UINT8     HActiveLo;                // wHActive
   UINT8     HBlankingLo;              // wHBlanking
@@ -120,9 +126,9 @@ struct DetailedTimingIdentification {
   UINT8     Features;
 };
 
-struct Edid {
+struct __attribute__ ((__packed__)) Edid {
   UINT8                                  Header[EDID_HEADER_SIZE]; // EDID header "00 FF FF FF FF FF FF 00"
-  UINT16                                 ManufactureName;          // EISA 3-character ID
+  UINT8                                  MFGID[2];                 // EISA 3-character ID
   UINT16                                 ProductCode;              // Vendor assigned code
   UINT32                                 SerialNumber;             // 32-bit serial number
   UINT8                                  WeekOfManufacture;        // Week number
