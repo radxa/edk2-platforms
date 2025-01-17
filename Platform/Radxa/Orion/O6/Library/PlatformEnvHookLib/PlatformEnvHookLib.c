@@ -306,9 +306,23 @@ WakeupSourceInit (
 {
   EFI_STATUS  Status = EFI_SUCCESS;
 
-  // wakeup enable/disable sample
-  // WakeupCfg(S5_GPIO_U0,FALSE);//disable GPIO wakeup
+  DEBUG ((DEBUG_INFO, "%a\n",__func__));
 
+  /*usb3 typec ports*/
+  WakeupCfg(USB_C_SSP_0_HOST_IRQ,FALSE);
+  WakeupCfg(USB_C_SSP_1_HOST_IRQ,FALSE);
+  WakeupCfg(USB_C_SSP_2_HOST_IRQ,FALSE);
+  WakeupCfg(USB_C_SSP_3_HOST_IRQ,FALSE);
+
+  /*usb3 typea ports*/
+  WakeupCfg(USB_SSP_0_HOST_IRQ,FALSE);
+  WakeupCfg(USB_SSP_1_HOST_IRQ,FALSE);
+
+  /*usb2 ports*/
+  WakeupCfg(USB2_0_HOST_IRQ,FALSE);
+  WakeupCfg(USB2_1_HOST_IRQ,FALSE);
+  WakeupCfg(USB2_2_HOST_IRQ,FALSE);
+  WakeupCfg(USB2_3_HOST_IRQ,FALSE);
   return Status;
 }
 
