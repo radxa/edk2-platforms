@@ -181,6 +181,8 @@
   I2cLib|Silicon/CIX/Sky1/Library/I2cLib/I2cLib.inf
   !if $(I2C_EC_ENABLE) == TRUE
   EcLib|Platform/CIX/Sky1/Library/Ite5570EcLib/Ite5570EcLib.inf
+  !else
+  EcLib|Platform/CIX/Library/EcLibNull/EcLibNull.inf
   !endif
 !endif
   ConfigParamsHookLib|Silicon/CIX/Sky1/Library/ConfigParamsHookNullLib/ConfigParamsHookNullLib.inf

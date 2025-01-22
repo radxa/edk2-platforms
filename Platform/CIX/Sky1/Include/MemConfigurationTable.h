@@ -62,12 +62,7 @@ typedef struct {
 
   uint32_t FeatHash;
 
-  #define GPU_MAX_FREQ_900M 0
-  #define GPU_MAX_FREQ_1G   1
-  #define GPU_MAX_FREQ_1_1G 2
-  uint8_t  gpufmax;                      //config gpu max frquency
-
-  uint8_t  Reserved_1[15];
+  uint8_t  Reserved_1[16];
 } MEM_QUICK_CONFIG;
 
 #define MEM_CONFIG_HEADER_SIGNATURE 0x42434443 // "CDCB"

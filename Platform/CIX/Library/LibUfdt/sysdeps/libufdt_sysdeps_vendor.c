@@ -31,6 +31,7 @@ int dto_print(const char *fmt, ...) {
 
 /* $OpenBSD: qsort.c,v 1.10 2005/08/08 08:05:37 espie Exp $ */
 /*-
+ * Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
  * Copyright (c) 1992, 1993
  * The Regents of the University of California.  All rights reserved.
  *

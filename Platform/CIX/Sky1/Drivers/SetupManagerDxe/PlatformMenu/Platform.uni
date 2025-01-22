@@ -142,9 +142,3 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_CPU_FREQ_MAX_PROMPT_HELP                     #language en-US "Select Max Frequency of CPU"
 #string STR_CPU_FREQ_0                                   #language en-US "2.5G"
 #string STR_CPU_FREQ_1                                   #language en-US "2.6G"
-
-#string STR_GPU_FREQ_MAX_PROMPT                          #language en-US "GPU Max Frequency"
-#string STR_GPU_FREQ_MAX_PROMPT_HELP                     #language en-US "Select Max Frequency of GPU"
-#string STR_GPU_FREQ_0                                   #language en-US "900M"
-#string STR_GPU_FREQ_1                                   #language en-US "1G"
-#string STR_GPU_FREQ_2                                   #language en-US "1.1G"

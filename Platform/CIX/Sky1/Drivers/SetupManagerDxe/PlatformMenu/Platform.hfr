@@ -114,15 +114,6 @@ endif;
         option text = STRING_TOKEN(STR_CPU_FREQ_0), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_CPU_FREQ_1), value = 1, flags = RESET_REQUIRED;
       endoneof;
-
-      oneof varid   = PlatformSetupVar.GpuFMax,
-        prompt      = STRING_TOKEN(STR_GPU_FREQ_MAX_PROMPT),
-        help        = STRING_TOKEN(STR_GPU_FREQ_MAX_PROMPT_HELP),
-        default     = FixedPcdGet8 (PcdGpuFMax),
-        option text = STRING_TOKEN(STR_GPU_FREQ_0), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GPU_FREQ_1), value = 1, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_GPU_FREQ_2), value = 2, flags = RESET_REQUIRED;
-      endoneof;
 #endif
 
 suppressif ideqval SystemTableVar.SystemTableSelect == 0x01;

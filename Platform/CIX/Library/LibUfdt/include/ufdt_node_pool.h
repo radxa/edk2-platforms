@@ -2,6 +2,7 @@
 #define UFDT_NODE_POOL_H
 
 /*
+ * Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
  * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

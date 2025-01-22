@@ -1,5 +1,6 @@
 /*-
  * Copyright (c) 2015 Oleksandr Tymoshenko <gonzo@FreeBSD.org>
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
  * All rights reserved.
  *
  * This software was developed by Semihalf under sponsorship from

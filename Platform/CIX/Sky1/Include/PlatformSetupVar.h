@@ -121,7 +121,6 @@ typedef struct {
   UINT8     CpuLpiState;
   UINT8     SpcrEnable;
   UINT8     CpuFMax;
-  UINT8     GpuFMax;
 } PLATFORM_SETUP_DATA;
 
 typedef struct {

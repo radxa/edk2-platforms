@@ -143,11 +143,6 @@ CheckPlatformVarUpdate (
      *Update = TRUE;
   }
 
-  if (PlatformSetupVar->GpuFMax != MemQuickHeader->gpufmax) {
-    PlatformSetupVar->GpuFMax = MemQuickHeader->gpufmax;
-    *Update = TRUE;
-  }
-
 Done:
   if (pImageBuff) {
     FreePool (pImageBuff);
@@ -217,12 +212,6 @@ GetMemConfigAndUpdate (
   if(MemQuickCfg->cpufmax != pPlatformSetupData->CpuFMax) {
     DEBUG ((DEBUG_INFO, "Update CpuFMax %x\n", pPlatformSetupData->CpuFMax));
     MemQuickCfg->cpufmax = pPlatformSetupData->CpuFMax;
-    *Update = TRUE;
-  }
-
-  if(MemQuickCfg->gpufmax != pPlatformSetupData->GpuFMax) {
-    DEBUG ((DEBUG_INFO, "Update GpuFMax %x\n", pPlatformSetupData->GpuFMax));
-    MemQuickCfg->gpufmax = pPlatformSetupData->GpuFMax;
     *Update = TRUE;
   }
 
