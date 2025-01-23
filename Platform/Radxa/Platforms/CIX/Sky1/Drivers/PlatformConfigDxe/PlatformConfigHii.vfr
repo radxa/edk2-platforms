@@ -46,6 +46,14 @@ formset
       option text   = STRING_TOKEN(STR_S0_AFTER_G3_STRING),        value = 1, flags = RESET_REQUIRED;
     endoneof;
 
+    oneof varid   = PlatformSetupVar.SpcrEnable,
+      prompt      = STRING_TOKEN(STR_ENABLE_SPCR_TABLE),
+      help        = STRING_TOKEN(STR_ENABLE_SPCR_TABLE_HELP),
+      default     = FixedPcdGet8 (PcdAcpiSpcrEnable),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
   #if (FW_CONFIG_UPDATE_SUPPORT == 1)
     oneof varid   = PlatformSetupVar.CpuFMax,
       prompt      = STRING_TOKEN(STR_CPU_FREQ_MAX_PROMPT),
