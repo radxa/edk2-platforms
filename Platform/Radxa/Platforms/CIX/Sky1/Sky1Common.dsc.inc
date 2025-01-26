@@ -9,6 +9,10 @@
   # Default State After G3 is Power On
   gCixTokenSpaceGuid.PcdStateAfterG3|0x01
 
+  # SPCR use UART2
+  gArmPlatformTokenSpaceGuid.PcdSerialDbgRegisterBase|0x040D0000
+  gArmPlatformTokenSpaceGuid.PcdSerialDbgInterrupt|330
+
 [Components.common]
 
 !if $(DEBUG_ON_UART3) == FALSE

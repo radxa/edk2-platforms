@@ -32,6 +32,7 @@
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   NetworkPkg/NetworkPkg.dec
+  Platform/Radxa/Platforms/CIX/Sky1/Drivers/PlatformConfigDxe/PlatformConfigDxe.dec
   Platform/Radxa/Radxa.dec
   Silicon/CIX/Sky1/CixPkg.dec
   Platform/CIX/Sky1/Sky1.dec
