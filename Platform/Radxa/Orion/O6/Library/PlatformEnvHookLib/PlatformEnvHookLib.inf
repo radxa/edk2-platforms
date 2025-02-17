@@ -43,6 +43,7 @@
   GpioTableLib
   CixSipLib
   EcLib
+  MailBoxLib
 
 [Guids]
   gCixI2cDevicePathGuid
