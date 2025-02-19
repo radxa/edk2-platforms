@@ -735,6 +735,42 @@ FenceFchXspiHost (
 }
 #endif
 
+VOID
+EFIAPI
+InitEcDefaultSetting (
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
+  )
+{
+  EFI_STATUS                  Status = EFI_SUCCESS;
+  EC_PLATFORM_PROTOCOL        *Ec;
+  EC_PARAM                    Params;
+  ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData;
+
+  ConfigData = (ENV_HOOK_PARAMS_DATA_BLOCK *)Context;
+
+  Status = gBS->LocateProtocol (&gCixEcPlatformProtocolGuid, NULL, (VOID **)&Ec);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "EC platform not ready.\n"));
+    return;
+  }
+
+  switch (ConfigData->PlatConfig->EcFanMode) {
+    case 0: // auto mode
+      Params.ThermalAutoFanCtl.FanAutoFlg = EC_FAN_MODE_AUTO;
+      break;
+    case 1: // performance mode
+      Params.ThermalAutoFanCtl.FanAutoFlg = EC_FAN_MODE_PERF;
+      break;
+    default:
+      DEBUG ((DEBUG_INFO, "Undefined EC fan mode! mode=%d \n", ConfigData->PlatConfig->EcFanMode));
+      return;
+  }
+
+  Status = Ec->Transfer (Ec, EC_COMMAND_SET_THERMAL_AUTO_FAN_CTL, &Params, NULL);
+  DEBUG ((DEBUG_INFO, "EC Set Fan control mode Status:%r\n", Status));
+}
+
 STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 InitGpio                },
   { NULL,                        NULL,                 InitPinmux              },
@@ -745,6 +781,7 @@ STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 RtcWakupEnable          },
   { NULL,                        NULL,                 FarmFunctionControl     },
   { &gEfiI2cMasterProtocolGuid,  InstallRtcProtocol,   NULL                    },
+  { &gCixEcPlatformProtocolGuid, InitEcDefaultSetting, NULL                    },
 #ifdef STMM_SUPPORT
   { NULL,                        NULL,                 FenceFchXspiHost        },
  #endif
