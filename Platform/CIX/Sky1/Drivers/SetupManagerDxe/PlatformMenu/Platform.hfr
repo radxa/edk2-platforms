@@ -106,6 +106,14 @@ endif;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
       endoneof;
 
+      oneof varid   = PlatformSetupVar.EcFanMode,
+        prompt      = STRING_TOKEN(STR_EC_FAN_MODE_PROMPT),
+        help        = STRING_TOKEN(STR_EC_FAN_MODE_PROMPT_HELP),
+        default     = FixedPcdGet8 (PcdEcDefaultFanMode),
+        option text = STRING_TOKEN(STR_AUTO_MODE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_PERF_MODE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
 #if (FW_CONFIG_UPDATE_SUPPORT == 1)
       oneof varid   = PlatformSetupVar.CpuFMax,
         prompt      = STRING_TOKEN(STR_CPU_FREQ_MAX_PROMPT),

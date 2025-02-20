@@ -50,3 +50,4 @@
   gCixPlatformTokenSpaceGuid.PcdRtcWakeup
   gCixPlatformTokenSpaceGuid.PcdLightSensorCtrl
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable
+  gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode

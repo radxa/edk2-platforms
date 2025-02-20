@@ -66,6 +66,7 @@ typedef struct _PLATFORM_CONFIG_PARAMS_DATA_BLOCK {
   UINT8      SpcrEnable;
   UINT8      GopDisplayPort;
   UINT8      TypecMode[4];
+  UINT8      EcFanMode;
 } PLATFORM_CONFIG_PARAMS_DATA_BLOCK;
 
 typedef struct _PLATFORM_CONFIG_PARAMS_DATA_ENTRY {
@@ -120,6 +121,7 @@ typedef struct _PLATFORM_CONFIG_PARAMS_DATA_OPTIONS {
 #define  PARAMS_DATA_TYPEC1_MODE_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0017)
 #define  PARAMS_DATA_TYPEC2_MODE_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0018)
 #define  PARAMS_DATA_TYPEC3_MODE_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x0019)
+#define  PARAMS_DATA_EC_FAN_MODE_ID          (PARAMS_DATA_PLATFORM_ID_GROUP | 0x001B)
 extern PLATFORM_CONFIG_PARAMS_DATA_BLOCK  mPlatformConfigParamsDataBlock;
 extern PLATFORM_CONFIG_PARAMS_DATA_ENTRY  mPlatformConfigDataEntryTable[];
 extern UINT32                             mPlatformConfigDataEntryNum;

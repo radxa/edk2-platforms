@@ -68,9 +68,12 @@ InitEcDefaultSetting (
   IN VOID       *Context
   )
 {
-  EFI_STATUS            Status = EFI_SUCCESS;
-  EC_PLATFORM_PROTOCOL  *Ec;
-  EC_PARAM              Params;
+  EFI_STATUS                  Status = EFI_SUCCESS;
+  EC_PLATFORM_PROTOCOL        *Ec;
+  EC_PARAM                    Params;
+  ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData;
+
+  ConfigData = (ENV_HOOK_PARAMS_DATA_BLOCK *)Context;
 
   Status = gBS->LocateProtocol (&gCixEcPlatformProtocolGuid, NULL, (VOID **)&Ec);
   if (EFI_ERROR (Status)) {
@@ -78,16 +81,20 @@ InitEcDefaultSetting (
     return;
   }
 
-  Params.ThermalAutoFanCtl.FanAutoFlg = 0; // manual mode
-  Status                              = Ec->Transfer (Ec, EC_COMMAND_SET_THERMAL_AUTO_FAN_CTL, &Params, NULL);
-  DEBUG ((DEBUG_INFO, "EC Set Fan control manual mode Status:%r\n", Status));
+  switch (ConfigData->PlatConfig->EcFanMode) {
+    case 0: // auto mode
+      Params.ThermalAutoFanCtl.FanAutoFlg = EC_FAN_MODE_AUTO;
+      break;
+    case 1: // performance mode
+      Params.ThermalAutoFanCtl.FanAutoFlg = EC_FAN_MODE_PERF;
+      break;
+    default:
+      DEBUG ((DEBUG_INFO, "Undefined EC fan mode! mode=%d \n", ConfigData->PlatConfig->EcFanMode));
+      return;
+  }
 
-  Params.PwmSetDuty.Duty    = 100;
-  Params.PwmSetDuty.Index   = 0;
-  Params.PwmSetDuty.PwmType = 0;
-  Status                    = Ec->Transfer (Ec, EC_COMMAND_SET_FAN_DUTY, &Params, NULL);
-
-  DEBUG ((DEBUG_INFO, "EC Set Pwm Duty %d Status:%r\n", Params.PwmSetDuty.Duty, Status));
+  Status = Ec->Transfer (Ec, EC_COMMAND_SET_THERMAL_AUTO_FAN_CTL, &Params, NULL);
+  DEBUG ((DEBUG_INFO, "EC Set Fan control mode Status:%r\n", Status));
 }
 
 VOID
@@ -190,23 +197,23 @@ WakeupSourceInit (
 {
   EFI_STATUS  Status = EFI_SUCCESS;
 
-  DEBUG ((DEBUG_INFO, "%a\n",__func__));
+  DEBUG ((DEBUG_INFO, "%a\n", __func__));
 
   /*usb3 typec ports*/
-  WakeupCfg(USB_C_SSP_0_HOST_IRQ,FALSE);
-  WakeupCfg(USB_C_SSP_1_HOST_IRQ,FALSE);
-  WakeupCfg(USB_C_SSP_2_HOST_IRQ,FALSE);
-  WakeupCfg(USB_C_SSP_3_HOST_IRQ,FALSE);
+  WakeupCfg (USB_C_SSP_0_HOST_IRQ, FALSE);
+  WakeupCfg (USB_C_SSP_1_HOST_IRQ, FALSE);
+  WakeupCfg (USB_C_SSP_2_HOST_IRQ, FALSE);
+  WakeupCfg (USB_C_SSP_3_HOST_IRQ, FALSE);
 
   /*usb3 typea ports*/
-  WakeupCfg(USB_SSP_0_HOST_IRQ,FALSE);
-  WakeupCfg(USB_SSP_1_HOST_IRQ,FALSE);
+  WakeupCfg (USB_SSP_0_HOST_IRQ, FALSE);
+  WakeupCfg (USB_SSP_1_HOST_IRQ, FALSE);
 
   /*usb2 ports*/
-  WakeupCfg(USB2_0_HOST_IRQ,FALSE);
-  WakeupCfg(USB2_1_HOST_IRQ,FALSE);
-  WakeupCfg(USB2_2_HOST_IRQ,FALSE);
-  WakeupCfg(USB2_3_HOST_IRQ,FALSE);
+  WakeupCfg (USB2_0_HOST_IRQ, FALSE);
+  WakeupCfg (USB2_1_HOST_IRQ, FALSE);
+  WakeupCfg (USB2_2_HOST_IRQ, FALSE);
+  WakeupCfg (USB2_3_HOST_IRQ, FALSE);
   return Status;
 }
 
@@ -656,7 +663,6 @@ FenceFchXspiHost (
 
 #endif
 
-
 STATIC
 VOID
 EFIAPI
@@ -678,15 +684,14 @@ CixFwBootPerfInit (
   EFI_STATUS  Status = EFI_SUCCESS;
 
   Status = gBS->CreateEventEx (
-                               EVT_NOTIFY_SIGNAL,
-                               TPL_CALLBACK,
-                               CixFwBootPerfEndNotify,
-                               NULL,
-                               &gEfiEventReadyToBootGuid,
-                               &ReadyToBootEvent
-                               );
+                  EVT_NOTIFY_SIGNAL,
+                  TPL_CALLBACK,
+                  CixFwBootPerfEndNotify,
+                  NULL,
+                  &gEfiEventReadyToBootGuid,
+                  &ReadyToBootEvent
+                  );
   return Status;
-
 }
 
 STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
@@ -704,7 +709,7 @@ STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
  #ifdef STMM_SUPPORT
   { NULL,                        NULL,                 FenceFchXspiHost                },
  #endif
-   { NULL,                        NULL,                 CixFwBootPerfInit              },
+  { NULL,                        NULL,                 CixFwBootPerfInit               },
   // add platform initialization routines on ENV phase BEFORE this line, and they were invoked from top to down.
   { NULL,                        NULL,                 NULL                            }
 };

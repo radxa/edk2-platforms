@@ -34,7 +34,7 @@
 #define EC2OS_ACPI_EVENT_BAT_FULL_CHARGE        BIT14
 
 #define EC_BATTERY_SUPPORT 1
-#define EC_THERMAL_SUPPORT 1
+#define EC_THERMAL_SUPPORT 0
 #define EC_LID_SUPPORT     1
 #define EC_PWRB_SUPPORT    1
 
@@ -694,9 +694,6 @@ Device(ECFP)
 }
 
 ThermalZone(ECTZ) {
-  Method(_AC0) { Return (2732)} //0.05
-  Name(_AL0, Package(){ECFP})
-
   Name (_TZD, Package () { \_SB} ) //Thermal Zone Devices
 
   Method(_TMP, 0, Serialized) {

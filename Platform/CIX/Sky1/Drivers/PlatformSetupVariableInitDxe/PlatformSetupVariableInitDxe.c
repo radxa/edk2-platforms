@@ -197,6 +197,7 @@ UpdatePlatformConfigParams (
     ConfigData->RtcWakeup        = PlatformSetupVar.RtcWakeup;
     ConfigData->LightSensorCtrl  = PlatformSetupVar.LightSensorCtrl;
     ConfigData->SpcrEnable       = PlatformSetupVar.SpcrEnable;
+    ConfigData->EcFanMode        = PlatformSetupVar.EcFanMode;
   }
 
   SystemTableVarSize = sizeof (SYSTEM_TABLE);
@@ -424,6 +425,7 @@ ConstructSetupVariable (
   PlatformSetupVar->RtcWakeup             = FixedPcdGet8 (PcdRtcWakeup);
   PlatformSetupVar->LightSensorCtrl       = FixedPcdGet8 (PcdLightSensorCtrl);
   PlatformSetupVar->SpcrEnable            = FixedPcdGetBool (PcdAcpiSpcrEnable);
+  PlatformSetupVar->EcFanMode             = FixedPcdGetBool (PcdEcDefaultFanMode);
 
   PlatformSetupVar->Usb2Control0Enable      = FixedPcdGetBool (PcdUsb2Control0Enable);
   PlatformSetupVar->Usb2Control1Enable      = FixedPcdGetBool (PcdUsb2Control1Enable);

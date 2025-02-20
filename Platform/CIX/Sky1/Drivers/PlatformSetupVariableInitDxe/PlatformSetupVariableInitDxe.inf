@@ -239,5 +239,6 @@
   gCixTokenSpaceGuid.PcdCpuCore11En
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable
+  gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode
 [Depex]
   TRUE
