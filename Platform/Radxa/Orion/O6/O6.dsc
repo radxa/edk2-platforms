@@ -303,6 +303,7 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   gCixTokenSpaceGuid.PcdI2c2BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c3En|TRUE
   gCixTokenSpaceGuid.PcdI2c3BusFreq|100000
+  gCixTokenSpaceGuid.PcdI2c3Runtime|TRUE          # For RTC runtime service
   gCixTokenSpaceGuid.PcdI2c4En|TRUE
   gCixTokenSpaceGuid.PcdI2c4BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c5En|TRUE
