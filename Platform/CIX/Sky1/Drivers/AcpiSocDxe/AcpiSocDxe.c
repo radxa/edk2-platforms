@@ -635,6 +635,37 @@ InitializeSystemAcpiRam (
     pSystemGpnvArea[ARV_USB3_TYPEC_DRD_ROLE_OFFSET]     = ConfigData->UsbCDrd[0].DataRole;
     pSystemGpnvArea[ARV_USB3_TYPEA_DRD0_ROLE_OFFSET]    = ConfigData->Usb32Drd[0].DataRole;
     pSystemGpnvArea[ARV_USB3_TYPEA_DRD1_ROLE_OFFSET]    = ConfigData->Usb32Drd[1].DataRole;
+    if (PcdGetBool (PcdI2c0Runtime)) {
+      pSystemGpnvArea[ARV_FCH_I2C_0_ENABLE_OFFSET] = 0;
+    }
+
+    if (PcdGetBool (PcdI2c1Runtime)) {
+      pSystemGpnvArea[ARV_FCH_I2C_1_ENABLE_OFFSET] = 0;
+    }
+
+    if (PcdGetBool (PcdI2c2Runtime)) {
+      pSystemGpnvArea[ARV_FCH_I2C_2_ENABLE_OFFSET] = 0;
+    }
+
+    if (PcdGetBool (PcdI2c3Runtime)) {
+      pSystemGpnvArea[ARV_FCH_I2C_3_ENABLE_OFFSET] = 0;
+    }
+
+    if (PcdGetBool (PcdI2c4Runtime)) {
+      pSystemGpnvArea[ARV_FCH_I2C_4_ENABLE_OFFSET] = 0;
+    }
+
+    if (PcdGetBool (PcdI2c5Runtime)) {
+      pSystemGpnvArea[ARV_FCH_I2C_5_ENABLE_OFFSET] = 0;
+    }
+
+    if (PcdGetBool (PcdI2c6Runtime)) {
+      pSystemGpnvArea[ARV_FCH_I2C_6_ENABLE_OFFSET] = 0;
+    }
+
+    if (PcdGetBool (PcdI2c7Runtime)) {
+      pSystemGpnvArea[ARV_FCH_I2C_7_ENABLE_OFFSET] = 0;
+    }
 
     switch (ConfigData->Cpu.LpiState) {
       case 1:

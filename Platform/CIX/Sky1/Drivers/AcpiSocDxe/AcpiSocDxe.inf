@@ -68,5 +68,14 @@
   gArmPlatformTokenSpaceGuid.PcdSerialDbgRegisterBase
   gArmPlatformTokenSpaceGuid.PcdSerialDbgInterrupt
   gArmPlatformTokenSpaceGuid.PcdSerialDbgUartBaudRate
+  gCixTokenSpaceGuid.PcdI2c0Runtime
+  gCixTokenSpaceGuid.PcdI2c1Runtime
+  gCixTokenSpaceGuid.PcdI2c2Runtime
+  gCixTokenSpaceGuid.PcdI2c3Runtime
+  gCixTokenSpaceGuid.PcdI2c4Runtime
+  gCixTokenSpaceGuid.PcdI2c5Runtime
+  gCixTokenSpaceGuid.PcdI2c6Runtime
+  gCixTokenSpaceGuid.PcdI2c7Runtime
+
 [Depex]
   gEfiAcpiTableProtocolGuid

@@ -30,9 +30,12 @@
   UefiDriverEntryPoint
   UefiLib
   PostCodeLib
+  UefiRuntimeLib
+  DxeServicesTableLib
 
 [Guids]
   gCixI2cDevicePathGuid
+  gEfiEventVirtualAddressChangeGuid
 
 [Packages]
   MdeModulePkg/MdeModulePkg.dec
@@ -40,10 +43,19 @@
   Silicon/CIX/Sky1/CixPkg.dec
 
 [Pcd]
+  gCixTokenSpaceGuid.PcdI2c0Runtime
+  gCixTokenSpaceGuid.PcdI2c1Runtime
+  gCixTokenSpaceGuid.PcdI2c2Runtime
+  gCixTokenSpaceGuid.PcdI2c3Runtime
+  gCixTokenSpaceGuid.PcdI2c4Runtime
+  gCixTokenSpaceGuid.PcdI2c5Runtime
+  gCixTokenSpaceGuid.PcdI2c6Runtime
+  gCixTokenSpaceGuid.PcdI2c7Runtime
 
 [Protocols]
   gEfiI2cMasterProtocolGuid                      ## BY_START
   gCixConfigParamsManageProtocolGuid
+  gEfiCpuArchProtocolGuid
 
 [Depex]
   TRUE
