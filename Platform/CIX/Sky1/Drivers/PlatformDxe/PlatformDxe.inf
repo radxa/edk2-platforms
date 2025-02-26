@@ -38,6 +38,7 @@
   PlatformEnvHookLib
   PlatformBootHookLib
   PostCodeLib
+  ShMemLib
 
 [Protocols]
   gCixClockProtocolGuid
