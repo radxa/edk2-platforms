@@ -149,7 +149,7 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   DtbUpdateLibSi|Platform/CIX/Sky1/Library/DtbUpdateLibSi/DtbUpdateLib.inf
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
-  EfiResetSystemLib|Platform/CIX/Sky1/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
+  EfiResetSystemLib|Platform/Radxa/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
   EcLib|Platform/CIX/Sky1/Library/Ite5570EcLib/Ite5570EcRuntimeLib.inf
 
 ################################################################################
