@@ -28,7 +28,7 @@
 #define IMP_40  (P_40  + N_40 )
 #define IMP_34  (P_34  + N_34 )
 
-#define ENTRY_COUNT 1
+#define ENTRY_COUNT 2
 
 MEM_CONFIG_PHYPADCFG MemPhyPadCfg = {
   {
@@ -38,6 +38,7 @@ MEM_CONFIG_PHYPADCFG MemPhyPadCfg = {
   },
   {
     // MaxMemFreq       RankPerCh DqDrv   DqOdt   DqsDrv  DqsOdt  CkDrv   CaDrv   CsDrv   CkeDrv  FdbkDrv FdbkOdt  RstDrv FFE DFE CTLE
-    {DDR6400_FREQUENCY, RANK_ALL, IMP_34, IMP_40, IMP_34, IMP_40, IMP_40, IMP_40, IMP_40, IMP_40, IMP_34, IMP_40,  IMP_34, 0,  0, 0x0},
+    {DDR5500_FREQUENCY, RANK_ALL, IMP_34, IMP_40, IMP_34, IMP_40, IMP_40, IMP_40, IMP_40, IMP_40, IMP_34, IMP_40,  IMP_34, 0,  0, 0x0},
+    {DDR6400_FREQUENCY, RANK_ALL, IMP_34, IMP_40, IMP_34, IMP_40, IMP_40, IMP_40, IMP_40, IMP_40, IMP_34, IMP_40,  IMP_34, 0,  0, 0x1b},
   }
 };

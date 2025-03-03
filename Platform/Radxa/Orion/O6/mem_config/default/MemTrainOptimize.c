@@ -13,6 +13,6 @@ MEM_CONFIG_TRAIN_OPTIMIZE MemTrainOptimize = {
   {
     //MaxMemFreq        RankPerCh ChMsk  Center Shift Th
     {DDR4800_FREQUENCY, RANK_ALL,  0xF,    0,    0,   0},
-    {DDR6400_FREQUENCY, RANK_ALL,  0xF,    1,    0,   0},
+    {DDR6400_FREQUENCY, RANK_ALL,  0xF,    1,    104, 0},
   }
 };
