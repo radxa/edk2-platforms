@@ -21,6 +21,9 @@
 #define DDR6400_FREQUENCY  3200    ///< DDR 6400
 #define UNSUPPORTED_DDR_FREQUENCY 3201 ///< Highest limit of DDR frequency
 
+#ifndef MEM_CFG_MEMFREQ
+#define MEM_CFG_MEMFREQ    DDR5500_FREQUENCY
+#endif
 
 #define RANK_SR  1
 #define RANK_DR  2

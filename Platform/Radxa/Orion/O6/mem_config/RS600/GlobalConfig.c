@@ -8,7 +8,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_8G = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS600_8G_MASK
   },
-  .MaxFreq          = DDR5500_FREQUENCY,
+  .MaxFreq          = MEM_CFG_MEMFREQ,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 8,
@@ -22,7 +22,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_12G = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS600_12G_MASK
   },
-  .MaxFreq          = DDR5500_FREQUENCY,
+  .MaxFreq          = MEM_CFG_MEMFREQ,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 12,
@@ -36,7 +36,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_16G = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS600_16G_MASK
   },
-  .MaxFreq          = DDR5500_FREQUENCY,
+  .MaxFreq          = MEM_CFG_MEMFREQ,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 16,
@@ -64,7 +64,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_32G = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS600_32G_MASK
   },
-  .MaxFreq          = DDR5500_FREQUENCY,
+  .MaxFreq          = MEM_CFG_MEMFREQ,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 16,
@@ -120,7 +120,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_64G = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS600_64G_x8_MASK
   },
-  .MaxFreq          = DDR5500_FREQUENCY,
+  .MaxFreq          = MEM_CFG_MEMFREQ,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 16,
