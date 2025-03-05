@@ -20,3 +20,7 @@
 !if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
   INF MdeModulePkg/Application/VariableInfo/VariableInfo.inf
 !endif
+
+!if $(TOKEN_RAM_DISK_SUPPORT) == FALSE
+  INF MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
+!endif
