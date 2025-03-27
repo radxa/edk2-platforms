@@ -134,3 +134,8 @@
   gCixPlatformTokenSpaceGuid.AvbWithBackDoor|TRUE|BOOLEAN|0x00000110
   gCixPlatformTokenSpaceGuid.PcdDynamicUint64Test|0x11111111|UINT64|0x00003001
 
+  # I2C HID device
+  gCixPlatformTokenSpaceGuid.PcdHidI2cBus|5|UINT8|0x00000137
+  gCixPlatformTokenSpaceGuid.PcdHidI2cSlaveAddress|0x3A|UINT8|0x00000138
+  gCixPlatformTokenSpaceGuid.PcdHidI2cIrqPin|1|UINT8|0x00000139
+

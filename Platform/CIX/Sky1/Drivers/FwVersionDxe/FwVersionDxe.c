@@ -472,7 +472,7 @@ RecordUefiMemory (
 
   EfiEntry = EfiMemoryMap;
   while (EfiEntry < EfiMemoryMapEnd) {
-    if ((EfiEntry->Type == EfiLoaderCode)) {
+    if ((EfiEntry->PhysicalStart < 0x7ffffffff) && (EfiEntry->Type == EfiLoaderCode)) {
       // DEBUG((DEBUG_ERROR | DEBUG_PAGE, "[] EfiConventionalMemory  %3d %16lx pn %16lx \n", EfiEntry->Type, EfiEntry->PhysicalStart, EfiEntry->NumberOfPages));
       ConventionalMemoryPage = ConventionalMemoryPage + EfiEntry->NumberOfPages;
       if (EfiEntry->PhysicalStart > EfiEntryBottom.PhysicalStart) {
@@ -481,7 +481,7 @@ RecordUefiMemory (
       }
     }
 
-    if (EfiEntry->PhysicalStart > EfiEntryTop.PhysicalStart) {
+    if ((EfiEntry->PhysicalStart < 0x7ffffffff) && (EfiEntry->PhysicalStart > EfiEntryTop.PhysicalStart)) {
       EfiEntryTop.Type          = EfiEntry->Type;
       EfiEntryTop.PhysicalStart = EfiEntry->PhysicalStart;
       EfiEntryTop.NumberOfPages = EfiEntry->NumberOfPages;

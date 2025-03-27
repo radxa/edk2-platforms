@@ -1081,3 +1081,39 @@ SetAlsMode (
 
   return Status;
 }
+
+EFI_STATUS
+EFIAPI
+Get4SForceShutdown (
+  IN OUT EC_RESPONSE_GET_4S_FORCE_SHD_EVT  *Info
+  )
+{
+  EFI_STATUS                        Status          = EFI_SUCCESS;
+  EC_RESPONSE_GET_4S_FORCE_SHD_EVT  *ResponseBuffer = NULL;
+  UINTN                             ResponseSize;
+
+  if (Info == NULL) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  ResponseSize   = sizeof (EC_RESPONSE_GET_4S_FORCE_SHD_EVT);
+  ResponseBuffer = AllocateZeroPool (ResponseSize);
+
+  if (ResponseBuffer == NULL) {
+    Status = EFI_OUT_OF_RESOURCES;
+    DEBUG ((DEBUG_ERROR, "%a: fail to allocate buffer, status %r\n", __FUNCTION__, Status));
+    return Status;
+  }
+
+  Status = GetEcInfo (SwapBytes16 (EC_CMD_GET_4S_FORCE_SHD_EVT), NULL, 0, (VOID *)ResponseBuffer, &ResponseSize);
+  if (!EFI_ERROR (Status)) {
+    Info->ForceShutdown4S = ResponseBuffer->ForceShutdown4S;
+
+    DEBUG ((DEBUG_INFO, "EC response 4s force shutdown flag info:\n"));
+    DEBUG ((DEBUG_INFO, "\t4S force shutdown flag       : 0x%x\n", Info->ForceShutdown4S));
+  }
+
+  FreePool (ResponseBuffer);
+
+  return Status;
+}

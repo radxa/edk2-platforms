@@ -135,6 +135,9 @@
   INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
 !endif
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
+!if $(POWER_BUTTON_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PowerButtonDxe/PowerButtonDxe.inf
+!endif
 
 #  INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
   INF Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf

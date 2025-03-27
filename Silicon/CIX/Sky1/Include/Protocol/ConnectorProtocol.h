@@ -6,8 +6,8 @@
  *
  **/
 
-#ifndef _ROCKCHIP_CONNECTOR_PROTOCOL_H_
-#define _ROCKCHIP_CONNECTOR_PROTOCOL_H_
+#ifndef _CIX_CONNECTOR_PROTOCOL_H_
+#define _CIX_CONNECTOR_PROTOCOL_H_
 
 #include <Library/DisplayLib.h>
 

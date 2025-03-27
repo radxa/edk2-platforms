@@ -184,7 +184,6 @@ GetPoweroffRsn (
   )
 {
   return EFI_DEVICE_ERROR;
-
 }
 
 EFI_STATUS
@@ -261,6 +260,15 @@ EFI_STATUS
 EFIAPI
 SetAlsMode (
   IN EC_PARAMS_ALS_MODE_CTL  *Info
+  )
+{
+  return EFI_DEVICE_ERROR;
+}
+
+EFI_STATUS
+EFIAPI
+Get4SForceShutdown (
+  IN OUT EC_RESPONSE_GET_4S_FORCE_SHD_EVT  *Info
   )
 {
   return EFI_DEVICE_ERROR;

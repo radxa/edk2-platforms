@@ -271,6 +271,7 @@
 !else
   CixFwBootPerfLib|Platform/CIX/Sky1/Library/CixFwBootPerfLib/CixFwBootPerfLibNull.inf
 !endif
+  EfiResetSystemLib|ArmPkg/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
 
 [LibraryClasses.common.SEC]
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
@@ -1004,4 +1005,7 @@ ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf {
 
 !if $(PI_TEST_SUPPORT) == TRUE
   Platform/ARM/Drivers/ArmPsciMpServicesDxe/ArmPsciMpServicesDxe.inf
+!endif
+!if $(POWER_BUTTON_ENABLE) == TRUE
+  Platform/CIX/Sky1/Drivers/PowerButtonDxe/PowerButtonDxe.inf
 !endif

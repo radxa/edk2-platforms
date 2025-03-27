@@ -72,6 +72,20 @@ GpioGetIntMask (
 
 EFI_STATUS
 EFIAPI
+GpioGetIntStatusByPin (
+  IN     UINT32   Num,
+  IN OUT BOOLEAN  *Triggered
+  );
+
+EFI_STATUS
+EFIAPI
+GpioGetIntMaskByPin (
+  IN     UINT32   Num,
+  IN OUT BOOLEAN  *Masked
+  );
+
+EFI_STATUS
+EFIAPI
 GpioGetConfig (
   IN  UINT32                   Num,
   OUT IO_DIRECTION_SEL         *Direction,

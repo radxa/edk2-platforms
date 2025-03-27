@@ -132,6 +132,9 @@ READ_LOCK_STATUS   = TRUE
   INF Platform/CIX/Sky1/Drivers/PlatformSetupVariableInitDxe/PlatformSetupVariableInitDxe.inf
 !endif
   INF Platform/CIX/Sky1/Drivers/PlatformDxe/PlatformDxe.inf
+!if $(POWER_BUTTON_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PowerButtonDxe/PowerButtonDxe.inf
+!endif
   }
 
 # inf file list has be move to Sky1Common.fdf.inc

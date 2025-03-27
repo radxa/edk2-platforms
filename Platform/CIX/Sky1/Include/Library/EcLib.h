@@ -73,6 +73,7 @@
 #define EC_CMD_TRANS_PD_FW_BIN         0x3E10
 #define EC_CMD_FORCE_EC_RESET          0x3E19
 #define EC_CMD_SET_AUTO_ALS_CTRL       0x3E21
+#define EC_CMD_GET_4S_FORCE_SHD_EVT    0x3E23
 #define EC_CMD_GET_EC_VERSION          0x3FFF
 
 #define EC_BATT_FLAG_AC_PRESENT      0x01
@@ -283,6 +284,10 @@ typedef struct {
   UINT8    Mode;   // 1:AP, 0:EC
 } EC_PARAMS_ALS_MODE_CTL;
 
+typedef struct {
+  UINT8    ForceShutdown4S;
+} EC_RESPONSE_GET_4S_FORCE_SHD_EVT;
+
 #pragma pack(pop)
 
 EFI_STATUS
@@ -445,6 +450,12 @@ EFI_STATUS
 EFIAPI
 SetAlsMode (
   IN EC_PARAMS_ALS_MODE_CTL  *Info
+  );
+
+EFI_STATUS
+EFIAPI
+Get4SForceShutdown (
+  IN OUT EC_RESPONSE_GET_4S_FORCE_SHD_EVT  *Info
   );
 
 #endif

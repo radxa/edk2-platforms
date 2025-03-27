@@ -23,11 +23,5 @@
 #include <Protocol/ConfigParamsManageProtocol.h>
 #include <Protocol/PlatformConfigParamsManageProtocol.h>
 #include <Library/CixPostCodeLib.h>
-#include <Library/ShMemLib.h>
-
-typedef struct {
-  UINT8   TypecPortState[4];
-  UINT8   GopDisplayPort;
-} MEM_SHARE_DTS_PROPERTY;
 
 #endif
