@@ -6,10 +6,13 @@
 
 #include "PlatformSmbios.h"
 
+#define STR(x) XSTR(x)
+#define XSTR(x) #x
+
 #define TYPE0_STRINGS                                                                    \
   "Radxa Computer (Shenzhen) Co., Ltd.\0" /* Vendor */                                   \
-  "1.0\0"                            /* BiosVersion */                                   \
-  __DATE__ "\0"                      /* BiosReleaseDate */
+  STR (UEFI_FW_VERSION) "\0"                   /* BiosVersion */                              \
+  STR (COMPILE_BUILD_DATE) "\0"                /* BiosReleaseDate */
 
 #pragma pack(1)
 typedef struct {
