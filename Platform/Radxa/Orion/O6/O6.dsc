@@ -1,6 +1,6 @@
 # @file
 #
-#  Copyright 2024 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
+#  Copyright 2024-2025 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
 #  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
 #  Copyright (c) 2011 - 2020, ARM Limited. All rights reserved.
 #  Copyright (c) 2017 - 2018, Andrei Warkentin <andrey.warkentin@gmail.com>
@@ -43,7 +43,7 @@
 # Define override here for evb
 ##################################################
   DEFINE DTB_UPDATE_ENABLE          = FALSE
-  DEFINE SMBIOS_ENABLE              = TRUE
+  DEFINE SMBIOS_ENABLE              = FALSE
   DEFINE ACPI_ENABLE                = FALSE
   DEFINE TOKEN_CONSOLE_PREF_SUPPORT = FALSE
   DEFINE FW_VERSION_ENABLE          = TRUE
@@ -78,6 +78,11 @@
   DEFINE DEFAULT_KEYS               = TRUE
   DEFINE FW_CONFIG_UPDATE_SUPPORT   = TRUE
   DEFINE UEFI_FW_STAGE              = Beta2
+  DEFINE BOOT_LOGO_ENABLE           = FALSE
+  DEFINE GLOBAL_WATCHDOG_ENABLE     = TRUE
+  DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
+  DEFINE CAPSULE_ENABLE             = FALSE
+  DEFINE POWER_BUTTON_ENABLE        = TRUE
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
   DEFINE PCIE_HOST_ENABLE           = TRUE
@@ -118,9 +123,8 @@
 
 #ACPI Boot
   DEFINE ACPI_ENABLE                = TRUE
-DEFINE WINDOWS_BOOT_ENABLE          = FALSE
-!if $(WINDOWS_BOOT_ENABLE) == TRUE
-!endif
+  DEFINE SMBIOS_ENABLE              = TRUE
+
 
   DEFINE SPI_VARIABLE_BASE          = 0x00390000
   DEFINE SPI_VARIABLE_SIZE          = 0x28000
