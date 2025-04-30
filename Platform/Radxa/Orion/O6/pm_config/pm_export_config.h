@@ -52,6 +52,7 @@ typedef struct {
             uint8_t i2c_ctrl;       // 0/1/2/3 is valid
             uint8_t i2c_addr;
             uint8_t sensor_type;
+            uint8_t reg_addr;
         };
     };
 } board_sensor_config_t;

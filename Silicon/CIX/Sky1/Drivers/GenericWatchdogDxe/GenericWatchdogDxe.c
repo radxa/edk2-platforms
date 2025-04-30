@@ -21,6 +21,7 @@
 #include <Library/ArmSmcLib.h>
 #include <IndustryStandard/ArmStdSmc.h>
 #include <Library/HwHarvestLib.h>
+#include <Library/RebootReason.h>
 
 #include <Protocol/HardwareInterrupt2.h>
 #include <Protocol/WatchdogTimer.h>

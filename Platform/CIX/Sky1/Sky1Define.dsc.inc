@@ -56,6 +56,7 @@
   #
   # Control driver/library/pcd definition and instantiation
   #
+  DEFINE CIX_GPNV_ENABLE            = FALSE
   DEFINE PI_TEST_SUPPORT            = FALSE
   DEFINE SECURE_BOOT_ENABLE         = FALSE
   DEFINE DEFAULT_KEYS               = TRUE

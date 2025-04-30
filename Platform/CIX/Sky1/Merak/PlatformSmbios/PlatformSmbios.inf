@@ -33,6 +33,8 @@
   UefiLib
   UefiDriverEntryPoint
   UefiBootServicesTableLib
+  BaseMemoryLib
+  MemoryAllocationLib
 
 [Guids]
 

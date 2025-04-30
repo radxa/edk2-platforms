@@ -754,13 +754,9 @@ Device (MUX1) {
         RawDataBuffer ()
         {
             0x00, 0x2c, 0x00, 0x44,
-            0x00, 0x90, 0x00, 0x24,
-            0x00, 0x94, 0x00, 0x24,
         })
         {
-            SKY1_IOMUXC_GPIO12,         //WLAN_PWREN
-            SKY1_IOMUXC_PWRBTN_L,       //WL_RADIO_DISABLE_L
-            SKY1_IOMUXC_VDD_DDRIO_GATE, //BT_RADIO_DISABLE_L
+            SKY1_IOMUXC_GPIO12,
         }
     PinGroup ("gbe1_poweren_gpio", ResourceProducer, ,
         RawDataBuffer ()

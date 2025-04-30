@@ -232,7 +232,7 @@ static pm_config_vmin_t vmin_config = {
 #endif
 
 #ifndef PM_NOC_IDLE_CONFIG
-#define PM_NOC_IDLE_CONFIG 0
+#define PM_NOC_IDLE_CONFIG 1
 #endif
 #if PM_NOC_IDLE_CONFIG
 static pm_config_noc_idle_t noc_idle_config = {
@@ -329,7 +329,7 @@ static pm_config_spt_t spt_config = {
 #endif
 
 #ifndef PM_WDT_CONFIG
-#define PM_WDT_CONFIG 0
+#define PM_WDT_CONFIG 1
 #endif
 #if PM_WDT_CONFIG
 static config_data_t wdt_timeout = {

@@ -215,11 +215,7 @@
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
   UefiBootManagerLib|MdeModulePkg/Library/UefiBootManagerLib/UefiBootManagerLib.inf
   BootLogoLib|MdeModulePkg/Library/BootLogoLib/BootLogoLib.inf
-!if $(COMPILE_SYSTEM_LOADER) == android
   PlatformBootManagerLib|Platform/CIX/Sky1/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
-!else
-  PlatformBootManagerLib|Platform/CIX/Sky1/Library/CixPlatformBootManagerLib/PlatformBootManagerLib.inf
-!endif
   FileExplorerLib|MdeModulePkg/Library/FileExplorerLib/FileExplorerLib.inf
   AcpiLib|EmbeddedPkg/Library/AcpiLib/AcpiLib.inf
   SocInitLib|Silicon/CIX/Sky1/Library/SocInitLib/SocInitLib.inf
@@ -242,11 +238,9 @@
 #  PlatformFlashAccessLib|Platform/RaspberryPi/Library/PlatformFlashAccessLib/PlatformFlashAccessLib.inf
   DisplayUpdateProgressLib|MdeModulePkg/Library/DisplayUpdateProgressLibGraphics/DisplayUpdateProgressLibGraphics.inf
 !endif
-!if $(REBOOT_REASON_ENABLE)
-  #RebootReasonLib|Silicon/CIX/Sky1/Library/RebootReasonLib/RebootReasonLib.inf
-!else
-  #RebootReasonLib|Silicon/CIX/Sky1/Library/RebootReasonLib/RebootReasonLibNull.inf
-!endif
+
+  RebootReasonLib|Silicon/CIX/Sky1/Library/RebootReasonLib/RebootReasonLib.inf
+
   CsuPmIpcLib|Silicon/CIX/Sky1/Library/CsuPmIpcLib/CsuPmIpcLib.inf
 
   ShMemLib|Silicon/CIX/Sky1/Library/ShMemLib/ShMemLib.inf
@@ -274,6 +268,9 @@
   CixFwBootPerfLib|Platform/CIX/Sky1/Library/CixFwBootPerfLib/CixFwBootPerfLibNull.inf
 !endif
   EfiResetSystemLib|ArmPkg/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
+
+  # Library for Vendor Guid Variable Sync From Flash
+  CixGPNVLib|Platform/CIX/Sky1/Library/CixGPNVLib/CixGPNVLib.inf
 
 [LibraryClasses.common.SEC]
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
@@ -355,6 +352,10 @@
 !if $(PI_TEST_SUPPORT) == TRUE
   GCC:*_*_*_CC_FLAGS          = -DPI_TEST_SUPPORT
 !endif
+!if $(CIX_GPNV_ENABLE) == TRUE
+  GCC:*_*_*_CC_FLAGS          = -DCIX_GPNV_ENABLE
+!endif
+
 [BuildOptions.common.EDKII.DXE_RUNTIME_DRIVER]
   GCC:*_*_AARCH64_DLINK_FLAGS = -z common-page-size=0x10000
 
@@ -606,6 +607,7 @@
 !endif
 !if $(COMPILE_SYSTEM_LOADER) == android
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit|0x27fffffff
+  gCixPlatformTokenSpaceGuid.PcdAndroidBoot|TRUE
 !else
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit|0x17fffffff
 !endif
@@ -909,6 +911,7 @@
 !if $(SETUP_DEBUG_CFG_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/DebugConfigDxe/DebugConfigDxe.inf
 !endif
+  Platform/CIX/Sky1/Drivers/RealtekLan/RealtekLanDxe.inf
 
   # Bds
   #

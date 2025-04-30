@@ -218,10 +218,12 @@
 !endif
 
 !if $(REALTEK_LAN_DRIVER_SUPPORT) == TRUE
+ INF Platform/CIX/Sky1/Drivers/RealtekLan/RealtekLanDxe.inf
  FILE DRIVER = 785277C5-20B9-4940-8D9F-341AEAAB4DEF
  {
    SECTION PE32 = Platform/CIX/Sky1/Drivers/RealtekLan/RtkUndiDxe.efi
    SECTION UI = "Realtek"
+   SECTION DXE_DEPEX = Platform/CIX/Sky1/Drivers/RealtekLan/RealtekLan.depex
  }
 !endif
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf

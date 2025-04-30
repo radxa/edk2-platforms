@@ -392,6 +392,9 @@ static int32_t check_fan_table(pm_config_fan_t* config, uint32_t num)
     pm_config_fan_t* ptr = NULL;
     for (i = 0; i < num; i++) {
         ptr = &config[i];
+        if (ptr->fan_valid.fields.valid == PM_CONFIG_INVALID) {
+            continue;
+        }
         if (ptr->fan_id.fields.valid == PM_CONFIG_VALID && ptr->fan_id.fields.raw_data >= MAX_FAN_NUM) {
             return -1;
         }

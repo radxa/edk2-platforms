@@ -19,6 +19,7 @@
 #include <Library/MailBoxLib.h>
 #include <Library/CixFwBootPerfLib.h>
 #include <Library/CixPostCodeLib.h>
+#include <Library/CixGPNVLib.h>
 #include <Guid/NetworkStackSetup.h>
 #include <PlatformSetupVar.h>
 
@@ -725,6 +726,15 @@ PlatformEnvHook (
   EFI_STATUS  Status = EFI_SUCCESS;
   UINT32      Index  = 0;
   VOID        *Registration;
+
+#ifdef CIX_GPNV_ENABLE
+  CixGPNVSync(
+    &gCixGPNVGuid,
+    FixedPcdGet32(PcdNorFlashVarSyncRegionBase),
+    FixedPcdGet32(PcdNorFlashVarSyncRegionSize),
+    SIZE_4KB
+    );
+#endif
 
   if (ConfigData == NULL) {
     DEBUG ((DEBUG_ERROR, "%a: platform ENV hook routine failed to get config data\n", __FUNCTION__));

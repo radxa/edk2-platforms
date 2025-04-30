@@ -15,9 +15,12 @@
 #include <Library/EfiResetSystemLib.h>
 #include <Library/EcLib.h>
 #include <Library/CixPostCodeLib.h>
+#include <Protocol/PowerButtonProtocol.h>
 
 #define  POWER_BUTTON_POLLING_INTERVAL  500 * 1000 * 10
 #define  POWER_BUTTON_VALID             BIT1
+
+EFI_EVENT  PwrBtnEvent;
 
 VOID
 EFIAPI
@@ -46,7 +49,6 @@ CreatPowerButtonCallBack (
   )
 {
   EFI_STATUS  Status;
-  EFI_EVENT   PwrBtnEvent;
 
   Status = gBS->CreateEvent (
                   EVT_NOTIFY_SIGNAL | EVT_TIMER,
@@ -67,7 +69,37 @@ Exit:
 
 EFI_STATUS
 EFIAPI
-PowerButtonDxeDxeEntryPoint (
+EnablePowerButtonDetect (
+  VOID
+  )
+{
+  EFI_STATUS                  Status;
+  EC_RESPONSE_ACPI_INT_EVENT  AcpiIntEvent;
+
+  GetAcpiIntEvent (&AcpiIntEvent); // clear
+
+  Status = gBS->SetTimer (PwrBtnEvent, TimerPeriodic, POWER_BUTTON_POLLING_INTERVAL);
+  DEBUG ((DEBUG_INFO, "[PBTN] Enable Power Button Detect %r\n", Status));
+  return Status;
+}
+
+VOID
+EFIAPI
+DisablePowerButtonDetect (
+  VOID
+  )
+{
+  gBS->SetTimer (PwrBtnEvent, TimerCancel, 0);
+}
+
+STATIC CIX_POWER_BUTTON_PROTOCOL  CixPowerButtonProtocol = {
+  EnablePowerButtonDetect,
+  DisablePowerButtonDetect
+};
+
+EFI_STATUS
+EFIAPI
+PowerButtonDxeEntryPoint (
   IN EFI_HANDLE        ImageHandle,
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
@@ -77,6 +109,20 @@ PowerButtonDxeDxeEntryPoint (
 
   GetAcpiIntEvent (&AcpiIntEvent); // clear
   Status = CreatPowerButtonCallBack ();
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
 
-  return Status;
+  Status = gBS->InstallProtocolInterface (
+                  &ImageHandle,
+                  &gCixPowerButtonProtocolGuid,
+                  EFI_NATIVE_INTERFACE,
+                  &CixPowerButtonProtocol
+                  );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: failed to install power button protocol %r\n", __FUNCTION__, Status));
+    return Status;
+  }
+
+  return EFI_SUCCESS;
 }

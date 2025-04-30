@@ -44,12 +44,14 @@
   MailBoxLib
   CixFwBootPerfLib
   PostCodeLib
+  CixGPNVLib
 
 [Guids]
   gCixI2cDevicePathGuid
   gEfiNetworkStackSetupGuid
   gPlatformSetupVariableGuid
   gEfiEventReadyToBootGuid
+  gCixGPNVGuid
 
 [Protocols]
   gEfiI2cMasterProtocolGuid
@@ -71,3 +73,5 @@
 
 [Pcd]
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit
+  gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionBase
+  gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionSize

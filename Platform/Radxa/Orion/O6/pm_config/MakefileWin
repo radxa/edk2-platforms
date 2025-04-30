@@ -1,5 +1,5 @@
 CC:=gcc
-CFLAGS:=-Wall -Wno-overflow
+CFLAGS:=-Wall
 
 all: clean csupm_bin_config
 
@@ -8,6 +8,6 @@ csupm_bin_config: csupm_bin_config.c $(wildcard *.h)
 	./$@
 
 clean:
-	rm -f csupm_bin_config csu_pm_config.bin
+	del /s /f /q csupm_bin_config csu_pm_config.bin
 
 .PHONY: all clean
