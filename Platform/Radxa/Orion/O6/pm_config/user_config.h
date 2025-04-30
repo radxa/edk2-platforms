@@ -159,7 +159,7 @@ static pm_config_fan_t fan_config[MAX_FAN_NUM] = {
         .pwm_freq = {
             .fields = {
                 .valid = PM_CONFIG_VALID,
-                .raw_data = 100, // the pwm frequence. depending on the fan's characteristic, 50~100 is recommended.
+                .raw_data = 100, // the pwm frequence. depending on the fan's characteristic, 50~1000 is recommended.
             }
         }
     },
@@ -213,6 +213,24 @@ static pm_config_log_t log_config = {
 };
 #endif
 
+#ifndef PM_VMIN_CONFIG
+#define PM_VMIN_CONFIG 0
+#endif
+#if PM_VMIN_CONFIG
+static pm_config_vmin_t vmin_config = {
+    .vmin_disable = {
+        .fields = {
+            .valid    = PM_CONFIG_INVALID,
+        }
+    },
+    .vmin_profile = {
+        .fields = {
+            .valid    = PM_CONFIG_INVALID,
+        }
+    },
+};
+#endif
+
 #ifndef PM_NOC_IDLE_CONFIG
 #define PM_NOC_IDLE_CONFIG 0
 #endif
@@ -221,7 +239,7 @@ static pm_config_noc_idle_t noc_idle_config = {
     .noc_idle_enable = {
         .fields = {
             .valid    = PM_CONFIG_VALID,
-            .raw_data = 1,  // BIT0: ddr-dfs/ci/mm dfs; BIT1: dsu dfs
+            .raw_data = 3,  // BIT0: ddr-dfs/ci/mm dfs; BIT1: dsu dfs
         }
     },
     /* default threshold are loaded if not specificed below */
@@ -281,6 +299,30 @@ static pm_config_spt_t spt_config = {
         .fields = {
             .valid    = PM_CONFIG_INVALID,
             .raw_data = 5000,       // in mW
+        }
+    },
+    .spt_skin_coeff_kh = {
+        .fields = {
+            .valid    = PM_CONFIG_VALID,
+            .raw_data = 10000,      // 1e-5f * 10000 = 0.1f
+        }
+    },
+    .spt_skin_coeff_ka = {
+        .fields = {
+            .valid    = PM_CONFIG_VALID,
+            .raw_data = 10000,      // 1e-5f * 10000 = 0.1f
+        }
+    },
+    .spt_skin_coeff_c = {
+        .fields = {
+            .valid    = PM_CONFIG_VALID,
+            .raw_data = 10000,      // 1e-5f * 10000 = 0.1f
+        }
+    },
+    .spt_skin_coeff_alpha = {
+        .fields = {
+            .valid    = PM_CONFIG_INVALID,
+            .raw_data = 10000,      // 1e-5f * 10000 = 0.1f
         }
     },
 };

@@ -6,6 +6,26 @@
 
 **/
 
+#ifdef PCIE_X8_VCC_REGULATOR
+External (PCIE_X8_VCC_REGULATOR, DeviceObj)
+#endif
+
+#ifdef PCIE_X4_VCC_REGULATOR
+External (PCIE_X4_VCC_REGULATOR, DeviceObj)
+#endif
+
+#ifdef PCIE_X2_VCC_REGULATOR
+External (PCIE_X2_VCC_REGULATOR, DeviceObj)
+#endif
+
+#ifdef PCIE_X1_1_VCC_REGULATOR
+External (PCIE_X1_1_VCC_REGULATOR, DeviceObj)
+#endif
+
+#ifdef PCIE_X1_0_VCC_REGULATOR
+External (PCIE_X1_0_VCC_REGULATOR, DeviceObj)
+#endif
+
 Device (PRC0) { /* PCIE1 X8 */
   Name (_HID, "CIXH2020")
   Name (_UID, 0x0)
@@ -44,7 +64,7 @@ Device (PRC0) { /* PCIE1 X8 */
       0xC0,               // AddressMinimum - Minimum Bus Number
       0xFF,              // AddressMaximum - Maximum Bus Number
       0,                // AddressTranslation - Set to 0
-      32)               // RangeLength - Number of Bus
+      64)               // RangeLength - Number of Bus
 
     // PCI IO space
     DWordIo ( // 32-bit BAR Windows
@@ -67,7 +87,7 @@ Device (PRC0) { /* PCIE1 X8 */
       0x60200000,               // Min Base Address
       0x6FFFFFFF,               // Max Base Address
       0x00000000,               // Translate
-      0x0fe00000                // Length 255M
+      0x0fe00000                // Length 254M
     )
 
     QWordMemory ( // 64-bit BAR Windows
@@ -80,6 +100,11 @@ Device (PRC0) { /* PCIE1 X8 */
       0x00000000,               // Translate
       0x400000000               // Length 16G
     )
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "pinctrl_pcie_x8_rc", ResourceConsumer,)
+#if PCIE_X8_PERST
+    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+                PCIE_X8_PERST_GPIO_CTR, 0, ResourceConsumer) { PCIE_X8_PERST_GPIO }
+#endif
   })
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
@@ -92,10 +117,15 @@ Device (PRC0) { /* PCIE1 X8 */
           Package () { "num-lanes", 8 },
           Package () { "cdns,no-inbound-bar", 0 },
           Package () { "sky1,pcie-ctrl-id", 0x0 },
-          Package () { "sky1,local-interrupt", 0 },
-          Package () { "sky1,aer-interrupt", 0 },
           Package () { "sky1,aer-uncor-panic", 0 },
           Package () { "cdns,pcie-phy", \_SB.PCP0.PX8P },
+          Package () { "max-payload", 128 },
+#if PCIE_X8_PERST
+          Package () { "reset-gpios", Package () { ^PRC0, 0, 0, PERST_GPIO_ACTIVE_LEVEL } },
+#endif
+#if PCIE_X8_VCC_SUPPLY
+          Package () { "vcc-pcie-supply", PCIE_X8_VCC_REGULATOR },
+#endif
         },
   })
 
@@ -122,10 +152,13 @@ Device (PRC0) { /* PCIE1 X8 */
   })
   Name (DLKL, Package() {
     Package() {\_SB.PCP0 , \_SB.PRC0, 0},
+#if PCIE_X8_VCC_SUPPLY
+    Package() {PCIE_X8_VCC_REGULATOR , \_SB.PRC0, 0},
+#endif
   })
   Name (RSNL, Package() {
     Package() {\_SB.PRC0 , RESOURCE_MEM, 0, "reg"},
-    Package() {\_SB.PRC0 , RESOURCE_MEM, 1, "app"},
+    Package() {\_SB.PRC0 , RESOURCE_MEM, 1, "rcsu"},
     Package() {\_SB.PRC0 , RESOURCE_MEM, 2, "cfg"},
     Package() {\_SB.PRC0 , RESOURCE_MEM, 3, "msg"},
     Package() {\_SB.PRC0 , RESOURCE_IRQ, 0, "aer_c"},
@@ -135,6 +168,17 @@ Device (PRC0) { /* PCIE1 X8 */
     Package() {\_SB.PRC0 , RESOURCE_IRQ, 4, "phy_int"},
     Package() {\_SB.PRC0 , RESOURCE_IRQ, 5, "phy_sta"},
   })
+
+  OperationRegion(OPR0,SystemMemory,PCIE_X8_RCSU_PD_REG, 0x04)
+  Field (OPR0, DWordAcc, NoLock, Preserve) {
+    MSK0, 32,
+  }
+  Method(PWON, 0, Serialized){
+    Local0 = MSK0
+    Local0 = Local0 | PGFSM_REG_CTRL | TIME_CYCLE_CNT
+    MSK0 = Local0
+    \_SB.DMRP(MEMORY_ENABLE, MEMR_GROUP_ID_PCIE, PCIE_X8_RCSU_BASE_REG, BIT0)
+  }
 }
 
 Device (PCP0) //PCIE PHY1
@@ -235,7 +279,7 @@ Device (PRC1) { /* PCIE1 X4 */
       0x50200000,               // Min Base Address
       0x5FFFFFFF,               // Max Base Address
       0x00000000,               // Translate
-      0x0fe00000                // Length 255M
+      0x0fe00000                // Length 254M
     )
 
     QWordMemory ( // 64-bit BAR Windows
@@ -248,6 +292,11 @@ Device (PRC1) { /* PCIE1 X4 */
       0x00000000,               // Translate
       0x400000000               // Length 16G
     )
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "pinctrl_pcie_x4_rc", ResourceConsumer,)
+#if PCIE_X4_PERST
+    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+                PCIE_X4_PERST_GPIO_CTR, 0, ResourceConsumer) { PCIE_X4_PERST_GPIO }
+#endif
   })
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
@@ -260,10 +309,15 @@ Device (PRC1) { /* PCIE1 X4 */
           Package () { "num-lanes", 4 },
           Package () { "cdns,no-inbound-bar", 0 },
           Package () { "sky1,pcie-ctrl-id", 0x1 },
-          Package () { "sky1,local-interrupt", 0 },
-          Package () { "sky1,aer-interrupt", 0 },
           Package () { "sky1,aer-uncor-panic", 0 },
           Package () { "cdns,pcie-phy", \_SB.PCP1.PX4P },
+          Package () { "max-payload", 128 },
+#if PCIE_X4_PERST
+          Package () { "reset-gpios", Package () { ^PRC1, 0, 0, PERST_GPIO_ACTIVE_LEVEL } },
+#endif
+#if PCIE_X4_VCC_SUPPLY
+          Package () { "vcc-pcie-supply", PCIE_X4_VCC_REGULATOR },
+#endif
         },
   })
 
@@ -290,10 +344,13 @@ Device (PRC1) { /* PCIE1 X4 */
   })
   Name (DLKL, Package() {
     Package() {\_SB.PCP1 , \_SB.PRC1, 0},
+#if PCIE_X4_VCC_SUPPLY
+    Package() {PCIE_X4_VCC_REGULATOR , \_SB.PRC1, 0},
+#endif
   })
   Name (RSNL, Package() {
     Package() {\_SB.PRC1 , RESOURCE_MEM, 0, "reg"},
-    Package() {\_SB.PRC1 , RESOURCE_MEM, 1, "app"},
+    Package() {\_SB.PRC1 , RESOURCE_MEM, 1, "rcsu"},
     Package() {\_SB.PRC1 , RESOURCE_MEM, 2, "cfg"},
     Package() {\_SB.PRC1 , RESOURCE_MEM, 3, "msg"},
     Package() {\_SB.PRC1 , RESOURCE_IRQ, 0, "aer_c"},
@@ -379,7 +436,7 @@ Device (PRC2) { /* PCIE1 X2 */
       0x60,               // AddressMinimum - Minimum Bus Number
       0x8F,              // AddressMaximum - Maximum Bus Number
       0,                // AddressTranslation - Set to 0
-      32)               // RangeLength - Number of Bus
+      48)               // RangeLength - Number of Bus
 
     // PCI IO space
     DWordIo ( // 32-bit BAR Windows
@@ -402,7 +459,7 @@ Device (PRC2) { /* PCIE1 X2 */
       0x40200000,               // Min Base Address
       0x4FFFFFFF,               // Max Base Address
       0x00000000,               // Translate
-      0x0fe00000                // Length 255M
+      0x0fe00000                // Length 254M
     )
 
     QWordMemory ( // 64-bit BAR Windows
@@ -415,6 +472,11 @@ Device (PRC2) { /* PCIE1 X2 */
       0x00000000,               // Translate
       0x400000000               // Length 16G
     )
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "pinctrl_pcie_x2_rc", ResourceConsumer,)
+#if PCIE_X2_PERST
+    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+                PCIE_X2_PERST_GPIO_CTR, 0, ResourceConsumer) { PCIE_X2_PERST_GPIO }
+#endif
   })
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
@@ -427,10 +489,15 @@ Device (PRC2) { /* PCIE1 X2 */
           Package () { "num-lanes", 2 },
           Package () { "cdns,no-inbound-bar", 0 },
           Package () { "sky1,pcie-ctrl-id", 0x2 },
-          Package () { "sky1,local-interrupt", 0 },
-          Package () { "sky1,aer-interrupt", 0 },
           Package () { "sky1,aer-uncor-panic", 0 },
           Package () { "cdns,pcie-phy", \_SB.PCP2.PX2P },
+          Package () { "max-payload", 128 },
+#if PCIE_X2_PERST
+          Package () { "reset-gpios", Package () { ^PRC2, 0, 0, PERST_GPIO_ACTIVE_LEVEL } },
+#endif
+#if PCIE_X2_VCC_SUPPLY
+          Package () { "vcc-pcie-supply", PCIE_X2_VCC_REGULATOR },
+#endif
         },
   })
 
@@ -457,10 +524,13 @@ Device (PRC2) { /* PCIE1 X2 */
   })
   Name (DLKL, Package() {
     Package() {\_SB.PCP2 , \_SB.PRC2, 0},
+#if PCIE_X2_VCC_SUPPLY
+    Package() {PCIE_X2_VCC_REGULATOR , \_SB.PRC2, 0},
+#endif
   })
   Name (RSNL, Package() {
     Package() {\_SB.PRC2 , RESOURCE_MEM, 0, "reg"},
-    Package() {\_SB.PRC2 , RESOURCE_MEM, 1, "app"},
+    Package() {\_SB.PRC2 , RESOURCE_MEM, 1, "rcsu"},
     Package() {\_SB.PRC2 , RESOURCE_MEM, 2, "cfg"},
     Package() {\_SB.PRC2 , RESOURCE_MEM, 3, "msg"},
     Package() {\_SB.PRC2 , RESOURCE_IRQ, 0, "aer_c"},
@@ -509,7 +579,7 @@ Device (PRC3) { /* PCIE1 X1_1 */
       0x30,               // AddressMinimum - Minimum Bus Number
       0x5F,              // AddressMaximum - Maximum Bus Number
       0,                // AddressTranslation - Set to 0
-      32)               // RangeLength - Number of Bus
+      48)               // RangeLength - Number of Bus
 
     // PCI IO space
     DWordIo ( // 32-bit BAR Windows
@@ -532,7 +602,7 @@ Device (PRC3) { /* PCIE1 X1_1 */
       0x38200000,               // Min Base Address
       0x3FFFFFFF,               // Max Base Address
       0x00000000,               // Translate
-      0x0fe00000                // Length 255M
+      0x07e00000                // Length 126M
     )
 
     QWordMemory ( // 64-bit BAR Windows
@@ -545,6 +615,11 @@ Device (PRC3) { /* PCIE1 X1_1 */
       0x00000000,               // Translate
       0x400000000               // Length 16G
     )
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "pinctrl_pcie_x1_1_rc", ResourceConsumer,)
+#if PCIE_X1_1_PERST
+    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+                PCIE_X1_1_PERST_GPIO_CTR, 0, ResourceConsumer) { PCIE_X1_1_PERST_GPIO }
+#endif
   })
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
@@ -557,10 +632,15 @@ Device (PRC3) { /* PCIE1 X1_1 */
           Package () { "num-lanes", 1 },
           Package () { "cdns,no-inbound-bar", 0 },
           Package () { "sky1,pcie-ctrl-id", 0x3 },
-          Package () { "sky1,local-interrupt", 0 },
-          Package () { "sky1,aer-interrupt", 0 },
           Package () { "sky1,aer-uncor-panic", 0 },
           Package () { "cdns,pcie-phy", \_SB.PCP2.PX11 },
+          Package () { "max-payload", 128 },
+#if PCIE_X1_1_PERST
+          Package () { "reset-gpios", Package () { ^PRC3, 0, 0, PERST_GPIO_ACTIVE_LEVEL } },
+#endif
+#if PCIE_X1_1_VCC_SUPPLY
+          Package () { "vcc-pcie-supply", PCIE_X1_1_VCC_REGULATOR },
+#endif
         },
   })
 
@@ -587,10 +667,13 @@ Device (PRC3) { /* PCIE1 X1_1 */
   })
   Name (DLKL, Package() {
     Package() {\_SB.PCP2 , \_SB.PRC3, 0},
+#if PCIE_X1_1_VCC_SUPPLY
+    Package() {PCIE_X1_1_VCC_REGULATOR , \_SB.PRC3, 0},
+#endif
   })
   Name (RSNL, Package() {
     Package() {\_SB.PRC3 , RESOURCE_MEM, 0, "reg"},
-    Package() {\_SB.PRC3 , RESOURCE_MEM, 1, "app"},
+    Package() {\_SB.PRC3 , RESOURCE_MEM, 1, "rcsu"},
     Package() {\_SB.PRC3 , RESOURCE_MEM, 2, "cfg"},
     Package() {\_SB.PRC3 , RESOURCE_MEM, 3, "msg"},
     Package() {\_SB.PRC3 , RESOURCE_IRQ, 0, "aer_c"},
@@ -639,7 +722,7 @@ Device (PRC4) { /* PCIE1 X1_0 */
       0x00,               // AddressMinimum - Minimum Bus Number
       0x2F,              // AddressMaximum - Maximum Bus Number
       0,                // AddressTranslation - Set to 0
-      32)               // RangeLength - Number of Bus
+      48)               // RangeLength - Number of Bus
 
     // PCI IO space
     DWordIo ( // 32-bit BAR Windows
@@ -662,7 +745,7 @@ Device (PRC4) { /* PCIE1 X1_0 */
       0x30200000,               // Min Base Address
       0x37FFFFFF,               // Max Base Address
       0x00000000,               // Translate
-      0x0fe00000                // Length 255M
+      0x07e00000                // Length 126M
     )
 
     QWordMemory ( // 64-bit BAR Windows
@@ -675,6 +758,11 @@ Device (PRC4) { /* PCIE1 X1_0 */
       0x00000000,               // Translate
       0x400000000               // Length 16G
     )
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "pinctrl_pcie_x1_0_rc", ResourceConsumer,)
+#if PCIE_X1_0_PERST
+    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+                PCIE_X1_0_PERST_GPIO_CTR, 0, ResourceConsumer) { PCIE_X1_0_PERST_GPIO }
+#endif
   })
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
@@ -687,10 +775,15 @@ Device (PRC4) { /* PCIE1 X1_0 */
           Package () { "num-lanes", 1 },
           Package () { "cdns,no-inbound-bar", 0 },
           Package () { "sky1,pcie-ctrl-id", 0x4 },
-          Package () { "sky1,local-interrupt", 0 },
-          Package () { "sky1,aer-interrupt", 0 },
           Package () { "sky1,aer-uncor-panic", 0 },
           Package () { "cdns,pcie-phy", \_SB.PCP2.PX10 },
+          Package () { "max-payload", 128 },
+#if PCIE_X1_0_PERST
+          Package () { "reset-gpios", Package () { ^PRC4, 0, 0, PERST_GPIO_ACTIVE_LEVEL } },
+#endif
+#if PCIE_X1_0_VCC_SUPPLY
+          Package () { "vcc-pcie-supply", PCIE_X1_0_VCC_REGULATOR },
+#endif
         },
   })
 
@@ -717,10 +810,13 @@ Device (PRC4) { /* PCIE1 X1_0 */
   })
   Name (DLKL, Package() {
     Package() {\_SB.PCP2 , \_SB.PRC4, 0},
+#if PCIE_X1_0_VCC_SUPPLY
+    Package() {PCIE_X1_0_VCC_REGULATOR , \_SB.PRC4, 0},
+#endif
   })
   Name (RSNL, Package() {
     Package() {\_SB.PRC4 , RESOURCE_MEM, 0, "reg"},
-    Package() {\_SB.PRC4 , RESOURCE_MEM, 1, "app"},
+    Package() {\_SB.PRC4 , RESOURCE_MEM, 1, "rcsu"},
     Package() {\_SB.PRC4 , RESOURCE_MEM, 2, "cfg"},
     Package() {\_SB.PRC4 , RESOURCE_MEM, 3, "msg"},
     Package() {\_SB.PRC4 , RESOURCE_IRQ, 0, "aer_c"},

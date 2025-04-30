@@ -5,6 +5,7 @@
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
+External (UDBG, MethodObj)
 
 Device(WMIP){
     // PNP0C14 is PNP ID assigned to WMI mapper

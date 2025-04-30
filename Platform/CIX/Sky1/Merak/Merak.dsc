@@ -40,6 +40,7 @@
 # Define override here for evb
 ##################################################
   DEFINE DTB_UPDATE_ENABLE          = FALSE
+  DEFINE PLATFORM_DTB_UPDATE_ENABLE = TRUE
   DEFINE SMBIOS_ENABLE              = FALSE
   DEFINE ACPI_ENABLE                = FALSE
   DEFINE TOKEN_CONSOLE_PREF_SUPPORT = FALSE
@@ -121,7 +122,7 @@
   DEFINE SMBIOS_ENABLE              = TRUE
 
 
-  DEFINE SPI_VARIABLE_BASE          = 0x00390000
+  DEFINE SPI_VARIABLE_BASE          = 0x00380000
   DEFINE SPI_VARIABLE_SIZE          = 0x28000
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
@@ -141,6 +142,7 @@
   PinMuxTableLib|Platform/CIX/Sky1/Merak/Library/PinMuxTableLib/PinMuxTableLib.inf
   GpioTableLib|Platform/CIX/Sky1/Merak/Library/GpioTableLib/GpioTableLib.inf
   PlatformConfigParamsHookLib|Platform/CIX/Sky1/Library/PlatformConfigParamsHookLib/PlatformConfigParamsHookLib.inf
+  ConfigParamsHookLib|Platform/CIX/Sky1/Library/ConfigParamsHookLib/ConfigParamsHookLib.inf
   PlatformEnvHookLib|Platform/CIX/Sky1/Merak/Library/PlatformEnvHookLib/PlatformEnvHookLib.inf
   RealTimeClockLib|Platform/CIX/Sky1/Library/Ra8900ceRealTimeClockLib/Ra8900ceRealTimeClockLib.inf
 
@@ -322,6 +324,8 @@
   gCixTokenSpaceGuid.PcdI2c5BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c6En|TRUE
   gCixTokenSpaceGuid.PcdI2c6BusFreq|50000
+  gCixTokenSpaceGuid.PcdI2c6Runtime|TRUE          # For platform specifc ec reset in runtime service
+  gCixTokenSpaceGuid.PcdI2c6MutexId|0x48          # For mutex between ACPI EC and runtime ec reset
 
   # RTC I2C canot be controlled in setup
   gCixTokenSpaceGuid.PcdI2cCtrlEn|0xF7
@@ -371,6 +375,9 @@
 
   gCixTokenSpaceGuid.PcdSocWatchdogTimer|0x01
 
+  gCixTokenSpaceGuid.PcdGmac0Enable|TRUE
+  gCixTokenSpaceGuid.PcdGmac1Enable|FALSE
+  
   gArmTokenSpaceGuid.PcdProcessorVersion|L"CIX P1 CP8180"
 [PcdsDynamicDefault.common]
 

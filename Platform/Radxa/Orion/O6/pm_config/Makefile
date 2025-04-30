@@ -1,9 +1,13 @@
 CC:=gcc
 CFLAGS:=-Wall
 
-csupm_bin_config: csupm_bin_config.c user_config.h opp_config_custom.h
+all: clean csupm_bin_config
+
+csupm_bin_config: csupm_bin_config.c $(wildcard *.h)
 	$(CC) $(CFLAGS) -o $@ $(firstword $^)
 	./$@
 
 clean:
-	rm csupm_bin_config csu_pm_config.bin
+	rm -f csupm_bin_config csu_pm_config.bin
+
+.PHONY: all clean

@@ -28,6 +28,9 @@
 #define MNTNDUMP_ADDR  0x83de0000
 #define MNTNDUMP_SIZE  0x20000
 
+#define RAMOOPS_RES_BASE   0x83d00000
+#define RAMOOPS_RES_SIZE   0xa0000
+
 // IORT
 #define PCIE_SMMU_ENABLE        1
 #define MM_HUB_SMMU_ENABLE      1
@@ -52,5 +55,16 @@
 
 // RMR
 #define RMR_GOP_ENABLE  1
+
+#define PMCG_ENABLE  0
+#if PMCG_ENABLE
+#define PCIE_PMCG_ENABLE        PCIE_SMMU_ENABLE
+#define MM_HUB_PMCG_ENABLE      MM_HUB_SMMU_ENABLE
+#define SUB_SYSTEM_PMCG_ENABLE  SUB_SYSTEM_SMMU_ENABLE
+#else
+#define PCIE_PMCG_ENABLE        0
+#define MM_HUB_PMCG_ENABLE      0
+#define SUB_SYSTEM_PMCG_ENABLE  0
+#endif
 
 #endif

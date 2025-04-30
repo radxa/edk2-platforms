@@ -12,6 +12,7 @@ extern MEM_CONFIG_DQ_SWAP           DqDmMapBlock;
 extern MEM_CONFIG_TRAIN_OPTIMIZE    MemTrainOptimize;
 extern MEM_CONFIG_TRACE_LEN_DIFF    MemTraceLenDiffCfg;
 extern MEM_CONFIG_BLOCK_BOARDID_MAP BoardIdMapBlock;
+extern MEM_CONFIG_BDID_GET_METHOD   BoardIdGetMethod;
 
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_8G;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_12G;
@@ -26,6 +27,7 @@ extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_x8;
 #define CDCB_BLOCK_LIST \
   /* default */ \
   CDCB_BLOCK(MemBiosSetup), \
+  CDCB_BLOCK(BoardIdGetMethod), \
   CDCB_BLOCK(BoardIdMapBlock), \
   CDCB_BLOCK(GlobalConfigBlock), \
   CDCB_BLOCK(MemFeatureBlock), \

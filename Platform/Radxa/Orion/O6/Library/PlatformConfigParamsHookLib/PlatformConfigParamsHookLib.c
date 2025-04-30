@@ -12,7 +12,7 @@
 #include <Library/EcLib.h>
 #include <Library/TimerLib.h>
 #include <Library/PlatformConfigParamsHookLib.h>
-#include "Pcf8563.h"
+#include "Hym8563.h"
 
 STATIC I2C_HOST_DESCRIPTOR  mHost;
 
@@ -49,7 +49,7 @@ GetRtcVoltDropFlag (
 {
   EFI_STATUS              Status         = EFI_SUCCESS;
   EFI_I2C_REQUEST_PACKET  *RequestPacket = NULL;
-  UINT8                   RtcTime[]      = { PCF8563_DATA_REG_OFFSET,
+  UINT8                   RtcTime[]      = { HYM8563_DATA_REG_OFFSET,
                                              DecimalToBcd8(0),
                                              DecimalToBcd8(0),
                                              DecimalToBcd8(0),
@@ -87,7 +87,7 @@ GetRtcVoltDropFlag (
     DEBUG ((DEBUG_INFO, "%a: RTC VL_seconds: 0x%x\n", __FUNCTION__, RtcTime[1]));
   }
 
-  if (RtcTime[1] & PCF8563_CLOCK_INVALID) {
+  if (RtcTime[1] & HYM8563_CLOCK_INVALID) {
     DEBUG ((DEBUG_INFO, "%a: RTC voltage dropped\n", __FUNCTION__));
     *Dropped                                  = TRUE;
 

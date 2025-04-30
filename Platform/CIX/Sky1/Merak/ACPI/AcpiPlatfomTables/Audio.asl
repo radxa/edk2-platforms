@@ -6,6 +6,9 @@
 
 **/
 
+External (\_SB.HDA, DeviceObj)
+External (\_SB.I2C2, DeviceObj)
+
 Device (HDAC) {
     Name (_HID, "CIXH6030")
     Name (_UID, 0x0)

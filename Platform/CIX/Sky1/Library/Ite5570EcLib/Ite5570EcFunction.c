@@ -850,9 +850,9 @@ GetAcpiIntEvent (
     Info->Type  = ResponseBuffer->Type;
     Info->Event = SwapBytes32 (ResponseBuffer->Event);
 
-    DEBUG ((DEBUG_INFO, "EC response acpi interrupt info:\n"));
-    DEBUG ((DEBUG_INFO, "\tTYPE       : 0x%x\n", Info->Type));
-    DEBUG ((DEBUG_INFO, "\tACPI_INT_EVENT       : 0x%x\n", Info->Event));
+    DEBUG ((DEBUG_VERBOSE, "EC response acpi interrupt info:\n"));
+    DEBUG ((DEBUG_VERBOSE, "\tTYPE       : 0x%x\n", Info->Type));
+    DEBUG ((DEBUG_VERBOSE, "\tACPI_INT_EVENT       : 0x%x\n", Info->Event));
   }
 
   FreePool (ResponseBuffer);

@@ -122,6 +122,7 @@ typedef struct {
   UINT8     SpcrEnable;
   UINT8     CpuFMax;
   UINT8     EcFanMode;
+  UINT8     CpuCppcType;
 } PLATFORM_SETUP_DATA;
 
 typedef struct {

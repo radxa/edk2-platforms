@@ -119,8 +119,8 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
   DEFINE SMBIOS_ENABLE              = TRUE
 
 
-  DEFINE SPI_VARIABLE_BASE          = 0x007D5000
-  DEFINE SPI_VARIABLE_SIZE          = 0x10000
+  DEFINE SPI_VARIABLE_BASE          = 0x00380000
+  DEFINE SPI_VARIABLE_SIZE          = 0x28000
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
 !include NetworkPkg/NetworkDefines.dsc.inc

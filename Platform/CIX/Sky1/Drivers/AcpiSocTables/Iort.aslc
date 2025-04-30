@@ -14,9 +14,9 @@
 #include "Include/InterruptId.h"
 #include "CommonDefines.h"
 
-
+#define PMCG_COUNT       (PCIE_PMCG_ENABLE + MM_HUB_PMCG_ENABLE + SUB_SYSTEM_PMCG_ENABLE)
 #define MM_NODE_COUNT    (MM_HUB_SMMU_ENABLE + DPU_SMMU_ENABLE*10 + NPU_SMMU_ENABLE*1 + ISP_SMMU_ENABLE*1 + CSI_SMMU_ENABLE*2)
-#define IORT_NODE_COUNT  (PCIE_SMMU_ENABLE*3 + MM_NODE_COUNT + SUB_SYSTEM_SMMU_ENABLE*1 + RMR_GOP_ENABLE*1)
+#define IORT_NODE_COUNT  (PCIE_SMMU_ENABLE*3 + MM_NODE_COUNT + SUB_SYSTEM_SMMU_ENABLE*1 + RMR_GOP_ENABLE*1 + PMCG_COUNT)
 
 #pragma pack(1)
 
@@ -48,14 +48,24 @@ typedef struct {
 } SKY1_EFI_ACPI_6_0_IO_REMAPPING_RMR_NODE;
 
 typedef struct {
+  EFI_ACPI_6_0_IO_REMAPPING_PMCG_NODE PmcgNode;
+} SKY1_EFI_ACPI_6_0_IO_REMAPPING_PMCG_NODE;
+
+typedef struct {
   EFI_ACPI_6_0_IO_REMAPPING_TABLE             Header;
  #if PCIE_SMMU_ENABLE
   ARM_EFI_ACPI_6_0_IO_REMAPPING_ITS_NODE      ItsNode;
   ARM_EFI_ACPI_6_0_IO_REMAPPING_SMMU3_NODE    PcieSmmuNode;
+  #if PCIE_PMCG_ENABLE
+  SKY1_EFI_ACPI_6_0_IO_REMAPPING_PMCG_NODE    PciePmcgNode;
+  #endif
   ARM_EFI_ACPI_6_0_IO_REMAPPING_RC_NODE       RcNode;
  #endif
  #if MM_HUB_SMMU_ENABLE
   EFI_ACPI_6_0_IO_REMAPPING_SMMU3_NODE        MmSmmuNode;
+  #if MM_HUB_PMCG_ENABLE
+  SKY1_EFI_ACPI_6_0_IO_REMAPPING_PMCG_NODE    MmSmmuPmcgNode;
+  #endif
  #if DPU_SMMU_ENABLE
   SKY1_NC_NODE                                DPU0NamedCompNode;
   SKY1_NC_NODE                                AEU0NamedCompNode;
@@ -81,6 +91,9 @@ typedef struct {
  #endif
  #if SUB_SYSTEM_SMMU_ENABLE
   EFI_ACPI_6_0_IO_REMAPPING_SMMU3_NODE        SubSystemSmmuNode;
+  #if SUB_SYSTEM_PMCG_ENABLE
+  SKY1_EFI_ACPI_6_0_IO_REMAPPING_PMCG_NODE    SubSystemSmmuPmcgNode;
+  #endif
  #endif
  #if RMR_GOP_ENABLE
   SKY1_EFI_ACPI_6_0_IO_REMAPPING_RMR_NODE     RmrNode;
@@ -184,6 +197,25 @@ ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE  Iort =
       0,                                                        // Flags
     },
   },
+  #if PCIE_PMCG_ENABLE
+  {
+  // PciePmcgNode
+    {
+      {
+        EFI_ACPI_IORT_TYPE_PMCG,
+        sizeof (EFI_ACPI_6_0_IO_REMAPPING_PMCG_NODE),
+        0x2,
+        0x0,
+        0x0,
+        0x0,
+      },
+      0xB012000,  // PMU Base address
+      0,          // GSIV. Need to be filled
+      OFFSET_OF (ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE, PcieSmmuNode),  // Node reference. Need to be filled
+      0xB010000,
+    },
+  },
+  #endif
   // RcNode
   {
     // 
@@ -240,6 +272,24 @@ ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE  Iort =
     0,                                           // Proximity domain
     0,                                           // DevIDMappingIndex
   },
+ #if MM_HUB_PMCG_ENABLE
+  {
+    {
+      {
+        EFI_ACPI_IORT_TYPE_PMCG,
+        sizeof (EFI_ACPI_6_0_IO_REMAPPING_PMCG_NODE),
+        0x2,
+        0x0,
+        0x0,
+        0x0,
+      },
+      0xB1B2000,  // PMU Base address
+      0,          // GSIV. Need to be filled
+      OFFSET_OF (ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE, MmSmmuNode),  // Node reference. Need to be filled
+      0xB1B0000,
+    },
+  },
+ #endif
  #if DPU_SMMU_ENABLE
   {
     // DPU0
@@ -382,6 +432,24 @@ ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE  Iort =
     0,                                            // Proximity domain
     0,                                            // DevIDMappingIndex
   },
+  #if SUB_SYSTEM_PMCG_ENABLE
+  {
+    {
+      {
+        EFI_ACPI_IORT_TYPE_PMCG,
+        sizeof (EFI_ACPI_6_0_IO_REMAPPING_PMCG_NODE),
+        0x2,
+        0x0,
+        0x0,
+        0x0,
+      },
+      0xB0E2000,  // PMU Base address
+      0,          // GSIV.
+      OFFSET_OF (ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE, SubSystemSmmuNode),  // Node reference. Need to be filled
+      0xB0E0000,
+    },
+  },
+  #endif
  #endif
  #if RMR_GOP_ENABLE
   // SKY1_EFI_ACPI_IORT_TYPE_RMR

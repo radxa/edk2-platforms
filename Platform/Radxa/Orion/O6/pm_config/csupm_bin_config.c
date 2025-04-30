@@ -327,6 +327,10 @@ static void dump_spt_config(pm_config_spt_t * spt_config)
     }
 
     printf("\tspt skin margin: "); dump_valid_flag(spt_config->spt_skin_margin);
+    printf("\t       coeff-kh: "); dump_valid_flag(spt_config->spt_skin_coeff_kh);
+    printf("\t       coeff-ka: "); dump_valid_flag(spt_config->spt_skin_coeff_ka);
+    printf("\t        coeff-c: "); dump_valid_flag(spt_config->spt_skin_coeff_c);
+    printf("\t    coeff-alpha: "); dump_valid_flag(spt_config->spt_skin_coeff_alpha);
 }
 
 static void dump_config()

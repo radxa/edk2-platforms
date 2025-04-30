@@ -80,6 +80,14 @@
   gCixTokenSpaceGuid.PcdI2c5BusFreq
   gCixTokenSpaceGuid.PcdI2c6BusFreq
   gCixTokenSpaceGuid.PcdI2c7BusFreq
+  gCixTokenSpaceGuid.PcdI2c0MutexId
+  gCixTokenSpaceGuid.PcdI2c1MutexId
+  gCixTokenSpaceGuid.PcdI2c2MutexId
+  gCixTokenSpaceGuid.PcdI2c3MutexId
+  gCixTokenSpaceGuid.PcdI2c4MutexId
+  gCixTokenSpaceGuid.PcdI2c5MutexId
+  gCixTokenSpaceGuid.PcdI2c6MutexId
+  gCixTokenSpaceGuid.PcdI2c7MutexId
 
   gCixTokenSpaceGuid.PcdSpi0En
   gCixTokenSpaceGuid.PcdSpi1En
@@ -198,3 +206,17 @@
   gCixTokenSpaceGuid.PcdDPPriority2
   gCixTokenSpaceGuid.PcdDPPriority3
   gCixTokenSpaceGuid.PcdDPPriority4
+
+  gCixTokenSpaceGuid.PcdCpuCore1En
+  gCixTokenSpaceGuid.PcdCpuCore2En
+  gCixTokenSpaceGuid.PcdCpuCore3En
+  gCixTokenSpaceGuid.PcdCpuCore4En
+  gCixTokenSpaceGuid.PcdCpuCore5En
+  gCixTokenSpaceGuid.PcdCpuCore6En
+  gCixTokenSpaceGuid.PcdCpuCore7En
+  gCixTokenSpaceGuid.PcdCpuCore8En
+  gCixTokenSpaceGuid.PcdCpuCore9En
+  gCixTokenSpaceGuid.PcdCpuCore10En
+  gCixTokenSpaceGuid.PcdCpuCore11En
+
+  gCixTokenSpaceGuid.PcdAcpiCppcType

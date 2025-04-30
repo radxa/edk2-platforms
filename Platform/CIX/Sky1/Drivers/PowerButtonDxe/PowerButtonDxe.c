@@ -16,7 +16,7 @@
 #include <Library/EcLib.h>
 #include <Library/CixPostCodeLib.h>
 
-#define  POWER_BUTTON_POLLING_INTERVAL  200 * 1000 * 10
+#define  POWER_BUTTON_POLLING_INTERVAL  500 * 1000 * 10
 #define  POWER_BUTTON_VALID             BIT1
 
 VOID
@@ -29,11 +29,11 @@ PowerButtonCallback (
   EFI_STATUS                  Status;
   EC_RESPONSE_ACPI_INT_EVENT  AcpiIntEvent;
 
-  DEBUG ((DEBUG_INFO, "\n[PBTN]callback.\n"));
+  DEBUG ((DEBUG_VERBOSE, "\n[PBTN]callback.\n"));
   Status = GetAcpiIntEvent (&AcpiIntEvent);
   if (!EFI_ERROR (Status)) {
     if ( AcpiIntEvent.Event & POWER_BUTTON_VALID) {
-      DEBUG ((DEBUG_INFO, "\n[PBTN]pressed.\n"));
+      DEBUG ((DEBUG_VERBOSE, "\n[PBTN]pressed.\n"));
       LibResetSystem (EfiResetShutdown, EFI_SUCCESS, 0, NULL);
     }
   }

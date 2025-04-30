@@ -45,6 +45,13 @@
 #string STR_CPU_FREQ_0                  #language en-US "2.5G"
 #string STR_CPU_FREQ_1                  #language en-US "2.6G"
 
+#string STR_CPU_LPI_STATE_PROMPT        #language en-US "LPI Max State"
+#string STR_CPU_LPI_STATE_HELP          #language en-US "Cpu LPI(Low Power Idle) Max State"
+#string STR_CPU_LPI_STATE_0             #language en-US "LPI0"
+#string STR_CPU_LPI_STATE_1             #language en-US "LPI1"
+#string STR_CPU_LPI_STATE_2             #language en-US "LPI2"
+#string STR_CPU_FREQ_1                  #language en-US "2.6G"
+
 #string STR_EC_FAN_MODE_PROMPT          #language en-US "EC Fan Mode"
 #string STR_EC_FAN_MODE_PROMPT_HELP     #language en-US "Select the default EC fan mode."
 #string STR_AUTO_MODE                   #language en-US "Auto Mode"

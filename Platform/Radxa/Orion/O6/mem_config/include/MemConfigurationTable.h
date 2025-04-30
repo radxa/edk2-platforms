@@ -7,7 +7,7 @@
 #define MEM_CONFIG_MINOR_VER 0x6
 
 #define CDCB_MEM_QUICK_CONFIG_OFFSET 0
-
+#pragma pack(push, 1)
 typedef struct {
 #define MULTI_BOARD_DISABLE      0
 #define MULTI_BOARD_METHOD_GPIO  1
@@ -87,15 +87,18 @@ typedef struct {
 
 #define BLOCK_OFFSET(offset) (CDCB_MEM_CONFIG_HEADER_OFFSET + (offset))
 
-#define MEM_CONFIG_BLOCK_BOARDID_GUID      0x1000
-#define MEM_CONFIG_BLOCK_BOARDID_SIGNAUTE  0x44494442 // "BDID"
+#define MEM_CONFIG_BDID_GET_METHOD_GUID      0x1000
+#define MEM_CONFIG_BDID_GET_METHOD_SIGNAUTE  0x4D474442 // "BDGM"
 typedef struct {
-  MEM_CONFIG_BLOCK_HEADER Header;
-  uint8_t                 GpioIndex0;
-  uint8_t                 GpioIndex1;
-  uint8_t                 GpioIndex2;
-  uint8_t                 GpioIndex3;
-} MEM_CONFIG_BLOCK_BOARDID;
+  MEM_CONFIG_BLOCK_HEADER         Header;
+  uint8_t                         GetMethod;
+  uint8_t                         buf[];
+} MEM_CONFIG_BDID_GET_METHOD;
+
+#define BDID_GET_METHOD_GPIO 0
+typedef struct {
+  uint8_t GpioIndex[8];
+} BDID_GET_METHOD_GPIO_S;
 
 #define MEM_CONFIG_BLOCK_CONFIG_GUID       0x1001
 #define MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE   0x464E4F43 //"CONF"
@@ -195,6 +198,7 @@ typedef struct {
   uint8_t                 SOC_ODT;          ///< SOC_ODT
   uint8_t                 NTDQ_ODT;         ///< NTDQ_ODT
   uint8_t                 ODT_PDDS;         ///< PDDS
+  uint8_t                 rsvd;
   uint16_t                DqVref;
   uint16_t                CaVref;
 } MEM_CONFIG_BUSCFG_LP5_ENTRY;
@@ -343,4 +347,5 @@ typedef struct {
   MEM_CONFIG_TRAIN_OPTIMIZE_ENTRY TrnOpt[];
 } MEM_CONFIG_TRAIN_OPTIMIZE;
 
+#pragma pack(pop)
 #endif

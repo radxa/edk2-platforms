@@ -68,6 +68,8 @@
   gArmPlatformTokenSpaceGuid.PcdSerialDbgRegisterBase
   gArmPlatformTokenSpaceGuid.PcdSerialDbgInterrupt
   gArmPlatformTokenSpaceGuid.PcdSerialDbgUartBaudRate
+  gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn
+  gCixPlatformTokenSpaceGuid.PcdEcI2cBus
   gCixTokenSpaceGuid.PcdI2c0Runtime
   gCixTokenSpaceGuid.PcdI2c1Runtime
   gCixTokenSpaceGuid.PcdI2c2Runtime

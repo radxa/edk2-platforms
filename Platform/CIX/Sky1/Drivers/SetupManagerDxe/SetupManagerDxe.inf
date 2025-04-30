@@ -240,6 +240,7 @@
   gCixPlatformTokenSpaceGuid.PcdCpuFMax
   gCixPlatformTokenSpaceGuid.PcdGpuFMax
   gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode
+  gCixTokenSpaceGuid.PcdAcpiCppcType
 
 [Depex]
   TRUE

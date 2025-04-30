@@ -50,14 +50,59 @@ GET_OBJECT_LIST (
   );
 
 /**
-  This macro expands to a function that retrieves the Mappint
-  table for CPU UID to Core number.
+  This macro expands to a function that retrieves the Cpu
+  topology information
 */
 GET_OBJECT_LIST (
   EObjNameSpaceCix,
-  ECixObjCpuUidtoCoreNumberMap,
-  CM_CIX_CPUUID_CORENUMBER_MAP
+  ECixObjCpuTopoInfo,
+  CM_CIX_CPU_TOPO_INFO
   );
+
+/** Write a string 'Xxxx\0' in AslName (5 bytes long),
+  with 'X' being the leading char of the name, and
+  with 'xxx' being Value in hexadecimal.
+
+  As 'xxx' in hexadecimal represents a number on 12 bits,
+  we have Value < (1 << 12).
+
+  @param [in]       LeadChar  Leading char of the name.
+  @param [in]       Value     Hex value of the name.
+                              Must be lower than (2 << 12).
+  @param [in, out]  AslName   Pointer to write the 'Xxxx' string to.
+                              Must be at least 5 bytes long.
+
+  @retval EFI_SUCCESS               Success.
+  @retval EFI_INVALID_PARAMETER     Invalid parameter.
+**/
+STATIC
+EFI_STATUS
+EFIAPI
+WriteAslName (
+  IN      CHAR8   LeadChar,
+  IN      UINT32  Value,
+  IN OUT  CHAR8   *AslName
+  )
+{
+  UINT8  Index;
+
+  if ((Value >= MAX_NODE_COUNT)  ||
+      (AslName == NULL))
+  {
+    ASSERT (0);
+    return EFI_INVALID_PARAMETER;
+  }
+
+  AslName[0]                 = LeadChar;
+  AslName[AML_NAME_SEG_SIZE] = '\0';
+
+  for (Index = 0; Index < AML_NAME_SEG_SIZE - 1; Index++) {
+    AslName[AML_NAME_SEG_SIZE - Index - 1] =
+      AsciiFromHex (((Value >> (4 * Index)) & 0xF));
+  }
+
+  return EFI_SUCCESS;
+}
 
 /** Write a string 'CPUx\0' in AslName (5 bytes long),
   and with 'PUx' being overrided from back to front by Value in hexadecimal.
@@ -242,7 +287,6 @@ CreateAmlCpcNode (
              &CpcInfoCount
              );
   if (EFI_ERROR (Status)) {
-    ASSERT (0);
     return Status;
   }
 
@@ -339,82 +383,95 @@ CreateAmlCpuPTNode (
   IN        AML_OBJECT_NODE_HANDLE                        ScopeNode
   )
 {
-  EFI_STATUS        Status;
-  CM_ARM_GICC_INFO  *GicCInfo;
-  UINT32            GicCInfoCount;
-  UINT32            CpuIndex;
-  UINT32            CoreId;
-  UINT32            CpuNameStringLength = SB_SCOPE_PREFIX_SIZE + AML_NAME_SEG_SIZE;
-  CHAR8             CpuName[AML_NAME_SEG_SIZE + 1];
-  CHAR8             CpuAllNameStringList[PLAT_CPU_COUNT][CpuNameStringLength];
-  CHAR8             CpuL0NameStringList[PLAT_CPU_L0_COUNT][CpuNameStringLength];
-  CHAR8             CpuM0NameStringList[PLAT_CPU_M0_COUNT][CpuNameStringLength];
-  CHAR8             CpuM1NameStringList[PLAT_CPU_M1_COUNT][CpuNameStringLength];
-  CHAR8             CpuB0NameStringList[PLAT_CPU_B0_COUNT][CpuNameStringLength];
-  CHAR8             CpuB1NameStringList[PLAT_CPU_B1_COUNT][CpuNameStringLength];
-  UINT8             CpuL0Count = 0, CpuM0Count = 0, CpuM1Count = 0, CpuB0Count = 0, CpuB1Count = 0;
-
-  CM_CIX_CPUUID_CORENUMBER_MAP  *CpuUidtoCoreNumberMap;
-  UINT32                        CpuUidtoCoreNumberMapCount;
+  EFI_STATUS            Status;
+  CM_CIX_CPU_TOPO_INFO  *CpuTopoInfo;
+  UINT32                CpuTopoInfoCount;
+  UINT8                 ClusterIndex, CoreIndex;
+  CIX_CLUSTER_TOPO      *ClusterTopo;
+  CIX_CPU_CORE          *CpuCore;
+  UINT32                CpuNameStringLength = CLUSTER_SCOPE_PREFIX_SIZE + AML_NAME_SEG_SIZE + 1;
+  CHAR8                 CpuName[AML_NAME_SEG_SIZE + 1];
+  CHAR8                 AslNameProcContainer[AML_NAME_SEG_SIZE + 1];
+  CHAR8                 CpuAllNameStringList[PLAT_CPU_COUNT][CpuNameStringLength];
+  CHAR8                 CpuL0NameStringList[PLAT_CPU_L0_COUNT][CpuNameStringLength];
+  CHAR8                 CpuM0NameStringList[PLAT_CPU_M0_COUNT][CpuNameStringLength];
+  CHAR8                 CpuM1NameStringList[PLAT_CPU_M1_COUNT][CpuNameStringLength];
+  CHAR8                 CpuB0NameStringList[PLAT_CPU_B0_COUNT][CpuNameStringLength];
+  CHAR8                 CpuB1NameStringList[PLAT_CPU_B1_COUNT][CpuNameStringLength];
+  UINT8                 CpuL0Count = 0, CpuM0Count = 0, CpuM1Count = 0, CpuB0Count = 0, CpuB1Count = 0, CpuAllCount = 0;
 
   ASSERT (CfgMgrProtocol != NULL);
   ASSERT (ScopeNode != NULL);
 
-  Status = GetEArmObjGicCInfo (
+  Status = GetECixObjCpuTopoInfo (
              CfgMgrProtocol,
              CM_NULL_TOKEN,
-             &GicCInfo,
-             &GicCInfoCount
+             &CpuTopoInfo,
+             &CpuTopoInfoCount
              );
   if (EFI_ERROR (Status)) {
     ASSERT (0);
     return Status;
   }
 
-  Status = GetECixObjCpuUidtoCoreNumberMap (
-             CfgMgrProtocol,
-             CM_NULL_TOKEN,
-             &CpuUidtoCoreNumberMap,
-             &CpuUidtoCoreNumberMapCount
-             );
-  if (EFI_ERROR (Status)) {
-    ASSERT (0);
-    return Status;
-  }
-
-  // Convert cpu number to cpu name string list
-  for (CpuIndex = 0; CpuIndex < GicCInfoCount; CpuIndex++) {
-    Status = WriteCpuAslName (CpuIndex, CpuName);
+  for (ClusterIndex = 0; ClusterIndex < CpuTopoInfo->ClusterNumber; ClusterIndex++) {
+    ClusterTopo = &CpuTopoInfo->ClusterTopo[ClusterIndex];
+    Status      = WriteAslName ('C', ClusterTopo->Uid, AslNameProcContainer);
     if (EFI_ERROR (Status)) {
       ASSERT (0);
       return Status;
     }
 
-    CoreId = CpuUidtoCoreNumberMap[CpuIndex];
-    if ((CoreId >= 0) && (CoreId <= 3)) {
-      CopyMem (CpuL0NameStringList[CpuL0Count], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
-      CopyMem (CpuL0NameStringList[CpuL0Count]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
-      CpuL0Count++;
-    } else if ((CoreId >= 4) && (CoreId <= 5)) {
-      CopyMem (CpuM0NameStringList[CpuM0Count], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
-      CopyMem (CpuM0NameStringList[CpuM0Count]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
-      CpuM0Count++;
-    } else if ((CoreId >= 6) && (CoreId <= 7)) {
-      CopyMem (CpuM1NameStringList[CpuM1Count], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
-      CopyMem (CpuM1NameStringList[CpuM1Count]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
-      CpuM1Count++;
-    } else if ((CoreId >= 8) && (CoreId <= 9)) {
-      CopyMem (CpuB0NameStringList[CpuB0Count], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
-      CopyMem (CpuB0NameStringList[CpuB0Count]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
-      CpuB0Count++;
-    } else if ((CoreId >= 10) && (CoreId <= 11)) {
-      CopyMem (CpuB1NameStringList[CpuB1Count], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
-      CopyMem (CpuB1NameStringList[CpuB1Count]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
-      CpuB1Count++;
-    }
+    for (CoreIndex = 0; CoreIndex < ClusterTopo->CoreNumber; CoreIndex++) {
+      CpuCore = &ClusterTopo->Core[CoreIndex];
+      if (!CpuCore->Enable) {
+        continue;
+      }
 
-    CopyMem (CpuAllNameStringList[CpuIndex], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
-    CopyMem (CpuAllNameStringList[CpuIndex]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
+      Status = WriteCpuAslName (CpuCore->Uid, CpuName);
+      if (EFI_ERROR (Status)) {
+        ASSERT (0);
+        return Status;
+      }
+
+      if ((CpuCore->Coreid >= 0) && (CpuCore->Coreid <= 3)) {
+        CopyMem (CpuL0NameStringList[CpuL0Count], SOCKET_SCOPE_PREFIX, SOCKET_SCOPE_PREFIX_SIZE);
+        CopyMem (CpuL0NameStringList[CpuL0Count]+ SOCKET_SCOPE_PREFIX_SIZE - 1, AslNameProcContainer, 4);
+        CpuL0NameStringList[CpuL0Count][CLUSTER_SCOPE_PREFIX_SIZE-1] = '.';
+        CopyMem (CpuL0NameStringList[CpuL0Count]+ CLUSTER_SCOPE_PREFIX_SIZE, CpuName, 5);
+        CpuL0Count++;
+      } else if ((CpuCore->Coreid >= 4) && (CpuCore->Coreid <= 5)) {
+        CopyMem (CpuM0NameStringList[CpuM0Count], SOCKET_SCOPE_PREFIX, SOCKET_SCOPE_PREFIX_SIZE);
+        CopyMem (CpuM0NameStringList[CpuM0Count]+ SOCKET_SCOPE_PREFIX_SIZE - 1, AslNameProcContainer, 4);
+        CpuM0NameStringList[CpuM0Count][CLUSTER_SCOPE_PREFIX_SIZE-1] = '.';
+        CopyMem (CpuM0NameStringList[CpuM0Count]+ CLUSTER_SCOPE_PREFIX_SIZE, CpuName, 5);
+        CpuM0Count++;
+      } else if ((CpuCore->Coreid >= 6) && (CpuCore->Coreid <= 7)) {
+        CopyMem (CpuM1NameStringList[CpuM1Count], SOCKET_SCOPE_PREFIX, SOCKET_SCOPE_PREFIX_SIZE);
+        CopyMem (CpuM1NameStringList[CpuM1Count]+ SOCKET_SCOPE_PREFIX_SIZE - 1, AslNameProcContainer, 4);
+        CpuM1NameStringList[CpuM1Count][CLUSTER_SCOPE_PREFIX_SIZE-1] = '.';
+        CopyMem (CpuM1NameStringList[CpuM1Count]+ CLUSTER_SCOPE_PREFIX_SIZE, CpuName, 5);
+        CpuM1Count++;
+      } else if ((CpuCore->Coreid >= 8) && (CpuCore->Coreid <= 9)) {
+        CopyMem (CpuB0NameStringList[CpuB0Count], SOCKET_SCOPE_PREFIX, SOCKET_SCOPE_PREFIX_SIZE);
+        CopyMem (CpuB0NameStringList[CpuB0Count]+ SOCKET_SCOPE_PREFIX_SIZE - 1, AslNameProcContainer, 4);
+        CpuB0NameStringList[CpuB0Count][CLUSTER_SCOPE_PREFIX_SIZE-1] = '.';
+        CopyMem (CpuB0NameStringList[CpuB0Count]+ CLUSTER_SCOPE_PREFIX_SIZE, CpuName, 5);
+        CpuB0Count++;
+      } else if ((CpuCore->Coreid >= 10) && (CpuCore->Coreid <= 11)) {
+        CopyMem (CpuB1NameStringList[CpuB1Count], SOCKET_SCOPE_PREFIX, SOCKET_SCOPE_PREFIX_SIZE);
+        CopyMem (CpuB1NameStringList[CpuB1Count]+ SOCKET_SCOPE_PREFIX_SIZE - 1, AslNameProcContainer, 4);
+        CpuB1NameStringList[CpuB1Count][CLUSTER_SCOPE_PREFIX_SIZE-1] = '.';
+        CopyMem (CpuB1NameStringList[CpuB1Count]+ CLUSTER_SCOPE_PREFIX_SIZE, CpuName, 5);
+        CpuB1Count++;
+      }
+
+      CopyMem (CpuAllNameStringList[CpuAllCount], SOCKET_SCOPE_PREFIX, SOCKET_SCOPE_PREFIX_SIZE);
+      CopyMem (CpuAllNameStringList[CpuAllCount]+ SOCKET_SCOPE_PREFIX_SIZE - 1, AslNameProcContainer, 4);
+      CpuAllNameStringList[CpuAllCount][CLUSTER_SCOPE_PREFIX_SIZE-1] = '.';
+      CopyMem (CpuAllNameStringList[CpuAllCount]+ CLUSTER_SCOPE_PREFIX_SIZE, CpuName, 5);
+      CpuAllCount++;
+    }
   }
 
   Status = AmlCreateCpuPTNode (
@@ -475,7 +532,7 @@ CreateAmlCpuPTNode (
   Status = AmlCreateCpuPTNode (
              "CPUL",
              (CHAR8 *)CpuAllNameStringList,
-             GicCInfoCount,
+             CpuAllCount,
              CpuNameStringLength,
              ScopeNode
              );
@@ -566,7 +623,87 @@ CreateAmlCpu (
   return Status;
 }
 
-/** Create the processor hierarchy AML tree from CM_ARM_GICC_INFO
+/** Create a Processor Container in the AML namespace.
+
+  This generates the following ASL code:
+  Device (C002)
+  {
+      Name (_UID, 2)
+      Name (_HID, "ACPI0010")
+  }
+
+  @param [in]  CfgMgrProtocol         Pointer to the Configuration Manager
+                                      Protocol Interface.
+  @param [in]  ParentNode             Parent node to attach the processor
+                                      container node to.
+  @param [in]  ProcContainerIndex     Index used to generate the node name.
+  @param [out] ProcContainerNodePtr   If success, contains the created processor
+                                      container node.
+
+  @retval EFI_SUCCESS             Success.
+  @retval EFI_INVALID_PARAMETER   Invalid parameter.
+  @retval EFI_OUT_OF_RESOURCES    Failed to allocate memory.
+**/
+STATIC
+EFI_STATUS
+EFIAPI
+CreateAmlProcessorContainer (
+  IN  CONST EDKII_CONFIGURATION_MANAGER_PROTOCOL  *CONST  CfgMgrProtocol,
+  IN        AML_NODE_HANDLE                               ParentNode,
+  IN        UINT32                                        ProcContainerIndex,
+  OUT       AML_OBJECT_NODE_HANDLE                        *ProcContainerNodePtr
+  )
+{
+  EFI_STATUS              Status;
+  AML_OBJECT_NODE_HANDLE  ProcContainerNode;
+  CHAR8                   AslNameProcContainer[AML_NAME_SEG_SIZE + 1];
+
+  ASSERT (CfgMgrProtocol != NULL);
+  ASSERT (ParentNode != NULL);
+  ASSERT (ProcContainerNodePtr != NULL);
+
+  Status = WriteAslName ('C', ProcContainerIndex, AslNameProcContainer);
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+    return Status;
+  }
+
+  Status = AmlCodeGenDevice (AslNameProcContainer, ParentNode, &ProcContainerNode);
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+    return Status;
+  }
+
+  // Use the ProcContainerIndex for the _UID value as there is no AcpiProcessorUid
+  // and EFI_ACPI_6_3_PPTT_PROCESSOR_ID_INVALID is set for non-Cpus.
+  Status = AmlCodeGenNameInteger (
+             "_UID",
+             ProcContainerIndex,
+             ProcContainerNode,
+             NULL
+             );
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+    return Status;
+  }
+
+  Status = AmlCodeGenNameString (
+             "_HID",
+             ACPI_HID_PROCESSOR_CONTAINER_DEVICE,
+             ProcContainerNode,
+             NULL
+             );
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+    return Status;
+  }
+
+  *ProcContainerNodePtr = ProcContainerNode;
+
+  return Status;
+}
+
+/** Create the processor hierarchy AML tree from CM_CIX_CPU_TOPO_INFO
     CM objects.
 
   A processor container is by extension any non-leave device in the cpu topology.
@@ -583,25 +720,37 @@ CreateAmlCpu (
 STATIC
 EFI_STATUS
 EFIAPI
-CreateTopologyFromGicC (
+CreateTopologyFromCpuTopoInfo (
   IN        ACPI_TABLE_GENERATOR                          *Generator,
   IN  CONST EDKII_CONFIGURATION_MANAGER_PROTOCOL  *CONST  CfgMgrProtocol,
   IN        AML_OBJECT_NODE_HANDLE                        ScopeNode
   )
 {
-  EFI_STATUS                    Status;
-  CM_ARM_GICC_INFO              *GicCInfo;
-  UINT32                        GicCInfoCount;
-  UINT32                        CpuUidtoCoreNumberMapCount;
-  UINT32                        Index;
-  AML_OBJECT_NODE_HANDLE        CpuNode;
-  UINT32                        CpuUid;
-  UINT32                        Coreid;
-  CM_CIX_CPUUID_CORENUMBER_MAP  *CpuUidtoCoreNumberMap;
+  EFI_STATUS              Status;
+  CM_CIX_CPU_TOPO_INFO    *CpuTopoInfo;
+  CM_ARM_GICC_INFO        *GicCInfo;
+  UINT8                   ClusterIndex, CoreIndex;
+  UINT32                  CpuTopoInfoCount;
+  UINT32                  GicCInfoCount;
+  UINT64                  CoreStatusRetVal;
+  CIX_CLUSTER_TOPO        *ClusterTopo;
+  CIX_CPU_CORE            *CpuCore;
+  AML_OBJECT_NODE_HANDLE  SocketContainerNode, ClussterContainerNode, CpuNode;
 
   ASSERT (Generator != NULL);
   ASSERT (CfgMgrProtocol != NULL);
   ASSERT (ScopeNode != NULL);
+
+  Status = GetECixObjCpuTopoInfo (
+             CfgMgrProtocol,
+             CM_NULL_TOKEN,
+             &CpuTopoInfo,
+             &CpuTopoInfoCount
+             );
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+    return Status;
+  }
 
   Status = GetEArmObjGicCInfo (
              CfgMgrProtocol,
@@ -614,51 +763,60 @@ CreateTopologyFromGicC (
     return Status;
   }
 
-  Status = GetECixObjCpuUidtoCoreNumberMap (
-             CfgMgrProtocol,
-             CM_NULL_TOKEN,
-             &CpuUidtoCoreNumberMap,
-             &CpuUidtoCoreNumberMapCount
-             );
+  Status = CreateAmlProcessorContainer (CfgMgrProtocol, ScopeNode, 0, &SocketContainerNode);
   if (EFI_ERROR (Status)) {
     ASSERT (0);
     return Status;
   }
 
-  // For each CM_ARM_GICC_INFO object, create an AML node.
-  for (Index = 0; Index < GicCInfoCount; Index++) {
-    Status = CreateAmlCpu (
-               Generator,
-               ScopeNode,
-               &GicCInfo[Index],
-               Index,
-               &CpuNode
-               );
-    if (EFI_ERROR (Status)) {
-      ASSERT (0);
-      break;
-    }
-
-    CpuUid = GicCInfo[Index].AcpiProcessorUid;
-    Coreid = CpuUidtoCoreNumberMap[CpuUid];
-    Status = CreateAmlLpiMethod (CpuNode, LpiMapInfo[Coreid]);
+  for (ClusterIndex = 0; ClusterIndex < CpuTopoInfo->ClusterNumber; ClusterIndex++) {
+    ClusterTopo = &CpuTopoInfo->ClusterTopo[ClusterIndex];
+    Status      = CreateAmlProcessorContainer (CfgMgrProtocol, SocketContainerNode, ClusterTopo->Uid, &ClussterContainerNode);
     if (EFI_ERROR (Status)) {
       ASSERT (0);
       return Status;
     }
 
-    Status = CreateAmlCpcNode (CfgMgrProtocol, Coreid, CpuNode);
-    if (EFI_ERROR (Status)) {
-      ASSERT_EFI_ERROR (Status);
-      break;
-    }
+    for (CoreIndex = 0; CoreIndex < ClusterTopo->CoreNumber; CoreIndex++) {
+      CpuCore = &ClusterTopo->Core[CoreIndex];
+      Status  = CreateAmlCpu (Generator, ClussterContainerNode, &GicCInfo[CpuCore->Uid], CpuCore->Uid, &CpuNode);
+      if (EFI_ERROR (Status)) {
+        ASSERT (0);
+        break;
+      }
 
-    Status = CreateAmlPsdNode (PsdInfo[Coreid], CpuNode);
-    if (EFI_ERROR (Status)) {
-      ASSERT_EFI_ERROR (Status);
-      break;
+      CoreStatusRetVal = CpuCore->Enable ? 0xf : 0x0;
+
+      Status = AmlCodeGenMethodRetInteger ("_STA", CoreStatusRetVal, 0, FALSE, 0, CpuNode, NULL);
+      if (EFI_ERROR (Status)) {
+        ASSERT (0);
+        return Status;
+      }
+
+      Status = CreateAmlLpiMethod (CpuNode, LpiMapInfo[CpuCore->Coreid]);
+      if (EFI_ERROR (Status)) {
+        ASSERT (0);
+        return Status;
+      }
+
+      Status = CreateAmlPsdNode (PsdInfo[CpuCore->Coreid], CpuNode);
+      if (EFI_ERROR (Status)) {
+        ASSERT_EFI_ERROR (Status);
+        break;
+      }
+
+      Status = CreateAmlCpcNode (CfgMgrProtocol, CpuCore->Coreid, CpuNode);
+      if (Status == EFI_NOT_FOUND) {
+        Status = EFI_SUCCESS;
+        continue;
+      }
+
+      if (EFI_ERROR (Status)) {
+        ASSERT_EFI_ERROR (Status);
+        break;
+      }
     }
-  } // for
+  }
 
   return Status;
 }
@@ -724,11 +882,11 @@ BuildSsdtCpuTopologyTable (
     goto exit_handler;
   }
 
-  Status = CreateTopologyFromGicC (
-             Generator,
-             CfgMgrProtocol,
-             ScopeNode
-             );
+  CreateTopologyFromCpuTopoInfo (
+    Generator,
+    CfgMgrProtocol,
+    ScopeNode
+    );
   if (EFI_ERROR (Status)) {
     goto exit_handler;
   }

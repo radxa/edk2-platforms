@@ -73,6 +73,19 @@
             }\
   })
 
+#ifdef USBC0_PD_DEVICE
+External (USBC0_PD_DEVICE, DeviceObj)
+#endif
+#ifdef USBC1_PD_DEVICE
+External (USBC1_PD_DEVICE, DeviceObj)
+#endif
+#ifdef USBC2_PD_DEVICE
+External (USBC2_PD_DEVICE, DeviceObj)
+#endif
+#ifdef USBC3_PD_DEVICE
+External (USBC3_PD_DEVICE, DeviceObj)
+#endif
+
 Device (SUB0)
 {
   Name (_HID, "CIXH2030")     // _HID: Hardware ID
@@ -91,8 +104,10 @@ Device (SUB0)
     Memory32Fixed (ReadWrite, 0x09000310, 0x4)
     Memory32Fixed (ReadWrite, 0x09000400, 0x4)
     PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "pinctrl_usb0", ResourceConsumer,)
+#if USBC0_OC_EN
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
     "\\_SB.GPI4", 0, ResourceConsumer) { 25 }
+#endif
   })
 
   Name (_DSD, Package () {
@@ -104,6 +119,9 @@ Device (SUB0)
           Package () { "sof_clk_freq", 8000000 },
           Package () { "lpm_clk_freq", 32000 },
           Package () { "oc-gpio",  Package () { ^SUB0, 0, 0, 0 } },
+#if USBC0_DISABLE_USB3
+          Package () { "u3-port-disable", 1 },
+#endif
         }
   })
 
@@ -142,6 +160,7 @@ Device (SUB0)
       Interrupt (ResourceConsumer, Level, ActiveHigh, ExclusiveAndWake, 0, "\\_SB.PDC0") { USB3_TYPEC_U3_TYPEC_DRD_IRQ_INTERRUPT_ID }
     })
 
+#if USBC0_PD_EN
     Name (_DSD, Package () {
       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
@@ -151,7 +170,17 @@ Device (SUB0)
           },
       USB_REMOTE_PD_DSD("usb-role-switch")
     })
-    USB_REMOTE_PD(\_SB.I2C7.PD00, "usbc_con0", "port@0", "endpoint@0")
+    USB_REMOTE_PD(USBC0_PD_DEVICE, "usbc_con0", "port@0", "endpoint@0")
+#else
+    Name (_DSD, Package () {
+      ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+      Package () {
+            Package () { "maximum-speed", "super-speed-plus" },
+            Package () { "dr_mode", "host" },
+            Package () { "cdnsp,usb3-phy", \_SB.UCP0.USBP },
+          },
+    })
+#endif
 
     Name (RSNL, Package() {
       Package() {\_SB.SUB0.CUB0 , RESOURCE_IRQ, 0, "host"},
@@ -191,18 +220,30 @@ Device (UCP0) //USB 3.0 PHY0
     Memory32Fixed (ReadWrite, 0x09030000, 0x40000)
   })
 
+#if USBC0_PD_EN
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
           Package () { "id", 0x0 },
           Package () { "cix,usbphy_syscon", \_SB.CRU0 },
           Package () { "svid", 0xff01 },
-          Package () { "default_conf", 0x3 },
+          Package () { "default_conf", USBC0_DEF_PMODE },
           Package () { "phy-status", "usb" },
         },
     USB_PHY_REMOTE_PD_DSD("orientation-switch", "mode-switch"),
   })
-  USB_PHY_REMOTE_PD(\_SB.I2C7.PD00, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+  USB_PHY_REMOTE_PD(USBC0_PD_DEVICE, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+#else
+  Name (_DSD, Package () {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+          Package () { "id", 0x0 },
+          Package () { "cix,usbphy_syscon", \_SB.CRU0 },
+          Package () { "default_conf", USBC0_DEF_PMODE },
+          Package () { "phy-status", "usb" },
+        },
+  })
+#endif
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_USB3C_DRD_PHY3_GATE, "pclk", \_SB.UCP0},
@@ -240,8 +281,10 @@ Device (SUB1)
     Memory32Fixed (ReadWrite, 0x09070310, 0x4)
     Memory32Fixed (ReadWrite, 0x09070400, 0x4)
     PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "pinctrl_usb1", ResourceConsumer,)
+#if USBC1_OC_EN
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
     "\\_SB.GPI4", 0, ResourceConsumer) { 26 }
+#endif
   })
 
   Name (_DSD, Package () {
@@ -253,6 +296,9 @@ Device (SUB1)
           Package () { "sof_clk_freq", 8000000 },
           Package () { "lpm_clk_freq", 32000 },
           Package () { "oc-gpio",  Package () { ^SUB1, 0, 0, 0 } },
+#if USBC1_DISABLE_USB3
+          Package () { "u3-port-disable", 1 },
+#endif
         }
   })
 
@@ -291,6 +337,7 @@ Device (SUB1)
       Interrupt (ResourceConsumer, Level, ActiveHigh, ExclusiveAndWake, 0, "\\_SB.PDC0") { USB3_TYPEC_HOST0_U3_TYPEC_HOST0_IRQ_INTERRUPT_ID }
     })
 
+#if USBC1_PD_EN
     Name (_DSD, Package () {
       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
@@ -300,7 +347,17 @@ Device (SUB1)
           },
       USB_REMOTE_PD_DSD("usb-role-switch")
     })
-    USB_REMOTE_PD(\_SB.I2C7.PD01, "usbc_con0", "port@0", "endpoint@0")
+    USB_REMOTE_PD(USBC1_PD_DEVICE, "usbc_con0", "port@0", "endpoint@0")
+#else
+    Name (_DSD, Package () {
+      ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+      Package () {
+            Package () { "maximum-speed", "super-speed-plus" },
+            Package () { "dr_mode", "host" },
+            Package () { "cdnsp,usb3-phy", \_SB.UCP1.USBP },
+          },
+    })
+#endif //USBC1_PD_EN
 
     Name (RSNL, Package() {
       Package() {\_SB.SUB1.CUB1 , RESOURCE_IRQ, 0, "host"},
@@ -340,18 +397,30 @@ Device (UCP1) //USB 3.0 PHY0
     Memory32Fixed (ReadWrite, 0x090A0000, 0x40000)
   })
 
+#if USBC1_PD_EN
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
           Package () { "id", 0x1 },
           Package () { "cix,usbphy_syscon", \_SB.CRU0 },
           Package () { "svid", 0xff01 },
-          Package () { "default_conf", 0x3 },
+          Package () { "default_conf", USBC1_DEF_PMODE },
           Package () { "phy-status", "usb" },
         },
     USB_PHY_REMOTE_PD_DSD("orientation-switch", "mode-switch"),
   })
-  USB_PHY_REMOTE_PD(\_SB.I2C7.PD01, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+  USB_PHY_REMOTE_PD(USBC1_PD_DEVICE, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+#else
+  Name (_DSD, Package () {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+          Package () { "id", 0x1 },
+          Package () { "cix,usbphy_syscon", \_SB.CRU0 },
+          Package () { "default_conf", USBC1_DEF_PMODE },
+          Package () { "phy-status", "usb" },
+        },
+  })
+#endif //USBC1_PD_EN
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_USB3C_0_PHY3_GATE, "pclk", \_SB.UCP1},
@@ -389,8 +458,10 @@ Device (SUB2)
     Memory32Fixed (ReadWrite, 0x090e0310, 0x4)
     Memory32Fixed (ReadWrite, 0x090e0400, 0x4)
     PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "pinctrl_usb2", ResourceConsumer,)
+#if USBC2_OC_EN
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
     "\\_SB.GPI4", 0, ResourceConsumer) { 27 }
+#endif
   })
 
   Name (_DSD, Package () {
@@ -402,6 +473,9 @@ Device (SUB2)
           Package () { "sof_clk_freq", 8000000 },
           Package () { "lpm_clk_freq", 32000 },
           Package () { "oc-gpio",  Package () { ^SUB2, 0, 0, 0 } },
+#if USBC2_DISABLE_USB3
+          Package () { "u3-port-disable", 1 },
+#endif
         }
   })
 
@@ -440,6 +514,7 @@ Device (SUB2)
       Interrupt (ResourceConsumer, Level, ActiveHigh, ExclusiveAndWake, 0, "\\_SB.PDC0") { USB3_TYPEC_HOST1_U3_TYPEC_HOST1_IRQ_INTERRUPT_ID }
     })
 
+#if USBC2_PD_EN
     Name (_DSD, Package () {
       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
@@ -449,7 +524,17 @@ Device (SUB2)
           },
       USB_REMOTE_PD_DSD("usb-role-switch")
     })
-    USB_REMOTE_PD(\_SB.I2C1.PD10, "usbc_con0", "port@0", "endpoint@0")
+    USB_REMOTE_PD(USBC2_PD_DEVICE, "usbc_con0", "port@0", "endpoint@0")
+#else
+    Name (_DSD, Package () {
+      ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+      Package () {
+            Package () { "maximum-speed", "super-speed-plus" },
+            Package () { "dr_mode", "host" },
+            Package () { "cdnsp,usb3-phy", \_SB.UCP0.USBP },
+          },
+    })
+#endif //USBC2_PD_EN
 
     Name (RSNL, Package() {
       Package() {\_SB.SUB2.CUB2 , RESOURCE_IRQ, 0, "host"},
@@ -489,18 +574,30 @@ Device (UCP2) //USB 3.0 PHY0
     Memory32Fixed (ReadWrite, 0x09110000, 0x40000)
   })
 
+#if USBC2_PD_EN
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
           Package () { "id", 0x2 },
           Package () { "cix,usbphy_syscon", \_SB.CRU0 },
           Package () { "svid", 0xff01 },
-          Package () { "default_conf", 0x3 },
+          Package () { "default_conf", USBC2_DEF_PMODE },
           Package () { "phy-status", "usb" },
         },
     USB_PHY_REMOTE_PD_DSD("orientation-switch", "mode-switch"),
   })
-  USB_PHY_REMOTE_PD(\_SB.I2C1.PD10, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+  USB_PHY_REMOTE_PD(USBC2_PD_DEVICE, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+#else
+  Name (_DSD, Package () {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+          Package () { "id", 0x2 },
+          Package () { "cix,usbphy_syscon", \_SB.CRU0 },
+          Package () { "default_conf", USBC2_DEF_PMODE },
+          Package () { "phy-status", "usb" },
+        },
+  })
+#endif //USBC2_PD_EN
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_USB3C_1_PHY3_GATE, "pclk", \_SB.UCP2},
@@ -524,7 +621,7 @@ Device (SUB3)
 {
   Name (_HID, "CIXH2030")     // _HID: Hardware ID
   Name (_UID, 0x03)           // _UID: Unique ID
-  Name (_CCA, 0x0F)           // _CCA: Cache Coherency Attribute
+  Name (_CCA, 0x00)           // _CCA: Cache Coherency Attribute
   Method (_STA)               // _STA: Device status
   {
     If(\_SB.GETV(ARV_USB3_TYPEC_HOST2_ENABLE_OFFSET)){
@@ -538,8 +635,10 @@ Device (SUB3)
     Memory32Fixed (ReadWrite, 0x09150310, 0x4)
     Memory32Fixed (ReadWrite, 0x09150400, 0x4)
     PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "pinctrl_usb3", ResourceConsumer,)
+#if USBC3_OC_EN
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
     "\\_SB.GPI4", 0, ResourceConsumer) { 28 }
+#endif
   })
 
   Name (_DSD, Package () {
@@ -551,6 +650,9 @@ Device (SUB3)
           Package () { "sof_clk_freq", 8000000 },
           Package () { "lpm_clk_freq", 32000 },
           Package () { "oc-gpio",  Package () { ^SUB3, 0, 0, 0 } },
+#if USBC3_DISABLE_USB3
+          Package () { "u3-port-disable", 1 },
+#endif
         }
   })
 
@@ -589,6 +691,7 @@ Device (SUB3)
       Interrupt (ResourceConsumer, Level, ActiveHigh, ExclusiveAndWake, 0, "\\_SB.PDC0") { USB3_TYPEC_HOST2_U3_TYPEC_HOST2_IRQ_INTERRUPT_ID }
     })
 
+#if USBC3_PD_EN
     Name (_DSD, Package () {
       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
@@ -598,7 +701,17 @@ Device (SUB3)
           },
       USB_REMOTE_PD_DSD("usb-role-switch")
     })
-    USB_REMOTE_PD(\_SB.I2C1.PD11, "usbc_con0", "port@0", "endpoint@0")
+    USB_REMOTE_PD(USBC3_PD_DEVICE, "usbc_con0", "port@0", "endpoint@0")
+#else
+    Name (_DSD, Package () {
+      ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+      Package () {
+            Package () { "maximum-speed", "super-speed-plus" },
+            Package () { "dr_mode", "host" },
+            Package () { "cdnsp,usb3-phy", \_SB.UCP3.USBP },
+          },
+    })
+#endif //USBC3_PD_EN
 
     Name (RSNL, Package() {
       Package() {\_SB.SUB3.CUB3 , RESOURCE_IRQ, 0, "host"},
@@ -638,18 +751,30 @@ Device (UCP3) //USB 3.0 PHY0
     Memory32Fixed (ReadWrite, 0x09180000, 0x40000)
   })
 
+#if USBC3_PD_EN
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
           Package () { "id", 0x3 },
           Package () { "cix,usbphy_syscon", \_SB.CRU0 },
           Package () { "svid", 0xff01 },
-          Package () { "default_conf", 0x3 },
+          Package () { "default_conf", USBC3_DEF_PMODE },
           Package () { "phy-status", "usb" },
         },
     USB_PHY_REMOTE_PD_DSD("orientation-switch", "mode-switch"),
   })
-  USB_PHY_REMOTE_PD(\_SB.I2C1.PD11, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+  USB_PHY_REMOTE_PD(USBC3_PD_DEVICE, "usbc_con0", "port@1", "endpoint@0", "port@2", "endpoint@0")
+#else
+  Name (_DSD, Package () {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+          Package () { "id", 0x3 },
+          Package () { "cix,usbphy_syscon", \_SB.CRU0 },
+          Package () { "default_conf", USBC3_DEF_PMODE },
+          Package () { "phy-status", "usb" },
+        },
+  })
+#endif //USBC3_PD_EN
 
   Name (CLKT, Package() {
       Package() {CLK_TREE_USB3C_2_PHY3_GATE, "pclk", \_SB.UCP3},

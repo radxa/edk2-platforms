@@ -166,4 +166,55 @@
             {5, 0, 4, 0xFD, 2},\
 }
 
+// PCC for CPPC
+#define PCC_CPPC_BASE              0x83BF1280
+#define PCC_CPPC_BASE_LENGTH       0x1000
+#define PCC_CPPC_DOORBELL_REG      0x06590090
+#define PCC_CPPC_DOORBELL_ACK_REG  0x0
+
+#define PCC_CPPC_CORE0_BASE   0x00
+#define PCC_CPPC_CORE1_BASE   0x40
+#define PCC_CPPC_CORE2_BASE   0x80
+#define PCC_CPPC_CORE3_BASE   0xC0
+#define PCC_CPPC_CORE4_BASE   0x100
+#define PCC_CPPC_CORE5_BASE   0x140
+#define PCC_CPPC_CORE6_BASE   0x180
+#define PCC_CPPC_CORE7_BASE   0x1C0
+#define PCC_CPPC_CORE8_BASE   0x200
+#define PCC_CPPC_CORE9_BASE   0x240
+#define PCC_CPPC_CORE10_BASE  0x280
+#define PCC_CPPC_CORE11_BASE  0x2C0
+
+#define PLAT_CPC_INFO_PCC  {                       \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE0_BASE),     \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE1_BASE),     \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE2_BASE),     \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE3_BASE),     \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE4_BASE),     \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE5_BASE),     \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE6_BASE),     \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE7_BASE),     \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE8_BASE),     \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE9_BASE),     \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE10_BASE),    \
+            CPC_ENTRY_PCC(PCC_CPPC_CORE11_BASE),    \
+}
+
+typedef struct {
+  UINT64    ReferencePerfCounter;
+  UINT64    DeliveredPerfCounter;
+  UINT32    DesiredPerfLevel;
+  UINT32    HighestPerfLevel;
+  UINT32    NominalPerfLevel;
+  UINT32    LowestNonlinearPerfLevel;
+  UINT32    LowestPerfLevel;
+  UINT32    GuaranteedPerfLevel;
+  UINT32    PerfLevelLimited;
+  UINT32    ReferencePerf;
+  UINT32    LowestFreq;
+  UINT32    NominalFreq;
+  UINT32    DeliveredPerfLevel;
+  UINT32    Reserved[1];
+} PCC_CORE_REGS;
+
 #endif

@@ -16,8 +16,11 @@
 **/
 #include <Library/BaseLib.h>
 #include <Library/DebugLib.h>
+#include <Library/BaseMemoryLib.h>
 #include <Library/MmServicesTableLib.h>
 #include <Library/PcdLib.h>
+#include <Library/HobLib.h>
+#include <Guid/NvramInformation.h>
 
 #include <Protocol/FirmwareVolumeBlock.h>
 #include <Protocol/SmmFirmwareVolumeBlock.h>
@@ -45,6 +48,11 @@ VariablePcdLibConstructor (
   EFI_FIRMWARE_VOLUME_BLOCK_PROTOCOL  *FvbProtocol;
   NOR_FLASH_INSTANCE                  *Instance;
   EFI_STATUS                          Status;
+  EFI_CONFIGURATION_TABLE             *ConfigurationTable;
+  UINTN                               Index;
+  VOID                                *HobList;
+  NVRAM_INFORMATION_HOB_DATA          *NvramInformationHobData;
+  EFI_HOB_GUID_TYPE                   *Hob;
 
   //
   // Locate SmmFirmwareVolumeBlockProtocol
@@ -58,10 +66,45 @@ VariablePcdLibConstructor (
 
   Instance = INSTANCE_FROM_FVB_THIS (FvbProtocol);
 
+  ConfigurationTable = gMmst->MmConfigurationTable;
+  for (Index = 0; Index < gMmst->NumberOfTableEntries; Index++) {
+    if (CompareGuid (&gEfiHobListGuid, &(ConfigurationTable[Index].VendorGuid))) {
+      break;
+    }
+  }
+
+  // Bail out if the HobList could not be found
+  if (Index >= gMmst->NumberOfTableEntries) {
+    DEBUG ((DEBUG_ERROR, "%a: HobList not found - 0x%x\n", __FUNCTION__, Index));
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  HobList = ConfigurationTable[Index].VendorTable;
+  if (HobList == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a: NvramInformation hob list not found\n", __FUNCTION__));
+    return EFI_NOT_FOUND;
+  }
+
+  Hob = GetNextGuidHob (&gNvramInformationHobGuid, HobList);
+  if (Hob == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a: NvramInformation hob not found\n", __FUNCTION__));
+    return EFI_NOT_FOUND;
+  }
+
+  NvramInformationHobData = GET_GUID_HOB_DATA (Hob);
+  if (NvramInformationHobData == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a: NvramInformationHob extraction failed - 0x%x\n", __FUNCTION__, Status));
+    return EFI_NOT_FOUND;
+  }
+
   // Patch PCDs with the correct values
+  PatchPcdSet32 (PcdFlashNvStorageVariableSize, NvramInformationHobData->VariableSize);
+  PatchPcdSet32 (PcdFlashNvStorageFtwWorkingSize, NvramInformationHobData->FtwWorkingSize);
+  PatchPcdSet32 (PcdFlashNvStorageFtwSpareSize, NvramInformationHobData->FtwSpareSize);
+
   PatchPcdSet64 (PcdFlashNvStorageVariableBase64, Instance->RegionBaseAddress);
-  PatchPcdSet64 (PcdFlashNvStorageFtwWorkingBase64, Instance->RegionBaseAddress + PcdGet32 (PcdFlashNvStorageVariableSize));
-  PatchPcdSet64 (PcdFlashNvStorageFtwSpareBase64, Instance->RegionBaseAddress + PcdGet32 (PcdFlashNvStorageVariableSize) + PcdGet32 (PcdFlashNvStorageFtwWorkingSize));
+  PatchPcdSet64 (PcdFlashNvStorageFtwWorkingBase64, Instance->RegionBaseAddress + NvramInformationHobData->VariableSize);
+  PatchPcdSet64 (PcdFlashNvStorageFtwSpareBase64, Instance->RegionBaseAddress + NvramInformationHobData->VariableSize + NvramInformationHobData->FtwWorkingSize);
 
   DEBUG ((DEBUG_INFO, "%a: Fixup PcdFlashNvStorageVariableBase64: 0x%lx\n", __FUNCTION__, PcdGet64 (PcdFlashNvStorageVariableBase64)));
   DEBUG ((DEBUG_INFO, "%a: Fixup PcdFlashNvStorageFtwWorkingBase64: 0x%lx\n", __FUNCTION__, PcdGet64 (PcdFlashNvStorageFtwWorkingBase64)));

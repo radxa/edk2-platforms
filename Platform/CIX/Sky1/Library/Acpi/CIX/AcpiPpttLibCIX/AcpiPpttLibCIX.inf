@@ -1,0 +1,34 @@
+## @file
+#  PPTT Table Generator
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#  Copyright (c) 2019, ARM Limited. All rights reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION    = 0x0001001B
+  BASE_NAME      = AcpiPpttLibCIX
+  FILE_GUID      = 3c190d87-4ee3-47f6-bd43-9a622a594aeb
+  VERSION_STRING = 1.0
+  MODULE_TYPE    = DXE_DRIVER
+  LIBRARY_CLASS  = NULL|DXE_DRIVER
+  CONSTRUCTOR    = AcpiPpttLibConstructor
+  DESTRUCTOR     = AcpiPpttLibDestructor
+
+[Sources]
+  PpttGenerator.c
+  PpttGenerator.h
+
+[Packages]
+  EmbeddedPkg/EmbeddedPkg.dec
+  DynamicTablesPkg/DynamicTablesPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib

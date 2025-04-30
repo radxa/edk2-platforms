@@ -7,6 +7,17 @@
 
 **/
 
+External (\_SB.I2C1, DeviceObj)
+External (\_SB.I2C7, DeviceObj)
+External (\_SB.SUB2.CUB2, DeviceObj)
+External (\_SB.UCP2, DeviceObj)
+External (\_SB.SUB3.CUB3, DeviceObj)
+External (\_SB.UCP3, DeviceObj)
+External (\_SB.SUB0.CUB0, DeviceObj)
+External (\_SB.UCP0, DeviceObj)
+External (\_SB.SUB1.CUB1, DeviceObj)
+External (\_SB.UCP1, DeviceObj)
+
 #define DP_USBC_CON_DSD(Name) \
         ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),\
         Package () { \

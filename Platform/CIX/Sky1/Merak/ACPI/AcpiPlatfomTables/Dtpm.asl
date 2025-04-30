@@ -6,6 +6,8 @@
 
 **/
 
+External (\_SB.SPI0, DeviceObj)
+
 Scope (\_SB.SPI0)
 {
     Device(TP1) {

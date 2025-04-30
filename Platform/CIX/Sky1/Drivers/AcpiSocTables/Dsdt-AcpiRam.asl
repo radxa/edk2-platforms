@@ -21,7 +21,8 @@ Method(GETV,1,Serialized)
     {
         VARV,8
     }
-    Return (VARV)
+    ToInteger(VARV,Local0)
+    Return (Local0)
 }
 /*
  * Memory valid check

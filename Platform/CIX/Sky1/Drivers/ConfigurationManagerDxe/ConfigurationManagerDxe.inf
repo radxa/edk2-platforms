@@ -37,13 +37,15 @@
   UefiRuntimeServicesTableLib
   BaseMemoryLib
   CpuInfoLib
+  ConfigParamsDataBlockLib
 
 [Protocols]
   gEdkiiConfigurationManagerProtocolGuid
   gArmScmiPerformanceProtocolGuid
+  gCixConfigParamsManageProtocolGuid
 
 [Guids]
-  gPlatformSetupVariableGuid
+  gEfiEventExitBootServicesGuid
 
 [FixedPcd]
 
@@ -51,4 +53,4 @@
 
 [Depex]
   gArmScmiPerformanceProtocolGuid AND
-  gCixSetupVarInitCompleteProtocolGuid
+  gCixConfigParamsManageProtocolGuid

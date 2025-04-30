@@ -75,6 +75,16 @@ formset
     endoneof;
   #endif
 
+  oneof varid   = PlatformSetupVar.CpuLpiState,
+    prompt      = STRING_TOKEN(STR_CPU_LPI_STATE_PROMPT),
+    help        = STRING_TOKEN(STR_CPU_LPI_STATE_HELP),
+    default     = FixedPcdGet8 (PcdAcpiCpuLpiState),
+    option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+    option text = STRING_TOKEN(STR_CPU_LPI_STATE_0),  value = 1, flags = RESET_REQUIRED;
+    option text = STRING_TOKEN(STR_CPU_LPI_STATE_1),  value = 2, flags = RESET_REQUIRED;
+    option text = STRING_TOKEN(STR_CPU_LPI_STATE_2),  value = 3, flags = RESET_REQUIRED;
+  endoneof;
+
     oneof varid     = NetworkStackVar.Enable,
       prompt        = STRING_TOKEN(STR_NETWORK_STACK_PROMPT),
       help          = STRING_TOKEN(STR_NETWORK_STACK_PROMPT_HELP),

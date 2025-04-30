@@ -26,12 +26,19 @@
   MdePkg/MdePkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
   Silicon/CIX/Sky1/CixPkg.dec
+  StandaloneMmPkg/StandaloneMmPkg.dec
 
 [LibraryClasses]
   BaseLib
   DebugLib
+  BaseMemoryLib
   MmServicesTableLib
   PcdLib
+  HobLib
+
+[Guids]
+  gEfiHobListGuid
+  gNvramInformationHobGuid
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase64

@@ -534,6 +534,8 @@ ProcessAcpiTables (
     if ((CREATE_STD_ACPI_TABLE_GEN_ID (EStdAcpiTableIdSsdtCpuTopology) ==
          AcpiTableInfo[Idx].TableGeneratorId) ||
         (CREATE_STD_ACPI_TABLE_GEN_ID (EStdAcpiTableIdMadt) ==
+         AcpiTableInfo[Idx].TableGeneratorId) ||
+        (CREATE_STD_ACPI_TABLE_GEN_ID (EStdAcpiTableIdPptt) ==
          AcpiTableInfo[Idx].TableGeneratorId))
     {
       DEBUG (

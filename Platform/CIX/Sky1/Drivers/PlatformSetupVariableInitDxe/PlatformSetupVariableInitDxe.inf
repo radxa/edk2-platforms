@@ -240,5 +240,6 @@
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable
   gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode
+  gCixTokenSpaceGuid.PcdAcpiCppcType
 [Depex]
   TRUE

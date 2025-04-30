@@ -106,6 +106,7 @@ Device (GPI3) {
   })
 }
 
+// S5 GPIO0
 Device (GPI4) {
   Name (_HID, "CIXH1003")
   Name (_UID, 0x4)
@@ -127,6 +128,7 @@ Device (GPI4) {
   })
 }
 
+// S5 GPIO1
 Device (GPI5) {
   Name (_HID, "CIXH1003")
   Name (_UID, 0x5)
@@ -148,20 +150,23 @@ Device (GPI5) {
   })
 }
 
-// S5 GPIO2 not in used
-// Device (GPI6) {
-//   Name (_HID, "CIXH1003")
-//   Name (_UID, 0x6)
-//   Name (_STA, 0xF)
-//   Name (_CRS, ResourceTemplate () {
-//     Memory32Fixed (ReadWrite, GPIO2_S5_BASE, GPIO2_S5_SIZE)
-//     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { S5_SS_U2_CDNSGPIO_GPIO_INT_INTERRUPT_ID }
-//   })
-//   Name (_DSD, Package () {
-//     ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-//     Package () {
-//       Package () { "ngpios", 10 },
-//       Package () { "id", 2 },
-//     }
-//   })
-// }
+// S5 GPIO2
+Device (GPI6) {
+  Name (_HID, "CIXH1003")
+  Name (_UID, 0x6)
+  Name (_STA, 0xF)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, GPIO2_S5_BASE, GPIO2_S5_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { S5_SS_U2_CDNSGPIO_GPIO_INT_INTERRUPT_ID }
+  })
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "ngpios", 10 },
+      Package () { "id", 2 },
+    }
+  })
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_GPIO_APB, "", \_SB.GPI6},
+  })
+}

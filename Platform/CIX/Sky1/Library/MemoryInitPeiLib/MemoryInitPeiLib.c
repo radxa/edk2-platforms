@@ -194,6 +194,18 @@ MemoryPeim (
     FixedPcdGet32 (PcdKernelBootImgSize),
     EfiReservedMemoryType
     );
+ #ifdef PI_TEST_SUPPORT
+  BuildMemoryAllocationHob (
+    0x100000000,
+    SIZE_4GB + SIZE_1GB,
+    EfiBootServicesData
+    );
+  BuildMemoryAllocationHob (
+    0x240000000,
+    SIZE_4KB,
+    EfiBootServicesData
+    );
+ #endif
  #if FixedPcdGetBool (PcdGpuEnable) == 1
   BuildMemoryAllocationHob (
     FixedPcdGet32 (PcdGpuReservedMemoryBase),

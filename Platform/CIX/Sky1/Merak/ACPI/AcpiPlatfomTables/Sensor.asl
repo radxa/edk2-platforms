@@ -6,6 +6,8 @@
 
 **/
 
+External (\_SB.I3C0, DeviceObj)
+
 Scope (\_SB.I2C2)
 {
   /* mmc5633 */

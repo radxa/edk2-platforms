@@ -14,9 +14,9 @@
 
 #define PM_CONFIG_SIGNATURE      TABLE_SIGNATURE( 'P', 'M', 'C', 'F' )
 
-/* pm-config current supported version (v2.6) */
-#define PM_CONFIG_VERSION_MAJOR  2
-#define PM_CONFIG_VERSION_MINOR  6
+/* pm-config current supported version (v3.0) */
+#define PM_CONFIG_VERSION_MAJOR  3
+#define PM_CONFIG_VERSION_MINOR  0
 
 #include "cfg_dpm_pwrrail.h"
 
@@ -84,7 +84,7 @@ typedef struct {
 
 } pm_config_pvt_t;
 
-#define MAX_FAN_NUM (2)
+#define MAX_FAN_NUM (3)
 #define MAX_FAN_TABLE_ENTRIES (9)
 typedef enum {
     FAN_MODE_NORMAL = 0,
@@ -105,6 +105,7 @@ typedef struct pm_config_fan_config {
     uint8_t       rpm_table_items[FAN_MODE_MAX];
     rpm_entry_t   rpm_table[FAN_MODE_MAX][MAX_FAN_TABLE_ENTRIES];
     config_data_t fan_id;
+    config_data_t sensor_id;
     config_data_t fan_polarity;
     config_data_t scaleup_margin;
     config_data_t pwm_freq;
@@ -154,6 +155,10 @@ typedef struct pm_config_spt {
     config_data_t       spt_enable_mask;
     config_data_t       spt_setpoints[SPT_CTRL_MAX];
     config_data_t       spt_skin_margin;
+    config_data_t       spt_skin_coeff_kh;   // x 1e-5f  i.e 123456 stands for 1.23456f
+    config_data_t       spt_skin_coeff_ka;   // x 1e-5f
+    config_data_t       spt_skin_coeff_c;    // x 1e-5f
+    config_data_t       spt_skin_coeff_alpha;// x 1e-5f
 } pm_config_spt_t;
 
 typedef struct {

@@ -48,7 +48,7 @@
   gCixPrivateSetupFormsetGuid = { 0x3182bd97, 0x77ea, 0x44ab, { 0x84, 0xa4, 0x8d, 0x21, 0xd, 0x10, 0xbb, 0x4c } }
   gCixPlatformTokenSpaceGuid = { 0x36d559, 0x459f, 0x48fa, {0x8b, 0xbc, 0x43, 0xb5, 0x54, 0xec, 0xae, 0x8d}}
   gCixGlobalVariableGuid = { 0x31d1bbc6, 0xc793, 0x48af, { 0x8d, 0xcf, 0xf9, 0x18, 0x38, 0xc7, 0x3a, 0x2e } }
-
+  gCixPtaStmmGuid = { 0x1BC61315, 0x4254, 0x4DAE, { 0xA3, 0xEE, 0x6C, 0xFD, 0xFE, 0xAB, 0xBC, 0x83 } }
 
 [PcdsFixedAtBuild.common]
 
@@ -91,6 +91,9 @@
   # I2C EC ITE5570
   gCixPlatformTokenSpaceGuid.PcdEcI2cBus|6|UINT8|0x00000132  # I2C6
   gCixPlatformTokenSpaceGuid.PcdEcI2cSlaveAddress|0x76|UINT8|0x00000133
+  gCixPlatformTokenSpaceGuid.PcdEcI2cDeviceInstanceId|0x19|UINT8|0x00000134
+  gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn|FALSE|BOOLEAN|0x00000135 # I2C EC ITE5570
+  gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cDeviceInstanceId|0x1A|UINT8|0x00000136
   gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode|0x00|UINT8|0x0000013A  # 0: auto mode, 1: performance mode
 
   # PD Dev
@@ -105,9 +108,8 @@
 
   gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"SKY1-EVB.DTB"|VOID*|0x0000A301
   gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateEnable|FALSE|BOOLEAN|0x0000A302
+  gCixPlatformTokenSpaceGuid.PcdPlatformDtbUpdateEnable|FALSE|BOOLEAN|0x0000A303
 
-  # I2C EC ITE5570
-  gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn|FALSE|BOOLEAN|0x00000135
 
   # ACPI
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable|FALSE|BOOLEAN|0x0000A005
@@ -117,6 +119,7 @@
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio3IoMask|0x00000000|UINT32|0x0000A009
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio4IoMask|0x00000000|UINT32|0x0000A00A
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio5IoMask|0x00000000|UINT32|0x0000A00B
+  gCixPlatformTokenSpaceGuid.PcdAcpiPrefPmProf|0x02|UINT8|0x0000A00C # 0: Unspecified, 1: Desktop, 2: Mobile, 3: Workstation, 4: Enterprise Server, 5: SOHO Server, 6: Appliance PC, 7: Performance Server, 8: Tablet, >8: Reserved
 
   #RTC Wakeup
   gCixPlatformTokenSpaceGuid.PcdRtcWakeup|0x00|UINT8|0x00002001

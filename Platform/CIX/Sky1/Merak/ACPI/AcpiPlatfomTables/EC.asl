@@ -11,8 +11,10 @@
 #define I2C_ERROR    1
 #define I2C_TIME_OUT 2
 
-#define I2C_RETRIES_NUM 10000000
+#define I2C_RETRIES_NUM 1000000
 #define I2C_FIFO_DEPTH  16
+
+#define EC_I2C_DEV_INST_ID          FixedPcdGet32(PcdEcAcpiI2cDeviceInstanceId)
 
 #define EC_BATT_FLAG_AC_PRESENT      0x01
 #define EC_BATT_FLAG_BATT_PRESENT    0x02
@@ -37,6 +39,11 @@
 #define EC_THERMAL_SUPPORT 0
 #define EC_LID_SUPPORT     1
 #define EC_PWRB_SUPPORT    1
+
+External (\_SB.GPI4, DeviceObj)
+External (\_SB.AMTX, MethodObj)
+External (\_SB.RMTX, MethodObj)
+External (\_SB.I2C6.MXID, IntObj)
 
 Device(EC0){
   Name(_UID, 0)
@@ -324,6 +331,9 @@ Device(EC0){
   //  Arg3 = Response Bytes
   Method(TRAS,4, Serialized) {
     Acquire(ECMX, 0xFFFF)
+    if(\_SB.AMTX(\_SB.I2C6.MXID,EC_I2C_DEV_INST_ID)){
+      Return(I2C_ERROR)
+    }
     Local0 = 0
     While(1){
       if(STAT() != I2C_SUCCESS){
@@ -346,8 +356,11 @@ Device(EC0){
     if(Local0 == 0){
       REST()
       STOP()
+      \_SB.RMTX(\_SB.I2C6.MXID,EC_I2C_DEV_INST_ID)
+      Release(ECMX)
       Return(I2C_ERROR)
     }
+    \_SB.RMTX(\_SB.I2C6.MXID,EC_I2C_DEV_INST_ID)
     Release(ECMX)
     //
     CreateByteField(Arg2,1,LENG)
@@ -507,6 +520,42 @@ Device(EC0){
     CreateDWordField (BUF1, 0x0B, LSSV)
     Return(Package() {LSST,LSSV})
   }
+
+  //
+  // Name: SFAT [Set EC Fan to Auto Mode]
+  // Description: Function to set ec fan to auto mode
+  // Input: None
+  // Output: None
+  //
+  Method(SFAT, 0, Serialized){
+    Name(BUF0, Buffer(10){0xDA,0x03,0xA9,0x00,0x52,0x00,0x00,0x00,0x01,0x01})
+    Name(BUF1, Buffer(10){})
+    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+  }
+
+  //
+  // Name: SFMT [Set EC Fan to Mute Mode]
+  // Description: Function to set ec fan to mute mode
+  // Input: None
+  // Output: None
+  //
+  Method(SFMT, 0, Serialized){
+    Name(BUF0, Buffer(10){0xDA,0x03,0xA8,0x00,0x52,0x00,0x00,0x00,0x01,0x02})
+    Name(BUF1, Buffer(10){})
+    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+  }
+
+  //
+  // Name: SFPF [Set EC Fan to Performance Mode]
+  // Description: Function to set ec fan to performance mode
+  // Input: None
+  // Output: None
+  //
+  Method(SFPF, 0, Serialized){
+    Name(BUF0, Buffer(10){0xDA,0x03,0xA6,0x00,0x52,0x00,0x00,0x00,0x01,0x04})
+    Name(BUF1, Buffer(10){})
+    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+  }
 }
 
 Scope (\_SB.GPI4)
@@ -585,8 +634,8 @@ Device(BAT0) {
       CAPB = ((Local0 &0xff)<<8)| ((Local0&0xff00)>>8)
       Divide(CAPB, 10, , Local0)
       Store(Local0, Index(BIXP, 6))      // warning capacity = 10% of design capacity
-      Divide(CAPB, 25, , Local0)
-      Store(Local0, Index(BIXP, 7))      // low capacity = 4% of design capacity
+      Divide(CAPB, 20, , Local0)
+      Store(Local0, Index(BIXP, 7))      // low capacity = 5% of design capacity
       Local0 = DSNV
       DSNV = ((Local0 &0xff)<<8)| ((Local0&0xff00)>>8)
       Local0 = CYCC
@@ -638,10 +687,16 @@ Device(BAT0) {
       Store(REMC, Index(BSTP,2))
       Store(ACUV, Index(BSTP,3))
 
+      Local1 = DeRefOf(Index(BIXP,3))
+      Local2 = REMC*100/Local1
       if(FLAG & EC_BATT_FLAG_CHARGING){
         Store(0x02, Index(BSTP,0))
       }elseif(FLAG & EC_BATT_FLAG_DISCHARGING){
-        Store(0x01, Index(BSTP,0))
+        if (Local2 <= 3){ // When the battery level is less than 3%, a battery critical event is triggered
+          Store(0x05, Index(BSTP,0))
+        }else{
+          Store(0x01, Index(BSTP,0))
+        }
       }
     }
     Return(BSTP)

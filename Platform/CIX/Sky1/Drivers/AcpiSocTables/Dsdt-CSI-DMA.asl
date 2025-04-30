@@ -5,6 +5,13 @@
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
+#if FixedPcdGetBool(PcdAcpiCsiDmaEnable)
+
+External (\_SB.I2C0.UXC0, DeviceObj)
+External (\_SB.I2C0.UXC1, DeviceObj)
+External (\_SB.I2C0.UXC2, DeviceObj)
+External (\_SB.I2C0.UXC3, DeviceObj)
+
 #define COMMON_INTERFACE Package () {0, 0}
 #define CSI_BRIDGE_PORT_INIT(Interface, AxiUid, CsiDmaId, CixHwRef, RemoteDeviceReference, RemotePort, RemoteEndPoint) \
   Name (_DSD, Package () {\
@@ -437,3 +444,5 @@ Device (DPR5) {
   Name (_CCA, 0)
   MIPI_DPHY_PORT_INIT(5, \_SB.DPH1, \_SB.I2C0.UXC3, "port@0", "endpoint@0", \_SB.MPC3, "port@0", "endpoint@1")
 }
+
+#endif

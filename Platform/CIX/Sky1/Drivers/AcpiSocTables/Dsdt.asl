@@ -19,14 +19,19 @@
 #include "Include/DMACommon.h"
 #include "CommonDefines.h"
 
+#ifndef LINUX_ACPI_CONFIG_OVERRIDE
+#include "DefaultLinuxAcpiConfig.h"
+#else
+#include "LinuxAcpiConfig.h"
+#endif
+
 #define RESOURCE_MEM 0x0200
 #define RESOURCE_IRQ 0x0400
 
-DefinitionBlock("DsdtTable.aml", "DSDT", 5, "CIXTEK", "SKY1EDK2", 1) {
+DefinitionBlock("DsdtTable.aml", "DSDT", 2, "CIXTEK", "SKY1EDK2", 1) {
   Scope(_SB) {
     include("Dsdt-Debug.asl")
     include("Dsdt-CPU.asl")
-    include("Dsdt-iomux.asl")
     include("Dsdt-Fch-Uart.asl")
     include("Dsdt-dst.asl")
     include("Dsdt-PDC.asl")
@@ -41,7 +46,7 @@ DefinitionBlock("DsdtTable.aml", "DSDT", 5, "CIXTEK", "SKY1EDK2", 1) {
     include("Dsdt-Gpio.asl")
     include("Dsdt-Pwm.asl")
     //include("Dsdt-Wdt.asl")
-    include("Dsdt-Timer.asl")    
+    include("Dsdt-Timer.asl")
     include("Dsdt-HDA.asl")
     include("Dsdt-Dsp.asl")
     include("Dsdt-Dma.asl")
@@ -62,5 +67,6 @@ DefinitionBlock("DsdtTable.aml", "DSDT", 5, "CIXTEK", "SKY1EDK2", 1) {
     include("Dsdt-CSI-DMA.asl")
     include("Dsdt-AcpiRam.asl")
     include("Dsdt-Tee.asl")
+    include("Dsdt-Misc.asl")
   }
 }

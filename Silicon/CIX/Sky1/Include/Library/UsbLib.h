@@ -11,6 +11,7 @@
 
 #include <Base.h>
 #include <UsbDpPhy.h>
+#include <Protocol/NonDiscoverableDevice.h>
 
 #define DEBUG_LOG_NONE  0
 
@@ -50,6 +51,15 @@
 #define USBCControlIndex0     1
 #define USBCControlIndex1     4
 #define USBCControlIndex2     3
+
+typedef enum {
+  USBTYPE_UNDEFINED = 0,
+  USBTYPEA_USB20PHY = 1,
+  USBTYPEA_USB32PHY = 2,
+  USBTYPEC_USB32PHY = 3,
+  USBTYPEC_USB20PHY = 4,
+  USBT20ONLY_PHY    = 5
+} USBPHY_TYPE;
 
 typedef struct {
   UINT32     Offset;
@@ -122,6 +132,11 @@ GetUsbHostInfoArray (
 VOID
 DisableOverCurrentDetect (
   UINT32  Index
+  );
+
+EFI_STATUS
+UsbTypeAPhyOverride (
+  IN UINT32  Index
   );
 
 #endif

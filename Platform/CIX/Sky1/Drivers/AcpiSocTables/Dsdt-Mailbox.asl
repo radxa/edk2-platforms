@@ -11,7 +11,7 @@ Device (MBX0) {
   Name (_HID, "CIXHA001")
   Name (_CID, "CIXHA001")
   Name (_UID, 0x0)
-  Name (_STA, 0x0)
+  Name (_STA, 0xF)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (
       ReadWrite,
@@ -36,7 +36,7 @@ Device (MBX1) {
     Name (_HID, "CIXHA001")
     Name (_CID, "CIXHA001")
     Name (_UID, 0x1)
-    Name (_STA, 0x0)
+    Name (_STA, 0xF)
     Name (_CRS, ResourceTemplate () {
       Memory32Fixed (
         ReadWrite,

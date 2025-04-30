@@ -30,6 +30,8 @@ Device (NPU0) {
         Package () {"cluster-partition", Package (){0, 0}},
         Package () {"gm-policy", 1},
         Package () {"core_mask", 3},
+        Package () {"power-domains", Package () {\_SB.SCMI.DVFS, 8}},
+        Package () {"power-domain-names", Package () {"perf"}},
     }
   })
 

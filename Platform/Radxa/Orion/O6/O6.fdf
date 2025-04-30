@@ -140,8 +140,8 @@ READ_LOCK_STATUS   = TRUE
   INF Platform/CIX/Sky1/Drivers/DtbUpdateDxeSi/DtbUpdateDxe.inf
 
 !if $(ACPI_ENABLE) == TRUE
-  INF RuleOverride = ACPITABLE2 Platform/CIX/Sky1/Merak/ACPI/AcpiPlatfomTables/AcpiPlatfomTables.inf
-  INF Platform/CIX/Sky1/Merak/ACPI/AcpiPlatformDxe/AcpiPlatformDxe.inf
+  INF RuleOverride = ACPITABLE2 Platform/Radxa/Orion/O6/Drivers/AcpiPlatfomTables/AcpiPlatfomTables.inf
+  INF Platform/Radxa/Orion/O6/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
 !endif
 
   #

@@ -59,7 +59,7 @@ Device (GPU) {
   Name (IIOR, Package() {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
-        Package () { "int_id_override", Package() {2,0x32,4,0x32,16,0x22,17,0x23,18,0x23,21,0x23,22,0x23,24,0x22,28,0x23} }
+        Package () { "int_id_override", Package() {2,0x23,4,0x23,16,0x22,17,0x32,18,0x52,21,0x32,22,0x52,24,0x22,28,0x32} }
     }
   })
 

@@ -51,6 +51,8 @@
 #define ARV_DPU_04_SUPPORT_OFFSET           0X27
 #define ARV_AUDIO_SUPPORT_OFFSET            0X28
 #define ARV_ISP_SUPPORT_OFFSET              0X29
+#define ARV_GMAC0_ENABLE_OFFSET             0x2A
+#define ARV_GMAC1_ENABLE_OFFSET             0x2B
 //
-#define ARV_VARIABLE_TABLE_TOTAL_SIZE  0x2A
+#define ARV_VARIABLE_TABLE_TOTAL_SIZE  0x2C
 #endif

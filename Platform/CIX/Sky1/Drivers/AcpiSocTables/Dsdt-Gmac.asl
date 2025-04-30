@@ -19,7 +19,13 @@ Device(GCRU) {
 Device (MAC0) {
   Name (_HID, "CIXH7020")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Method (_STA, 0x0, Serialized) {
+    If(\_SB.GETV(ARV_GMAC0_ENABLE_OFFSET)){
+        Return (0xF)
+    } else {
+        Return (0x0)
+    }
+  }
   Name (_CCA, ONE)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (
@@ -96,7 +102,13 @@ Device (MAC0) {
 Device (MAC1) {
   Name (_HID, "CIXH7020")
   Name (_UID, 0x1)
-  Name (_STA, 0x0)
+  Method (_STA, 0x0, Serialized) {
+    If(\_SB.GETV(ARV_GMAC1_ENABLE_OFFSET)){
+        Return (0xF)
+    } else {
+        Return (0x0)
+    }
+  }
   Name (_CCA, ONE)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (

@@ -206,7 +206,9 @@
 
   ArmMtlLib|Silicon/CIX/Sky1/Library/CixMtlLib/CixMtlLib.inf
   DtbUpdateLib|Platform/CIX/Sky1/Library/DtbUpdateLib/DtbUpdateLib.inf
-
+!if $(PLATFORM_DTB_UPDATE_ENABLE) == TRUE
+  PlatformDtbUpdateLib|Platform/CIX/Sky1/Library/PlatformDtbUpdateLib/PlatformDtbUpdateLib.inf
+!endif
   ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf
   ArmMmuLib|ArmPkg/Library/ArmMmuLib/ArmMmuBaseLib.inf
   ArmPlatformLib|Platform/CIX/Sky1/Library/PlatformLib/PlatformLib.inf
@@ -350,6 +352,9 @@
 
 [BuildOptions]
   GCC:*_*_*_CC_FLAGS          = -fno-common
+!if $(PI_TEST_SUPPORT) == TRUE
+  GCC:*_*_*_CC_FLAGS          = -DPI_TEST_SUPPORT
+!endif
 [BuildOptions.common.EDKII.DXE_RUNTIME_DRIVER]
   GCC:*_*_AARCH64_DLINK_FLAGS = -z common-page-size=0x10000
 
@@ -550,12 +555,6 @@
   gCixTokenSpaceGuid.PcdNorFlashNvramAddr|$(SPI_VARIABLE_BASE)
   gCixTokenSpaceGuid.PcdNorFlashNvramSize|$(SPI_VARIABLE_SIZE)
 
-!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == FALSE
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize|$(SPI_VARIABLE_SIZE)
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize|$(SPI_VARIABLE_SIZE)
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize|$(SPI_VARIABLE_SIZE)
-!endif
-
 !if $(SOC_GPU_ENABLE) == TRUE
   gCixTokenSpaceGuid.PcdGpuEnable|TRUE
 !endif
@@ -593,6 +592,12 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|1080
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoHorizontalResolution|640
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|480
+
+!if $(VARIABLE_SUPPORT) == "SPI"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize|$(SPI_VARIABLE_SIZE)
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize|$(SPI_VARIABLE_SIZE)
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize|$(SPI_VARIABLE_SIZE)
+!endif
 
 !if $(VARIABLE_SUPPORT) == "SPI"
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase64|$(SPI_VARIABLE_BASE)
@@ -740,6 +745,9 @@
   FatPkg/EnhancedFatDxe/Fat.inf
 !if $(DTB_UPDATE_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/DtbUpdateDxe/DtbUpdateDxe.inf
+!endif
+!if $(PLATFORM_DTB_UPDATE_ENABLE) == TRUE
+  Platform/CIX/Sky1/Drivers/PlatformDtbUpdateDxe/PlatformDtbUpdateDxe.inf
 !endif
 !if $(RLOG_DUMP_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/RamLogDumpDxe/RamLogDumpDxe.inf
@@ -1002,10 +1010,7 @@ ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf {
   Silicon/CIX/Sky1/Drivers/I2sDxe/I2sDxe.inf
 !endif
 
-
-!if $(PI_TEST_SUPPORT) == TRUE
-  Platform/ARM/Drivers/ArmPsciMpServicesDxe/ArmPsciMpServicesDxe.inf
-!endif
+  Silicon/CIX/Sky1/Drivers/ArmPsciMpServicesDxe/ArmPsciMpServicesDxe.inf
 !if $(POWER_BUTTON_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/PowerButtonDxe/PowerButtonDxe.inf
 !endif

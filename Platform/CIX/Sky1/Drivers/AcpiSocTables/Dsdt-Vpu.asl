@@ -25,6 +25,21 @@ Device (VPU0) {
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { VPU_EXT_U_VPU_CORE_IRQ_INTERRUPT_ID }
   })
 
+/*                                             scmi_perf_dev,         domain_id
+    Package () {"power-domains", Package () { \_SB.SCMI.DVFS,       0(domain_id)
+                                              \_SB.SCMI.DVFS,       1(domain_id)
+                                              \_SB.SCMI.DVFS,       2(domain_id)
+                                            }},
+*/
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+        Package () {"power-domains", Package () {\_SB.SCMI.DVFS, 9}},
+        Package () {"power-domain-names", Package () {"perf"}},
+    }
+  })
+
   PowerResource(PPRS, 0, 0)
   {
     OperationRegion(OPR0,SystemMemory,VPU_RCSU_PD_REG, 0x04)
@@ -72,7 +87,7 @@ Device (VPU0) {
 
   Device (CRE0) {
     Name(_ADR, 0x00)
-    Name (_STA, 0xE)
+    Name (_STA, 0xB)
     PowerResource(PRS0, 0, 0)
     {
       Method(_STA, 0, Serialized)
@@ -99,7 +114,7 @@ Device (VPU0) {
 
   Device (CRE1) {
     Name(_ADR, 0x01)
-    Name (_STA, 0xE)
+    Name (_STA, 0xB)
     PowerResource(PRS1, 0, 0)
     {
       Method(_STA, 0, Serialized)
@@ -126,7 +141,7 @@ Device (VPU0) {
 
   Device (CRE2) {
     Name(_ADR, 0x02)
-    Name (_STA, 0xE)
+    Name (_STA, 0xB)
     PowerResource(PRS2, 0, 0)
     {
       Method(_STA, 0, Serialized)
@@ -147,13 +162,13 @@ Device (VPU0) {
     Name(_PR3, Package(1){PRS2})
     Method(REPR, 0, Serialized)
     {
-      \_SB.DMRP(MEMORY_ENABLE, MEMR_GROUP_ID_VPU, VPU_RCSU_BASE_REG, BIT4)
+      \_SB.DMRP(MEMORY_ENABLE, MEMR_GROUP_ID_VPU, VPU_RCSU_BASE_REG, BIT3)
     }
   }
 
   Device (CRE3) {
     Name(_ADR, 0x03)
-    Name (_STA, 0xE)
+    Name (_STA, 0xB)
     PowerResource(PRS3, 0, 0)
     {
       Method(_STA, 0, Serialized)

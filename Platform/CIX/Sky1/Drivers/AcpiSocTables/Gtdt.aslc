@@ -61,8 +61,8 @@ STATIC EFI_ACPI_6_4_GENERIC_TIMER_DESCRIPTION_TABLES  Gtdt = {
     0xFFFFFFFFFFFFFFFF,                                    // UINT64  CntReadBasePhysicalAddress
     GTDT_PLATFORM_WATCHDOG_COUNT,                          // UINT32  PlatformTimerCount
     sizeof (EFI_ACPI_6_4_GENERIC_TIMER_DESCRIPTION_TABLE), // UINT32  PlatfromTimerOffset
-    0,                                                     // UINT32  VirtualPL2TimerGSIV
-    0                                                      // UINT32  VirtualPL2TimerFlags
+    FixedPcdGet32 (PcdArmArchTimerHypVirtIntrNum),         // UINT32  VirtualPL2TimerGSIV
+    GTDT_GTIMER_FLAGS                                      // UINT32  VirtualPL2TimerFlags
   },
 #if GTDT_WATCHDOG_ENABLE
   {

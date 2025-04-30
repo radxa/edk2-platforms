@@ -152,6 +152,9 @@
 !if $(DTB_UPDATE_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/DtbUpdateDxe/DtbUpdateDxe.inf
 !endif
+!if $(PLATFORM_DTB_UPDATE_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PlatformDtbUpdateDxe/PlatformDtbUpdateDxe.inf
+!endif
 !if $(RLOG_DUMP_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/RamLogDumpDxe/RamLogDumpDxe.inf
 !endif
@@ -342,5 +345,5 @@
   INF Silicon/CIX/Sky1/Drivers/I2sDxe/I2sDxe.inf
 !endif
 !if $(PI_TEST_SUPPORT) == TRUE
-  INF Platform/ARM/Drivers/ArmPsciMpServicesDxe/ArmPsciMpServicesDxe.inf
+  INF  Silicon/CIX/Sky1/Drivers/ArmPsciMpServicesDxe/ArmPsciMpServicesDxe.inf
 !endif

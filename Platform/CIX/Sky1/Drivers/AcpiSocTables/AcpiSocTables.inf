@@ -29,6 +29,7 @@
   Sdei.aslc
   Csrt.aslc
   Spcr.aslc
+  Pcct.aslc
 
 [Packages]
   ArmPkg/ArmPkg.dec
@@ -50,6 +51,7 @@
   gArmTokenSpaceGuid.PcdArmArchTimerIntrNum
   gArmTokenSpaceGuid.PcdArmArchTimerHypIntrNum
   gArmTokenSpaceGuid.PcdArmArchTimerVirtIntrNum
+  gArmTokenSpaceGuid.PcdArmArchTimerHypVirtIntrNum
   gArmPlatformTokenSpaceGuid.PL011UartInterrupt
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterBase
 
@@ -82,4 +84,15 @@
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio3IoMask
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio4IoMask
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio5IoMask
+  gCixPlatformTokenSpaceGuid.PcdAcpiPrefPmProf
 
+  gCixTokenSpaceGuid.PcdI2c0MutexId
+  gCixTokenSpaceGuid.PcdI2c1MutexId
+  gCixTokenSpaceGuid.PcdI2c2MutexId
+  gCixTokenSpaceGuid.PcdI2c3MutexId
+  gCixTokenSpaceGuid.PcdI2c4MutexId
+  gCixTokenSpaceGuid.PcdI2c5MutexId
+  gCixTokenSpaceGuid.PcdI2c6MutexId
+  gCixTokenSpaceGuid.PcdI2c7MutexId
+
+  gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable

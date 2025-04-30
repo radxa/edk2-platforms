@@ -142,6 +142,12 @@
   gCixTokenSpaceGuid.PcdTypec1PhyBaseAddress|0x9110000|UINT32|0x0000031d
   gCixTokenSpaceGuid.PcdTypec2PhyBaseAddress|0x9180000|UINT32|0x0000031e
 
+  # When USB 2.0 PHY configuration need to update, PHY PRST need to release accordingly
+  gCixTokenSpaceGuid.PcdUsb20PhyReleasePrstIdMap|0x00000000|UINT32|0x0000031F    # USB 20 PHY Reset ID: BIT0 - USBPHY_HS0_PRST_N, BIT1 - USBPHY_HS1_PRST_N, ..., BIT9 - USBPHY_HS9_PRST_N
+  gCixTokenSpaceGuid.PcdUsb20PhyConfig|{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}|VOID*|0x00000320
+  gCixTokenSpaceGuid.PcdUsb32PhyConfig|{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}|VOID*|0x00000322
+  gCixTokenSpaceGuid.PcdUsbComboPhyConfig|{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}|VOID*|0x00000323
+
   gArmTokenSpaceGuid.PcdArmFreeUncachedMemorySizeThreshold|0x20000000|UINT64|0x00000380
 # PCIe Root Port Support
   gCixTokenSpaceGuid.PcdPcieRootPort0Enable|FALSE|BOOLEAN|0x00000201
@@ -286,6 +292,14 @@
   gCixTokenSpaceGuid.PcdI2c6BusFreq|400000|UINT32|0x00000110      # 100KHz, 400KHz, 1MHz
   gCixTokenSpaceGuid.PcdI2c7BusFreq|400000|UINT32|0x00000111      # 100KHz, 400KHz, 1MHz
   gCixTokenSpaceGuid.PcdI2cCtrlEn|0xFF|UINT8|0x00000112
+  gCixTokenSpaceGuid.PcdI2c0MutexId|0xFF|UINT8|0x00000113         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c1MutexId|0xFF|UINT8|0x00000114         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c2MutexId|0xFF|UINT8|0x00000115         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c3MutexId|0xFF|UINT8|0x00000116         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c4MutexId|0xFF|UINT8|0x00000117         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c5MutexId|0xFF|UINT8|0x00000118         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c6MutexId|0xFF|UINT8|0x00000119         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c7MutexId|0xFF|UINT8|0x0000011A         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
   gCixTokenSpaceGuid.PcdI2c0Runtime|FALSE|BOOLEAN|0x0000011B
   gCixTokenSpaceGuid.PcdI2c1Runtime|FALSE|BOOLEAN|0x0000011C
   gCixTokenSpaceGuid.PcdI2c2Runtime|FALSE|BOOLEAN|0x0000011D
@@ -367,6 +381,8 @@
   gCixTokenSpaceGuid.PcdDPPriority2|1|UINT8|0x00002040  #
   gCixTokenSpaceGuid.PcdDPPriority3|3|UINT8|0x00002041  #
   gCixTokenSpaceGuid.PcdDPPriority4|4|UINT8|0x00002042  # lowest priority
+  gCixTokenSpaceGuid.PcdAcpiCppcType|0x01|UINT8|0x00002043       # CPPC Interface Type, 0-disable, 1-fastchannel, 2-pcc
+  gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable|TRUE|BOOLEAN|0x00002044
 
   gCixTokenSpaceGuid.PcdSpi0En|FALSE|BOOLEAN|0x00000142
   gCixTokenSpaceGuid.PcdSpi1En|FALSE|BOOLEAN|0x00000143

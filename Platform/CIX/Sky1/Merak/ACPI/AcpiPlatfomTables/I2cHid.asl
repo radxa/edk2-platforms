@@ -8,6 +8,8 @@
 
 #define I2C_KEYBOARD_SUPPORT 1
 
+External (\_SB.SPI1, DeviceObj)
+
 #if I2C_KEYBOARD_SUPPORT
 Device (IKBD)
 {

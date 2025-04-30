@@ -33,7 +33,9 @@
             }\
   })
 
-#define DP_PORT_INIT(RemoteDeviceReference0, RemotePipeline0, RemotePort0, RemoteEndPoint0, RemoteDeviceReference1, RemotePipeline1, RemotePort1, RemoteEndPoint1, DpLaneNumber, DpMaxRate, AuxClockDivider, DpPhyRef, EdpPanelRef) \
+#define DP_PORT_INIT(RemoteDeviceReference0, RemotePipeline0, RemotePort0, RemoteEndPoint0, \
+                      RemoteDeviceReference1, RemotePipeline1, RemotePort1, RemoteEndPoint1, \
+                      DpLaneNumber, DpMaxRate, AuxClockDivider, DpPhyRef, EdpPanelRef) \
  Name (_DSD, Package () { \
             ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),\
             Package () { \
@@ -43,6 +45,7 @@
                 Package () { "dp_phy", DpPhyRef }, \
                 Package () { "edp-panel", EdpPanelRef }, \
                 Package () { "enabled_by_gop", 0 }, \
+            /*    Package () { "support_d3_cmd", D3Cmd }, */ \
             },\
             ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),\
             Package () { \
@@ -85,12 +88,14 @@
             }\
   })
 
-#define DPU_PORT_INIT(RemoteDeviceReference1,RemotePort1,RemoteEndPoint1,RemoteDeviceReference2,RemotePort2,RemoteEndPoint2) \
+#define DPU_PORT_INIT(RemoteDeviceReference1,RemotePort1,RemoteEndPoint1, \
+                      RemoteDeviceReference2,RemotePort2,RemoteEndPoint2, DeviceId) \
      Name (_DSD, Package () { \
             ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),\
             Package () { \
               Package () { "aclk_freq_fixed", 800000000 },  \
               Package () { "enabled_by_gop", 0 }, \
+              Package () { "device-id", DeviceId }, \
             },\
             ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),\
             Package () {\
@@ -421,7 +426,7 @@ Device (DPU0) {
         Return (0x0)
     }
   }
-  
+
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DPU0_CONTROLLER_BASE, DPU0_CONTROLLER_SIZE)
@@ -430,7 +435,7 @@ Device (DPU0) {
 
   //DPU_PORT_INIT(\_SB.VDP0,"port@0","endpoint@0",\_SB.VDP1, "port@0", "endpoint@0")
   // DPU_PORT_INIT(\_SB.DP00,"port@0","endpoint@0",\_SB.VDP1, "port@0", "endpoint@0")
-  DPU_PORT_INIT(\_SB.DP00, "port@0", "endpoint@0", \_SB.DP00, "port@1", "endpoint@1")
+  DPU_PORT_INIT(\_SB.DP00, "port@0", "endpoint@0", \_SB.DP00, "port@1", "endpoint@1", 0)
 
   PowerResource(PRS0, 0, 0)
   {
@@ -493,7 +498,7 @@ Device (DPU1) {
         Return (0x0)
     }
   }
-  
+
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DPU1_CONTROLLER_BASE, DPU1_CONTROLLER_SIZE)
@@ -502,7 +507,7 @@ Device (DPU1) {
 
   //DPU_PORT_INIT(\_SB.VDP2,"port@0","endpoint@0",\_SB.VDP3, "port@0", "endpoint@0")
   //DPU_PORT_INIT(\_SB.DP01,"port@0","endpoint@0",\_SB.VDP3, "port@0", "endpoint@0")
-  DPU_PORT_INIT(\_SB.DP01, "port@0", "endpoint@0", \_SB.DP01, "port@1", "endpoint@1")
+  DPU_PORT_INIT(\_SB.DP01, "port@0", "endpoint@0", \_SB.DP01, "port@1", "endpoint@1", 1)
 
   PowerResource(PRS1, 0, 0)
   {
@@ -565,7 +570,7 @@ Device (DPU2) {
         Return (0x0)
     }
   }
-  
+
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DPU2_CONTROLLER_BASE, DPU2_CONTROLLER_SIZE)
@@ -574,7 +579,7 @@ Device (DPU2) {
 
   // DPU_PORT_INIT(\_SB.VDP4,"port@0","endpoint@0",\_SB.VDP5, "port@0", "endpoint@0")
   //DPU_PORT_INIT(\_SB.DP02,"port@0","endpoint@0",\_SB.VDP5, "port@0", "endpoint@0")
-  DPU_PORT_INIT(\_SB.DP02, "port@0", "endpoint@0", \_SB.DP02, "port@1", "endpoint@1")
+  DPU_PORT_INIT(\_SB.DP02, "port@0", "endpoint@0", \_SB.DP02, "port@1", "endpoint@1", 2)
 
   PowerResource(PRS2, 0, 0)
   {
@@ -643,7 +648,7 @@ Device (DPU3) {
         Return (0x0)
     }
   }
-  
+
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DPU3_CONTROLLER_BASE, DPU3_CONTROLLER_SIZE)
@@ -652,7 +657,7 @@ Device (DPU3) {
 
   //DPU_PORT_INIT(\_SB.VDP6,"port@0","endpoint@0",\_SB.VDP7, "port@0", "endpoint@0")
   //DPU_PORT_INIT(\_SB.DP03,"port@0","endpoint@0",\_SB.VDP7, "port@0", "endpoint@0")
-  DPU_PORT_INIT(\_SB.DP03, "port@0", "endpoint@0", \_SB.DP03, "port@1", "endpoint@1")
+  DPU_PORT_INIT(\_SB.DP03, "port@0", "endpoint@0", \_SB.DP03, "port@1", "endpoint@1", 3)
 
   PowerResource(PRS3, 0, 0)
   {
@@ -715,7 +720,7 @@ Device (DPU4) {
         Return (0x0)
     }
   }
-  
+
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DPU4_CONTROLLER_BASE, DPU4_CONTROLLER_SIZE)
@@ -724,7 +729,7 @@ Device (DPU4) {
 
   //DPU_PORT_INIT(\_SB.VDP8,"port@0","endpoint@0",\_SB.VDP9, "port@0", "endpoint@0")
   //DPU_PORT_INIT(\_SB.DP04,"port@0","endpoint@0",\_SB.VDP9, "port@0", "endpoint@0")
-  DPU_PORT_INIT(\_SB.DP04, "port@0", "endpoint@0", \_SB.DP04, "port@1", "endpoint@1")
+  DPU_PORT_INIT(\_SB.DP04, "port@0", "endpoint@0", \_SB.DP04, "port@1", "endpoint@1", 4)
 
   PowerResource(PRS4, 0, 0)
   {

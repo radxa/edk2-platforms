@@ -153,7 +153,22 @@ UpdateConfigParams (
 
     ConfigData->S5.SocWatchdogTimer = PlatformSetupVar.SocWatchdogTimer;
 
-    ConfigData->Cpu.LpiState = PlatformSetupVar.CpuLpiState;
+    ConfigData->Cpu.LpiState       = PlatformSetupVar.CpuLpiState;
+    ConfigData->Cpu.CoreNum        = PlatformSetupVar.CpuCoreNum;
+    ConfigData->Cpu.ShareInfo      = PlatformSetupVar.CpuShareInfo;
+    ConfigData->Cpu.CoreEnable[0]  = PlatformSetupVar.CpuCoreEnable[0];
+    ConfigData->Cpu.CoreEnable[1]  = PlatformSetupVar.CpuCoreEnable[1];
+    ConfigData->Cpu.CoreEnable[2]  = PlatformSetupVar.CpuCoreEnable[2];
+    ConfigData->Cpu.CoreEnable[3]  = PlatformSetupVar.CpuCoreEnable[3];
+    ConfigData->Cpu.CoreEnable[4]  = PlatformSetupVar.CpuCoreEnable[4];
+    ConfigData->Cpu.CoreEnable[5]  = PlatformSetupVar.CpuCoreEnable[5];
+    ConfigData->Cpu.CoreEnable[6]  = PlatformSetupVar.CpuCoreEnable[6];
+    ConfigData->Cpu.CoreEnable[7]  = PlatformSetupVar.CpuCoreEnable[7];
+    ConfigData->Cpu.CoreEnable[8]  = PlatformSetupVar.CpuCoreEnable[8];
+    ConfigData->Cpu.CoreEnable[9]  = PlatformSetupVar.CpuCoreEnable[9];
+    ConfigData->Cpu.CoreEnable[10] = PlatformSetupVar.CpuCoreEnable[10];
+    ConfigData->Cpu.CoreEnable[11] = PlatformSetupVar.CpuCoreEnable[11];
+    ConfigData->Misc.CpuCppcType   = PlatformSetupVar.CpuCppcType;
   }
 }
 
@@ -453,6 +468,7 @@ ConstructSetupVariable (
   PlatformSetupVar->CpuCoreNum              = CpuCoreNum;
   PlatformSetupVar->CpuShareInfo            = CpuShareInfo;
   PlatformSetupVar->CpuLpiState             = FixedPcdGet8 (PcdAcpiCpuLpiState);
+  PlatformSetupVar->CpuCppcType             = FixedPcdGet8 (PcdAcpiCppcType);
 }
 
 EFI_STATUS

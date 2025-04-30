@@ -106,7 +106,7 @@ Device (SCMI) {
   Device (DVFS) {
     Name (_HID, "CIXHA008")
     Name (_UID, 0x0)
-    Name (_STA, 0xB)
+    Name (_STA, 0x0)
 
     Name (_DSD, Package () {
       ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
@@ -118,7 +118,7 @@ Device (SCMI) {
   Device (CLKS) {
     Name (_HID, "CIXHA009")
     Name (_UID, 0x0)
-    Name (_STA, 0xB)
+    Name (_STA, 0x0)
 
     Name (_DSD, Package () {
       ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
@@ -132,7 +132,7 @@ Device (SCMI) {
 Device(PMMX){
   Name(_HID,"CIXHA000")
 
-  OperationRegion(MBXO,SystemMemory,0x06590000,0xA0)
+  OperationRegion(MBXO,SystemMemory,0x065d0000,0xA0)
   Field (MBXO, DWordAcc, NoLock, Preserve) {
     Offset (0x04),
     CFRE, 1,

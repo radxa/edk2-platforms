@@ -8,41 +8,6 @@
 **/
 #include <sky1-iomux.h>
 
-#define MIPI_LT7911UXC_PORT_INIT(RemoteDeviceReference,RemotePort,RemoteEndPoint) \
-     Name (_DSD, Package () { \
-            ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"), \
-            Package () { \
-                Package () { "pwdn-gpios",  Package () { ^UXC0, 0, 0, 0 } },   \
-                Package () { "power-gpios",  Package () { ^UXC0, 1, 0, 0 } },  \
-                Package () { "power1-gpios",  Package () { ^UXC0, 1, 1, 0 } },   \
-                Package () { "reset-gpios",  Package () { ^UXC0, 1, 2, 0 } },    \
-                Package () { "pinctrl-names", Package () {"default", "gpio"}},   \
-            }, \
-            ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),\
-            Package () { \
-                Package () { "port@0", "PRT0" }, \
-            }\
-        })\
-        Name (PRT0, Package() {\
-            ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),\
-            Package () {\
-                Package () { "reg", 0 }, \
-            },\
-            ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),\
-            Package () {\
-                Package () { "endpoint@0", "EP00" },\
-            }\
-        })\
-        Name (EP00, Package() {\
-            ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),\
-            Package () {\
-                Package () { "reg", 0 }, \
-                Package () { "remote-endpoint", Package () { RemoteDeviceReference, RemotePort, RemoteEndPoint } },\
-                Package () { "data-lanes", Package () { 4 } },\
-                Package () { "clock-lanes", Package () { 0 } },\
-            }\
-        })
-
 Device (I2C0) {
   Name (_HID, "CIXH200B")
   Name (_UID, 0x0)
@@ -53,6 +18,7 @@ Device (I2C0) {
         Return (0x0)
     }
   }
+  Name (MXID, FixedPcdGet8 (PcdI2c0MutexId))
 
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C0_BASE, I2C0_SIZE)
@@ -107,95 +73,6 @@ Device (I2C0) {
   Name (RSTL, Package() {
     Package() {\_SB.RST1, SW_I2C0_RST_APB_N, \_SB.I2C0, "i2c_reset"},
   })
-
-//MIPI lt7911uxc
-  Device (UXC0) {
-    Name (_HID, "CIXH302C")
-    Name (_UID, 0x0)
-    Name (_STA, 0xF)
-    Name (_CCA, 0)
-    Name (_CRS, ResourceTemplate () {
-      I2cSerialBusV2 (0x43,
-                      ControllerInitiated,
-                      400000,
-                      AddressingMode7Bit,
-                      "\\_SB.I2C0",
-                      0x0,
-                      ResourceConsumer,
-                      ,
-                      Exclusive
-                      ,)
-      PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_lt7911_hw", ResourceConsumer, , RawDataBuffer () { 0x0 })
-      PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_lt7911_hw", ResourceConsumer, , RawDataBuffer () { 0x1 })
-      GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
-      "\\_SB.GPI0", 0, ResourceConsumer) { 15 }
-      GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
-      "\\_SB.GPI1", 0, ResourceConsumer) { 16, 18, 12 }
-    })
-    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR1, "port@0", "endpoint@1")
-  }
-
-
-//MIPI Virtual0 lt7911uxc
-  Device (UXC1) {
-    Name (_HID, "CIXH302C")
-    Name (_UID, 0x01)
-    Name (_STA, 0x0)
-    Name (_CCA, 0)
-    Name (_CRS, ResourceTemplate () {
-      I2cSerialBusV2 (0x0d,
-                      ControllerInitiated,
-                      400000,
-                      AddressingMode7Bit,
-                      "\\_SB.I2C0",
-                      0x0,
-                      ResourceConsumer,
-                      ,
-                      Exclusive
-                      ,)
-    })
-    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR2, "port@0", "endpoint@1")
-  }
-//MIPI Virtual1 lt7911uxc
-  Device (UXC2) {
-    Name (_HID, "CIXH302C")
-    Name (_UID, 0x02)
-    Name (_STA, 0x0)
-    Name (_CCA, 0)
-    Name (_CRS, ResourceTemplate () {
-      I2cSerialBusV2 (0x1d,
-                      ControllerInitiated,
-                      400000,
-                      AddressingMode7Bit,
-                      "\\_SB.I2C0",
-                      0x0,
-                      ResourceConsumer,
-                      ,
-                      Exclusive
-                      ,)
-    })
-    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR4, "port@0", "endpoint@1")
-  }
-//MIPI Virtual2 lt7911uxc
-  Device (UXC3) {
-    Name (_HID, "CIXH302C")
-    Name (_UID, 0x03)
-    Name (_STA, 0x0)
-    Name (_CCA, 0)
-    Name (_CRS, ResourceTemplate () {
-      I2cSerialBusV2 (0x2d,
-                      ControllerInitiated,
-                      400000,
-                      AddressingMode7Bit,
-                      "\\_SB.I2C0",
-                      0x0,
-                      ResourceConsumer,
-                      ,
-                      Exclusive
-                      ,)
-    })
-    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR5, "port@0", "endpoint@1")
-  }
 }
 
 Device (I2C1) {
@@ -208,6 +85,8 @@ Device (I2C1) {
         Return (0x0)
     }
   }
+  Name (MXID, FixedPcdGet8 (PcdI2c1MutexId))
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C1_BASE, I2C1_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C1_INTERRUPT_ID }
@@ -236,6 +115,8 @@ Device (I2C2) {
         Return (0x0)
     }
   }
+  Name (MXID, FixedPcdGet8 (PcdI2c2MutexId))
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C2_BASE, I2C2_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C2_INTERRUPT_ID }
@@ -273,6 +154,8 @@ Device (I2C3) {
         Return (0x0)
     }
   }
+  Name (MXID, FixedPcdGet8 (PcdI2c3MutexId))
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C3_BASE, I2C3_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C3_INTERRUPT_ID }
@@ -301,6 +184,8 @@ Device (I2C4) {
         Return (0x0)
     }
   }
+  Name (MXID, FixedPcdGet8 (PcdI2c4MutexId))
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C4_BASE, I2C4_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C4_INTERRUPT_ID }
@@ -329,6 +214,8 @@ Device (I2C5) {
         Return (0x0)
     }
   }
+  Name (MXID, FixedPcdGet8 (PcdI2c5MutexId))
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C5_BASE, I2C5_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C5_INTERRUPT_ID }
@@ -347,6 +234,36 @@ Device (I2C5) {
   })
 }
 
+Device (I2C6) {
+  Name (_HID, "CIXH200B")
+  Name (_UID, 0x6)
+  Method (_STA, 0x0, Serialized) {
+    If(\_SB.GETV(ARV_FCH_I2C_6_ENABLE_OFFSET)){
+        Return (0xF)
+    } else {
+        Return (0x0)
+    }
+  }
+  Name (MXID, FixedPcdGet8 (PcdI2c6MutexId))
+
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, I2C6_BASE, I2C6_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C6_INTERRUPT_ID }
+  })
+
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+      Package () {
+        Package () {"ClockName", "fch_i2c6_apb"},
+        Package () { "clock-frequency", 400000 },
+      }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_I2C6_APB, "", \_SB.I2C6},
+  })
+}
+
 Device (I2C7) {
   Name (_HID, "CIXH200B")
   Name (_UID, 0x7)
@@ -357,6 +274,8 @@ Device (I2C7) {
         Return (0x0)
     }
   }
+  Name (MXID, FixedPcdGet8 (PcdI2c7MutexId))
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C7_BASE, I2C7_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C7_INTERRUPT_ID }

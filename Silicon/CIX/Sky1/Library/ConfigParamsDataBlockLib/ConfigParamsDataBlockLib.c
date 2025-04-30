@@ -11,6 +11,22 @@
 CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
   {
     // CONFIG_PARAMS_CPU
+    1,
+    {
+      1, // cpu core 0 is boot core and never be disabled.
+      FixedPcdGetBool (PcdCpuCore1En),
+      FixedPcdGetBool (PcdCpuCore2En),
+      FixedPcdGetBool (PcdCpuCore3En),
+      FixedPcdGetBool (PcdCpuCore4En),
+      FixedPcdGetBool (PcdCpuCore5En),
+      FixedPcdGetBool (PcdCpuCore6En),
+      FixedPcdGetBool (PcdCpuCore7En),
+      FixedPcdGetBool (PcdCpuCore8En),
+      FixedPcdGetBool (PcdCpuCore9En),
+      FixedPcdGetBool (PcdCpuCore10En),
+      FixedPcdGetBool (PcdCpuCore11En),
+    },
+    0,
     FixedPcdGet8 (PcdAcpiCpuLpiState),
   },
   {
@@ -255,35 +271,43 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
       // CONFIG_PARAMS_LSIO_FCH_I2C
       {
         FixedPcdGetBool (PcdI2c0En),       // Enable
-        FixedPcdGet32 (PcdI2c0BusFreq)     // BusFreq
+        FixedPcdGet32 (PcdI2c0BusFreq),    // BusFreq
+        FixedPcdGet8 (PcdI2c0MutexId)      // MutexId
       },
       {
         FixedPcdGetBool (PcdI2c1En),       // Enable
-        FixedPcdGet32 (PcdI2c1BusFreq)     // BusFreq
+        FixedPcdGet32 (PcdI2c1BusFreq),    // BusFreq
+        FixedPcdGet8 (PcdI2c1MutexId)      // MutexId
       },
       {
         FixedPcdGetBool (PcdI2c2En),       // Enable
-        FixedPcdGet32 (PcdI2c2BusFreq)     // BusFreq
+        FixedPcdGet32 (PcdI2c2BusFreq),    // BusFreq
+        FixedPcdGet8 (PcdI2c2MutexId)      // MutexId
       },
       {
         FixedPcdGetBool (PcdI2c3En),       // Enable
-        FixedPcdGet32 (PcdI2c3BusFreq)     // BusFreq
+        FixedPcdGet32 (PcdI2c3BusFreq),    // BusFreq
+        FixedPcdGet8 (PcdI2c3MutexId)      // MutexId
       },
       {
         FixedPcdGetBool (PcdI2c4En),       // Enable
-        FixedPcdGet32 (PcdI2c4BusFreq)     // BusFreq
+        FixedPcdGet32 (PcdI2c4BusFreq),    // BusFreq
+        FixedPcdGet8 (PcdI2c4MutexId)      // MutexId
       },
       {
         FixedPcdGetBool (PcdI2c5En),       // Enable
-        FixedPcdGet32 (PcdI2c5BusFreq)     // BusFreq
+        FixedPcdGet32 (PcdI2c5BusFreq),    // BusFreq
+        FixedPcdGet8 (PcdI2c5MutexId)      // MutexId
       },
       {
         FixedPcdGetBool (PcdI2c6En),       // Enable
-        FixedPcdGet32 (PcdI2c6BusFreq)     // BusFreq
+        FixedPcdGet32 (PcdI2c6BusFreq),    // BusFreq
+        FixedPcdGet8 (PcdI2c6MutexId)      // MutexId
       },
       {
         FixedPcdGetBool (PcdI2c7En),       // Enable
-        FixedPcdGet32 (PcdI2c7BusFreq)     // BusFreq
+        FixedPcdGet32 (PcdI2c7BusFreq),    // BusFreq
+        FixedPcdGet8 (PcdI2c7MutexId)      // MutexId
       },
     },
     {
@@ -308,6 +332,16 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
   },
   {
     // CONFIG_PARAMS_MISC
+    FixedPcdGet8 (PcdAcpiCppcType),
+  },
+  {
+    //CONFIG_USB20_PHY
+  },
+  {
+    //CONFIG_USB32_PHY
+  },
+  {
+    //CONFIG_USBCOM_PHY
   }
 };
 
@@ -444,6 +478,17 @@ CONFIG_PARAMS_DATA_ENTRY  mConfigDataEntryTable[] = {
   { PARAMS_DATA_USB_TYPE_C_DRD_0_DATAROLE,     PARAMS_DATA_OFFSET_SIZE (UsbCDrd[0].DataRole),         PARAMS_DATA_BOOLEAN_TYPE,      L"USBC Drd Control data role",   L"0:host, 1:device"                                                                },
   { PARAMS_DATA_SOC_WATCH_DOG_TIMER_ID,        PARAMS_DATA_OFFSET_SIZE (S5.SocWatchdogTimer),         PARAMS_DATA_BOOLEAN_TYPE,      L"SOC Watchdog  Timer",          L"0:Disable, 1:Enable"                                                             },
   { PARAMS_DATA_CPU_LPI_STATE_ID,              PARAMS_DATA_OFFSET_SIZE (Cpu.LpiState),                PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU LPI State ",               L"0:Disable, 1:LPI0, 2:LPI1, 3:LPI2"                                               },
+  { PARAMS_DATA_CPU_CORE_1_ENABLE_ID,          PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[1]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 1",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_CORE_2_ENABLE_ID,          PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[2]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 2",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_CORE_3_ENABLE_ID,          PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[3]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 3",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_CORE_4_ENABLE_ID,          PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[4]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 4",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_CORE_5_ENABLE_ID,          PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[5]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 5",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_CORE_6_ENABLE_ID,          PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[6]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 6",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_CORE_7_ENABLE_ID,          PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[7]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 7",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_CORE_8_ENABLE_ID,          PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[8]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 8",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_CORE_9_ENABLE_ID,          PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[9]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 9",                   L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_CORE_10_ENABLE_ID,         PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[10]),          PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 10",                  L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_CORE_11_ENABLE_ID,         PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[11]),          PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 11",                  L"0:Disable, 1:Enable"                                                             },
   { PARAMS_DATA_DPU0_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[0]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp0 Enable",                   L"0:Disable, 1:Enable"                                                             },
   { PARAMS_DATA_DPU1_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[1]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp1 Enable",                   L"0:Disable, 1:Enable"                                                             },
   { PARAMS_DATA_DPU2_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[2]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp2 Enable",                   L"0:Disable, 1:Enable"                                                             },
@@ -454,6 +499,7 @@ CONFIG_PARAMS_DATA_ENTRY  mConfigDataEntryTable[] = {
   { PARAMS_DATA_DPU_PRIORITY_2_ID,             PARAMS_DATA_OFFSET_SIZE (Dpu.DpPriority[2]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"Display Priority2",            L"0:Dp0, 1:Dp1, 2:Dp2, 3:Dp3, 4:Dp4"                                               },
   { PARAMS_DATA_DPU_PRIORITY_3_ID,             PARAMS_DATA_OFFSET_SIZE (Dpu.DpPriority[3]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"Display Priority3",            L"0:Dp0, 1:Dp1, 2:Dp2, 3:Dp3, 4:Dp4"                                               },
   { PARAMS_DATA_DPU_PRIORITY_4_ID,             PARAMS_DATA_OFFSET_SIZE (Dpu.DpPriority[4]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"Display Priority4",            L"0:Dp0, 1:Dp1, 2:Dp2, 3:Dp3, 4:Dp4"                                               },
+  { PARAMS_DATA_CPU_CPPC_TYPE_ID,              PARAMS_DATA_OFFSET_SIZE (Misc.CpuCppcType),            PARAMS_DATA_MULTI_OPTION_TYPE, L"CPPC Interface Type",          L"0:Disable, 1:Fast Channel, 2:Pcc"                                                },
 };
 
 UINT32  mConfigDataEntryNum = sizeof (mConfigDataEntryTable) / sizeof (CONFIG_PARAMS_DATA_ENTRY);
