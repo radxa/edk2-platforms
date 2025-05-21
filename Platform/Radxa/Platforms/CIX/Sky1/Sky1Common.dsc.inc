@@ -13,6 +13,9 @@
   gArmPlatformTokenSpaceGuid.PcdSerialDbgRegisterBase|0x040D0000
   gArmPlatformTokenSpaceGuid.PcdSerialDbgInterrupt|330
 
+  # Default hardware description should be ACPI
+  gEmbeddedTokenSpaceGuid.PcdDefaultDtPref|FALSE
+
 [Components.common]
 
 !if $(DEBUG_ON_UART3) == FALSE
