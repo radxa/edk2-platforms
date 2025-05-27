@@ -29,3 +29,7 @@
 !if $(TOKEN_RAM_DISK_SUPPORT) == FALSE
   INF MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
 !endif
+
+!if $(ARCH) == AARCH64
+  INF Emulator/X86EmulatorDxe/X86EmulatorDxe.inf
+!endif
