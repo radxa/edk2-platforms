@@ -116,3 +116,33 @@ ThermalZone(TZM1) {
   Method(_SCP, 1, Serialized) {}      // Set Cooling Policy
   Method(_TZP) { Return(50) }         // Polling Interval: in 100ms
 }
+
+//
+// Name: SPFA [Set PM Fan to Auto Mode]
+// Description: Function to set PM fan to auto mode
+// Input: None
+// Output: None
+//
+Method(SPFA, 0, Serialized){
+  \_SB.PMMX.SFMD(1)
+}
+
+//
+// Name: SPFM [Set PM Fan to Mute Mode]
+// Description: Function to set PM fan to mute mode
+// Input: None
+// Output: None
+//
+Method(SPFM, 0, Serialized){
+  \_SB.PMMX.SFMD(0)
+}
+
+//
+// Name: SPFP [Set PM Fan to Performance Mode]
+// Description: Function to set PM fan to performance mode
+// Input: None
+// Output: None
+//
+Method(SPFP, 0, Serialized){
+  \_SB.PMMX.SFMD(2)
+}

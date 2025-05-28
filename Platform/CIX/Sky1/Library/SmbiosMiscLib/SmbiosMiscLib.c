@@ -91,7 +91,7 @@ OemGetProcessorInformation (
   EFI_STATUS           Status;
   UINT8                CpuCoreNum, EnabledCoreNum;
   UINT32               SetupCpuIndex;
-  UINTN                VarSize;
+  UINTN                VarSize = 0;
   PLATFORM_SETUP_DATA  PlatformSetupVar;
 
   ProcessorStatus->Bits.CpuStatus       = 1;   // CPU enabled
@@ -172,7 +172,7 @@ OemGetCacheInformation (
   UINT32               MaxCpuCoreNum;
   UINT32               i;
   UINT32               SetupCpuIndex = 0;
-  UINTN                VarSize;
+  UINTN                VarSize = 0;
   PLATFORM_SETUP_DATA  PlatformSetupVar;
 
   GetCpuBootCoreId (&CpuBootCoreId);

@@ -49,6 +49,48 @@
     RESP = MSGP                             \
     Release(MBXM)                           \
 
+#define CIX_MAILBOX_SCMI_BEGIN              \
+      Acquire(MBXM, 0xFFFF)                 \
+      CERR = 0                              \
+      If(CFRE==0)                           \
+      {                                     \
+        Local0 = 400                        \
+        While( Local0 >0 ){                 \
+          if(CFRE == 1) {                   \
+            Break                           \
+          }                                 \
+          Sleep(1)                          \
+          Local0--                          \
+        }                                   \
+        if(Local0 == 0){                    \
+          Release(MBXM)                     \
+          Return(Buffer(4){ACPI_SCMI_BUSY}) \
+        }                                   \
+      }                                     \
+      Local1 = MSGA                         \
+      MSGA = CIX_SCMI_MESSAGE_ATTRIBUTES    \
+
+#define CIX_MAILBOX_SCMI_PROCESS            \
+    MSGP = BUFF                             \
+    CFRE = 0                                \
+    BEEL = 1                                \
+    Local0 = 400                            \
+    While( Local0 >0 ){                     \
+        if(CFRE == 1) {                     \
+            Break                           \
+        }                                   \
+        Sleep(1)                            \
+        Local0--                            \
+    }                                       \
+    if(Local0 == 0){                        \
+        printf("ASL Debug: SCMI Timeout\n") \
+        Release(MBXM)                       \
+        Return(Buffer(4){ACPI_SCMI_TIMEOUT})\
+    }                                       \
+    RESP = MSGP                             \
+    MSGA = Local1                           \
+    Release(MBXM)                           \
+
 Mutex(MBXM,0)
 
 Device (SHM0) {
@@ -150,6 +192,11 @@ Device(PMMX){
     MSGP, 256,
     Offset (0x80),
     BEEL, 1,
+  }
+  Field (MBXO, DWordAcc, NoLock, Preserve) {
+    MSGA, 32,
+    Offset (0x18),
+    MHED, 32,
   }
 
   Method(_STA)
@@ -288,6 +335,21 @@ Device(PMMX){
     Store(SCMI_PROTOCOL_ID_SENSOR, PRID)
     //Process Request
     MAILBOX_SCMI_PROCESS
+    //Process response
+    Return(RESP)
+  }
+
+  //Set PM fan mode, Arg0=fan mode
+  Method(SFMD,1,Serialized){
+    CIX_MAILBOX_SCMI_BEGIN
+    //Message Payload
+    DAT0 = Arg0
+    //Length
+    LENG = 0x8
+    //Message Header
+    MHED = SCMI_MESSAGE_HEADER_FAN_MODE_SET
+    //Process Requess
+    CIX_MAILBOX_SCMI_PROCESS
     //Process response
     Return(RESP)
   }
