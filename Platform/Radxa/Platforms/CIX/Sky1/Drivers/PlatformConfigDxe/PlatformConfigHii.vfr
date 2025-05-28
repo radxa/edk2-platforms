@@ -11,6 +11,7 @@
 #include <DtPlatformDxe.h>
 #include <Uefi/UefiMultiPhase.h>
 #include "PlatformConfigHii.h"
+#include "../../Include/RadxaSetupVar.h"
 
 formset
   guid      = PLATFORM_CONFIG_FORMSET_GUID,
@@ -32,6 +33,11 @@ formset
     attribute = EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_NON_VOLATILE,
     name  = NetworkStackVar,
     guid  = NETWORK_STACK_SETUP_VARIABLE_GUID;
+
+  efivarstore RADXA_SETUP_DATA,
+    attribute = EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_NON_VOLATILE,
+    name  = RadxaSetupVar,
+    guid  = RADXA_SETUP_VARIABLE_GUID;
 
   form formid = PLATFORM_CONFIG_FORM_ID,
     title  = STRING_TOKEN(STR_MAIN_FORM_TITLE);
@@ -66,13 +72,24 @@ formset
     endoneof;
 
   #if (FW_CONFIG_UPDATE_SUPPORT == 1)
-    oneof varid   = PlatformSetupVar.CpuFMax,
+    oneof varid   = RadxaSetupVar.CpuFMax,
       prompt      = STRING_TOKEN(STR_CPU_FREQ_MAX_PROMPT),
       help        = STRING_TOKEN(STR_CPU_FREQ_MAX_PROMPT_HELP),
       default     = FixedPcdGet8 (PcdCpuFMax),
-      option text = STRING_TOKEN(STR_CPU_FREQ_0), value = 0, flags = RESET_REQUIRED;
-      option text = STRING_TOKEN(STR_CPU_FREQ_1), value = 1, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_CPU_FREQ_2_5), value = 1, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_CPU_FREQ_2_6), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_CPU_FREQ_MAX), value = 2, flags = RESET_REQUIRED;
     endoneof;
+
+    suppressif NOT ideqval RadxaSetupVar.CpuFMax == 0x02;
+      oneof varid   = RadxaSetupVar.CpuBoostTrigger,
+        prompt      = STRING_TOKEN(STR_CPU_BOOST_TRIGGER_PROMPT),
+        help        = STRING_TOKEN(STR_CPU_BOOST_TRIGGER_PROMPT_HELP),
+        default     = 0,
+        option text = STRING_TOKEN(STR_CPU_BOOST_NOTSET), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CPU_BOOST_TRIGGER), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
   #endif
 
   oneof varid   = PlatformSetupVar.CpuLpiState,

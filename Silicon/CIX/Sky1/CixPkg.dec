@@ -367,7 +367,6 @@
   gCixTokenSpaceGuid.PcdCpuCore9En|TRUE|BOOLEAN|0x00002035
   gCixTokenSpaceGuid.PcdCpuCore10En|TRUE|BOOLEAN|0x00002036
   gCixTokenSpaceGuid.PcdCpuCore11En|TRUE|BOOLEAN|0x00002037
-  gCixTokenSpaceGuid.PcdAcpiCpuLpiState|0x01|UINT8|0x00002038       # ACPI CPU LPI State, 0-disable, 1-LPI0, 2-LPI1, 3-LPI2
 
   gCixTokenSpaceGuid.PcdDP0Enable|TRUE|BOOLEAN|0x00002039
   gCixTokenSpaceGuid.PcdDP1Enable|TRUE|BOOLEAN|0x0000203A
@@ -381,8 +380,6 @@
   gCixTokenSpaceGuid.PcdDPPriority2|1|UINT8|0x00002040  #
   gCixTokenSpaceGuid.PcdDPPriority3|3|UINT8|0x00002041  #
   gCixTokenSpaceGuid.PcdDPPriority4|4|UINT8|0x00002042  # lowest priority
-  gCixTokenSpaceGuid.PcdAcpiCppcType|0x01|UINT8|0x00002043       # CPPC Interface Type, 0-disable, 1-fastchannel, 2-pcc
-  gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable|TRUE|BOOLEAN|0x00002044
 
   gCixTokenSpaceGuid.PcdSpi0En|FALSE|BOOLEAN|0x00000142
   gCixTokenSpaceGuid.PcdSpi1En|FALSE|BOOLEAN|0x00000143
@@ -427,6 +424,17 @@
   gCixTokenSpaceGuid.PcdMemMbistEn|0xFF|UINT8|0x00005D5
   gCixTokenSpaceGuid.PcdMemMbistMode|0xFF|UINT8|0x00005D6
   gCixTokenSpaceGuid.PcdMemIEcc|0xFF|UINT8|0x00005D7
+
+  gCixTokenSpaceGuid.PcdAcpiCpuLpiState|0x01|UINT8|0x0000A001             # ACPI CPU LPI State, 0-disable, 1-LPI0, 2-LPI1, 3-LPI2
+  gCixTokenSpaceGuid.PcdAcpiCppcType|0x01|UINT8|0x0000A002                # CPPC Interface Type, 0-disable, 1-fastchannel, 2-pcc
+  gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable|TRUE|BOOLEAN|0x0000A003
+  gCixTokenSpaceGuid.PcdAcpiUart0Enable|TRUE|BOOLEAN|0x0000A004
+  gCixTokenSpaceGuid.PcdAcpiUart1Enable|TRUE|BOOLEAN|0x0000A005
+  gCixTokenSpaceGuid.PcdAcpiUart2Enable|TRUE|BOOLEAN|0x0000A006
+  gCixTokenSpaceGuid.PcdAcpiUart3Enable|FALSE|BOOLEAN|0x0000A007
+
+  #Misc
+  gCixTokenSpaceGuid.PcdCixProcessorVersion|L"CIX P1"|VOID*|0x0003001
 
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 

@@ -271,10 +271,6 @@
   GCC:*_*_*_CC_FLAGS              = -DSTMM_SUPPORT
 !endif
 
-!if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
-  GCC:*_*_*_VFRPP_FLAGS       = -DFW_CONFIG_UPDATE_SUPPORT=1
-!endif
-
 ################################################################################
 #
 # Pcd Section - list of all EDK II PCD Entries defined by this Platform
@@ -377,7 +373,7 @@
   gCixTokenSpaceGuid.PcdGmac0Enable|TRUE
   gCixTokenSpaceGuid.PcdGmac1Enable|FALSE
   
-  gArmTokenSpaceGuid.PcdProcessorVersion|L"CIX P1 CP8180"
+  gCixTokenSpaceGuid.PcdCixProcessorVersion|L"CIX P1 CP8180"
   gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionBase|0x7F0000   # SIZE_8MB-64KB
   gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionSize|0x10000    # SIZE_64KB
 

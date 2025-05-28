@@ -150,7 +150,9 @@ typedef struct {
   uint8_t                 TrainMode; // 0: PI_INIT_LVL 1: SW Train
   uint8_t                 IEcc;
   uint8_t                 PeriodicTrain; // BIT0: CALVL, BIT1: WRLVL, BIT2: GTLVL, BIT3: RDLVL, BIT4: WDQLVL, BIT7: DQS_OSC
-  uint8_t                 rsvd[3];
+  uint8_t                 SSC;
+  uint8_t                 DfsEn;
+  uint8_t                 rsvd;
 } MEM_CONFIG_FEATURE;
 
 typedef struct {

@@ -138,6 +138,9 @@
 !if $(POWER_BUTTON_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/PowerButtonDxe/PowerButtonDxe.inf
 !endif
+!if $(GPIO_POWER_BUTTON_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PowerButtonDxe/GpioPowerButtonDxe.inf
+!endif
 
 #  INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
   INF Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf
@@ -225,6 +228,13 @@
    SECTION UI = "Realtek"
    SECTION DXE_DEPEX = Platform/CIX/Sky1/Drivers/RealtekLan/RealtekLan.depex
  }
+
+ FILE DRIVER = 2367AC97-E2F5-470C-8DE6-C481F2640928
+ {
+   SECTION PE32 = Platform/CIX/Sky1/Drivers/RealtekLan/RtkUsbUndiDxe.efi
+   SECTION UI = "Realtek-USB-LAN"
+   SECTION DXE_DEPEX = Platform/CIX/Sky1/Drivers/RealtekLan/RealtekLan.depex
+ }
 !endif
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
   # FV FileSystem
@@ -308,9 +318,6 @@
 !endif
 !if $(MEM_CONFIG_UPDATE_SUPPORT) == TRUE
   INF Platform/CIX/Sky1/Drivers/MemConfigUpdateDxe/MemConfigUpdateDxe.inf
-!endif
-!if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
-  INF Platform/CIX/Sky1/Drivers/FirmwareConfigUpdateDxe/FirmwareConfigUpdateDxe.inf
 !endif
 !if $(FW_VERSION_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionProtocolTest.inf

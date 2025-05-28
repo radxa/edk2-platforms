@@ -137,7 +137,7 @@ GetEcVersion (
   Status = GetEcInfo (SwapBytes16 (EC_CMD_GET_EC_VERSION), NULL, 0, (VOID *)ResponseBuffer, &ResponseSize);
   if (!EFI_ERROR (Status)) {
     CopyMem (Info->String, ResponseBuffer->String, ResponseSize);
-    Info->String[EC_VER_TEXT_SIZE - 1] = '\0';
+    Info->String[ResponseSize] = '\0';
 
     DEBUG ((DEBUG_INFO, "EC response version info:\n"));
     DEBUG ((DEBUG_INFO, "\tVersion : %a\n", Info->String));

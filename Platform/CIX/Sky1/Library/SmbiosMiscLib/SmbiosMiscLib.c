@@ -24,6 +24,8 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/PrintLib.h>
+#include <Library/OpnLib.h>
+#include <Library/BaseLib.h>
 #include <PlatformSetupVar.h>
 #include <Protocol/SocInfoProtocol.h>
 
@@ -316,6 +318,29 @@ GetSerialNumStr (
   return EFI_SUCCESS;
 }
 
+EFI_STATUS
+GetProcessorVersionStr (
+  IN OUT CHAR16  **StrProcessorVersion
+  )
+{
+  EFI_STATUS  Status;
+  UINT32      StrSize;
+
+  Status = GetProcessVersion (StrProcessorVersion);
+  if (EFI_ERROR (Status)) {
+    StrSize = StrLen ((CHAR16 *)FixedPcdGetPtr (PcdCixProcessorVersion));
+    if (StrSize > 0) {
+      *StrProcessorVersion = AllocateZeroPool ((StrSize+1)*2);
+      StrCpyS (*StrProcessorVersion, (StrSize+1)*2, (CHAR16 *)FixedPcdGetPtr (PcdCixProcessorVersion));
+      return EFI_SUCCESS;
+    } else {
+      return Status;
+    }
+  }
+
+  return EFI_SUCCESS;
+}
+
 /** Updates the HII string for the specified field.
 
   @param HiiHandle     The HII handle.
@@ -342,6 +367,14 @@ OemUpdateSmbiosInfo (
       }
 
       break;
+    case ProcessorVersionType04:
+      Status = GetProcessorVersionStr (&String);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_ERROR, "Get processor version Fail! %r\n", Status));
+        return;
+      }
+
+      break;
     default:
       String = NULL;
       break;
@@ -349,6 +382,7 @@ OemUpdateSmbiosInfo (
 
   if (String != NULL) {
     HiiSetString (HiiHandle, TokenToUpdate, String, NULL);
+    FreePool(String);
   }
 }
 

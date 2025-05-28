@@ -12,8 +12,8 @@
   "Cix Technology Group Co., Ltd.\0"   /* Manufacturer */                                \
   "CIX Board\0"                        /* Product Name */                                \
   "1.0\0"                              /* Version */                                     \
-  "Base Board Serial Number\0"         /* Serial */                                      \
-  "Base Board Asset Tag\0"             /* Assert Tag */                                  \
+  "Cix Base Board Serial Number\0"     /* Serial */                                      \
+  "Cix Base Board Asset Tag\0"         /* Assert Tag */                                  \
   "Part Component\0"                   /* board location */                              \
   "CIX Merak Board\0"                  /* Product Name 0*/                               \
   "CIX Phecda Board\0"                 /* Product Name 1*/

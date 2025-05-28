@@ -35,5 +35,7 @@ MEM_CONFIG_BLOCK_FEATURE MemFeatureBlock = {
     .EyeScanEn        = 0,
     .TrainMode        = 0,
     .PeriodicTrain    = 0,
+    .SSC              = 0,
+    .DfsEn            = 0,
   }
 };

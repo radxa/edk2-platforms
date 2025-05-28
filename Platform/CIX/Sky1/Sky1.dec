@@ -54,6 +54,7 @@
   gCixGPNVGuid = {0xA4D3F1E5, 0xC2B7, 0x4D8A, {0x9C, 0xE5, 0xA6, 0xB2, 0xA1, 0xF7, 0xC9, 0xE3}}
 
 [PcdsFixedAtBuild.common]
+  gCixPlatformTokenSpaceGuid.PcdPowerButtonGpioNum|43|UINT8|0x181
 
   gCixPlatformTokenSpaceGuid.PcdReservedSecureMemoryBase|0x80000000|UINT32|0x1C1
   gCixPlatformTokenSpaceGuid.PcdReservedSecureMemorySize|0x02500000|UINT32|0x1C2
@@ -131,10 +132,6 @@
   gCixPlatformTokenSpaceGuid.PcdRtcWakeup|0x00|UINT8|0x00002001
   #Ligt Sensor Control
   gCixPlatformTokenSpaceGuid.PcdLightSensorCtrl|0x01|UINT8|0x00002002
-  #Cpu Max Frequency
-  gCixPlatformTokenSpaceGuid.PcdCpuFMax|0x00|UINT8|0x00002003
-  #Gpu Max Frequency
-  gCixPlatformTokenSpaceGuid.PcdGpuFMax|0x00|UINT8|0x00002004
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 
 [PcdsDynamic]

@@ -48,6 +48,7 @@
 
 [Guids]
   gPlatformConfigFormSetGuid
+  gRadxaTokenSpaceGuid
 
 [Protocols]
   gEfiHiiConfigAccessProtocolGuid               ## CONSUMES
@@ -62,10 +63,9 @@
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6HttpSupport
   gCixTokenSpaceGuid.PcdStateAfterG3
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable
-  gCixPlatformTokenSpaceGuid.PcdCpuFMax
-  gCixPlatformTokenSpaceGuid.PcdGpuFMax
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
   gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode
+  gRadxaTokenSpaceGuid.PcdCpuFMax
 
 [Depex]
   TRUE

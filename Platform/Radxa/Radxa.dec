@@ -23,6 +23,9 @@
   # HII form set GUID for PlatformConfigDxe driver
   gPlatformConfigFormSetGuid = { 0x7dbfcdc4, 0xfb50, 0x452a, { 0xae, 0xd6, 0xfe, 0x21, 0x63, 0x70, 0x24, 0x61 } }
 
+  # Radxa Setup Variable Guid
+  gRadxaSetupVariableGuid = { 0xeedf122d, 0xa912, 0x43d5, { 0xaa, 0x11, 0x14, 0x27, 0x62, 0xdd, 0x96, 0xfa } }
+
 [PcdsFixedAtBuild.common]
   # I2C HYM8563
   gRadxaTokenSpaceGuid.PcdRtc8563I2cBus|3|UINT8|0x00000000
@@ -32,3 +35,6 @@
   gRadxaTokenSpaceGuid.PcdEdk2CommitHash|L""|VOID*|0x00000002
   gRadxaTokenSpaceGuid.PcdEdk2NonOSICommitHash|L""|VOID*|0x00000003
   gRadxaTokenSpaceGuid.PcdEdk2PlatformsCommitHash|L""|VOID*|0x00000004
+
+  #Cpu Max Frequency
+  gRadxaTokenSpaceGuid.PcdCpuFMax|0x00|UINT8|0x00000005

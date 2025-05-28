@@ -26,7 +26,7 @@ External (PCIE_X1_1_VCC_REGULATOR, DeviceObj)
 External (PCIE_X1_0_VCC_REGULATOR, DeviceObj)
 #endif
 
-Device (PRC0) { /* PCIE1 X8 */
+Device (PRC0) { /* PCIE0 X8 */
   Name (_HID, "CIXH2020")
   Name (_UID, 0x0)
   Name (_STR, Unicode ("PCIe 0 Device"))
@@ -219,7 +219,7 @@ Device (PCP0) //PCIE PHY1
   }
 }
 
-Device (PRC1) { /* PCIE1 X4 */
+Device (PRC1) { /* PCIE2 X4 */
   Name (_HID, "CIXH2020")
   Name (_UID, 0x1)
   Name (_STR, Unicode ("PCIe 1 Device"))
@@ -399,7 +399,7 @@ Device (PCP1) //PCIE PHY1
   }
 }
 
-Device (PRC2) { /* PCIE1 X2 */
+Device (PRC2) { /* PCIE3 X2 */
   Name (_HID, "CIXH2020")
   Name (_UID, 0x2)
   Name (_STR, Unicode ("PCIe 2 Device"))
@@ -542,7 +542,7 @@ Device (PRC2) { /* PCIE1 X2 */
   })
 }
 
-Device (PRC3) { /* PCIE1 X1_1 */
+Device (PRC3) { /* PCIE4 X1_1 */
   Name (_HID, "CIXH2020")
   Name (_UID, 0x3)
   Name (_STR, Unicode ("PCIe 3 Device"))
@@ -552,7 +552,7 @@ Device (PRC3) { /* PCIE1 X1_1 */
 
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
-    If(\_SB.GETV(ARV_PCIE_RP_03_LINK_STS_OFFSET)){
+    If(\_SB.GETV(ARV_PCIE_RP_04_LINK_STS_OFFSET)){
       Return (0xF)
     } else {
       Return (0x0)
@@ -685,7 +685,7 @@ Device (PRC3) { /* PCIE1 X1_1 */
   })
 }
 
-Device (PRC4) { /* PCIE1 X1_0 */
+Device (PRC4) { /* PCIE3 X1_0 */
   Name (_HID, "CIXH2020")
   Name (_UID, 0x4)
   Name (_STR, Unicode ("PCIe 4 Device"))
@@ -695,7 +695,7 @@ Device (PRC4) { /* PCIE1 X1_0 */
 
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
-    If(\_SB.GETV(ARV_PCIE_RP_04_LINK_STS_OFFSET)){
+    If(\_SB.GETV(ARV_PCIE_RP_03_LINK_STS_OFFSET)){
       Return (0xF)
     } else {
       Return (0x0)
@@ -839,10 +839,10 @@ Device (PCP2) //PCIE PHY1
     If(\_SB.GETV(ARV_PCIE_RP_02_LINK_STS_OFFSET)) {
       Return (0xF)
     } Else {
-      If (\_SB.GETV(ARV_PCIE_RP_03_LINK_STS_OFFSET)) {
+      If (\_SB.GETV(ARV_PCIE_RP_04_LINK_STS_OFFSET)) {
         Return (0xF)
       } Else {
-        If (\_SB.GETV(ARV_PCIE_RP_04_LINK_STS_OFFSET)) {
+        If (\_SB.GETV(ARV_PCIE_RP_03_LINK_STS_OFFSET)) {
           Return (0xF)
         } Else {
           Return (0x0)
@@ -863,7 +863,7 @@ Device (PCP2) //PCIE PHY1
   Device(PX10)
   {
     Method (_STA, 0x0, Serialized) {
-      If(\_SB.GETV(ARV_PCIE_RP_04_LINK_STS_OFFSET)) {
+      If(\_SB.GETV(ARV_PCIE_RP_03_LINK_STS_OFFSET)) {
         Return (0xF)
       } else {
         Return (0x0)
@@ -881,7 +881,7 @@ Device (PCP2) //PCIE PHY1
   Device(PX11)
   {
     Method (_STA, 0x0, Serialized) {
-      If(\_SB.GETV(ARV_PCIE_RP_03_LINK_STS_OFFSET)) {
+      If(\_SB.GETV(ARV_PCIE_RP_04_LINK_STS_OFFSET)) {
         Return (0xF)
       } else {
         Return (0x0)

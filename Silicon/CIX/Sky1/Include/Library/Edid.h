@@ -84,6 +84,13 @@ EdidGetPanelID (
   IN UINT32      EdidSize
   );
 
+EFI_STATUS
+EFIAPI
+EdidInstallProtocol (
+  IN UINT8    *Edid,
+  IN UINT32    SizeOfEdid
+);
+
 // EDID Detailed timings section - Features
 enum EdidDetailedTimingsFeatures {
   EdidDetailedTimingsFeaturesInterlaced             = 0x80,

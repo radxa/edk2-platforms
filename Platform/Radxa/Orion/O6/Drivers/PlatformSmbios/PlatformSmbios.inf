@@ -21,6 +21,7 @@
   SmbiosType1.c
   SmbiosType2.c
   SmbiosType3.c
+  SmbiosType32.c
 
 [Packages]
   MdePkg/MdePkg.dec

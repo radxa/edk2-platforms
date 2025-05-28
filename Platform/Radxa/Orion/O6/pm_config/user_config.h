@@ -239,7 +239,7 @@ static pm_config_noc_idle_t noc_idle_config = {
     .noc_idle_enable = {
         .fields = {
             .valid    = PM_CONFIG_VALID,
-            .raw_data = 3,  // BIT0: ddr-dfs/ci/mm dfs; BIT1: dsu dfs
+            .raw_data = 2,  // BIT0: ddr-dfs/ci/mm dfs; BIT1: dsu dfs
         }
     },
     /* default threshold are loaded if not specificed below */

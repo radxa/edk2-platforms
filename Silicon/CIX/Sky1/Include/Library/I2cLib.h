@@ -68,8 +68,8 @@ I2cGetBusClk (
 
   @return  EFI_SUCCESS  successfuly reset the I2c module
 **/
-EFI_STATUS
-I2cReset (
+VOID
+I2cMasterReset (
   IN UINTN  Base
   );
 

@@ -6,8 +6,9 @@
 
 **/
 #include "FirmwareConfigUpdateDxe.h"
-#include <PlatformSetupVar.h>
+#include "../../Include/RadxaSetupVar.h"
 #include <MemConfigurationTable.h>
+#include <Library/ArmSmcLib.h>
 
 BOOLEAN
 IsNorFlashDevicePath (
@@ -36,7 +37,7 @@ IsNorFlashDevicePath (
 
 EFI_STATUS
 CheckPlatformVarUpdate (
-  PLATFORM_SETUP_DATA  *PlatformSetupVar,
+  RADXA_SETUP_DATA     *pRadxaSetupVar,
   BOOLEAN              *Update
   )
 {
@@ -55,6 +56,12 @@ CheckPlatformVarUpdate (
   MEM_QUICK_CONFIG*         MemQuickHeader;
 
   *Update = FALSE;
+
+  // guarantee cpu trigger flag clear, since trigger once
+  if (pRadxaSetupVar->CpuBoostTrigger) {
+    pRadxaSetupVar->CpuBoostTrigger = 0;
+    *Update = TRUE;
+  }
 
   Status = gBS->LocateHandleBuffer (
                                     ByProtocol,
@@ -138,8 +145,8 @@ CheckPlatformVarUpdate (
 
   MemQuickHeader = (MEM_QUICK_CONFIG *)pImageBuff;
 
-  if (PlatformSetupVar->CpuFMax != MemQuickHeader->cpufmax) {
-     PlatformSetupVar->CpuFMax = MemQuickHeader->cpufmax;
+  if (pRadxaSetupVar->CpuFMax != MemQuickHeader->cpufmax) {
+     pRadxaSetupVar->CpuFMax = MemQuickHeader->cpufmax;
      *Update = TRUE;
   }
 
@@ -156,26 +163,26 @@ UpdatePlatformVarFromMemCfg (
   )
 {
   EFI_STATUS                Status;
-  PLATFORM_SETUP_DATA       PlatformSetupVar;
+  RADXA_SETUP_DATA          RadxaSetupVar;
   UINTN                     VarSize;
   UINT32                    Attributes;
   BOOLEAN                   Update = FALSE;
 
-  VarSize = sizeof (PLATFORM_SETUP_DATA);
+  VarSize = sizeof (RADXA_SETUP_DATA);
 
   Status = gRT->GetVariable (
-                  PLATFORM_SETUP_VAR,
-                  &gPlatformSetupVariableGuid,
+                  RADXA_SETUP_VAR,
+                  &gRadxaSetupVariableGuid,
                   &Attributes,
                   &VarSize,
-                  &PlatformSetupVar
+                  &RadxaSetupVar
                   );
   if (EFI_ERROR(Status)) {
     DEBUG ((DEBUG_ERROR, "[%a][%d]: Get Platform Setup Variable failed, Status = %r\n", __FUNCTION__, __LINE__, Status));
     return Status;
   }
 
-  Status = CheckPlatformVarUpdate(&PlatformSetupVar, &Update);
+  Status = CheckPlatformVarUpdate(&RadxaSetupVar, &Update);
   if (EFI_ERROR(Status)) {
     DEBUG ((DEBUG_ERROR, "[%a][%d]: Check Platform Setup Variable failed, Status = %r\n", __FUNCTION__, __LINE__, Status));
     return Status;
@@ -183,11 +190,11 @@ UpdatePlatformVarFromMemCfg (
 
   if (Update) {
     Status = gRT->SetVariable (
-                PLATFORM_SETUP_VAR,
-                &gPlatformSetupVariableGuid,
+                RADXA_SETUP_VAR,
+                &gRadxaSetupVariableGuid,
                 Attributes,
                 VarSize,
-                &PlatformSetupVar
+                &RadxaSetupVar
                 );
     if (EFI_ERROR (Status)) {
       DebugPrint (DEBUG_ERROR, "[%a] [%d]: Set Platform Setup Variable failed, Status = %r\n", __FUNCTION__, __LINE__, Status);
@@ -200,7 +207,7 @@ UpdatePlatformVarFromMemCfg (
 
 EFI_STATUS
 GetMemConfigAndUpdate (
-  PLATFORM_SETUP_DATA  *pPlatformSetupData,
+  RADXA_SETUP_DATA    *pRadxaSetupData,
   UINT8                *pImage,
   BOOLEAN              *Update
   )
@@ -209,13 +216,27 @@ GetMemConfigAndUpdate (
 
   *Update = FALSE;
 
-  if(MemQuickCfg->cpufmax != pPlatformSetupData->CpuFMax) {
-    DEBUG ((DEBUG_INFO, "Update CpuFMax %x\n", pPlatformSetupData->CpuFMax));
-    MemQuickCfg->cpufmax = pPlatformSetupData->CpuFMax;
+  if(MemQuickCfg->cpufmax != pRadxaSetupData->CpuFMax) {
+    DEBUG ((DEBUG_INFO, "Update CpuFMax %x\n", pRadxaSetupData->CpuFMax));
+    MemQuickCfg->cpufmax = pRadxaSetupData->CpuFMax;
     *Update = TRUE;
   }
 
   return EFI_SUCCESS;
+}
+
+VOID
+SetCpuBoostTriggerFlag (
+  UINT8 Flag
+)
+{
+  #define CIX_SIP_CPU_BOOST_TRIGGER 0xc2000011
+  ARM_SMC_ARGS  SmcArgs;
+
+  ZeroMem (&SmcArgs, sizeof (ARM_SMC_ARGS));
+  SmcArgs.Arg0 = CIX_SIP_CPU_BOOST_TRIGGER;
+  SmcArgs.Arg1 = Flag;
+  ArmCallSmc (&SmcArgs);
 }
 
 VOID
@@ -229,27 +250,27 @@ FwConfigUpdateCallback (
   UINTN                   Length = 0x1000;
   BOOLEAN                 Update = FALSE;
   UINTN                   VarSize;
-  PLATFORM_SETUP_DATA     *pPlatformSetupVar;
+  RADXA_SETUP_DATA        *pRadxaSetupVar;
   CIX_FW_UPDATE_PROTOCOL  *FlashUpdateProtocol = NULL;
 
 
   DEBUG ((DEBUG_INFO, "FwConfigUpdateCallback\n"));
   DEBUG ((DEBUG_INFO, "Debug-------------------------------------------------------[%a][%d]\n", __FUNCTION__, __LINE__));
 
-  VarSize           = sizeof (PLATFORM_SETUP_DATA);
-  pPlatformSetupVar = AllocateZeroPool (VarSize);
-  if (pPlatformSetupVar == NULL) {
+  VarSize           = sizeof (RADXA_SETUP_DATA);
+  pRadxaSetupVar = AllocateZeroPool (VarSize);
+  if (pRadxaSetupVar == NULL) {
     DEBUG ((DEBUG_ERROR, "[%a][%d]: AllocateZeroPool failed\n", __FUNCTION__, __LINE__));
     goto Done;
   }
 
   DEBUG ((DEBUG_INFO, "Debug-------------------------------------------------------[%a][%d]\n", __FUNCTION__, __LINE__));
   Status = gRT->GetVariable (
-                  PLATFORM_SETUP_VAR,
-                  &gPlatformSetupVariableGuid,
+                  RADXA_SETUP_VAR,
+                  &gRadxaSetupVariableGuid,
                   NULL,
                   &VarSize,
-                  pPlatformSetupVar
+                  pRadxaSetupVar
                   );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "[%a][%d]: GetVariable failed, Status = %r\n", __FUNCTION__, __LINE__, Status));
@@ -280,7 +301,7 @@ FwConfigUpdateCallback (
   DEBUG ((DEBUG_INFO, "Debug-------------------------------------------------------[%a][%d]\n", __FUNCTION__, __LINE__));
   DEBUG ((DEBUG_INFO, "[%a][%d]: FirmwareRawEntryUpdate Read success\n", __FUNCTION__, __LINE__));
   DEBUG ((DEBUG_INFO, "Debug-------------------------------------------------------[%a][%d]\n", __FUNCTION__, __LINE__));
-  Status = GetMemConfigAndUpdate (pPlatformSetupVar, pImage, &Update);
+  Status = GetMemConfigAndUpdate (pRadxaSetupVar, pImage, &Update);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_INFO, "GetMemConfigBiosBlockAndUpdate Status:%r\n", Status));
     goto Done;
@@ -296,13 +317,16 @@ FwConfigUpdateCallback (
   }
 
   DEBUG ((DEBUG_INFO, "Debug-------------------------------------------------------[%a][%d]\n", __FUNCTION__, __LINE__));
+
+  // set cpu boost trigger flag
+  SetCpuBoostTriggerFlag(pRadxaSetupVar->CpuBoostTrigger);
 Done:
   if (pImage != NULL) {
     FreePool (pImage);
   }
 
-  if (pPlatformSetupVar != NULL) {
-    FreePool (pPlatformSetupVar);
+  if (pRadxaSetupVar != NULL) {
+    FreePool (pRadxaSetupVar);
   }
 
   return;

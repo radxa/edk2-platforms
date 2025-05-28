@@ -12,7 +12,7 @@
   "Radxa Computer (Shenzhen) Co., Ltd.\0"   /* Manufacturer */                                \
   "Radxa Orion O6\0"                        /* Product Name */                                \
   "1.0\0"                                   /* Version */                                     \
-  "System Serial Number\0"                  /* Serial number */                               \
+  "Radxa System Serial Number\0"            /* Serial number */                               \
   "Default\0"                               /* SKUNumber */                                   \
   "Orion O6\0"                              /* System Family */
 

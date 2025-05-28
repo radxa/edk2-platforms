@@ -12,7 +12,7 @@
   "Cix Technology Group Co., Ltd.\0"   /* Manufacturer */                                \
   "CIX Board\0"                        /* Product Name */                                \
   "1.0\0"                              /* Version */                                     \
-  "System Serial Number\0"             /* Serial number */                               \
+  "Cix System Serial Numbe\0"          /* Serial number */                               \
   "Default\0"                          /* SKUNumber */                                   \
   "Default\0"                          /* System Family */                               \
   "CIX Merak Board\0"                  /* Product Name 0*/                               \

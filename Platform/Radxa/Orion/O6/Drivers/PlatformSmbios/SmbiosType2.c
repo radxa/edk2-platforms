@@ -12,8 +12,8 @@
   "Radxa Computer (Shenzhen) Co., Ltd.\0"   /* Manufacturer */                           \
   "Radxa Orion O6\0"                        /* Product Name */                           \
   "1.0\0"                              /* Version */                                     \
-  "Base Board Serial Number\0"         /* Serial */                                      \
-  "Base Board Asset Tag\0"             /* Assert Tag */                                  \
+  "Radxa Board Serial Number\0"         /* Serial */                                      \
+  "Radxa Board Asset Tag\0"             /* Assert Tag */                                  \
   "Part Component\0"                   /* board location */
 #pragma pack(1)
 typedef struct {

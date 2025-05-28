@@ -9,8 +9,8 @@
 #define TYPE3_STRINGS                                                          \
   "Cix Technology Group Co., Ltd.\0" /* Manufacturer */                                    \
   "1.0\0"                            /* Version */                                         \
-  "Chassis Serial Number\0"          /* Serial  */                                         \
-  "Chassis Asset Tag\0"              /* Assert Tag */
+  "Cix Chassis Serial Number\0"      /* Serial  */                                         \
+  "Cix Chassis Asset Tag\0"          /* Assert Tag */
 
 #pragma pack(1)
 typedef struct {

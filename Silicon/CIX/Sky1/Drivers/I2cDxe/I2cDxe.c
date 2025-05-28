@@ -129,6 +129,12 @@ Reset (
   IN CONST EFI_I2C_MASTER_PROTOCOL  *This
   )
 {
+  I2C_CONTROLLER_CONTEXT  *I2c;
+
+  I2c = I2C_CONTROLLER_FROM_THIS (This);
+
+  I2cMasterReset (I2c->Descriptor.MemBase);
+
   return EFI_SUCCESS;
 }
 

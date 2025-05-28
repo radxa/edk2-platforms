@@ -96,3 +96,7 @@
   gCixTokenSpaceGuid.PcdI2c7MutexId
 
   gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable
+  gCixTokenSpaceGuid.PcdAcpiUart0Enable
+  gCixTokenSpaceGuid.PcdAcpiUart1Enable
+  gCixTokenSpaceGuid.PcdAcpiUart2Enable
+  gCixTokenSpaceGuid.PcdAcpiUart3Enable

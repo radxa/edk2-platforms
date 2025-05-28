@@ -16,8 +16,8 @@
 #include <Protocol/Smbios.h>
 #include <IndustryStandard/SmBios.h>
 
-#define PLATFORM_SMBIOS_TABLE_HOOK  AddSmbiosType0,AddSmbiosType1,AddSmbiosType2,AddSmbiosType3
-#define PLATFORM_SMBIOS_TABLE_NAME  "AddSmbiosType0","AddSmbiosType1","AddSmbiosType2","AddSmbiosType3"
+#define PLATFORM_SMBIOS_TABLE_HOOK  AddSmbiosType0,AddSmbiosType1,AddSmbiosType2,AddSmbiosType3,AddSmbiosType32
+#define PLATFORM_SMBIOS_TABLE_NAME  "AddSmbiosType0","AddSmbiosType1","AddSmbiosType2","AddSmbiosType3","AddSmbiosType32"
 
 #define RELEASE_DATE_TEMPLATE  "MM/DD/YYYY\0"
 
@@ -51,6 +51,11 @@ AddSmbiosType2 (
 
 EFI_STATUS
 AddSmbiosType3 (
+  IN EFI_SMBIOS_PROTOCOL  *Smbios
+  );
+
+EFI_STATUS
+AddSmbiosType32 (
   IN EFI_SMBIOS_PROTOCOL  *Smbios
   );
 

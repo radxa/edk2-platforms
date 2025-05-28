@@ -24,7 +24,16 @@ Device(UCRU) {
 Device (COM0) {
   Name (_HID, "ARMH0011")
   Name (_UID, 0x1)
-  Name (_STA, 0xF)
+
+  Method (_STA)
+  {
+    If(FixedPcdGetBool(PcdAcpiUart0Enable)){
+      Return (0xF)
+    } else {
+      Return (0x0)
+    }
+  }
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, UART0_BASE, UART0_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_UART0_INTERRUPT_ID }
@@ -51,7 +60,16 @@ Device (COM0) {
 Device (COM1) {
   Name (_HID, "ARMH0011")
   Name (_UID, 0x2)
-  Name (_STA, 0xF)
+
+  Method (_STA)
+  {
+    If(FixedPcdGetBool(PcdAcpiUart1Enable)){
+      Return (0xF)
+    } else {
+      Return (0x0)
+    }
+  }
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, UART1_BASE, UART1_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_UART1_INTERRUPT_ID }
@@ -78,7 +96,16 @@ Device (COM1) {
 Device (COM2) {
   Name (_HID, "ARMH0011")
   Name (_UID, 0x3)
-  Name (_STA, 0xf)
+
+  Method (_STA)
+  {
+    If(FixedPcdGetBool(PcdAcpiUart2Enable)){
+      Return (0xF)
+    } else {
+      Return (0x0)
+    }
+  }
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, UART2_BASE, UART2_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_UART2_INTERRUPT_ID }
@@ -100,7 +127,16 @@ Device (COM2) {
 Device (COM3) {
   Name (_HID, "ARMH0011")
   Name (_UID, 0x4)
-  Name (_STA, 0x0)
+
+  Method (_STA)
+  {
+    If(FixedPcdGetBool(PcdAcpiUart3Enable)){
+      Return (0xF)
+    } else {
+      Return (0x0)
+    }
+  }
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, UART3_BASE, UART3_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_UART3_INTERRUPT_ID }

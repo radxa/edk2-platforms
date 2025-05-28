@@ -5,6 +5,7 @@
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
+#include <Include/AcpiScmi.h>
 
 // External CPU device declarations
 External (\_SB.CPB0, PkgObj)          //(CPU9, CPU10)
@@ -28,13 +29,17 @@ ThermalZone(TZB0) {
   Method(_TC2) { Return(3) }          // Thermal Constant2
   Method(_TSP) { Return(3) }          // Sampling Period: in 100ms
   Method(_PSL) { Return(\_SB.CPB0)}   // Passive cooling list
-  Method(_TZD) {}                     // Thermal Zone Devices
+  // Method(_TZD) {}                     // Thermal Zone Devices
   Method(_TMP, 0, Serialized) {       // Temperature reading
     Store(\_SB.PMMX.SENG(11, 0), Local0)
     CreateDWordField(Local0, 0x00, STAT)
-    CreateQWordField(Local0, 0x04, TEMP)
-    TEMP = ToInteger(TEMP)
-    Return(C2DK(TEMP))
+    If (STAT == SCMI_SUCCESS) {
+      CreateQWordField(Local0, 0x04, TEMP)
+      TEMP = ToInteger(TEMP)
+      Return(C2DK(TEMP))
+    } Else {
+      Return (0xFFFFFFFFFFFFFFFF)
+    }
   }
   Method(_SCP, 1, Serialized) {}      // Set Cooling Policy
   Method(_TZP) { Return(50) }         // Polling Interval: in 100ms
@@ -48,13 +53,17 @@ ThermalZone(TZB1) {
   Method(_TC2) { Return(3) }          // Thermal Constant2
   Method(_TSP) { Return(3) }          // Sampling Period: in 100ms
   Method(_PSL) { Return(\_SB.CPB1) }  // Passive cooling list
-  Method(_TZD) {}                     // Thermal Zone Devices
+  // Method(_TZD) {}                     // Thermal Zone Devices
   Method(_TMP, 0, Serialized) {       // Temperature reading
     Store(\_SB.PMMX.SENG(9, 0), Local0)
     CreateDWordField(Local0, 0x00, STAT)
-    CreateQWordField(Local0, 0x04, TEMP)
-    TEMP = ToInteger(TEMP)
-    Return(C2DK(TEMP))
+    If (STAT == SCMI_SUCCESS) {
+      CreateQWordField(Local0, 0x04, TEMP)
+      TEMP = ToInteger(TEMP)
+      Return(C2DK(TEMP))
+    } Else {
+      Return (0xFFFFFFFFFFFFFFFF)
+    }
   }
   Method(_SCP, 1, Serialized) {}      // Set Cooling Policy
   Method(_TZP) { Return(50) }         // Polling Interval: in 100ms
@@ -68,13 +77,17 @@ ThermalZone(TZM0) {
   Method(_TC2) { Return(3) }          // Thermal Constant2
   Method(_TSP) { Return(3) }          // Sampling Period: in 100ms
   Method(_PSL) { Return(\_SB.CPM0) }  // Passive cooling list
-  Method(_TZD) {}                     // Thermal Zone Devices
+  // Method(_TZD) {}                     // Thermal Zone Devices
   Method(_TMP, 0, Serialized) {       // Temperature reading
     Store(\_SB.PMMX.SENG(10, 0), Local0)
     CreateDWordField(Local0, 0x00, STAT)
-    CreateQWordField(Local0, 0x04, TEMP)
-    TEMP = ToInteger(TEMP)
-    Return(C2DK(TEMP))
+    If (STAT == SCMI_SUCCESS) {
+      CreateQWordField(Local0, 0x04, TEMP)
+      TEMP = ToInteger(TEMP)
+      Return(C2DK(TEMP))
+    } Else {
+      Return (0xFFFFFFFFFFFFFFFF)
+    }
   }
   Method(_SCP, 1, Serialized) {}      // Set Cooling Policy
   Method(_TZP) { Return(50) }         // Polling Interval: in 100ms
@@ -88,13 +101,17 @@ ThermalZone(TZM1) {
   Method(_TC2) { Return(3) }          // Thermal Constant2
   Method(_TSP) { Return(3) }          // Sampling Period: in 100ms
   Method(_PSL) { Return(\_SB.CPM1) }  // Passive cooling list
-  Method(_TZD) {}                     // Thermal Zone Devices
+  // Method(_TZD) {}                     // Thermal Zone Devices
   Method(_TMP, 0, Serialized) {       // Temperature reading
     Store(\_SB.PMMX.SENG(8, 0), Local0)
     CreateDWordField(Local0, 0x00, STAT)
-    CreateQWordField(Local0, 0x04, TEMP)
-    TEMP = ToInteger(TEMP)
-    Return(C2DK(TEMP))
+    If (STAT == SCMI_SUCCESS) {
+      CreateQWordField(Local0, 0x04, TEMP)
+      TEMP = ToInteger(TEMP)
+      Return(C2DK(TEMP))
+    } Else {
+      Return (0xFFFFFFFFFFFFFFFF)
+    }
   }
   Method(_SCP, 1, Serialized) {}      // Set Cooling Policy
   Method(_TZP) { Return(50) }         // Polling Interval: in 100ms

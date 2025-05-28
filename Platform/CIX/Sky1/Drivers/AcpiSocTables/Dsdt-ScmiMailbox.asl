@@ -23,7 +23,7 @@
         }                                   \
         if(Local0 == 0){                    \
           Release(MBXM)                     \
-          Return(Buffer(){ACPI_SCMI_BUSY})  \
+          Return(Buffer(4){ACPI_SCMI_BUSY}) \
         }                                   \
       }                                     \
       SIGN = 0x50434303                     \
@@ -44,7 +44,7 @@
     if(Local0 == 0){                        \
         printf("ASL Debug: SCMI Timeout\n") \
         Release(MBXM)                       \
-        Return(Buffer(){ACPI_SCMI_TIMEOUT}) \
+        Return(Buffer(4){ACPI_SCMI_TIMEOUT})\
     }                                       \
     RESP = MSGP                             \
     Release(MBXM)                           \

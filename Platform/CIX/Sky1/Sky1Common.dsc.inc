@@ -170,6 +170,7 @@
   GpioTableLib|Silicon/CIX/Sky1/Library/GpioTableNullLib/GpioTableNullLib.inf
   FchDmaLib|Silicon/CIX/Sky1/Library/FchDmaLib/FchDmaLib.inf
   FchTimerLib|Silicon/CIX/Sky1/Library/FchTimerLib/FchTimerLib.inf
+  OpnLib|Silicon/CIX/Sky1/Library/OpnLib/OpnLib.inf
 !if $(SOC_HDA_ENABLE) == TRUE
   # HdaVerbTableLib|Silicon/CIX/Sky1/Library/HdaVerbTableNullLib/HdaVerbTableNullLib.inf
   HdaVerbTableLib|Platform/CIX/Sky1/Library/HdaVerbTableLib/HdaVerbTableLib.inf
@@ -532,14 +533,21 @@
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiACPIMemoryNVS|0
   # SMBIOS entry point version
   #
-  gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosVersion|0x0300
+
+
+  # Clearing BIT0 in this PCD prevents installing a 32-bit SMBIOS entry point,
+  # if the entry point version is >= 3.0. AARCH64 OSes cannot assume the
+  # presence of the 32-bit entry point anyway (because many AARCH64 systems
+  # don't have 32-bit addressable physical RAM), and the additional allocations
+  # below 4 GB needlessly fragment the memory map. So expose the 64-bit entry
+  # point only, for entry point versions >= 3.0.
   gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosDocRev|0x0
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosVersion|0x0306
 
   gArmTokenSpaceGuid.PcdProcessorManufacturer|L"Cix Technology Group Co., Ltd."
-  gArmTokenSpaceGuid.PcdProcessorVersion|L"CIX P1 CD8180"
-  gArmTokenSpaceGuid.PcdProcessorSerialNumber|L""
   gArmTokenSpaceGuid.PcdProcessorAssetTag|L" "
   gArmTokenSpaceGuid.PcdProcessorPartNumber|L" "
+  gCixTokenSpaceGuid.PcdCixProcessorVersion|L"CIX P1 CD8180"
   #
   #
   #
@@ -771,6 +779,7 @@
     <LibraryClasses>
       NULL|Platform/CIX/Sky1/Library/Acpi/CIX/AcpiMadtLibCIX/AcpiMadtLibCIX.inf
       NULL|Platform/CIX/Sky1/Library/Acpi/CIX/AcpiSsdtCpuTopologyLibCIX/SsdtCpuTopologyLibCIX.inf
+      NULL|Platform/CIX/Sky1/Library/Acpi/CIX/AcpiPpttLibCIX/AcpiPpttLibCIX.inf
   }
   Platform/CIX/Sky1/Drivers/DynamicTableManagerDxe/DynamicTableManagerDxe.inf
   Platform/CIX/Sky1/Drivers/ConfigurationManagerDxe/ConfigurationManagerDxe.inf
@@ -959,9 +968,6 @@
 !if $(MEM_CONFIG_UPDATE_SUPPORT) == TRUE
   Platform/CIX/Sky1/Drivers/MemConfigUpdateDxe/MemConfigUpdateDxe.inf
 !endif
-!if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
-  Platform/CIX/Sky1/Drivers/FirmwareConfigUpdateDxe/FirmwareConfigUpdateDxe.inf
-!endif
   Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionDxe.inf
   Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionProtocolTest.inf
   #
@@ -1016,4 +1022,7 @@ ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf {
   Silicon/CIX/Sky1/Drivers/ArmPsciMpServicesDxe/ArmPsciMpServicesDxe.inf
 !if $(POWER_BUTTON_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/PowerButtonDxe/PowerButtonDxe.inf
+!endif
+!if $(GPIO_POWER_BUTTON_ENABLE) == TRUE
+  Platform/CIX/Sky1/Drivers/PowerButtonDxe/GpioPowerButtonDxe.inf
 !endif

@@ -49,6 +49,7 @@ Device (GPU) {
         Package () {"physical-memory-group-manager",\_SB.PMGM},
         Package () {"power-domains", Package () {\_SB.SCMI.DVFS, 0}},
         Package () {"power-domain-names", Package () {"perf"}},
+        Package () {"gpu-microvolt", Package () {820000}},
     },
     ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
     Package () {
