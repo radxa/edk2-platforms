@@ -85,3 +85,17 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_64G = {
   .DeviceWidth      = 8,
   .RankNum          = 2,
 };
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_16G_Rayson = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = RS600_16G_RAYSON_MASK
+  },
+  .MaxFreq          = MEM_CFG_MEMFREQ,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 16,
+  .DeviceWidth      = 16,
+  .RankNum          = 1,
+};
