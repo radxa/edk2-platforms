@@ -38,6 +38,7 @@
   UefiLib
   ShMemLib
   CacheMaintenanceLib
+  StmmInfoLib
 
 [Guids]
   gEfiEventExitBootServicesGuid

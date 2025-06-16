@@ -195,6 +195,11 @@ endif;
 
     text
       help   = STRING_TOKEN(STR_EMPTY_STRING),
+      text   = STRING_TOKEN(STR_STMM_VER_NAME),
+      text   = STRING_TOKEN(STR_STMM_VER_VALUE);
+
+    text
+      help   = STRING_TOKEN(STR_EMPTY_STRING),
       text   = STRING_TOKEN(STR_EC_VER_NAME),
       text   = STRING_TOKEN(STR_EC_VER_VALUE);
   endform;

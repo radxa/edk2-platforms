@@ -680,6 +680,11 @@
 // #define MEMR_GROUP_ID_FCH  21
 // #define MEMR_GROUP_ID_MAX  MEMR_GROUP_ID_FCH
 
+// Try to get HW spinlock between ASL and PM
+#define NPU_MUTEX_IDX 0x2f
+#define	CORE_MUTEX_IDX 0x50
+#define	MUTEX_ACQUIRE_TIMEOUT 20000
+
 // Common
 #define T5_CYCLE_CNT    (0x3 << 2)
 #define T7_CYCLE_CNT    (0x3 << 4)

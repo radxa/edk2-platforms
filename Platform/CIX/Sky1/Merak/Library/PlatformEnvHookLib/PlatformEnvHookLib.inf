@@ -58,6 +58,7 @@
   gEfiDevicePathProtocolGuid
   gRa8900ceRealTimeClockLibI2cMasterProtocolGuid
   gCixEcPlatformProtocolGuid
+  gCixFastbootInfoProtocolGuid
 
 [FixedPcd]
   gCixPlatformTokenSpaceGuid.PcdRa8900ceI2cBus

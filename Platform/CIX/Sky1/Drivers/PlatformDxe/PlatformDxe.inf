@@ -46,6 +46,7 @@
   gCixPlatformInitCompleteProtocolGuid
   gCixConfigParamsManageProtocolGuid
   gCixPlatformConfigParamsManageProtocolGuid
+  gCixFastbootInfoProtocolGuid
 
 [Guids]
 

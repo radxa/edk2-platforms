@@ -14,6 +14,7 @@
 #include <Library/PlatformEnvHookLib.h>
 #include <Protocol/EcPlatformProtocol.h>
 #include <Protocol/I2cDevicePath.h>
+#include <Protocol/FastbootInfoProtocal.h>
 #include <Library/CixSipLib.h>
 #include <Library/EcLib.h>
 #include <Library/MailBoxLib.h>
@@ -27,6 +28,25 @@
 EFI_GUID  gEfiFarmEnableFlagGuid = {
   0x3f7b73c7, 0xfb70, 0x4e91, { 0x86, 0xe7, 0x34, 0xea, 0xd7, 0x6a, 0xc7, 0x4d }
 };
+
+UINTN
+UnicodeToAscii (
+  IN CONST CHAR16  *UStr,
+  IN CONST UINTN   Length,
+  OUT CHAR8        *AStr
+  )
+{
+  UINTN  Index;
+
+  //
+  // just buffer copy, not character copy
+  //
+  for (Index = 0; Index < Length; Index++) {
+    *AStr++ = (CHAR8)*UStr++;
+  }
+
+  return Index;
+}
 
 EFI_STATUS
 EFIAPI
@@ -465,6 +485,42 @@ RtcWakupEnable (
 
 EFI_STATUS
 EFIAPI
+UpdateFastbootSN (
+  IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
+  )
+{
+  EFI_STATUS                  Status;
+  CHAR8                       *SysSnPtr;
+  CHAR16                      *SysSnPtr16;
+  UINTN                       SysSnSize;
+  CIX_FASTBOOT_INFO_PROTOCOL  *FastbootInfo;
+
+  Status = GetVariable2 (
+                         L"SystemSN",
+                         &gCixGPNVGuid,
+                         (VOID **)&SysSnPtr16,
+                         &SysSnSize
+                         );
+
+  if (!EFI_ERROR (Status)) {
+    Status = gBS->LocateProtocol (&gCixFastbootInfoProtocolGuid, NULL, (VOID **)&FastbootInfo);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "Can not locate fastboot info protocal!\n"));
+      return Status;
+    }
+    SysSnPtr            = AllocateZeroPool (SysSnSize+1);
+    UnicodeToAscii (SysSnPtr16, SysSnSize, SysSnPtr);
+    SysSnPtr[SysSnSize] = 0;
+    FastbootInfo->StrSerialNumber = SysSnPtr;
+
+    FreePool (SysSnPtr16);
+  }
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
 FarmFunctionControl (
   IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
   )
@@ -705,6 +761,7 @@ STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 SetStateAfterG3                 },
   { NULL,                        NULL,                 RtcWakupEnable                  },
   { NULL,                        NULL,                 FarmFunctionControl             },
+  { NULL,                        NULL,                 UpdateFastbootSN                },
   { &gEfiI2cMasterProtocolGuid,  InstallRtcProtocol,   NULL                            },
   { &gCixEcPlatformProtocolGuid, InitEcDefaultSetting, NULL                            },
  #ifdef STMM_SUPPORT

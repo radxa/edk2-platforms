@@ -40,6 +40,11 @@
 
 #define DP_NODE_LEN(Type)  { (UINT8)sizeof (Type), (UINT8)(sizeof (Type) >> 8) }
 
+// #ifdef DEBUG
+// #undef DEBUG
+// #define DEBUG(Expression) DebugPrint Expression
+// #endif
+
 #pragma pack (1)
 typedef struct {
   VENDOR_DEVICE_PATH            SerialDxe;
@@ -637,6 +642,57 @@ PlatformRegisterOptionsAndKeys (
   ASSERT (Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
 }
 
+
+#define ISO_DEBIAN_BOOT_FILE_NAME  L"\\EFI\\DEBIAN\\GRUBAA64.EFI"
+
+VOID
+RegisterIsoDebianBootOption(CHAR16 *FileName)
+{
+  EFI_DEVICE_PATH_PROTOCOL        *FilePath;
+  EFI_BOOT_MANAGER_LOAD_OPTION    PlatformDefaultBootOption;
+  // EFI_BOOT_MANAGER_LOAD_OPTION    *LoadOptions;
+  // UINTN                           LoadOptionCount;
+  // UINTN                           Index;
+  EFI_STATUS                      Status;
+
+  FilePath = FileDevicePath (NULL, FileName);
+  if (FilePath == NULL) {
+    DEBUG ((DEBUG_ERROR, "Fail to allocate memory for default boot file path. Unable to boot.\n"));
+    return;
+  }
+
+  Status = EfiBootManagerInitializeLoadOption (
+             &PlatformDefaultBootOption,
+             1,
+             LoadOptionTypePlatformRecovery,
+             LOAD_OPTION_ACTIVE,
+             L"Debian boot",
+             FilePath,
+             NULL,
+             0
+             );
+  DEBUG ((DEBUG_INFO, "[cixboot] register grubaa64.efi status: %r\n", Status));
+  if (EFI_ERROR (Status)) {
+
+    return;
+  }
+
+
+  //
+  // System firmware must include a PlatformRecovery#### variable specifying
+  // a short-form File Path Media Device Path containing the platform default
+  // file path for removable media if the platform supports Platform Recovery.
+  //
+  if (PcdGetBool (PcdPlatformRecoverySupport)) {
+    Status = EfiBootManagerLoadOptionToVariable (&PlatformDefaultBootOption);
+    DEBUG ((DEBUG_INFO, "[cixboot] write grubaa64.efi boot to variable status: %r\n", Status));
+
+  }
+
+  FreePool (FilePath);
+
+
+}
 //
 // BDS Platform Functions
 //
@@ -662,7 +718,9 @@ PlatformBootManagerBeforeConsole (
   EFI_HANDLE                *HandleBuffer;
   UINTN                     Index;
   EFI_DEVICE_PATH_PROTOCOL  *ConDevicePath;
-
+  if (PcdGetBool (PcdAndroidBoot) == FALSE) {
+    RegisterIsoDebianBootOption(ISO_DEBIAN_BOOT_FILE_NAME);
+  }
   //
   // Signal EndOfDxe PI Event
   //

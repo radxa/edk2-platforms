@@ -22,6 +22,7 @@
 #include <Library/PlatformConfigParamsDataBlockLib.h>
 #include <Protocol/ConfigParamsManageProtocol.h>
 #include <Protocol/PlatformConfigParamsManageProtocol.h>
+#include <Protocol/FastbootInfoProtocal.h>
 #include <Library/CixPostCodeLib.h>
 
 #endif

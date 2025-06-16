@@ -8,6 +8,7 @@
 #include "FlashUpdate.h"
 #include <Protocol/CixFwUpdateProtocol.h>
 #include <Protocol/SocInfoProtocol.h>
+#include <Protocol/FastbootInfoProtocal.h>
 
 CIX_FW_UPDATE_PROTOCOL  *FlashUpdateProtocol = NULL;
 // IMAGE_VERSION_INFO             ImageVersionInfo;
@@ -205,10 +206,39 @@ GetSerialNum (
   )
 {
   // This is only a temporary solution for fastboot getvar serialno
-  EFI_STATUS             Status;
-  CIX_SOC_INFO_PROTOCOL  *pSocInfoProtocol;
-  UINT32                 *pSocInfo;
-  UINT32                 SocInfoSize;
+  EFI_STATUS                  Status;
+  CIX_SOC_INFO_PROTOCOL       *pSocInfoProtocol;
+  CHAR8                       *StrSN;
+  UINT32                      StrLen;
+  UINT32                      *pSocInfo;
+  UINT32                      SocInfoSize;
+  CIX_FASTBOOT_INFO_PROTOCOL  *FastbootInfo;
+
+  Status = gBS->LocateProtocol (
+                  &gCixFastbootInfoProtocolGuid,
+                  NULL,
+                  (VOID **)&FastbootInfo
+                  );
+
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: Can not locate fastboot info protocal!\n", __FUNCTION__));
+  }
+
+  if (!EFI_ERROR (Status)) {
+    StrSN = FastbootInfo->StrSerialNumber;
+    if (StrSN != NULL)
+    {
+      gBS->SetMem (StrSerialNum, Len, 0);
+      StrLen = AsciiStrSize(StrSN);
+      if (StrLen > Len - 2){
+        StrLen = Len - 2;
+      }
+      StrSerialNum[0] = '0';
+      StrSerialNum[1] = 'x';
+      gBS->CopyMem ((VOID *)((UINTN)StrSerialNum + 2), StrSN, StrLen);
+      return EFI_SUCCESS;
+    }
+  }
 
   Status = gBS->LocateProtocol (
                   &gCixSocInfoProtocolGuid,
@@ -227,7 +257,7 @@ GetSerialNum (
     return EFI_NOT_FOUND;
   }
 
-  gBS->SetMem (StrSerialNum, sizeof (StrSerialNum), 0);
+  gBS->SetMem (StrSerialNum, Len, 0);
   DEBUG ((DEBUG_INFO, "SerialNum: %llx %llx %llx %llx %llx\n", pSocInfo[0], pSocInfo[1], pSocInfo[2], pSocInfo[3], pSocInfo[4]));
   AsciiSPrint (StrSerialNum, 11, "0x%08x", pSocInfo[0]);
   AsciiSPrint (StrSerialNum + 10, 9, "%08x", pSocInfo[1]);

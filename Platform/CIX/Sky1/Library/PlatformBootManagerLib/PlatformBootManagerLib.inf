@@ -71,6 +71,7 @@
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut
   gEfiMdeModulePkgTokenSpaceGuid.PcdBootDiscoveryPolicy
   gCixPlatformTokenSpaceGuid.PcdAndroidBoot
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPlatformRecoverySupport           ## CONSUMES
 
 [Guids]
   gBootDiscoveryPolicyMgrFormsetGuid

@@ -48,6 +48,7 @@
 	gEfiDevicePathToTextProtocolGuid
 	gEfiEraseBlockProtocolGuid
 	gCixFirmwareUpdateProtocolGuid
+	gCixFastbootInfoProtocolGuid
 
 [Depex]
 	TRUE

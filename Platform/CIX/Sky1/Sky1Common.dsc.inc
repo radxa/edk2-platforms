@@ -132,6 +132,7 @@
   LaunchEfiLib|Platform/CIX/Sky1/Library/LaunchEfiLib/LaunchEfiLib.inf
   MiniFastbootLib|Platform/CIX/Sky1/Library/FastbootLib/MiniFastbootLib.inf
   OpteeLib|Platform/CIX/Sky1/Library/OpteeLib/OpteeLib.inf
+  StmmInfoLib|Platform/CIX/Sky1/Library/StmmInfoLib/StmmInfoLib.inf
 
   #
   # Secure Boot dependencies

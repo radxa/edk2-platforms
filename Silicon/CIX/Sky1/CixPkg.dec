@@ -115,12 +115,13 @@
   gCixTokenSpaceGuid.PcdUsb2Control3MaxSpeed|3|UINT8|0x0000030a
 
   #USB3.0 drd Control
+  #MaxSpeed: 3(hign speed),4(super speed),5(super speed plus)
   gCixTokenSpaceGuid.PcdUsb3Control0Enable|FALSE|BOOLEAN|0x0000030b
-  gCixTokenSpaceGuid.PcdUsb3Control0MaxSpeed|3|UINT32|0x0000030c
+  gCixTokenSpaceGuid.PcdUsb3Control0MaxSpeed|5|UINT32|0x0000030c
   gCixTokenSpaceGuid.PcdUsb3Control0DataRole|FALSE|BOOLEAN|0x0000030d
 
   gCixTokenSpaceGuid.PcdUsb3Control1Enable|FALSE|BOOLEAN|0x0000030e
-  gCixTokenSpaceGuid.PcdUsb3Control1MaxSpeed|3|UINT8|0x0000030f
+  gCixTokenSpaceGuid.PcdUsb3Control1MaxSpeed|5|UINT8|0x0000030f
   gCixTokenSpaceGuid.PcdUsb3Control1DataRole|FALSE|BOOLEAN|0x00000311
 
   #USB TypeC drd
@@ -130,11 +131,11 @@
 
   #USB Typec Host
   gCixTokenSpaceGuid.PcdUsbCControl0Enable|FALSE|BOOLEAN|0x00000315
-  gCixTokenSpaceGuid.PcdUsbCControl0MaxSpeed|3|UINT8|0x00000316
+  gCixTokenSpaceGuid.PcdUsbCControl0MaxSpeed|5|UINT8|0x00000316
   gCixTokenSpaceGuid.PcdUsbCControl1Enable|FALSE|BOOLEAN|0x00000317
-  gCixTokenSpaceGuid.PcdUsbCControl1MaxSpeed|3|UINT8|0x00000318
+  gCixTokenSpaceGuid.PcdUsbCControl1MaxSpeed|5|UINT8|0x00000318
   gCixTokenSpaceGuid.PcdUsbCControl2Enable|FALSE|BOOLEAN|0x00000319
-  gCixTokenSpaceGuid.PcdUsbCControl2MaxSpeed|3|UINT8|0x0000031a
+  gCixTokenSpaceGuid.PcdUsbCControl2MaxSpeed|5|UINT8|0x0000031a
 
   #Typec phy
   gCixTokenSpaceGuid.PcdTypecDrdPhyBaseAddress|0x9030000|UINT32|0x0000031b

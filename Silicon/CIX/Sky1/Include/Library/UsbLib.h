@@ -40,6 +40,10 @@
 
 #define PMCTRL_S5_USB_MODE_STAP   0x16000424
 #define PMCTRL_S5_USB_TYPEC_CTRL  0x16000420
+#define XEC_CFG_3XPORT_MODE             0x2040
+#define CFG_3XPORT_MODE_DIS_SSP         (~(1 << 31))
+#define USB_DISABLED_U3_MASK         (0x7)
+
 
 #define USB20ControlIndex0    2
 #define USB20ControlIndex1    9
