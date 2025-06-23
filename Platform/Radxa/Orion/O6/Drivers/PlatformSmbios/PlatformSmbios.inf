@@ -21,9 +21,12 @@
   SmbiosType1.c
   SmbiosType2.c
   SmbiosType3.c
+  SmbiosType4.c
+  SmbiosType7.c
   SmbiosType32.c
 
 [Packages]
+  ArmPlatformPkg/ArmPlatformPkg.dec
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   Platform/CIX/Sky1/Sky1.dec
@@ -42,6 +45,7 @@
 
 [FixedPcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision
+  gArmPlatformTokenSpaceGuid.PcdCoreCount
 
 [Depex]
   gEfiSmbiosProtocolGuid
