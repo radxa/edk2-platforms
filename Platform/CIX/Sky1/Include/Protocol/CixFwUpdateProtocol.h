@@ -6,7 +6,7 @@
 
 #ifndef _CIXFWUPDATE_PROTOCOL_H_
 #define _CIXFWUPDATE_PROTOCOL_H_
-
+#include <Protocol/FirmwareManagement.h>
 typedef enum {
   ENTRY_ERASE = 0,
   ENTRY_WRITE = 1,
@@ -64,14 +64,14 @@ typedef void (*FIRMWARE_PROGRAM_CALLBACK)(
 typedef UINT16 (*CIX_FIRMWARE_PACKAGE_UPDATE) (
   UINT8                      *pNewFirmwareImage,
   UINT32                     ImageSize,
-  FIRMWARE_PROGRAM_CALLBACK  CallBackFunc
+  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  CallBackFunc
   );
 
 typedef UINT16 (*CIX_FIRMWARE_SINGLE_UPDATE) (
   UINT8                      Type,
   UINT8                      *pNewFirmwareImage,
   UINT32                     ImageSize,
-  FIRMWARE_PROGRAM_CALLBACK  CallBackFunc
+  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  CallBackFunc
   );
 
 typedef EFI_STATUS EFIAPI (*CIX_FIRMWARE_EC_UPDATE) (
@@ -89,7 +89,7 @@ typedef UINT16 (*CIX_FIRMWARE_ENTRY_UPDATE) (
   UINT8                      *pNewFirmwareImage,
   UINT32                     ImageSize,
   ENTRY_UPDATE_METHOD        UpateState,
-  FIRMWARE_PROGRAM_CALLBACK  CallBackFunc
+  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  CallBackFunc
   );
 
 typedef UINT16 (*CIX_FIRMWARE_GET_VERSION) (
@@ -99,6 +99,8 @@ typedef UINT16 (*CIX_FIRMWARE_GET_VERSION) (
   UINT32                    *Bootloader3Ver
   );
 
+  typedef UINT16 (*CIX_FIRMWARE_GET_PERCENTAGE) (
+  );
 //
 // Protocol definition
 //
@@ -109,6 +111,7 @@ typedef struct {
   CIX_FIRMWARE_READ              FirmwareRead;
   CIX_FIRMWARE_ENTRY_UPDATE      FirmwareRawEntryUpdate;
   CIX_FIRMWARE_GET_VERSION       FirmwareGetVersion;
+  CIX_FIRMWARE_GET_PERCENTAGE    FirmwareGetPercentage;
 } CIX_FW_UPDATE_PROTOCOL;
 
 #endif

@@ -36,6 +36,7 @@
 #include <Library/EdkiiSystemCapsuleLib/EdkiiSystemCapsuleLib.h>
 #include <Library/AblAuthenticateLib.h>
 #include <Library/FastbootFlashUpdate.h>
+#include <Protocol/CixFwUpdateProtocol.h>
 
 
 typedef struct {

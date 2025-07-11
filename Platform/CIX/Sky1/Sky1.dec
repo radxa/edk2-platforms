@@ -73,6 +73,13 @@
   gCixPlatformTokenSpaceGuid.PcdReservedAndroidSize|0x100000000|UINT64|0x1CC
   gCixPlatformTokenSpaceGuid.PcdRamLogLastBootSaveAddress|0x83DB2000|UINT64|0x000001CD
   gCixPlatformTokenSpaceGuid.PcdDramHighSpaceBase|0x8000000000|UINT64|0x000001CE
+  gCixPlatformTokenSpaceGuid.PcdReservedFwShareMemoryBase|0x85F00000|UINT32|0x1CF
+  gCixPlatformTokenSpaceGuid.PcdReservedFwShareMemorySize|0x00100000|UINT32|0x1D0
+  # OPTEE communication/share buffer resides in firmware share memory range
+  gCixPlatformTokenSpaceGuid.PcdReservedFwOpteeCommunicateMemoryBase|0x85F0A000|UINT32|0x1D1
+  gCixPlatformTokenSpaceGuid.PcdReservedFwOpteeCommunicateMemorySize|0x00001000|UINT32|0x1D2
+  gCixPlatformTokenSpaceGuid.PcdReservedFwOpteeShareMemoryBase|0x85F0B000|UINT32|0x1D3
+  gCixPlatformTokenSpaceGuid.PcdReservedFwOpteeShareMemorySize|0x00014000|UINT32|0x1D4
   gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionBase|0|UINT32|0x000001D6
   gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionSize|0|UINT32|0x000001D7
 

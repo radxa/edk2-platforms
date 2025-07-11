@@ -54,6 +54,7 @@ Device (GPU) {
     ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
     Package () {
       Package () {"pbha", "IIOR"},
+      Package () {"power_model", "PWRM"},
     }
   })
 
@@ -61,6 +62,16 @@ Device (GPU) {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
         Package () { "int_id_override", Package() {2,0x23,4,0x23,16,0x22,17,0x32,18,0x52,21,0x32,22,0x52,24,0x22,28,0x32} }
+    }
+  })
+
+  Name (PWRM, Package() {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+        Package () { "static-coefficient", "2427750" },
+        Package () { "dynamic-coefficient", "4687" },
+        Package () { "ts", Package() {"20000", "2000", "-20", "2" } },
+        Package () { "thermal-zone", "" },
     }
   })
 

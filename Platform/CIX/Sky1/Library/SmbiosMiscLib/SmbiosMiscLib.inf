@@ -41,6 +41,7 @@
   PrintLib
   CpuInfoLib
   OpnLib
+  ConfigParamsDataBlockLib
 
 [Guids]
   gZeroGuid
@@ -48,6 +49,7 @@
 
 [Protocols]
   gCixSocInfoProtocolGuid
+  gCixConfigParamsManageProtocolGuid
 
 [Pcd]
   gArmTokenSpaceGuid.PcdEmbeddedControllerFirmwareRelease
@@ -55,4 +57,4 @@
   gCixTokenSpaceGuid.PcdCixProcessorVersion
 
 [Depex]
-  gCixSetupVarInitCompleteProtocolGuid AND gCixSocInfoProtocolGuid
+  gCixConfigParamsManageProtocolGuid AND gCixSocInfoProtocolGuid

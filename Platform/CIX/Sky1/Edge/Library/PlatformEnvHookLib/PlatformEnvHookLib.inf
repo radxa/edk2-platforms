@@ -44,7 +44,6 @@
   MailBoxLib
   CixFwBootPerfLib
   PostCodeLib
-  RebootReasonLib
 
 [Guids]
   gCixI2cDevicePathGuid

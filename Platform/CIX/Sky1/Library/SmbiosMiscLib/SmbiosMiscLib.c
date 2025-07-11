@@ -26,8 +26,10 @@
 #include <Library/PrintLib.h>
 #include <Library/OpnLib.h>
 #include <Library/BaseLib.h>
+#include <Library/ConfigParamsDataBlockLib.h>
 #include <PlatformSetupVar.h>
 #include <Protocol/SocInfoProtocol.h>
+#include <Protocol/ConfigParamsManageProtocol.h>
 
 #define LITTLE_CORE_L1_CACHE_SIZE  32
 #define CPU_MAX_SPEED              0
@@ -88,11 +90,11 @@ OemGetProcessorInformation (
   IN OUT OEM_MISC_PROCESSOR_DATA         *MiscProcessorData
   )
 {
-  EFI_STATUS           Status;
-  UINT8                CpuCoreNum, EnabledCoreNum;
-  UINT32               SetupCpuIndex;
-  UINTN                VarSize = 0;
-  PLATFORM_SETUP_DATA  PlatformSetupVar;
+  EFI_STATUS                         Status;
+  UINT8                              CpuCoreNum, EnabledCoreNum;
+  UINT32                             ConfigCpuIndex;
+  CONFIG_PARAMS_DATA_BLOCK           *ConfigData = NULL;
+  CIX_CONFIG_PARAMS_MANAGE_PROTOCOL  *ConfigManage;
 
   ProcessorStatus->Bits.CpuStatus       = 1;   // CPU enabled
   ProcessorStatus->Bits.Reserved1       = 0;
@@ -112,21 +114,21 @@ OemGetProcessorInformation (
   ProcessorCharacteristics->ProcessorReserved2              = 0;
   GetValidCpuCoreNum (&CpuCoreNum);
 
-  Status = gRT->GetVariable (
-                  PLATFORM_SETUP_VAR,
-                  &gPlatformSetupVariableGuid,
-                  NULL,
-                  &VarSize,
-                  &PlatformSetupVar
-                  );
+  Status = gBS->LocateProtocol (
+                                &gCixConfigParamsManageProtocolGuid,
+                                NULL,
+                                (VOID **)&ConfigManage
+                                );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "Get platform setup variable Fail! %r\n", Status));
-    return FALSE;
+    DEBUG ((DEBUG_ERROR, "%a: config parameters invalid %r\n", __FUNCTION__, Status));
+    return Status;
   }
 
+  ConfigData     = ConfigManage->Data;
+
   EnabledCoreNum = 0;
-  for (SetupCpuIndex = 0; SetupCpuIndex < CpuCoreNum; SetupCpuIndex++) {
-    if (PlatformSetupVar.CpuCoreEnable[SetupCpuIndex] == 1) {
+  for (ConfigCpuIndex = 0; ConfigCpuIndex < CpuCoreNum; ConfigCpuIndex++) {
+    if (ConfigData->Cpu.CoreEnable[ConfigCpuIndex] == 1) {
       EnabledCoreNum++;
     }
   }
@@ -160,36 +162,36 @@ OemGetCacheInformation (
   IN OUT SMBIOS_TABLE_TYPE7  *SmbiosCacheTable
   )
 {
-  EFI_STATUS           Status;
-  UINT8                CpuBootCoreId;
-  UINT8                VBCoreNum = 0;
-  UINT8                VLCoreNum = 0;
-  UINT8                BCoreNum  = 0;
-  UINT8                LCoreNum  = 0;
-  UINT8                CpuCoreNum;
-  UINT16               CacheSize, MaximumCacheSize;
-  UINT32               CpuCoreMask;
-  UINT32               MaxCpuCoreNum;
-  UINT32               i;
-  UINT32               SetupCpuIndex = 0;
-  UINTN                VarSize = 0;
-  PLATFORM_SETUP_DATA  PlatformSetupVar;
+  EFI_STATUS                         Status;
+  UINT8                              CpuBootCoreId;
+  UINT8                              VBCoreNum = 0;
+  UINT8                              VLCoreNum = 0;
+  UINT8                              BCoreNum  = 0;
+  UINT8                              LCoreNum  = 0;
+  UINT8                              CpuCoreNum;
+  UINT16                             CacheSize, MaximumCacheSize;
+  UINT32                             CpuCoreMask;
+  UINT32                             MaxCpuCoreNum;
+  UINT32                             i;
+  UINT32                             ConfigCpuIndex = 0;
+  CONFIG_PARAMS_DATA_BLOCK           *ConfigData = NULL;
+  CIX_CONFIG_PARAMS_MANAGE_PROTOCOL  *ConfigManage;
 
   GetCpuBootCoreId (&CpuBootCoreId);
   if (CpuBootCoreId > 3) {
     VBCoreNum++;
     BCoreNum++;
-    Status = gRT->GetVariable (
-                    PLATFORM_SETUP_VAR,
-                    &gPlatformSetupVariableGuid,
-                    NULL,
-                    &VarSize,
-                    &PlatformSetupVar
-                    );
+    Status = gBS->LocateProtocol (
+                                  &gCixConfigParamsManageProtocolGuid,
+                                  NULL,
+                                  (VOID **)&ConfigManage
+                                  );
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "Get platform setup variable Fail! %r\n", Status));
-      return FALSE;
+      DEBUG ((DEBUG_ERROR, "%a: config parameters invalid %r\n", __FUNCTION__, Status));
+      return Status;
     }
+
+    ConfigData     = ConfigManage->Data;
 
     GetValidCpuCoreNum (&CpuCoreNum);
     GetCpuCoreMask (&CpuCoreMask, &MaxCpuCoreNum);
@@ -205,8 +207,8 @@ OemGetCacheInformation (
         BCoreNum++;
       }
 
-      SetupCpuIndex++;
-      if (PlatformSetupVar.CpuCoreEnable[SetupCpuIndex] == 0) {
+      ConfigCpuIndex++;
+      if (ConfigData->Cpu.CoreEnable[ConfigCpuIndex] == 0) {
         continue;
       }
 
