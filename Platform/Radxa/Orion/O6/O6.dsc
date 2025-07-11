@@ -104,6 +104,9 @@
 !if $(COMPILE_SYSTEM_LOADER) == android
   DEFINE CAPSULE_ENABLE             = TRUE
   DEFINE OPTEE_AVB_ENABLE           = FALSE
+  DEFINE REBOOT_REASON_ENABLE       = TRUE
+!else
+  DEFINE REBOOT_REASON_ENABLE       = FALSE
 !endif
 
 #
@@ -344,7 +347,11 @@
 
   # USBC0
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
+!if $(COMPILE_SYSTEM_LOADER) == android
+  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|TRUE
+!else
   gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|FALSE
+!endif
   # USBC1
   gCixTokenSpaceGuid.PcdUsbCControl0Enable|TRUE
   # USBC2
@@ -409,4 +416,5 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|600
 
   gCixPlatformTokenSpaceGuid.PcdDynamicUint64Test|0x11111111
+
 [PcdsDynamicHii.common.DEFAULT]

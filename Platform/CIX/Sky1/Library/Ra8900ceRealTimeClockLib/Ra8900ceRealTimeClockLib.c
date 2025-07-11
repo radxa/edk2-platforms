@@ -414,9 +414,11 @@ I2cMemoryInitEventNotify (
   IN VOID       *Context
   )
 {
-  EFI_STATUS  Status;
-  UINTN       RuntimeMmioRegionBase;
-  UINTN       RuntimeMmioRegionSize;
+  EFI_STATUS                       Status;
+  UINTN                            RuntimeMmioRegionBase;
+  UINTN                            RuntimeMmioRegionSize;
+  UINTN                            NumberOfDescriptors, Index;
+  EFI_GCD_MEMORY_SPACE_DESCRIPTOR  *MemSpaceMap;
 
   if (Context == NULL) {
     return;
@@ -426,6 +428,18 @@ I2cMemoryInitEventNotify (
   RuntimeMmioRegionBase = ((I2C_HOST_DESCRIPTOR *)Context)->MemBase;
   RuntimeMmioRegionSize = SIZE_4KB;
 
+  Status = gDS->GetMemorySpaceMap (&NumberOfDescriptors, &MemSpaceMap);
+
+  for (Index = 0; Index < NumberOfDescriptors; Index++) {
+    if ((RuntimeMmioRegionBase >= MemSpaceMap[Index].BaseAddress) &&
+        ((RuntimeMmioRegionBase + RuntimeMmioRegionSize) <= (MemSpaceMap[Index].BaseAddress + MemSpaceMap[Index].Length)) &&
+        (MemSpaceMap[Index].GcdMemoryType == EfiGcdMemoryTypeMemoryMappedIo))
+    {
+      DEBUG ((DEBUG_INFO, "%a: memory space base 0x%x, length 0x%x already added\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize));
+      return;
+    }
+  }
+
   Status = gDS->AddMemorySpace (
                   EfiGcdMemoryTypeMemoryMappedIo,
                   RuntimeMmioRegionBase,
@@ -433,7 +447,7 @@ I2cMemoryInitEventNotify (
                   EFI_MEMORY_UC | EFI_MEMORY_RUNTIME
                   );
   if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_ERROR, "%a: fail to add memory space base 0x%x, size 0x%x, status %r\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize, Status);
+    DebugPrint (DEBUG_ERROR, "%a: fail to add memory space base 0x%x, length 0x%x, status %r\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize, Status);
     ASSERT_EFI_ERROR (Status);
   }
 

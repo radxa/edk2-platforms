@@ -20,8 +20,8 @@ DtsImageUpdateCallBack (
   EFI_HANDLE                       *pSimpleFileHandle = NULL;
   EFI_FILE_PROTOCOL                *pFs               = NULL;
   EFI_FILE_PROTOCOL                *pFile             = NULL;
-  EFI_FILE_INFO                    *FileInfo;
-  UINTN                            FileInfoSize = 0;
+  EFI_FILE_INFO                    *FileInfo          = NULL;
+  UINTN                            FileInfoSize       = 0;
   UINTN                            HandleNum;
   UINT32                           index;
   UINT64                           OpenMode;
@@ -34,12 +34,12 @@ DtsImageUpdateCallBack (
   DEBUG ((DEBUG_INFO, "%a Entry\n", __FUNCTION__));
   gBS->CloseEvent (Event);
   Status = gBS->LocateHandleBuffer (
-                                    ByProtocol,
-                                    &gEfiSimpleFileSystemProtocolGuid,
-                                    NULL,
-                                    &HandleNum,
-                                    &pSimpleFileHandle
-                                    );
+                  ByProtocol,
+                  &gEfiSimpleFileSystemProtocolGuid,
+                  NULL,
+                  &HandleNum,
+                  &pSimpleFileHandle
+                  );
   DEBUG ((DEBUG_INFO, "%a HandleNum:%x\n", __FUNCTION__, HandleNum));
   if (EFI_ERROR (Status)) {
     DebugPrint (DEBUG_ERROR, "%a %d %r\n", __FUNCTION__, __LINE__, Status);
@@ -54,34 +54,34 @@ DtsImageUpdateCallBack (
   DEBUG ((DEBUG_INFO, "%a Dtb file name:%s\n", __FUNCTION__, FileName));
   for (index = 0; index < HandleNum; index++) {
     Status = gBS->OpenProtocol (
-                                pSimpleFileHandle[index],
-                                &gEfiSimpleFileSystemProtocolGuid,
-                                (VOID **)&pSimpleFileSysProtocol,
-                                gImageHandle,
-                                NULL,
-                                EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL
-                                );
+                    pSimpleFileHandle[index],
+                    &gEfiSimpleFileSystemProtocolGuid,
+                    (VOID **)&pSimpleFileSysProtocol,
+                    gImageHandle,
+                    NULL,
+                    EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL
+                    );
     if (EFI_ERROR (Status)) {
       DebugPrint (DEBUG_ERROR, "%a %d %r\n", __FUNCTION__, __LINE__, Status);
       return;
     }
 
     Status = pSimpleFileSysProtocol->OpenVolume (
-                                                 pSimpleFileSysProtocol,
-                                                 &pFs
-                                                 );
+                                       pSimpleFileSysProtocol,
+                                       &pFs
+                                       );
     if (EFI_ERROR (Status)) {
       continue;
     }
 
     OpenMode = EFI_FILE_MODE_READ | EFI_FILE_MODE_WRITE;
     Status   = pFs->Open (
-                          pFs,
-                          &pFile,
-                          FileName,
-                          OpenMode,
-                          0
-                          );
+                      pFs,
+                      &pFile,
+                      FileName,
+                      OpenMode,
+                      0
+                      );
     if (EFI_ERROR (Status)) {
       continue;
     } else {
@@ -198,12 +198,12 @@ DumpDtbBootEventNotify (
   DEBUG ((DEBUG_INFO, "%a Entry\n", __FUNCTION__));
   gBS->CloseEvent (Event);
   Status = gBS->LocateHandleBuffer (
-                                    ByProtocol,
-                                    &gEfiSimpleFileSystemProtocolGuid,
-                                    NULL,
-                                    &HandleNum,
-                                    &pSimpleFileHandle
-                                    );
+                  ByProtocol,
+                  &gEfiSimpleFileSystemProtocolGuid,
+                  NULL,
+                  &HandleNum,
+                  &pSimpleFileHandle
+                  );
   DEBUG ((DEBUG_INFO, "%a HandleNum:%x\n", __FUNCTION__, HandleNum));
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_INFO, "%a %d %r\n", __FUNCTION__, __LINE__, Status));
@@ -219,34 +219,34 @@ DumpDtbBootEventNotify (
   DEBUG ((DEBUG_INFO, "%a Dtb file name:%s\n", __FUNCTION__, FileName));
   for (index = 0; index < HandleNum; index++) {
     Status = gBS->OpenProtocol (
-                                pSimpleFileHandle[index],
-                                &gEfiSimpleFileSystemProtocolGuid,
-                                (VOID **)&pSimpleFileSysProtocol,
-                                gImageHandle,
-                                NULL,
-                                EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL
-                                );
+                    pSimpleFileHandle[index],
+                    &gEfiSimpleFileSystemProtocolGuid,
+                    (VOID **)&pSimpleFileSysProtocol,
+                    gImageHandle,
+                    NULL,
+                    EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL
+                    );
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_INFO, "%a %d %r\n", __FUNCTION__, __LINE__, Status));
       return;
     }
 
     Status = pSimpleFileSysProtocol->OpenVolume (
-                                                 pSimpleFileSysProtocol,
-                                                 &pFs
-                                                 );
+                                       pSimpleFileSysProtocol,
+                                       &pFs
+                                       );
     if (EFI_ERROR (Status)) {
       continue;
     }
 
     OpenMode = EFI_FILE_MODE_READ;
     Status   = pFs->Open (
-                          pFs,
-                          &pFile,
-                          FileName,
-                          OpenMode,
-                          0
-                          );
+                      pFs,
+                      &pFile,
+                      FileName,
+                      OpenMode,
+                      0
+                      );
     if (EFI_ERROR (Status)) {
       continue;
     } else {
@@ -351,23 +351,23 @@ DtbUpdateEntry (
   // Register notify function to dump DTB on ReadyToBoot Event.
   //
   Status = gBS->CreateEventEx (
-                               EVT_NOTIFY_SIGNAL,
-                               TPL_CALLBACK,
-                               DumpDtbBootEventNotify,
-                               NULL,
-                               &gEfiEventReadyToBootGuid,
-                               &ReadyToBootEvent
-                               );
+                  EVT_NOTIFY_SIGNAL,
+                  TPL_CALLBACK,
+                  DumpDtbBootEventNotify,
+                  NULL,
+                  &gEfiEventReadyToBootGuid,
+                  &ReadyToBootEvent
+                  );
   ASSERT_EFI_ERROR (Status);
 
   Status = gBS->CreateEventEx (
-                               EVT_NOTIFY_SIGNAL,
-                               TPL_CALLBACK,
-                               DtsImageUpdateCallBack,
-                               NULL,
-                               &gEfiEventReadyToBootGuid,
-                               &Event
-                               );
+                  EVT_NOTIFY_SIGNAL,
+                  TPL_CALLBACK,
+                  DtsImageUpdateCallBack,
+                  NULL,
+                  &gEfiEventReadyToBootGuid,
+                  &Event
+                  );
   ASSERT_EFI_ERROR (Status);
 
   return Status;

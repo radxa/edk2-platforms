@@ -100,3 +100,13 @@
   gCixTokenSpaceGuid.PcdAcpiUart1Enable
   gCixTokenSpaceGuid.PcdAcpiUart2Enable
   gCixTokenSpaceGuid.PcdAcpiUart3Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s0Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s1Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s2Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s3Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s4Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s5Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s6Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s7Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s8Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s9Enable

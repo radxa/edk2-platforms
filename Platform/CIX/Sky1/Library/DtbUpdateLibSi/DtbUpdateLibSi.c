@@ -7,195 +7,20 @@
 #include <libfdt.h>
 #include <fdt.h>
 #include <Library/HwHarvestLib.h>
+#include <Library/DtbCommonLib.h>
 #include <Protocol/PlatformConfigParamsManageProtocol.h>
 
-STATIC
-INT32
-fdt_alloc_phandle (
-  IN VOID  *Fdt
-  )
-{
-  INT32  Offset;
-  INT32  Phandle;
-
-  Phandle = 0;
-
-  for (Offset = fdt_next_node (Fdt, -1, NULL); Offset >= 0;
-       Offset = fdt_next_node (Fdt, Offset, NULL))
-  {
-    Phandle = MAX (Phandle, fdt_get_phandle (Fdt, Offset));
-  }
-
-  return Phandle + 1;
-}
-
-STATIC
-INT32
-fdt_set_phandle (
-  IN VOID    *Fdt,
-  IN UINT32  NodeOffset,
-  IN UINT32  Phandle
-  )
-{
-  INT32  Ret;
-
-  Ret = fdt_setprop_cell (Fdt, NodeOffset, "phandle", Phandle);
-  if (Ret < 0) {
-    return Ret;
-  }
-
-  Ret = fdt_setprop_cell (Fdt, NodeOffset, "linux,phandle", Phandle);
-
-  return Ret;
-}
-
-STATIC
-INT32
-fdt_create_phandle (
-  IN VOID    *Fdt,
-  IN UINT32  NodeOffset
-  )
-{
-  INT32  Phandle, Ret;
-
-  Phandle = fdt_get_phandle (Fdt, NodeOffset);
-  if (Phandle == 0) {
-    Phandle = fdt_alloc_phandle (Fdt);
-    Ret     = fdt_set_phandle (Fdt, NodeOffset, Phandle);
-
-    if (Ret < 0) {
-      DEBUG (
-             (
-              DEBUG_INFO,
-              "%a: Can't set phandle %d: %a\n",
-              __FUNCTION__,
-              Phandle,
-              fdt_strerror (Ret)
-             )
-             );
-      return 0;
-    }
-  }
-
-  return Phandle;
-}
 
 UINT32
 fdt_check_header_ext_si (
   VOID  *fdt
   )
 {
-  UINT64  fdt_start, fdt_end;
-  UINT32  sum;
-
-  fdt_start = (UINT64)fdt;
-
-  if (fdt_start + fdt_totalsize (fdt) <= fdt_start) {
-    return FDT_ERR_BADOFFSET;
-  }
-
-  fdt_end = fdt_start + fdt_totalsize (fdt);
-
-  if (!(sum = ADD_OF (fdt_off_dt_struct (fdt), fdt_size_dt_struct (fdt)))) {
-    return FDT_ERR_BADOFFSET;
-  } else {
-    if (CHECK_ADD64 (fdt_start, sum)) {
-      return FDT_ERR_BADOFFSET;
-    } else if (fdt_start + sum > fdt_end) {
-      return FDT_ERR_BADOFFSET;
-    }
-  }
-
-  if (!(sum = ADD_OF (fdt_off_dt_strings (fdt), fdt_size_dt_strings (fdt)))) {
-    return FDT_ERR_BADOFFSET;
-  } else {
-    if (CHECK_ADD64 (fdt_start, sum)) {
-      return FDT_ERR_BADOFFSET;
-    } else if (fdt_start + sum > fdt_end) {
-      return FDT_ERR_BADOFFSET;
-    }
-  }
-
-  if (fdt_start + fdt_off_mem_rsvmap (fdt) > fdt_end) {
-    return FDT_ERR_BADOFFSET;
-  }
-
-  return 0;
+  return fdt_check_header_ext(fdt);
 }
 
-VOID
-EnableDtbNode (
-  IN  VOID         *fdt,
-  IN  CONST CHAR8  *NodePath
-  )
-{
-  INT32  Node;
-  INT32  Rc;
 
-  Node = fdt_path_offset (fdt, NodePath);
-  if (Node < 0) {
-    DEBUG (
-           (DEBUG_ERROR, "%a: failed to locate DT path '%a': %a\n",
-            __FUNCTION__, NodePath, fdt_strerror (Node))
-           );
-    return;
-  }
 
-  Rc = fdt_setprop_string (fdt, Node, "status", "okay");
-  if (Rc < 0) {
-    DEBUG ((DEBUG_ERROR, "%a: failed to set status to 'disabled' on '%a': %a\n", __FUNCTION__, NodePath, fdt_strerror (Rc)));
-  }
-}
-
-STATIC
-VOID
-UpdateDtbNodeInterrupts (
-  IN  VOID         *fdt,
-  IN  CONST CHAR8  *NodePath
-  )
-{
-  INT32  Node;
-  INT32  Rc;
-  UINT8  Interrupt[12] = { 0, 0, 0, 0, 0, 0, 0x1, 0x2A, 0, 0, 0, 0x4 };// INTID 298
-
-  Node = fdt_path_offset (fdt, NodePath);
-  if (Node < 0) {
-    DEBUG (
-           (DEBUG_ERROR, "%a: failed to locate DT path '%a': %a\n",
-            __FUNCTION__, NodePath, fdt_strerror (Node))
-           );
-    return;
-  }
-
-  Rc = fdt_setprop (fdt, Node, "interrupts", Interrupt, 12);
-  if (Rc < 0) {
-    DEBUG ((DEBUG_ERROR, "%a: failed to update interrupts on '%a': %a\n", __FUNCTION__, NodePath, fdt_strerror (Rc)));
-  }
-}
-
-VOID
-DisableDtbNode (
-  IN  VOID         *fdt,
-  IN  CONST CHAR8  *NodePath
-  )
-{
-  INT32  Node;
-  INT32  Rc;
-
-  Node = fdt_path_offset (fdt, NodePath);
-  if (Node < 0) {
-    DEBUG (
-           (DEBUG_ERROR, "%a: failed to locate DT path '%a': %a\n",
-            __FUNCTION__, NodePath, fdt_strerror (Node))
-           );
-    return;
-  }
-
-  Rc = fdt_setprop_string (fdt, Node, "status", "disabled");
-  if (Rc < 0) {
-    DEBUG ((DEBUG_ERROR, "%a: failed to set status to 'disabled' on '%a': %a\n", __FUNCTION__, NodePath, fdt_strerror (Rc)));
-  }
-}
 
 VOID
 NpuHarvest (
@@ -220,97 +45,6 @@ NpuHarvest (
   if (Rc < 0) {
     DEBUG ((DEBUG_ERROR, "%a: failed to set status to 'disabled' on '%a': %a\n", __FUNCTION__, NodePath, fdt_strerror (Rc)));
   }
-}
-
-EFI_STATUS
-UpdateUART2Interrupts (
-  IN  VOID  *fdt
-  )
-{
-  EFI_STATUS  Status = EFI_SUCCESS;
-
-  UpdateDtbNodeInterrupts (fdt, "/soc@0/uart@040d0000");
-  // InterruptsDtbNodeUpdate(fdt, "/soc@0/uart@040d0000",1,298);//cl21248 uart intid
-
-  return Status;
-}
-
-STATIC
-VOID
-DbtNodePropRm (
-  IN  VOID         *Fdt,
-  IN  CONST CHAR8  *DeviceNodeName0,
-  IN  CONST CHAR8  *DeviceNodeName1,
-  IN  CONST CHAR8  *PropName
-  )
-{
-  INT32  Node, NodeIdle;
-  INT32  PhandleVal, Phandle[2] = { 0, 0 }, Error;
-
-  NodeIdle = fdt_path_offset (Fdt, DeviceNodeName0);
-  if (NodeIdle <= 0) {
-    DEBUG (
-           (
-            DEBUG_INFO,
-            "%a: Failed to find path %a: %a\n",
-            __FUNCTION__,
-            DeviceNodeName0,
-            fdt_strerror (NodeIdle)
-           )
-           );
-    return;
-  }
-
-  PhandleVal = fdt_get_phandle (Fdt, NodeIdle);
-  if (PhandleVal <= 0) {
-    PhandleVal = fdt_create_phandle (Fdt, NodeIdle);
-    if (!PhandleVal) {
-      DEBUG (
-             (
-              DEBUG_INFO,
-              "%a: Failed to create Phandle %s: %a\n",
-              __FUNCTION__,
-              DeviceNodeName0,
-              fdt_strerror (PhandleVal)
-             )
-             );
-      return;
-    }
-  }
-
-  DEBUG ((DEBUG_INFO, "%a: Phandle : %d\n", __FUNCTION__, PhandleVal));
-
-  Node = fdt_path_offset (Fdt, DeviceNodeName1);
-  if (Node <= 0) {
-    DEBUG (
-           (
-            DEBUG_INFO,
-            "%a: Failed to find path %s: %a\n",
-            __FUNCTION__,
-            DeviceNodeName1,
-            fdt_strerror (Node)
-           )
-           );
-    return;
-  }
-
- #if 1
-  Phandle[0] = cpu_to_fdt32 (PhandleVal);
-  Error      = fdt_setprop (Fdt, Node, PropName, Phandle, sizeof (Phandle));
-  if (Error != 0) {
-    DEBUG (
-           (
-            DEBUG_INFO,
-            "%a: Failed to delete property %a: %a\n",
-            __FUNCTION__,
-            PropName,
-            fdt_strerror (Error)
-           )
-           );
-    return;
-  }
-
- #endif
 }
 
 VOID
@@ -585,110 +319,9 @@ UpdateDtbStatus (
   return EFI_SUCCESS;
 }
 
-EFI_STATUS
-UpdateCpuDtbStatus (
-  IN  VOID  *fdt
-  )
-{
-  EFI_STATUS  Status = EFI_SUCCESS;
-  UINT32      CpuId, Index, CpuMask, CpuNum = 8;
-
-  CpuMask = MmioRead32 (PMCTRL_S5_BASE_ADDRESS + 0x504) & 0xff;
-
-  DbtNodePropRm (fdt, "/cpus/idle-states/cpu-sleep-1", "/cpus/cpu4@400", "cpu-idle-states");
-  if (CpuMask == 0x0) {
-    return Status;
-  }
-
-  for (Index = 0; Index < CpuNum; Index++) {
-    CpuId   = CpuMask & 0x1;
-    CpuMask = CpuMask >> 0x1;
-
-    if (CpuId == 0x0) {
-      continue;
-    }
-
-    CpuId = 4 + Index;
-    switch (CpuId) {
-      case 0:
-        DbtNodePropRm (fdt, "/cpus/idle-states/cpu-standby-0", "/cpus/cpu0@0", "cpu-idle-states");
-        break;
-      case 4:
-        DbtNodePropRm (fdt, "/cpus/idle-states/cpu-standby-0", "/cpus/cpu4@400", "cpu-idle-states");
-        break;
-      case 5:
-        DbtNodePropRm (fdt, "/cpus/idle-states/cpu-standby-0", "/cpus/cpu5@500", "cpu-idle-states");
-        break;
-      case 6:
-        DbtNodePropRm (fdt, "/cpus/idle-states/cpu-standby-0", "/cpus/cpu6@600", "cpu-idle-states");
-        break;
-      case 7:
-        DbtNodePropRm (fdt, "/cpus/idle-states/cpu-standby-0", "/cpus/cpu7@700", "cpu-idle-states");
-        break;
-      case 8:
-        DbtNodePropRm (fdt, "/cpus/idle-states/cpu-standby-0", "/cpus/cpu8@800", "cpu-idle-states");
-        break;
-      case 9:
-        DbtNodePropRm (fdt, "/cpus/idle-states/cpu-standby-0", "/cpus/cpu9@900", "cpu-idle-states");
-        break;
-      case 10:
-        DbtNodePropRm (fdt, "/cpus/idle-states/cpu-standby-0", "/cpus/cpu10@a00", "cpu-idle-states");
-        break;
-      case 11:
-        DbtNodePropRm (fdt, "/cpus/idle-states/cpu-standby-0", "/cpus/cpu11@b00", "cpu-idle-states");
-        break;
-      default:
-        break;
-    }
-  }
-
-  return Status;
-}
 
 VOID
-DumpCpuDtbStatus (
-  VOID  *fdt
-  )
-{
-  INT32         Node;
-  const UINT32  *PropU32;
-  INT32         len;
-
-  Node    = fdt_path_offset (fdt, "/cpus/cpu4@400");
-  PropU32 = fdt_getprop (fdt, Node, "cpu-idle-states", &len);
-  DEBUG ((DEBUG_INFO, "cpu4 cpu-idle-states : 0x%x 0x%x \n", fdt32_to_cpu (PropU32[0]), fdt32_to_cpu (PropU32[1])));
-
-  Node    = fdt_path_offset (fdt, "/cpus/cpu5@500");
-  PropU32 = fdt_getprop (fdt, Node, "cpu-idle-states", &len);
-  DEBUG ((DEBUG_INFO, "cpu5 cpu-idle-states : 0x%x 0x%x \n", fdt32_to_cpu (PropU32[0]), fdt32_to_cpu (PropU32[1])));
-
-  Node    = fdt_path_offset (fdt, "/cpus/cpu6@600");
-  PropU32 = fdt_getprop (fdt, Node, "cpu-idle-states", &len);
-  DEBUG ((DEBUG_INFO, "cpu6 cpu-idle-states : 0x%x 0x%x \n", fdt32_to_cpu (PropU32[0]), fdt32_to_cpu (PropU32[1])));
-
-  Node    = fdt_path_offset (fdt, "/cpus/cpu7@700");
-  PropU32 = fdt_getprop (fdt, Node, "cpu-idle-states", &len);
-  DEBUG ((DEBUG_INFO, "cpu7 cpu-idle-states : 0x%x 0x%x \n", fdt32_to_cpu (PropU32[0]), fdt32_to_cpu (PropU32[1])));
-
-  Node    = fdt_path_offset (fdt, "/cpus/cpu8@800");
-  PropU32 = fdt_getprop (fdt, Node, "cpu-idle-states", &len);
-  DEBUG ((DEBUG_INFO, "cpu8 cpu-idle-states : 0x%x 0x%x \n", fdt32_to_cpu (PropU32[0]), fdt32_to_cpu (PropU32[1])));
-
-  Node    = fdt_path_offset (fdt, "/cpus/cpu9@900");
-  PropU32 = fdt_getprop (fdt, Node, "cpu-idle-states", &len);
-  DEBUG ((DEBUG_INFO, "cpu9 cpu-idle-states : 0x%x 0x%x \n", fdt32_to_cpu (PropU32[0]), fdt32_to_cpu (PropU32[1])));
-
-  Node    = fdt_path_offset (fdt, "/cpus/cpu10@a00");
-  PropU32 = fdt_getprop (fdt, Node, "cpu-idle-states", &len);
-  DEBUG ((DEBUG_INFO, "cpu10 cpu-idle-states : 0x%x 0x%x \n", fdt32_to_cpu (PropU32[0]), fdt32_to_cpu (PropU32[1])));
-
-  Node    = fdt_path_offset (fdt, "/cpus/cpu11@b00");
-  PropU32 = fdt_getprop (fdt, Node, "cpu-idle-states", &len);
-  DEBUG ((DEBUG_INFO, "cpu11 cpu-idle-states : 0x%x 0x%x \n", fdt32_to_cpu (PropU32[0]), fdt32_to_cpu (PropU32[1])));
-}
-
-VOID
-DumpDpuDtbStatus (
+DumpDpuDtbStatusSilicon (
   VOID  *fdt
   )
 {
@@ -728,7 +361,7 @@ DumpDpuDtbStatus (
 }
 
 VOID
-DumpAudioDtbStatus (
+DumpAudioDtbStatusSilicon (
   VOID  *fdt
   )
 {
@@ -771,7 +404,7 @@ DumpAudioDtbStatus (
 }
 
 VOID
-DumpNpuDtbStatus (
+DumpNpuDtbStatusSilicon (
   VOID  *fdt
   )
 {
@@ -790,7 +423,7 @@ DumpNpuDtbStatus (
 }
 
 VOID
-DumpIspDtbStatus (
+DumpIspDtbStatusSilicon (
   VOID  *fdt
   )
 {
@@ -833,10 +466,10 @@ DumpDtbStatusSi (
   // const UINT32  *PropU32;
   INT32  len;
 
-  DumpAudioDtbStatus (fdt);
-  DumpDpuDtbStatus (fdt);
-  DumpNpuDtbStatus (fdt);
-  DumpIspDtbStatus (fdt);
+  DumpAudioDtbStatusSilicon (fdt);
+  DumpDpuDtbStatusSilicon (fdt);
+  DumpNpuDtbStatusSilicon (fdt);
+  DumpIspDtbStatusSilicon (fdt);
 
   Node        = fdt_path_offset (fdt, DT_NODE_PCIEX8_RC);
   ProptyValue = fdt_getprop (fdt, Node, "status", &len);

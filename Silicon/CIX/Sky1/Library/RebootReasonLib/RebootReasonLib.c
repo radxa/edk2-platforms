@@ -45,7 +45,7 @@ GetRebootReason (
   if (g_reboot_reason_addr != 0) {
     Value  = MmioRead32 (g_reboot_reason_addr);
     Value &= 0xFF;
-    //DEBUG ((DEBUG_INFO, "%a : 0x%x \n", __FUNCTION__, Value));
+    DEBUG ((DEBUG_INFO, "%a : 0x%x \n", __FUNCTION__, Value));
   }
 
   return Value;

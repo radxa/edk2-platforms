@@ -30,7 +30,7 @@
   # IoLib
   UefiDriverEntryPoint
   MemoryAllocationLib
-  UefiBootServicesTableLib  
+  UefiBootServicesTableLib
   PlatformDtbUpdateLib
 
 [Guids]

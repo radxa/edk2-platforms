@@ -13,9 +13,6 @@
 !endif
 
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
-!if $(GLOBAL_WATCHDOG_ENABLE) == TRUE
-  INF Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GlobalWatchdogDxe.inf
-!endif
   #
   # PI DXE Drivers producing Architectural Protocols (EFI Services)
   #
@@ -87,7 +84,7 @@
   INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/ArmMmCommunication.inf
 !endif
 !if $(STMM_SUPPORT) == TRUE
-  INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashSmmRuntimeDxe.inf
+  INF Silicon/CIX/Sky1/Drivers/NorFlashStmmRuntimeDxe/NorFlashStmmRuntimeDxe.inf
 !else
   INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashDxe.inf
 !endif
@@ -315,6 +312,9 @@
 !endif
 !if $(PM_CONFIG_UPDATE_SUPPORT) == TRUE
   INF Platform/CIX/Sky1/Drivers/PmConfigUpdateDxe/PmConfigUpdateDxe.inf
+!endif
+!if $(SE_CONFIG_UPDATE_SUPPORT) == TRUE
+  INF Platform/CIX/Sky1/Drivers/SeConfigUpdateDxe/SeConfigUpdateDxe.inf
 !endif
 !if $(MEM_CONFIG_UPDATE_SUPPORT) == TRUE
   INF Platform/CIX/Sky1/Drivers/MemConfigUpdateDxe/MemConfigUpdateDxe.inf

@@ -171,8 +171,8 @@ PlatformDtsImageUpdateCallBack (
   EFI_HANDLE                       *pSimpleFileHandle = NULL;
   EFI_FILE_PROTOCOL                *pFs               = NULL;
   EFI_FILE_PROTOCOL                *pFile             = NULL;
-  EFI_FILE_INFO                    *FileInfo;
-  UINTN                            FileInfoSize = 0;
+  EFI_FILE_INFO                    *FileInfo          = NULL;
+  UINTN                            FileInfoSize       = 0;
   UINTN                            HandleNum;
   UINT32                           Index;
   UINT64                           OpenMode;
@@ -284,7 +284,7 @@ PlatformDtsImageUpdateCallBack (
       goto exit;
     }
 
-    DEBUG ((DEBUG_INFO, "After update device tree, data size:%d\n", ImageSize));
+    DEBUG ((DEBUG_INFO, "After update device tree, data size: %d\n", ImageSize));
 
     Status = pFile->SetPosition (pFile, 0);
     if (EFI_ERROR (Status)) {

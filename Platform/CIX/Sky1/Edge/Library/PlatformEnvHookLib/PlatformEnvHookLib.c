@@ -21,6 +21,7 @@
 #include <Library/CixPostCodeLib.h>
 #include <Guid/NetworkStackSetup.h>
 #include <PlatformSetupVar.h>
+#include <Library/RebootReason.h>
 
 // {3F7B73C7-FB70-4e91-86E7-34EAD76AC74D}
 EFI_GUID  gEfiFarmEnableFlagGuid = {
@@ -642,6 +643,28 @@ FenceFchXspiHost (
 
 #endif
 
+EFI_STATUS
+EFIAPI
+UsbC0DevModWithFastBootTrigger(IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData)
+{
+  EFI_STATUS             Status;
+  CIX_SOC_INFO_PROTOCOL  *pSocInfoProtocol;
+  UINT32      RebootReason;
+
+  RebootReason = GetRebootReason ();
+  Status = gBS->LocateProtocol (
+                  &gCixSocInfoProtocolGuid,
+                  NULL,
+                  (VOID **)&pSocInfoProtocol
+                  );
+  if (!EFI_ERROR (Status)) {
+    if ((pSocInfoProtocol->BootMode->Sts.BootStrap==0) || (RebootReason == DefaultException))
+    {
+      ConfigData->SocConfig->UsbCDrd[0].DataRole = TRUE;
+    }
+  }
+  return Status;
+}
 
 STATIC
 VOID

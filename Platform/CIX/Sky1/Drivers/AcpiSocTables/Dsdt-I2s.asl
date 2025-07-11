@@ -11,8 +11,7 @@ Device (I2S0) {
   Name (_UID, 0x0)
 
   Method (_STA, 0x0, Serialized) {
-    Return (0x0)
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiI2s0Enable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)
@@ -56,8 +55,7 @@ Device (I2S1) {
   Name (_UID, 0x1)
 
   Method (_STA, 0x0, Serialized) {
-    Return (0x0)
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiI2s1Enable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)
@@ -100,8 +98,7 @@ Device (I2S2) {
   Name (_UID, 0x2)
 
   Method (_STA, 0x0, Serialized) {
-    Return (0x0)
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiI2s2Enable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)
@@ -142,8 +139,7 @@ Device (I2S3) {
   Name (_UID, 0x3)
 
   Method (_STA, 0x0, Serialized) {
-    Return (0x0)
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiI2s3Enable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)
@@ -190,8 +186,7 @@ Device (I2S4) {
   Name (_UID, 0x4)
 
   Method (_STA, 0x0, Serialized) {
-    Return (0x0)
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiI2s4Enable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)
@@ -238,8 +233,7 @@ Device (I2S5) {
   Name (_UID, 0x5)
 
   Method (_STA, 0x0, Serialized) {
-    Return (0x0)
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiI2s5Enable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)
@@ -284,8 +278,7 @@ Device (I2S6) {
   Name (_UID, 0x6)
 
   Method (_STA, 0x0, Serialized) {
-    Return (0x0)
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiI2s6Enable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)
@@ -330,8 +323,7 @@ Device (I2S7) {
   Name (_UID, 0x7)
 
   Method (_STA, 0x0, Serialized) {
-    Return (0x0)
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiI2s7Enable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)
@@ -376,8 +368,7 @@ Device (I2S8) {
   Name (_UID, 0x8)
 
   Method (_STA, 0x0, Serialized) {
-    Return (0x0)
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiI2s8Enable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)
@@ -422,8 +413,7 @@ Device (I2S9) {
   Name (_UID, 0x9)
 
   Method (_STA, 0x0, Serialized) {
-    Return (0x0)
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiI2s9Enable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)

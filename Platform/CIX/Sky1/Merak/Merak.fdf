@@ -107,7 +107,7 @@ READ_LOCK_STATUS   = TRUE
     INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/ArmMmCommunication.inf
 !endif
 !if $(STMM_SUPPORT) == TRUE
-    INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashSmmRuntimeDxe.inf
+    INF Silicon/CIX/Sky1/Drivers/NorFlashStmmRuntimeDxe/NorFlashStmmRuntimeDxe.inf
 !else
     INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashDxe.inf
 !endif

@@ -132,6 +132,8 @@
   LaunchEfiLib|Platform/CIX/Sky1/Library/LaunchEfiLib/LaunchEfiLib.inf
   MiniFastbootLib|Platform/CIX/Sky1/Library/FastbootLib/MiniFastbootLib.inf
   OpteeLib|Platform/CIX/Sky1/Library/OpteeLib/OpteeLib.inf
+  EfusePublicKeyLib|Platform/CIX/Sky1/Library/EfusePublicKeyLib/EfusePublicKeyLib.inf
+  FctMiscLib|Platform/CIX/Sky1/Library/FctMiscLib/FctMiscLib.inf
   StmmInfoLib|Platform/CIX/Sky1/Library/StmmInfoLib/StmmInfoLib.inf
 
   #
@@ -193,6 +195,7 @@
   PlatformBootHookLib|Platform/CIX/Sky1/Library/PlatformBootHookNullLib/PlatformBootHookNullLib.inf
 !if $(STMM_SUPPORT) == TRUE
   NorFlashLib|Silicon/CIX/Sky1/Library/NorFlashLib/NorFlashStmmRuntimeLib.inf
+  NorFlashBasicLib|Silicon/CIX/Sky1/Library/NorFlashBasicLib/NorFlashBasicStmmLib.inf
 !else
   NorFlashLib|Silicon/CIX/Sky1/Library/NorFlashLib/NorFlashLib.inf
 !endif
@@ -208,6 +211,7 @@
 
   ArmMtlLib|Silicon/CIX/Sky1/Library/CixMtlLib/CixMtlLib.inf
   DtbUpdateLib|Platform/CIX/Sky1/Library/DtbUpdateLib/DtbUpdateLib.inf
+  DtbCommonLib|Platform/CIX/Sky1/Library/DtbCommonLib/DtbCommonLib.inf
 !if $(PLATFORM_DTB_UPDATE_ENABLE) == TRUE
   PlatformDtbUpdateLib|Platform/CIX/Sky1/Library/PlatformDtbUpdateLib/PlatformDtbUpdateLib.inf
 !endif
@@ -679,7 +683,7 @@
   }
 !endif
 !if $(STMM_SUPPORT) == TRUE
-  Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashSmmRuntimeDxe.inf
+  Silicon/CIX/Sky1/Drivers/NorFlashStmmRuntimeDxe/NorFlashStmmRuntimeDxe.inf
 !else
   Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashDxe.inf
 !endif
@@ -743,9 +747,6 @@
   ArmPkg/Drivers/TimerDxe/TimerDxe.inf
   #MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
   Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf
-!if $(GLOBAL_WATCHDOG_ENABLE) == TRUE
-  Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GlobalWatchdogDxe.inf
-!endif
   MdeModulePkg/Universal/EbcDxe/EbcDxe.inf
   #
   # FAT filesystem + GPT/MBR partitioning
@@ -839,13 +840,7 @@
 
 !if $(SOC_USB_DEVICE_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/UsbDeviceControlDxe/UsbDeviceControlDxe.inf
-  Platform/CIX/Sky1/Application/Fastboot/Fastboot.inf {
-    <LibraryClasses>
-      BootLib|Platform/CIX/Sky1/Library/BootLib/BootLib.inf
-      FlashUpdateLib|Platform/CIX/Sky1/Library/FlashUpdateLib/FlashUpdateLib.inf
-      LibUfdt|Platform/CIX/Library/LibUfdt/LibUfdt.inf
-      PartitionLib|Platform/CIX/Sky1/Library/PartitionLib/PartitionLib.inf
-  }
+  Platform/CIX/Sky1/Application/Fastboot/Fastboot.inf 
   !if $(SOC_CDNSP_ENABLE) == TRUE
     Silicon/CIX/Sky1/Drivers/CdnspDxe/CdnspDxe.inf
   !endif
@@ -966,6 +961,9 @@
 !if $(PM_CONFIG_UPDATE_SUPPORT) == TRUE
   Platform/CIX/Sky1/Drivers/PmConfigUpdateDxe/PmConfigUpdateDxe.inf
 !endif
+!if $(SE_CONFIG_UPDATE_SUPPORT) == TRUE
+  Platform/CIX/Sky1/Drivers/SeConfigUpdateDxe/SeConfigUpdateDxe.inf
+!endif
 !if $(MEM_CONFIG_UPDATE_SUPPORT) == TRUE
   Platform/CIX/Sky1/Drivers/MemConfigUpdateDxe/MemConfigUpdateDxe.inf
 !endif
@@ -990,25 +988,8 @@ ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf {
   MdeModulePkg/Application/VariableInfo/VariableInfo.inf
 !endif
 !if $(COMPILE_SYSTEM_LOADER) == android
-  Platform/CIX/Sky1/Application/LinuxLoader/LinuxLoader.inf {
-    <LibraryClasses>
-      FdtLib|EmbeddedPkg/Library/FdtLib/FdtLib.inf
-      LibUfdt|Platform/CIX/Library/LibUfdt/LibUfdt.inf
-      ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
-      BootLib|Platform/CIX/Sky1/Library/BootLib/BootLib.inf
-      FlashUpdateLib|Platform/CIX/Sky1/Library/FlashUpdateLib/FlashUpdateLib.inf
-      AvbLib|Platform/CIX/Sky1/Library/avb/AvbLib.inf
-      DtbUpdateLib|Platform/CIX/Sky1/Library/DtbUpdateLib/DtbUpdateLib.inf
-      PartitionLib|Platform/CIX/Sky1/Library/PartitionLib/PartitionLib.inf
-  }
-  Platform/CIX/Sky1/Application/ABSelect/ABSelect.inf {
-    <LibraryClasses>
-      LibUfdt|Platform/CIX/Library/LibUfdt/LibUfdt.inf
-      PartitionLib|Platform/CIX/Sky1/Library/PartitionLib/PartitionLib.inf
-      MiniFastbootLib|Platform/CIX/Sky1/Library/FastbootLib/MiniFastbootLib.inf
-      AblAuthenticateLib|Platform/CIX/Sky1/Library/AblAuthenticateLib/AblAuthenticateLib.inf
-      AvbLib|Platform/CIX/Sky1/Library/avb/AvbLib.inf
-  }
+  Platform/CIX/Sky1/Application/LinuxLoader/LinuxLoader.inf 
+  Platform/CIX/Sky1/Application/ABSelect/ABSelect.inf 
   Platform/CIX/Sky1/Drivers/AndroidConfigDxe/AndroidConfigDxe.inf
 !endif
 

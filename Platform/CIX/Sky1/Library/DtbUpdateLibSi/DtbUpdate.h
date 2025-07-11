@@ -39,8 +39,8 @@
 #define DT_NODE_USBSS_0_CONTROLLER  "/soc@0/usb@9000000/usb-controller@9010000"
 #define DT_NODE_USBSS_1             "/soc@0/usb@9070000"
 #define DT_NODE_USBSS_1_CONTROLLER  "/soc@0/usb@9070000/usb-controller@9080000"
-#define DT_NODE_USBSS_2             "/soc@0/usb@90E0000"
-#define DT_NODE_USBSS_2_CONTROLLER  "/soc@0/usb@90E0000/usb-controller@90F0000"
+#define DT_NODE_USBSS_2             "/soc@0/usb@90e0000"
+#define DT_NODE_USBSS_2_CONTROLLER  "/soc@0/usb@90e0000/usb-controller@90f0000"
 #define DT_NODE_USBSS_3             "/soc@0/usb@9150000"
 #define DT_NODE_USBSS_3_CONTROLLER  "/soc@0/usb@9150000/usb-controller@9160000"
 // TYPE A
@@ -151,7 +151,6 @@
 #define DT_NODE_IMGSENSOR02  "/soc@0/i2c@04020000/imgsensor02@36" // i2c1: i2c@04020000
 #define DT_NODE_IMGSENSOR03  "/soc@0/i2c@04050000/imgsensor03@3a" // i2c4: i2c@04050000
 #define DT_NODE_CIX_VI_HW    "/cix_vi_hw"
-
 
 VOID
 DisableDtbNode (

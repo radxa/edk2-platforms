@@ -126,6 +126,12 @@ Device (PRC0) { /* PCIE0 X8 */
 #if PCIE_X8_VCC_SUPPLY
           Package () { "vcc-pcie-supply", PCIE_X8_VCC_REGULATOR },
 #endif
+#if PCIE_X8_STR_PWRON
+          Package () { "sky1,str-pwron", 1 },
+#endif
+#if PCIE_X8_STD_PWRON
+          Package () { "sky1,std-pwron", 1 },
+#endif
         },
   })
 
@@ -318,6 +324,12 @@ Device (PRC1) { /* PCIE2 X4 */
 #if PCIE_X4_VCC_SUPPLY
           Package () { "vcc-pcie-supply", PCIE_X4_VCC_REGULATOR },
 #endif
+#if PCIE_X4_STR_PWRON
+          Package () { "sky1,str-pwron", 1 },
+#endif
+#if PCIE_X4_STD_PWRON
+          Package () { "sky1,std-pwron", 1 },
+#endif
         },
   })
 
@@ -498,6 +510,12 @@ Device (PRC2) { /* PCIE3 X2 */
 #if PCIE_X2_VCC_SUPPLY
           Package () { "vcc-pcie-supply", PCIE_X2_VCC_REGULATOR },
 #endif
+#if PCIE_X2_STR_PWRON
+          Package () { "sky1,str-pwron", 1 },
+#endif
+#if PCIE_X2_STD_PWRON
+          Package () { "sky1,std-pwron", 1 },
+#endif
         },
   })
 
@@ -641,6 +659,12 @@ Device (PRC3) { /* PCIE4 X1_1 */
 #if PCIE_X1_1_VCC_SUPPLY
           Package () { "vcc-pcie-supply", PCIE_X1_1_VCC_REGULATOR },
 #endif
+#if PCIE_X1_1_STR_PWRON
+          Package () { "sky1,str-pwron", 1 },
+#endif
+#if PCIE_X1_1_STD_PWRON
+          Package () { "sky1,std-pwron", 1 },
+#endif
         },
   })
 
@@ -783,6 +807,12 @@ Device (PRC4) { /* PCIE3 X1_0 */
 #endif
 #if PCIE_X1_0_VCC_SUPPLY
           Package () { "vcc-pcie-supply", PCIE_X1_0_VCC_REGULATOR },
+#endif
+#if PCIE_X1_0_STR_PWRON
+          Package () { "sky1,str-pwron", 1 },
+#endif
+#if PCIE_X1_0_STD_PWRON
+          Package () { "sky1,std-pwron", 1 },
 #endif
         },
   })

@@ -42,8 +42,8 @@
 #define DT_NODE_USBSS_0_CONTROLLER  "/soc@0/usb@9000000/usb-controller@9010000"
 #define DT_NODE_USBSS_1             "/soc@0/usb@9070000"
 #define DT_NODE_USBSS_1_CONTROLLER  "/soc@0/usb@9070000/usb-controller@9080000"
-#define DT_NODE_USBSS_2             "/soc@0/usb@90E0000"
-#define DT_NODE_USBSS_2_CONTROLLER  "/soc@0/usb@90E0000/usb-controller@90F0000"
+#define DT_NODE_USBSS_2             "/soc@0/usb@90e0000"
+#define DT_NODE_USBSS_2_CONTROLLER  "/soc@0/usb@90e0000/usb-controller@90f0000"
 #define DT_NODE_USBSS_3             "/soc@0/usb@9150000"
 #define DT_NODE_USBSS_3_CONTROLLER  "/soc@0/usb@9150000/usb-controller@9160000"
 // TYPE A
