@@ -761,18 +761,18 @@ Device (MUX1) {
     PinGroup ("gbe1_poweren_gpio", ResourceProducer, ,
         RawDataBuffer ()
         {
-            0x00, 0x9c, 0x01, 0x54,
-        })
-        {
-            SKY1_IOMUXC_SFI_GPIO7,
-        }
-    PinGroup ("gbe2_poweren_gpio", ResourceProducer, ,
-        RawDataBuffer ()
-        {
             0x00, 0x24, 0x00, 0x44,
         })
         {
             SKY1_IOMUXC_GPIO10,
+        }
+    PinGroup ("gbe2_poweren_gpio", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x9c, 0x01, 0x54,
+        })
+        {
+            SKY1_IOMUXC_SFI_GPIO7,
         }
 
     PinGroup ("pinctrl_hym8563_irq", ResourceProducer, ,
