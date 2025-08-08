@@ -38,7 +38,7 @@ Device (PRC0) { /* PCIE0 X8 */
   Method (_STA, 0x0, Serialized) {
     // Check if link is already up
     If(\_SB.GETV(ARV_PCIE_RP_00_LINK_STS_OFFSET)){
-      Return (0xF)
+      Return (0xB)
     } else {
       Return (0x0)
     }
@@ -197,7 +197,7 @@ Device (PCP0) //PCIE PHY1
   Method (_STA, 0x0, Serialized) {
     // Check if link is already up
     If(\_SB.GETV(ARV_PCIE_RP_00_LINK_STS_OFFSET)){
-      Return (0xF)
+      Return (0xB)
     } else {
       Return (0x0)
     }
@@ -236,7 +236,7 @@ Device (PRC1) { /* PCIE2 X4 */
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_PCIE_RP_01_LINK_STS_OFFSET)){
-      Return (0xF)
+      Return (0xB)
     } else {
       Return (0x0)
     }
@@ -383,7 +383,7 @@ Device (PCP1) //PCIE PHY1
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_PCIE_RP_01_LINK_STS_OFFSET)){
-      Return (0xF)
+      Return (0xB)
     } else {
       Return (0x0)
     }
@@ -422,7 +422,7 @@ Device (PRC2) { /* PCIE3 X2 */
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_PCIE_RP_02_LINK_STS_OFFSET)){
-      Return (0xF)
+      Return (0xB)
     } else {
       Return (0x0)
     }
@@ -571,7 +571,7 @@ Device (PRC3) { /* PCIE4 X1_1 */
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_PCIE_RP_03_LINK_STS_OFFSET)){
-      Return (0xF)
+      Return (0xB)
     } else {
       Return (0x0)
     }
@@ -720,7 +720,7 @@ Device (PRC4) { /* PCIE3 X1_0 */
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_PCIE_RP_04_LINK_STS_OFFSET)){
-      Return (0xF)
+      Return (0xB)
     } else {
       Return (0x0)
     }
@@ -867,13 +867,13 @@ Device (PCP2) //PCIE PHY1
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_PCIE_RP_02_LINK_STS_OFFSET)) {
-      Return (0xF)
+      Return (0xB)
     } Else {
       If (\_SB.GETV(ARV_PCIE_RP_03_LINK_STS_OFFSET)) {
-        Return (0xF)
+        Return (0xB)
       } Else {
         If (\_SB.GETV(ARV_PCIE_RP_04_LINK_STS_OFFSET)) {
-          Return (0xF)
+          Return (0xB)
         } Else {
           Return (0x0)
         }
@@ -893,7 +893,7 @@ Device (PCP2) //PCIE PHY1
   Device(PX10)
   {
     Method (_STA, 0x0, Serialized) {
-      Return (0xF)
+      Return (0xB)
     }
     Name (_ADR, 0x00)
     Name (_DSD, Package () {
@@ -907,7 +907,7 @@ Device (PCP2) //PCIE PHY1
   Device(PX11)
   {
     Method (_STA, 0x0, Serialized) {
-      Return (0xF)
+      Return (0xB)
     }
     Name (_ADR, 0x01)
     Name (_DSD, Package () {
@@ -921,7 +921,7 @@ Device (PCP2) //PCIE PHY1
   Device(PX2P)
   {
     Method (_STA, 0x0, Serialized) {
-      Return (0xF)
+      Return (0xB)
     }
     Name (_ADR, 0x02)
     Name (_DSD, Package () {

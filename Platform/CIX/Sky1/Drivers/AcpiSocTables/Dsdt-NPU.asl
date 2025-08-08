@@ -9,7 +9,7 @@
 Device (NPU0) {
   Name (_HID, "CIXH4000")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CCA, 0)
 
   Method (_INI, 0, NotSerialized)

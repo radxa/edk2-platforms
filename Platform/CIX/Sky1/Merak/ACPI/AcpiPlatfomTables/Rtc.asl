@@ -14,7 +14,7 @@ Scope (\_SB.I2C3)
   Device (RTC0) {
     Name (_HID, "RX008900")
     Name (_UID, 0x0)
-    Name (_STA, 0xF)
+    Name (_STA, 0xB)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x32,
                       ControllerInitiated,

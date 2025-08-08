@@ -9,7 +9,7 @@
 Device (DMA0) {
   Name (_HID, "CIXHA014")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CCA, 0x0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DMA_BASE, DMA_SIZE)
@@ -35,7 +35,7 @@ Device (DMA1) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }

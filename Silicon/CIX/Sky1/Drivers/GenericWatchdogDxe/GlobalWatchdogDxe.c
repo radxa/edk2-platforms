@@ -14,7 +14,7 @@
 #include <Library/CixPostCodeLib.h>
 #include <Protocol/WatchdogTimer.h>
 
-#define GLOBAL_WDT_DEFAULT_TIME 20 //seconds
+#define GLOBAL_WDT_DEFAULT_TIME 60 //seconds
 
 VOID
 EFIAPI
@@ -42,6 +42,7 @@ GlobalWatchdogCloseNotify (
                                 );
   if (!EFI_ERROR (Status)) {
       WDT->SetTimerPeriod (WDT, 0);
+      //DebugPrint (DEBUG_INFO, "Glocal Watchdog Cleared\n");
   }
 
 }
@@ -65,10 +66,10 @@ GlobalWatchdogDxeEntry (
 #endif
 
 
-  if(!IsApWatchdogEnable()){
-    DebugPrint (DEBUG_INFO, "Glocal Watchdog is disabled.\n");
-    return Status;
-  }
+  // if(!IsApWatchdogEnable()){
+  //   DebugPrint (DEBUG_INFO, "Glocal Watchdog is disabled.\n");
+  //   return Status;
+  // }
 
 
   Status = gBS->LocateProtocol (

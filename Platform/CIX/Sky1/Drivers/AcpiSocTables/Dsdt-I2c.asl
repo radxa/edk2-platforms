@@ -25,6 +25,9 @@ Device (I2C0) {
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C0_INTERRUPT_ID }
     // Pinctrl
     PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_fch_i2c0", ResourceConsumer,)
+#ifdef I2C0_EXT_CRS
+    I2C0_EXT_CRS
+#endif
   })
 
   //
@@ -64,6 +67,9 @@ Device (I2C0) {
       Package () {
         Package () {"ClockName", "fch_i2c0_apb"},
         Package () { "clock-frequency", 400000 },
+#ifdef I2C0_EXT_DSD_PROPERTY
+        I2C0_EXT_DSD_PROPERTY
+#endif
       }
   })
 
@@ -90,6 +96,9 @@ Device (I2C1) {
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C1_BASE, I2C1_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C1_INTERRUPT_ID }
+#ifdef I2C1_EXT_CRS
+    I2C1_EXT_CRS
+#endif
   })
 
   Name (_DSD, Package () {
@@ -97,6 +106,9 @@ Device (I2C1) {
       Package () {
         Package () {"ClockName", "fch_i2c1_apb"},
         Package () { "clock-frequency", 100000 },
+#ifdef I2C1_EXT_DSD_PROPERTY
+        I2C1_EXT_DSD_PROPERTY
+#endif
       }
   })
 
@@ -124,6 +136,9 @@ Device (I2C2) {
                 "\\_SB.GPI0", 0, ResourceConsumer) { 12, 13 }
     // Pinctrl
     PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_fch_i2c2", ResourceConsumer,)
+#ifdef I2C2_EXT_CRS
+    I2C2_EXT_CRS
+#endif
   })
 
   Name (_DSD, Package () {
@@ -138,6 +153,9 @@ Device (I2C2) {
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_FCH_I2C2_APB, "", \_SB.I2C2},
+#ifdef I2C2_EXT_DSD_PROPERTY
+        I2C2_EXT_DSD_PROPERTY
+#endif
   })
   Name (RSTL, Package() {
     Package() {\_SB.RST1, SW_I2C2_RST_APB_N, \_SB.I2C2, "i2c_reset"},
@@ -159,6 +177,9 @@ Device (I2C3) {
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C3_BASE, I2C3_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C3_INTERRUPT_ID }
+#ifdef I2C3_EXT_CRS
+    I2C3_EXT_CRS
+#endif
   })
 
   Name (_DSD, Package () {
@@ -166,6 +187,9 @@ Device (I2C3) {
       Package () {
         Package () {"ClockName", "fch_i2c3_apb"},
         Package () { "clock-frequency", 400000 },
+#ifdef I2C3_EXT_DSD_PROPERTY
+        I2C3_EXT_DSD_PROPERTY
+#endif
       }
   })
 
@@ -189,6 +213,9 @@ Device (I2C4) {
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C4_BASE, I2C4_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C4_INTERRUPT_ID }
+#ifdef I2C4_EXT_CRS
+    I2C4_EXT_CRS
+#endif
   })
 
   Name (_DSD, Package () {
@@ -196,6 +223,9 @@ Device (I2C4) {
       Package () {
         Package () {"ClockName", "fch_i2c4_apb"},
         Package () { "clock-frequency", 400000 },
+#ifdef I2C4_EXT_DSD_PROPERTY
+        I2C4_EXT_DSD_PROPERTY
+#endif
       }
   })
 
@@ -219,6 +249,9 @@ Device (I2C5) {
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C5_BASE, I2C5_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C5_INTERRUPT_ID }
+#ifdef I2C5_EXT_CRS
+    I2C5_EXT_CRS
+#endif
   })
 
   Name (_DSD, Package () {
@@ -226,6 +259,9 @@ Device (I2C5) {
       Package () {
         Package () {"ClockName", "fch_i2c5_apb"},
         Package () { "clock-frequency", 400000 },
+#ifdef I2C5_EXT_DSD_PROPERTY
+        I2C5_EXT_DSD_PROPERTY
+#endif
       }
   })
 
@@ -249,6 +285,9 @@ Device (I2C6) {
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C6_BASE, I2C6_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C6_INTERRUPT_ID }
+#ifdef I2C6_EXT_CRS
+    I2C6_EXT_CRS
+#endif
   })
 
   Name (_DSD, Package () {
@@ -256,6 +295,9 @@ Device (I2C6) {
       Package () {
         Package () {"ClockName", "fch_i2c6_apb"},
         Package () { "clock-frequency", 400000 },
+#ifdef I2C6_EXT_DSD_PROPERTY
+        I2C6_EXT_DSD_PROPERTY
+#endif
       }
   })
 
@@ -279,6 +321,9 @@ Device (I2C7) {
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C7_BASE, I2C7_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C7_INTERRUPT_ID }
+#ifdef I2C7_EXT_CRS
+    I2C7_EXT_CRS
+#endif
   })
 
   Name (_DSD, Package () {
@@ -286,6 +331,9 @@ Device (I2C7) {
       Package () {
         Package () {"ClockName", "fch_i2c7_apb"},
         Package () { "clock-frequency", 100000 },
+#ifdef I2C7_EXT_DSD_PROPERTY
+        I2C7_EXT_DSD_PROPERTY
+#endif
       }
   })
 

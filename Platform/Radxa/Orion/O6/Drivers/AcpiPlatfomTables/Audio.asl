@@ -11,7 +11,7 @@ External (\_SB.HDA, DeviceObj)
 Device (HDAC) {
     Name (_HID, "CIXH6030")
     Name (_UID, 0x0)
-    Name (_STA, 0xF)
+    Name (_STA, 0xB)
 
     Name (DLKL, Package() {
       Package() {\_SB.HDA, \_SB.HDAC, 0},
@@ -21,7 +21,7 @@ Device (HDAC) {
 Device (SNDC) {
   Name (_HID, "CIXH6070")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
 
   Name (_CRS, ResourceTemplate () {
 //    // for alc1019

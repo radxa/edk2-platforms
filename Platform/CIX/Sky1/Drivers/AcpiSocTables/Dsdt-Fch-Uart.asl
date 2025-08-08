@@ -15,7 +15,7 @@ Field (DBGR, DWordAcc, NoLock, Preserve) {
 Device(UCRU) {
   Name (_HID, "CIXHA018")
   Name (_UID, 0x2)
-  Name (_STA, 0xf)
+  Name (_STA, 0xB)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, 0x0416009c, 0x80)
   })

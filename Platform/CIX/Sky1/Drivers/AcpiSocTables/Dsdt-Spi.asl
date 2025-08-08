@@ -9,7 +9,7 @@
 Device (SPI0) {
   Name (_HID, "CIXH2001")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, SPI0_BASE, SPI0_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_SPI0_INTERRUPT_ID }
@@ -35,7 +35,7 @@ Device (SPI0) {
 Device (SPI1) {
   Name (_HID, "CIXH2001")
   Name (_UID, 0x1)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, SPI1_BASE, SPI1_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_SPI1_INTERRUPT_ID }

@@ -249,7 +249,7 @@ Device (DP00) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_DPU_00_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -282,7 +282,7 @@ Device (DP01) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_DPU_01_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -315,7 +315,7 @@ Device (DP02) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_DPU_02_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -355,7 +355,7 @@ Device (DP03) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_DPU_03_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -388,7 +388,7 @@ Device (DP04) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_DPU_04_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -421,7 +421,7 @@ Device (DPU0) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_DPU_00_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -493,7 +493,7 @@ Device (DPU1) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_DPU_01_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -565,7 +565,7 @@ Device (DPU2) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_DPU_02_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -643,7 +643,7 @@ Device (DPU3) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_DPU_03_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -715,7 +715,7 @@ Device (DPU4) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_DPU_04_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -788,7 +788,7 @@ Device (AEU0) {
   Method (_STA, 0x0, Serialized) {
     Return (0x0)
     If(\_SB.GETV(ARV_DPU_00_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -808,7 +808,7 @@ Device (AEU1) {
   Method (_STA, 0x0, Serialized) {
     Return (0x0)
     If(\_SB.GETV(ARV_DPU_01_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -828,7 +828,7 @@ Device (AEU2) {
   Method (_STA, 0x0, Serialized) {
     Return (0x0)
     If(\_SB.GETV(ARV_DPU_02_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -848,7 +848,7 @@ Device (AEU3) {
   Method (_STA, 0x0, Serialized) {
     Return (0x0)
     If(\_SB.GETV(ARV_DPU_03_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -868,7 +868,7 @@ Device (AEU4) {
   Method (_STA, 0x0, Serialized) {
     Return (0x0)
     If(\_SB.GETV(ARV_DPU_04_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -885,7 +885,7 @@ Device (AEU4) {
 Device (DPBL) {
   Name (_HID, "CIXH5041")
   Name (_UID, 0x00)
-  Name (_STA, 0x0F)
+  Name (_STA, 0xB)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
       GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
@@ -943,7 +943,7 @@ Device (DPBL) {
 Device (EDP0) {
   Name (_HID, "CIXH5040")
   Name (_UID, 0x00)
-  Name (_STA, 0x0F)
+  Name (_STA, 0xB)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
       PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_edp0", ResourceConsumer,)

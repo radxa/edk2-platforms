@@ -12,7 +12,7 @@
 Device (REST) { /* resource table */
   Name (_HID, "CIXA1019")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
 
   // reserved memory lookup table
   Name (RSVL, Package() {

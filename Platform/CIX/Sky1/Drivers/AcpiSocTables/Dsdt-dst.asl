@@ -10,7 +10,7 @@
 Device (DSTD) {
   Name (_HID, "PRP0001")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, RDR_RES_BASE, RDR_RES_SIZE)
   })
@@ -38,7 +38,7 @@ Device (DSTD) {
   Device (EXTR) {
     Name (_HID, "PRP0001")
     Name (_UID, 0x1)
-    Name (_STA, 0xF)
+    Name (_STA, 0xB)
     Name (_DSD, Package () {
       ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
@@ -52,7 +52,7 @@ Device (DSTD) {
     Device (APAD) {
     Name (_HID, "PRP0001")
     Name (_UID, 0x2)
-    Name (_STA, 0xF)
+    Name (_STA, 0xB)
     Name (_CRS, ResourceTemplate () {
       Memory32Fixed (ReadWrite, MNTNDUMP_ADDR, MNTNDUMP_SIZE)
     })

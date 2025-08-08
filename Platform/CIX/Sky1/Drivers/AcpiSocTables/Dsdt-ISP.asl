@@ -12,7 +12,7 @@ Device (V4L2) {
   Name (_UID, 0x0)
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_ISP_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -30,7 +30,7 @@ Device (ISP0) {
   Name (_UID, 0x00)
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_ISP_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -68,7 +68,7 @@ Device (ISPM) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_ISP_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -147,7 +147,7 @@ Device (VIHW) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_ISP_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }

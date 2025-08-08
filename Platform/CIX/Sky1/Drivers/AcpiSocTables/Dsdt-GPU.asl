@@ -24,7 +24,7 @@ Device (PMGM) {
 Device (GPU) {
   Name (_HID, "CIXH5000")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CCA, 1)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, GPU_RCSU_CONTROLLER_BASE, GPU_RCSU_CONTROLLER_SIZE)

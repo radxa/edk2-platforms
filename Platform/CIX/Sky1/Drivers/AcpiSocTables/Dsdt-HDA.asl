@@ -12,7 +12,7 @@ Device (HDA) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -45,7 +45,8 @@ Device (HDA) {
     Package() {\_SB.ADSS.ARST, AUDSS_HDA_SW_RST_N  ,\_SB.HDA, "hda"},
   })
   Name (DLKL, Package() {
-    Package() {\_SB.DMA1, \_SB.HDA, 0},
+    Package() {\_SB.ADSS.ACLK, \_SB.HDA, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.HDA, 0},
   })
 }
 

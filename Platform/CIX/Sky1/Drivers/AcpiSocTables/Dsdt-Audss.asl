@@ -13,7 +13,7 @@ Device (ADSS) {
 
   Method (_STA, 0x0, Serialized) {
     If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
-        Return (0xF)
+        Return (0xB)
     } else {
         Return (0x0)
     }
@@ -31,7 +31,7 @@ Device (ADSS) {
 
     Method (_STA, 0x0, Serialized) {
       If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
-          Return (0xF)
+          Return (0xB)
       } else {
           Return (0x0)
       }
@@ -115,6 +115,7 @@ Device (ADSS) {
         Local0 = MSK0
         Local0 = Local0 | PGFSM_REG_CTRL | TIME_CYCLE_CNT
         MSK0 = Local0
+        sleep(1)
         \_SB.DMRP(MEMORY_ENABLE, MEMR_GROUP_ID_AUDIO, AUDIO_RCSU_BASE_REG, GROUP_INDEX_NONE)
       }
       Method(_OFF, 0, Serialized)
@@ -122,6 +123,7 @@ Device (ADSS) {
         Local0 = MSK0
         Local0 = Local0 & ~PGFSM_REG_CTRL
         MSK0 = Local0
+        sleep(1)
       }
     }
 
@@ -135,7 +137,7 @@ Device (ADSS) {
 
     Method (_STA, 0x0, Serialized) {
       If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
-          Return (0xF)
+          Return (0xB)
       } else {
           Return (0x0)
       }
@@ -154,6 +156,7 @@ Device (ADSS) {
 Device (ACRU) {
   Name (_HID, "CIXHA018")
   Name (_UID, 0x0)
+  Name (_STA, 0xB)
 
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, 0x07110000, 0x10000)

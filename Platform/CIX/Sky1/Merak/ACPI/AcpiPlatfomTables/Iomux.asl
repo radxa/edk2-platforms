@@ -12,7 +12,7 @@
 Device (MUX0) {
   Name (_HID, "CIXHA016")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, 0x04170000, 0x1000)
     PinGroup ("pinctrl_sndcard", ResourceProducer, ,
@@ -549,7 +549,7 @@ Device (MUX0) {
 Device (MUX1) {
   Name (_HID, "CIXHA017")
   Name (_UID, 0x1)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, 0x16007000, 0x1000)
     PinGroup ("wifi_vbat_gpio", ResourceProducer, ,

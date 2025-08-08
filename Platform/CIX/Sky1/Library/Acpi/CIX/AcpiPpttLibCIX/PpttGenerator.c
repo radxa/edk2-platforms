@@ -80,6 +80,28 @@ GetValidProcTopoNodeNum (
   return ValidNodeCount;
 }
 
+STATIC
+UINT32
+GetValidCoreNodeNum (
+  CM_CIX_CPU_TOPO_INFO  *CpuTopoInfo
+  )
+{
+  UINT32            ClusterIndex;
+  UINT32            ValidNodeCount = 0;
+  UINT32            CoreCount;
+  CIX_CLUSTER_TOPO  *ClusterTopo;
+
+  for (ClusterIndex = 0; ClusterIndex < CpuTopoInfo->ClusterNumber; ClusterIndex++) {
+    ClusterTopo = &CpuTopoInfo->ClusterTopo[ClusterIndex];
+    CoreCount   = GetClusterValidCoreNum (ClusterTopo);
+    if (CoreCount > 0) {
+      ValidNodeCount += CoreCount;
+    }
+  }
+
+  return ValidNodeCount;
+}
+
 /**
   Construct the PPTT ACPI table.
 
@@ -120,10 +142,19 @@ BuildPpttTable (
   UINT32                ProcTopologyStructCount;
   UINT32                ClusterIndex, CoreIndex;
   UINT32                SocketOffset, ClusterOffset;
-  UINT32                ValidCoreCount;
+  UINT32                SocketValidCoreCount, ClusterValidCoreCount;
+  UINT32                SocketL3Offset, HunterL2Offset, HunterL1DOffset, HunterL1IOffset, HayesL1DOffset, HayesL1IOffset, HayesL2Offset;
   UINT8                 *New;
   CIX_CLUSTER_TOPO      *ClusterTopo;
   CIX_CPU_CORE          *CpuCore;
+
+  EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE  HunterL1DCache = CIX_SKY1_HUNTER_ACPI_PPTT_L1_D_CACHE_STRUCT;
+  EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE  HunterL1ICache = CIX_SKY1_HUNTER_ACPI_PPTT_L1_I_CACHE_STRUCT;
+  EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE  HunterL2Cache  = CIX_SKY1_HUNTER_ACPI_PPTT_L2_CACHE_STRUCT;
+  EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE  HayesL1DCache  = CIX_SKY1_HAYES_ACPI_PPTT_L1_D_CACHE_STRUCT;
+  EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE  HayesL1ICache  = CIX_SKY1_HAYES_ACPI_PPTT_L1_I_CACHE_STRUCT;
+  EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE  HayesL2Cache  = CIX_SKY1_HAYES_ACPI_PPTT_L2_CACHE_STRUCT;
+  EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE  SocketL3Cache  = CIX_SKY1_ACPI_PPTT_L3_CACHE_STRUCT;
 
   EFI_ACPI_6_3_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER  *Pptt;
 
@@ -166,10 +197,14 @@ BuildPpttTable (
   }
 
   ProcTopologyStructCount = GetValidProcTopoNodeNum (CpuTopoInfo);
+  SocketValidCoreCount = GetValidCoreNodeNum (CpuTopoInfo);
 
   // Calculate the size of the PPTT table
   TableSize  = sizeof (EFI_ACPI_6_3_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_HEADER);
-  TableSize += ProcTopologyStructCount*sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_PROCESSOR);
+  TableSize += CACHE_NODE_NUMBER * sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+  TableSize += ProcTopologyStructCount * sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_PROCESSOR);
+  TableSize += SocketValidCoreCount * (4*2); //private resource for each core
+  TableSize += 4; //private resource for socket
   DEBUG (
     (
      DEBUG_INFO,
@@ -229,6 +264,38 @@ BuildPpttTable (
     goto error_handler;
   }
 
+  CopyMem (New, &SocketL3Cache, sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE));
+  New += sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+  SocketL3Offset = sizeof (EFI_ACPI_DESCRIPTION_HEADER);
+
+  CopyMem (New, &HunterL2Cache, sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE));
+  New += sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+  HunterL2Offset = SocketL3Offset + sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+
+  HunterL1DCache.NextLevelOfCache = HunterL2Offset;
+  CopyMem (New, &HunterL1DCache, sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE));
+  New += sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+  HunterL1DOffset = HunterL2Offset + sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+
+  HunterL1ICache.NextLevelOfCache = HunterL2Offset;
+  CopyMem (New, &HunterL1ICache, sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE));
+  New += sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+  HunterL1IOffset = HunterL1DOffset + sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+
+  CopyMem (New, &HayesL2Cache, sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE));
+  New += sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+  HayesL2Offset = HunterL1IOffset + sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+
+  HayesL1DCache.NextLevelOfCache = HayesL2Offset;
+  CopyMem (New, &HayesL1DCache, sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE));
+  New += sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+  HayesL1DOffset = HayesL2Offset + sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+
+  HayesL1ICache.NextLevelOfCache = HayesL2Offset;
+  CopyMem (New, &HayesL1ICache, sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE));
+  New += sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+  HayesL1IOffset = HayesL1DOffset + sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+
   EFI_ACPI_6_3_PPTT_STRUCTURE_PROCESSOR_FLAGS  SocketFlags = {
     EFI_ACPI_6_3_PPTT_PACKAGE_PHYSICAL,
     EFI_ACPI_6_3_PPTT_PROCESSOR_ID_VALID,
@@ -258,17 +325,19 @@ BuildPpttTable (
                                                     SocketFlags,
                                                     0,
                                                     0,
-                                                    0
+                                                    1
                                                     );
 
   CopyMem (New, &Socket, sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_PROCESSOR));
-  New          += sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_PROCESSOR);
-  SocketOffset  = sizeof (EFI_ACPI_DESCRIPTION_HEADER);
-  ClusterOffset = SocketOffset;
+  New           += sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_PROCESSOR);
+  *(UINT32 *)New = SocketL3Offset;
+  New           += sizeof (UINT32);
+  SocketOffset   = sizeof (EFI_ACPI_DESCRIPTION_HEADER) + CACHE_NODE_NUMBER * sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_CACHE);
+  ClusterOffset  = SocketOffset + sizeof (UINT32);
   for (ClusterIndex = 0; ClusterIndex < CpuTopoInfo->ClusterNumber; ClusterIndex++) {
     ClusterTopo    = &CpuTopoInfo->ClusterTopo[ClusterIndex];
-    ValidCoreCount = GetClusterValidCoreNum (ClusterTopo);
-    if (ValidCoreCount == 0) {
+    ClusterValidCoreCount = GetClusterValidCoreNum (ClusterTopo);
+    if (ClusterValidCoreCount == 0) {
       continue;
     }
 
@@ -292,13 +361,25 @@ BuildPpttTable (
                                                       CoreFlags,
                                                       ClusterOffset,
                                                       CpuCore->Uid,
-                                                      0
+                                                      2
                                                       );
       CopyMem (New, &Core, sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_PROCESSOR));
       New += sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_PROCESSOR);
+      if (CpuCore->Coreid < 4) //Hayes
+      {
+        *(UINT32 *)New = HayesL1DOffset;
+        New           += sizeof (UINT32);
+        *(UINT32 *)New = HayesL1IOffset;
+        New           += sizeof (UINT32);
+      } else {                 //Hunter
+        *(UINT32 *)New = HunterL1DOffset;
+        New           += sizeof (UINT32);
+        *(UINT32 *)New = HunterL1IOffset;
+        New           += sizeof (UINT32);
+      }
     }
 
-    ClusterOffset += ValidCoreCount*sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_PROCESSOR);
+    ClusterOffset += ClusterValidCoreCount * (sizeof (EFI_ACPI_6_3_PPTT_STRUCTURE_PROCESSOR) + 2 * sizeof (UINT32));
   }
 
   return Status;

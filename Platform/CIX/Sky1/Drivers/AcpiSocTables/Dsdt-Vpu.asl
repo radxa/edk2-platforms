@@ -9,7 +9,7 @@
 Device (VPU0) {
   Name (_HID, "CIXH3010")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (

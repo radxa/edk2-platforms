@@ -11,7 +11,7 @@ Device (MBX0) {
   Name (_HID, "CIXHA001")
   Name (_CID, "CIXHA001")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (
       ReadWrite,
@@ -36,7 +36,7 @@ Device (MBX1) {
     Name (_HID, "CIXHA001")
     Name (_CID, "CIXHA001")
     Name (_UID, 0x1)
-    Name (_STA, 0xF)
+    Name (_STA, 0xB)
     Name (_CRS, ResourceTemplate () {
       Memory32Fixed (
         ReadWrite,
@@ -114,7 +114,7 @@ Device (MBX4) {
 
     Method (_STA, 0x0, Serialized) {
       If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
-          Return (0xF)
+          Return (0xB)
       } else {
           Return (0x0)
       }
@@ -147,7 +147,7 @@ Device (MBX5) {
 
     Method (_STA, 0x0, Serialized) {
       If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
-          Return (0xF)
+          Return (0xB)
       } else {
           Return (0x0)
       }

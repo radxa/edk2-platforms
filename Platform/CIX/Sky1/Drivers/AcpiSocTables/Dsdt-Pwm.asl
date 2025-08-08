@@ -9,7 +9,7 @@
 Device (PWM0) {
   Name (_HID, "CIXH2011")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (
       ReadWrite,

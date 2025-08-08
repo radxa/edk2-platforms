@@ -153,7 +153,7 @@ Scope (\_SB.I2C0)
   Device (IIS0) {
     Name (_HID, "CIXH3024")
     Name (_UID, 0x00)
-    Name (_STA, 0x0F)
+    Name (_STA, 0xB)
     Name (_CCA, 0)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x34,
@@ -192,7 +192,7 @@ Scope (\_SB.I2C0)
   Device (MTR0) {
     Name (_HID, "CIXH3023")
     Name (_UID, 0x0)
-    Name (_STA, 0xF)
+    Name (_STA, 0xB)
     Name (_CCA, 0)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x40,
@@ -218,7 +218,7 @@ Scope (\_SB.I2C0)
   Device (UXC0) {
     Name (_HID, "CIXH302C")
     Name (_UID, 0x0)
-    Name (_STA, 0xF)
+    Name (_STA, 0xB)
     Name (_CCA, 0)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x43,
@@ -350,7 +350,7 @@ Scope (\_SB.I2C3)
   Device (IIS1) {
     Name (_HID, "CIXH3024")
     Name (_UID, 0x1)
-    Name (_STA, 0xF)
+    Name (_STA, 0xB)
     Name (_CCA, 0)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x36,
@@ -391,7 +391,7 @@ Scope (\_SB.I2C4)
   Device (IIS3) {
     Name (_HID, "CIXH3024")
     Name (_UID, 0x3)
-    Name (_STA, 0xF)
+    Name (_STA, 0xB)
     Name (_CCA, 0)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x3a,

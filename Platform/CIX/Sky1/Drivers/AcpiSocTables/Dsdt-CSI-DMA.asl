@@ -147,7 +147,7 @@ External (\_SB.I2C0.UXC3, DeviceObj)
 Device (CSI0) {
   Name (_HID, "CIXH3027")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, CSI_RCSU0_CONTROLLER_BASE, CSI_RCSU0_CONTROLLER_SIZE)
@@ -168,7 +168,7 @@ Device (CSI1) {
 Device (CBD0) {
   Name (_HID, "CIXH3028")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, CSI_BRIDGE0_CONTROLLER_BASE, CSI_BRIDGE0_CONTROLLER_SIZE)
@@ -252,7 +252,7 @@ Device (CBD3) {
 Device (MPC0) {
   Name (_HID, "CIXH3029")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, MIPI_CSI0_CONTROLLER_BASE, MIPI_CSI0_CONTROLLER_SIZE)
@@ -349,7 +349,7 @@ Device (MPC3) {
 Device (DPH0) {
   Name (_HID, "CIXH302A")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, CSI_DPHY_HW0_CONTROLLER_BASE, CSI_DPHY_HW0_CONTROLLER_SIZE)
@@ -408,7 +408,7 @@ Device (DPR0) {
 Device (DPR1) {
   Name (_HID, "CIXH302B")
   Name (_UID, 0x1)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CCA, 0)
   MIPI_DPHY_PORT_INIT(1, \_SB.DPH0, \_SB.I2C0.UXC0, "port@0", "endpoint@0", \_SB.MPC0, "port@0", "endpoint@1")
 }

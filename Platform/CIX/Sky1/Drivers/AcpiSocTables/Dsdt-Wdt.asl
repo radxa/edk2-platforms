@@ -10,7 +10,7 @@ Device (WDT0) {
   Name (_HID, "CIXH1005")
   Name (_CID, "CIXH1005")
   Name (_UID, 0x0)
-  Name (_STA, 0xF)
+  Name (_STA, 0xB)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (
       ReadWrite,

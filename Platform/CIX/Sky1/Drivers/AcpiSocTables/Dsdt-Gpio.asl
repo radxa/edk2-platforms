@@ -7,7 +7,7 @@
 **/
 
 Device (GPI0) {
-  Name (_HID, "CIXH1002")
+  Name (_HID, "CIXH1003")
   Name (_UID, 0x0)
   Name (_STA, 0xF)
   Name (_CRS, ResourceTemplate () {

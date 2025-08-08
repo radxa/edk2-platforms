@@ -546,6 +546,18 @@ Device(EC0){
   }
 
   //
+  // Name: SFMT [Set EC Fan to Manual Mode]
+  // Description: Function to set ec fan to manual mode
+  // Input: None
+  // Output: None
+  //
+  Method(SFMN, 0, Serialized){
+    Name(BUF0, Buffer(10){0xDA,0x03,0xAA,0x00,0x52,0x00,0x00,0x00,0x01,0x00})
+    Name(BUF1, Buffer(10){})
+    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+  }
+
+  //
   // Name: SFPF [Set EC Fan to Performance Mode]
   // Description: Function to set ec fan to performance mode
   // Input: None
@@ -555,6 +567,69 @@ Device(EC0){
     Name(BUF0, Buffer(10){0xDA,0x03,0xA6,0x00,0x52,0x00,0x00,0x00,0x01,0x04})
     Name(BUF1, Buffer(10){})
     TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+  }
+
+  //
+  // Name: SFPW [Set the PWM duty of EC Fan]
+  // Description: Function to set the PWM duty of EC Fan
+  // Input:
+  //         Arg0 -> Duty cycle, EC_PWM_MAX_DUTY = 100%
+  //         Arg1 -> ec_pwm_type
+  //         Arg2 -> Type-specific index, or 0 if unique
+  // Output: Status(No zero may have some error in it)
+  //
+  Method(SFPW, 3, Serialized)
+  {
+    if(Arg0 > 100){
+      Return(1);
+    }
+
+    \_SB.EC0.SFMN()
+
+    Name(BUF0, Buffer(13){0xDA,0x03,0x00,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x00,0x00,0x00})
+    Name(BUF1, Buffer(10){})
+    CreateByteField (BUF0, 0x02, CSUM)
+    CreateByteField (BUF0, 0x0A, DUTY)
+    CreateByteField (BUF0, 0x0B, PWMT)
+    CreateByteField (BUF0, 0x0C, INDX)
+    DUTY=Arg0
+    PWMT=Arg1
+    INDX=Arg2
+    Mid(BUF0,1,Sizeof(BUF0)-1,Local0)
+    CSUM=CKSB(Local0)&0xFF
+
+    if(\_SB.EC0.TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1)) != I2C_SUCCESS){
+      Return(2);
+    }
+    Return(0);
+  }
+
+  //
+  // Name: GFPW [Get the PWM duty of EC Fan]
+  // Description: Function to get the PWM duty of EC Fan
+  // Input:
+  //         Arg0 -> ec_pwm_type
+  //         Arg1 -> Type-specific index, or 0 if unique
+  // Output: Duty cycle, EC_PWM_MAX_DUTY = 100% , 0xFFFFFFFF means error
+  //
+  Method(GFPW, 2, Serialized)
+  {
+    Name(BUF0, Buffer(11){0xDA,0x03,0xD5,0x00,0x26,0x00,0x00,0x00,0x02,0x00,0x00})
+    CreateByteField (BUF0, 0x02, CSUM)
+    CreateByteField (BUF0, 0x09, PWMT)
+    CreateByteField (BUF0, 0x0A, INDX)
+    PWMT=Arg0
+    INDX=Arg1
+    Mid(BUF0,1,Sizeof(BUF0)-1,Local0)
+    CSUM=CKSB(Local0)&0xFF
+
+    Name(BUF1, Buffer(12){})
+    CreateByteField (BUF1, 0x0B, DUTY)
+
+    if(\_SB.EC0.TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1)) == I2C_SUCCESS){
+        Return(DUTY)
+    }
+    Return(0xFFFFFFFF);
   }
 }
 
