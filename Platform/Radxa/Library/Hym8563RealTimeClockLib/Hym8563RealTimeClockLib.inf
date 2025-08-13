@@ -21,7 +21,7 @@
 [Packages]
   EmbeddedPkg/EmbeddedPkg.dec
   MdePkg/MdePkg.dec
-  Platform/Radxa/Orion/O6/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.dec
+  Platform/Radxa/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.dec
 
 [LibraryClasses]
   BaseMemoryLib

@@ -141,7 +141,7 @@ READ_LOCK_STATUS   = TRUE
 
 !if $(ACPI_ENABLE) == TRUE
   INF RuleOverride = ACPITABLE2 Platform/Radxa/Orion/O6/Drivers/AcpiPlatfomTables/AcpiPlatfomTables.inf
-  INF Platform/Radxa/Orion/O6/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
+  INF Platform/Radxa/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
 !endif
 
   #
