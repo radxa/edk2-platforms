@@ -147,7 +147,7 @@
 [LibraryClasses.common]
   PlatformConfigParamsHookLib|Platform/Radxa/Orion/O6/Library/PlatformConfigParamsHookLib/PlatformConfigParamsHookLib.inf
   PlatformEnvHookLib|Platform/Radxa/Orion/O6/Library/PlatformEnvHookLib/PlatformEnvHookLib.inf
-  RealTimeClockLib|Platform/Radxa/Orion/O6/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.inf
+  RealTimeClockLib|Platform/Radxa/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.inf
 
   PlatformBootHookLib|Platform/CIX/Sky1/Merak/Library/PlatformBootHookLib/PlatformBootHookLib.inf
 
@@ -195,7 +195,7 @@
   Platform/CIX/Sky1/Drivers/DtbUpdateDxeSi/DtbUpdateDxe.inf
 !if $(ACPI_ENABLE) == TRUE
   Platform/Radxa/Orion/O6/Drivers/AcpiPlatfomTables/AcpiPlatfomTables.inf
-  Platform/Radxa/Orion/O6//Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
+  Platform/Radxa/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
 !endif
 !if $(SMBIOS_ENABLE) == TRUE
   Platform/Radxa/Orion/O6/Drivers/PlatformSmbios/PlatformSmbios.inf
