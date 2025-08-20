@@ -47,6 +47,7 @@ LibResetSystem (
 {
   ARM_SMC_ARGS              ArmSmcArgs;
   EC_PARAMS_FORCE_EC_RESET  Params;
+  CHAR16 *                  PlatformDtbName;
 
   switch (ResetType) {
     case EfiResetPlatformSpecific:
@@ -69,8 +70,14 @@ LibResetSystem (
       GpioConfig (FixedPcdGet8 (PcdPcieRootPort3PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
       GpioConfig (FixedPcdGet8 (PcdPcieRootPort4PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
 
-      GpioConfig (12, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of M2_SSD_PWREN
-      GpioConfig (17, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of VGFX_PWREN
+      PlatformDtbName = (CHAR16 *)FixedPcdGetPtr (PcdSiliconDtbUpdateFileName);
+
+      if (!StrCmp (L"sky1-orion-o6.dtb", PlatformDtbName)) {
+        DEBUG ((DEBUG_INFO, "%a: disable additional GPIOs for %a\n", __FUNCTION__, PlatformDtbName));
+        GpioConfig (12, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of M2_SSD_PWREN
+        GpioConfig (17, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of VGFX_PWREN
+      }
+
       // Send a PSCI 0.2 SYSTEM_OFF command
       ArmSmcArgs.Arg0 = ARM_SMC_ID_PSCI_SYSTEM_OFF;
       break;
