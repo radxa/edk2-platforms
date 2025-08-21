@@ -72,10 +72,17 @@ LibResetSystem (
 
       PlatformDtbName = (CHAR16 *)FixedPcdGetPtr (PcdSiliconDtbUpdateFileName);
 
+      DEBUG ((DEBUG_INFO, "%a: disable additional GPIOs for %a\n", __FUNCTION__, PlatformDtbName));
       if (!StrCmp (L"sky1-orion-o6.dtb", PlatformDtbName)) {
-        DEBUG ((DEBUG_INFO, "%a: disable additional GPIOs for %a\n", __FUNCTION__, PlatformDtbName));
         GpioConfig (12, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of M2_SSD_PWREN
         GpioConfig (17, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of VGFX_PWREN
+      } else if (!StrCmp (L"sky1-orion-o6t.dtb", PlatformDtbName)) {
+        GpioConfig (13, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of WLAN_PWREN
+        GpioConfig (14, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of UFS_5V_EN
+        GpioConfig (23, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of TPM_PWR_EN
+        GpioConfig (70, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of OCULINK_PWREN
+        GpioConfig (73, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of BKEY_PWR_EN
+        GpioConfig (81, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of CAM_PWREN
       }
 
       // Send a PSCI 0.2 SYSTEM_OFF command
