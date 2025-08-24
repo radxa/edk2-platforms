@@ -56,7 +56,7 @@
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE PCIE_HOST_ENABLE           = TRUE
   DEFINE SOC_CDNSP_HOST_ENABLE      = TRUE
-  DEFINE PLATFORM_PD_ENABLE         = FALSE
+  DEFINE PLATFORM_PD_ENABLE         = TRUE
   DEFINE SOC_GMAC_ENABLE            = FALSE
   DEFINE TOKEN_SETUP_SUPPORT        = FALSE
   DEFINE NTFS_DRIVER_SUPPORT        = FALSE
@@ -327,11 +327,10 @@
   # RTC I2C canot be controlled in setup
   gCixTokenSpaceGuid.PcdI2cCtrlEn|0xF7
 
-  # TO-DO: configure PLATFORM_PD_ENABLE
-  # gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses|{ 5, 0xFF, 0xFF, 0xFF }
-  # gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0xE4, 0xFF, 0xFF, 0xFF }
-  # gCixPlatformTokenSpaceGuid.PcdPdDevAlertPins|{ 0xFF, 0xFF, 0xFF, 0xFF }
-  # gCixPlatformTokenSpaceGuid.PcdTypecPortDefaultModes|{ 1, 4, 1, 4}
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses|{ 0xFF, 0xFF, 0xFF, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0xE4, 0xFF, 0xFF, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdPdDevAlertPins|{ 0xFF, 0xFF, 0xFF, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdTypecPortDefaultModes|{ 1, 4, 1, 4}
 
   # USBC0
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
