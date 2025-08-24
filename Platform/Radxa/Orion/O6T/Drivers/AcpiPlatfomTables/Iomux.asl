@@ -193,16 +193,6 @@ Device (MUX1) {
         {
             SKY1_IOMUXC_DRIVE_VBUS5,
         }
-/*
-    PinGroup ("pinctrl_usb0", ResourceProducer, ,
-        RawDataBuffer ()
-        {
-            IO_S5_USB_DRIVE_VBUS0, 0x00, 0xC4,
-        })
-        {
-            SKY1_IOMUXC_DRIVE_VBUS0,
-        }
-*/
     PinGroup ("pinctrl_pcie_x8_rc", ResourceProducer, ,
         RawDataBuffer ()
         {
