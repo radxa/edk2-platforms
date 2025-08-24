@@ -4,7 +4,7 @@
 // default
 extern MEM_QUICK_CONFIG             QuickConfigBlock;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock;
-extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_24G;
+extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G;
 extern MEM_CONFIG_BLOCK_FEATURE     MemFeatureBlock;
 extern MEM_CONFIG_BUSCFG_LP5        MemLpddr5BusCfg;
 extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg;
@@ -19,7 +19,7 @@ extern MEM_CONFIG_BDID_GET_METHOD   BoardIdGetMethod;
   CDCB_BLOCK(MemBiosSetup), \
   CDCB_BLOCK(BoardIdGetMethod), \
   CDCB_BLOCK(GlobalConfigBlock), \
-  CDCB_BLOCK(GlobalConfigBlock_24G), \
+  CDCB_BLOCK(GlobalConfigBlock_16G), \
   CDCB_BLOCK(MemFeatureBlock), \
   CDCB_BLOCK(MemLpddr5BusCfg), \
   CDCB_BLOCK(MemPhyPadCfg), \
