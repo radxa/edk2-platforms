@@ -3,8 +3,8 @@
 
 #define ORION_O6T_8G_ID     0
 #define ORION_O6T_12G_ID    0
-#define ORION_O6T_16G_ID    0
-#define ORION_O6T_24G_ID    3
+#define ORION_O6T_16G_ID    3
+#define ORION_O6T_24G_ID    0
 #define ORION_O6T_32G_ID    0
 
 #define ORION_O6T_8G_MASK     BOARD_ID_MASK(ORION_O6T_8G_ID)
