@@ -49,14 +49,18 @@ LibResetSystem (
   EC_PARAMS_FORCE_EC_RESET  Params;
   CHAR16 *                  PlatformDtbName;
 
+  PlatformDtbName = (CHAR16 *)FixedPcdGetPtr (PcdSiliconDtbUpdateFileName);
+
   switch (ResetType) {
     case EfiResetPlatformSpecific:
       // Map the platform specific reset as reboot
-      Params.Reserved = 0;
-      ForceEcReset (&Params);
+      if (!StrCmp (L"sky1-orion-o6.dtb", PlatformDtbName)) {
+        Params.Reserved = 0;
+        ForceEcReset (&Params);
 
-      DEBUG ((DEBUG_INFO, "%a: force EC reset\n", __FUNCTION__));
-      CpuDeadLoop ();
+        DEBUG ((DEBUG_INFO, "%a: force EC reset\n", __FUNCTION__));
+        CpuDeadLoop ();
+      }
     case EfiResetWarm:
     // Map a warm reset into a cold reset
     case EfiResetCold:
@@ -69,8 +73,6 @@ LibResetSystem (
       GpioConfig (FixedPcdGet8 (PcdPcieRootPort2PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
       GpioConfig (FixedPcdGet8 (PcdPcieRootPort3PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
       GpioConfig (FixedPcdGet8 (PcdPcieRootPort4PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
-
-      PlatformDtbName = (CHAR16 *)FixedPcdGetPtr (PcdSiliconDtbUpdateFileName);
 
       DEBUG ((DEBUG_INFO, "%a: disable additional GPIOs for %a\n", __FUNCTION__, PlatformDtbName));
       if (!StrCmp (L"sky1-orion-o6.dtb", PlatformDtbName)) {
