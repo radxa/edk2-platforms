@@ -295,7 +295,7 @@
   gCixTokenSpaceGuid.PcdPcieRootPort2Enable|TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort3Enable|TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort4Enable|TRUE
-  gCixTokenSpaceGuid.PcdPcieRootPort0AspmSupport|3
+  gCixTokenSpaceGuid.PcdPcieRootPort0AspmSupport|0
   gCixTokenSpaceGuid.PcdPcieRootPort1AspmSupport|3
   gCixTokenSpaceGuid.PcdPcieRootPort2AspmSupport|3
   gCixTokenSpaceGuid.PcdPcieRootPort3AspmSupport|0
@@ -317,7 +317,7 @@
   gCixTokenSpaceGuid.PcdI2c3BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c4En|FALSE            # 40-pin
   gCixTokenSpaceGuid.PcdI2c4BusFreq|100000
-  gCixTokenSpaceGuid.PcdI2c5En|TRUE             # PD Charge
+  gCixTokenSpaceGuid.PcdI2c5En|FALSE            # PD Charge
   gCixTokenSpaceGuid.PcdI2c5BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c6En|FALSE            # Board ID
   gCixTokenSpaceGuid.PcdI2c6BusFreq|50000
@@ -328,9 +328,9 @@
   gCixTokenSpaceGuid.PcdI2cCtrlEn|0xF7
 
   gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses|{ 0xFF, 0xFF, 0xFF, 0xFF }
-  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0xE4, 0xFF, 0xFF, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0xFF, 0xFF, 0xFF, 0xFF }
   gCixPlatformTokenSpaceGuid.PcdPdDevAlertPins|{ 0xFF, 0xFF, 0xFF, 0xFF }
-  gCixPlatformTokenSpaceGuid.PcdTypecPortDefaultModes|{ 1, 4, 1, 4}
+  gCixPlatformTokenSpaceGuid.PcdTypecPortDefaultModes|{ 3, 4, 1, 4}
 
   # USBC0
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
