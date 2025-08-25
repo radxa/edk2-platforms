@@ -304,7 +304,7 @@ SortEnabledAlertPin (
   *EnabledCnt = 0;
 
   for (i = 0; i < PdDevCount; i++) {
-    if (!PdDevList[i].Enabled) {
+    if (!PdDevList[i].Enabled || PdDevList[i].AlertPin == 0xFF) {
       continue;
     }
 
@@ -519,10 +519,12 @@ PdDxeEntryPoint (
 
     if (PdDev->Enabled) {
       // get typec port state
+      PdEnterAlertInterrupt (PdDevIdx);
       Status = PdGetPortState (
                  PdDevIdx,
                  &PdDev->TypecPortState
                  );
+      PdExitAlertInterrupt (PdDevIdx);
       if (EFI_ERROR (Status)) {
         DEBUG ((
           DEBUG_INFO,

@@ -56,7 +56,7 @@
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE PCIE_HOST_ENABLE           = TRUE
   DEFINE SOC_CDNSP_HOST_ENABLE      = TRUE
-  DEFINE PLATFORM_PD_ENABLE         = TRUE
+  DEFINE PLATFORM_PD_ENABLE         = FALSE
   DEFINE SOC_GMAC_ENABLE            = FALSE
   DEFINE TOKEN_SETUP_SUPPORT        = FALSE
   DEFINE NTFS_DRIVER_SUPPORT        = FALSE
@@ -202,7 +202,12 @@
 !if $(SMBIOS_ENABLE) == TRUE
   Platform/Radxa/Orion/O6T/Drivers/PlatformSmbios/PlatformSmbios.inf
 !endif
-
+!if $(PLATFORM_PD_ENABLE) == FALSE
+  Platform/CIX/Sky1/Drivers/PdDxe/PdDxe.inf {
+    <LibraryClasses>
+    PdLib|Platform/Radxa/Library/Cs32g051PdLib/Cs32g051PdLib.inf
+  }
+!endif
 ###################################################################################################
 # BuildOptions Section - Define the module specific tool chain flags that should be used as
 #                        the default flags for a module. These flags are appended to any
@@ -317,7 +322,7 @@
   gCixTokenSpaceGuid.PcdI2c3BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c4En|FALSE            # 40-pin
   gCixTokenSpaceGuid.PcdI2c4BusFreq|100000
-  gCixTokenSpaceGuid.PcdI2c5En|FALSE            # PD Charge
+  gCixTokenSpaceGuid.PcdI2c5En|TRUE             # PD Charge
   gCixTokenSpaceGuid.PcdI2c5BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c6En|FALSE            # Board ID
   gCixTokenSpaceGuid.PcdI2c6BusFreq|50000
@@ -327,8 +332,8 @@
   # RTC I2C canot be controlled in setup
   gCixTokenSpaceGuid.PcdI2cCtrlEn|0xF7
 
-  gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses|{ 0xFF, 0xFF, 0xFF, 0xFF }
-  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0xFF, 0xFF, 0xFF, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses|{ 5, 0xFF, 0xFF, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0x50, 0xFF, 0xFF, 0xFF }
   gCixPlatformTokenSpaceGuid.PcdPdDevAlertPins|{ 0xFF, 0xFF, 0xFF, 0xFF }
   gCixPlatformTokenSpaceGuid.PcdTypecPortDefaultModes|{ 3, 4, 1, 4}
 

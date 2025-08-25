@@ -160,6 +160,10 @@ READ_LOCK_STATUS   = TRUE
 
   INF Platform/Radxa/Drivers/RTL8126/RtkUndiDxe.inf
 
+!if $(PLATFORM_PD_ENABLE) == FALSE
+  INF Platform/CIX/Sky1/Drivers/PdDxe/PdDxe.inf
+!endif
+
 [FV.FVMAIN_COMPACT]
 FvAlignment        = 16
 ERASE_POLARITY     = 1
