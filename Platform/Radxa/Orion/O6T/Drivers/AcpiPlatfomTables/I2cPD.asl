@@ -81,9 +81,35 @@
   })
 
 External (\_SB.I2C5, DeviceObj)
-External (\_SB.SUB2.CUB2, DeviceObj)
-External (\_SB.UCP2, DeviceObj)
 External (\_SB.SUB0.CUB0, DeviceObj)
 External (\_SB.UCP0, DeviceObj)
 
-// TO-DO: add PD node
+Scope (\_SB.I2C5)
+{
+  Device (PD10) {
+    Name (_HID, "CIXH200D")
+    Name (_UID, 0x0)
+    Name (_STA, 0xB)
+    Name (_CRS, ResourceTemplate () {
+      I2cSerialBusV2 (0x50,
+                      ControllerInitiated,
+                      100000,
+                      AddressingMode7Bit,
+                      "\\_SB.I2C5",
+                      0x0,
+                      ResourceConsumer,
+                      ,
+                      Exclusive
+                      ,)
+      GpioInt(Level, ActiveLow, Exclusive, PullUp, , "\\_SB.GPI4") { 8 }    // GPIO009
+    })
+    Name (_DSD, Package () {
+          ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+          Package () {
+              Package () {"id", 0},
+          },
+          DP_USBC_CON_DSD("usbc_con0")
+    })
+    DP_USBC_CON_NODES(\_SB.SUB0.CUB0, \_SB.UCP0, \_SB.UCP0)
+  }
+}

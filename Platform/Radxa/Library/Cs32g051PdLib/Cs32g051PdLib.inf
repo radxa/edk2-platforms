@@ -1,0 +1,44 @@
+#/**
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x0001001A
+  BASE_NAME                      = Cs32g051PdLib
+  FILE_GUID                      = a884bfc2-0542-4848-b2f1-424604b07be1
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = PdLib|DXE_DRIVER  DXE_RUNTIME_DRIVER DXE_SMM_DRIVER UEFI_APPLICATION UEFI_DRIVER SMM_CORE
+
+[Sources.common]
+  Cs32g051PdLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  MemoryAllocationLib
+  UefiLib
+  UefiBootServicesTableLib
+
+[Guids]
+  gCixI2cDevicePathGuid
+
+[Protocols]
+  gEfiI2cMasterProtocolGuid
+  gEfiDevicePathProtocolGuid
+
+[FixedPcd]
+  gCixPlatformTokenSpaceGuid.PcdPdDevCount
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses
