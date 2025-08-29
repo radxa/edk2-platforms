@@ -519,12 +519,10 @@ PdDxeEntryPoint (
 
     if (PdDev->Enabled) {
       // get typec port state
-      PdEnterAlertInterrupt (PdDevIdx);
       Status = PdGetPortState (
                  PdDevIdx,
                  &PdDev->TypecPortState
                  );
-      PdExitAlertInterrupt (PdDevIdx);
       if (EFI_ERROR (Status)) {
         DEBUG ((
           DEBUG_INFO,

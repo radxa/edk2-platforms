@@ -333,8 +333,8 @@
   gCixTokenSpaceGuid.PcdI2cCtrlEn|0xF7
 
   gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses|{ 5, 0xFF, 0xFF, 0xFF }
-  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0x50, 0xFF, 0xFF, 0xFF }
-  gCixPlatformTokenSpaceGuid.PcdPdDevAlertPins|{ 0xFF, 0xFF, 0xFF, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0x51, 0xFF, 0xFF, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdPdDevAlertPins|{ 44, 0xFF, 0xFF, 0xFF }
   gCixPlatformTokenSpaceGuid.PcdTypecPortDefaultModes|{ 3, 4, 1, 4}
 
   # USBC0
