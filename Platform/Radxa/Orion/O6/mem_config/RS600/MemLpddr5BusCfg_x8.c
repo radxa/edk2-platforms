@@ -8,7 +8,7 @@ MEM_CONFIG_BUSCFG_LP5 MemLpddr5BusCfg_rs600_x8 = {
   {
     .Signature      = MEM_CONFIG_BLOCK_BUSCFG_LP5_SIGNATURE,
     .BlockSize      = sizeof(MEM_CONFIG_BUSCFG_LP5) + sizeof(MEM_CONFIG_BUSCFG_LP5_ENTRY) * ENTRY_COUNT,
-    .BoardMask      = RS600_64G_x8_MASK
+    .BoardMask      = RS600_64G_x8_MASK | RS600_32G_x8_MASK | RS600_48G_MASK
   },
   {
     //                                                                                                     Dq   Ca
