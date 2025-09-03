@@ -313,6 +313,41 @@ PdGetPortState (
     }
   }
 
+  // check id HPD_IRQ is set in data status
+  if (!(rdata[2] & 0x40)) {
+    // if not, skip
+    DEBUG ((
+      DEBUG_INFO,
+      "Pd Device %d IRQ_HPD flag is not set, skip set ack of HPD IRQ\n",
+      PdDevIdx
+      ));
+
+    return Status;
+  }
+
+  DEBUG ((
+    DEBUG_INFO,
+    "Pd Device %d, I2C Bus %d, Slave Address %x, set ack of HPD IRQ\n",
+    PdDevIdx,
+    I2cBus,
+    SlaveAddress
+    ));
+
+  wdata[0] = DATA_CONTROL_REG;
+  wdata[1] = 2;
+  wdata[2] = 0;
+  wdata[3] = BIT5; // Clear HPD_IRQ in data control
+  Status   = I2C_Block_Write (I2cMaster, SlaveAddress, wdata, 4);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((
+      DEBUG_ERROR,
+      "Pd Device %d write ack for HPD_IRQ fail, status %r\n",
+      PdDevIdx,
+      Status
+      ));
+    return Status;
+  }
+
   return Status;
 }
 
@@ -398,8 +433,6 @@ PdExitAlertInterrupt (
   UINT8                    SlaveAddress = 0;
   EFI_I2C_MASTER_PROTOCOL  *I2cMaster   = NULL;
   EFI_HANDLE               I2cDevHandle;
-  UINT8                    wdata[4] = { DATA_STATUS_REG };
-  UINT8                    rdata[6] = { 0 };
 
   Status = GetPdDevConfig (PdDevIdx, &I2cBus, &SlaveAddress);
   if (EFI_ERROR (Status)) {
@@ -411,14 +444,6 @@ PdExitAlertInterrupt (
       ));
     return EFI_UNSUPPORTED;
   }
-
-  DEBUG ((
-    DEBUG_INFO,
-    "Pd Device %d, I2C Bus %d, Slave Address %x, set ack of HPD IRQ\n",
-    PdDevIdx,
-    I2cBus,
-    SlaveAddress
-    ));
 
   Status = GetI2cDeviceHandle (I2cBus, &I2cDevHandle);
   if (EFI_ERROR (Status)) {
@@ -439,56 +464,6 @@ PdExitAlertInterrupt (
       "Pd Device %d handle Protocol %g status %r\n",
       PdDevIdx,
       &gEfiI2cMasterProtocolGuid,
-      Status
-      ));
-    return Status;
-  }
-
-  Status = I2C_Block_Read (I2cMaster, SlaveAddress, wdata, 1, rdata, 6);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((
-      DEBUG_ERROR,
-      "Pd Device %d read pd data status %r\n",
-      PdDevIdx,
-      Status
-      ));
-    return Status;
-  }
-
-  DEBUG ((
-    DEBUG_INFO,
-    "Pd Device %d read pd data status, %02x: %02x%02x%02x%02x%02x\n",
-    PdDevIdx,
-    rdata[0],
-    rdata[1],
-    rdata[2],
-    rdata[3],
-    rdata[4],
-    rdata[5]
-    ));
-
-  // check id HPD_IRQ is set in data status
-  if (!(rdata[2] & 0x40)) {
-    // if not, skip
-    DEBUG ((
-      DEBUG_INFO,
-      "Pd Device %d IRQ_HPD flag is not set, skip set ack of HPD IRQ\n",
-      PdDevIdx
-      ));
-
-    return Status;
-  }
-
-  wdata[0] = DATA_CONTROL_REG;
-  wdata[1] = 2;
-  wdata[2] = 0;
-  wdata[3] = BIT5; // Clear HPD_IRQ in data control
-  Status   = I2C_Block_Write (I2cMaster, SlaveAddress, wdata, 4);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((
-      DEBUG_ERROR,
-      "Pd Device %d write ack for HPD_IRQ fail, status %r\n",
-      PdDevIdx,
       Status
       ));
     return Status;
