@@ -33,3 +33,14 @@
 !if $(ARCH) == AARCH64
   INF Emulator/X86EmulatorDxe/X86EmulatorDxe.inf
 !endif
+
+  #
+  # AHCI Support
+  #
+  INF MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf
+  INF MdeModulePkg/Bus/Ata/AtaBusDxe/AtaBusDxe.inf
+
+  #
+  # SATA Controller
+  #
+  INF MdeModulePkg/Bus/Pci/SataControllerDxe/SataControllerDxe.inf

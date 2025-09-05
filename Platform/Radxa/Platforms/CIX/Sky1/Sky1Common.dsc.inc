@@ -54,3 +54,14 @@
 !if $(TOKEN_RAM_DISK_SUPPORT) == FALSE
   MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
 !endif
+
+  #
+  # AHCI Support
+  #
+  MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf
+  MdeModulePkg/Bus/Ata/AtaBusDxe/AtaBusDxe.inf
+
+  #
+  # SATA Controller
+  #
+  MdeModulePkg/Bus/Pci/SataControllerDxe/SataControllerDxe.inf
