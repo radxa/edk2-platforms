@@ -33,3 +33,9 @@
 !if $(ARCH) == AARCH64
   INF Emulator/X86EmulatorDxe/X86EmulatorDxe.inf
 !endif
+
+  #
+  # Firmware Performance Data Table (FPDT)
+  #
+  INF MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
+  INF MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableDxe/FirmwarePerformanceDxe.inf
