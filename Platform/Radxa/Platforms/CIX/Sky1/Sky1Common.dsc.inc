@@ -1,3 +1,8 @@
+[LibraryClasses.common]
+
+PerformanceLib|MdePkg/Library/BasePerformanceLibNull/BasePerformanceLibNull.inf
+ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
+
 [PcdsFixedAtBuild.common]
 
 !if $(DEBUG_ON_UART3) == FALSE
@@ -16,6 +21,11 @@
 
   # Default hardware description should be ACPI
   gEmbeddedTokenSpaceGuid.PcdDefaultDtPref|FALSE
+
+  # Enable performance measurment
+  gEfiMdePkgTokenSpaceGuid.PcdPerformanceLibraryPropertyMask|1
+  gEfiMdePkgTokenSpaceGuid.PcdReportStatusCodePropertyMask|0x07
+  gEfiMdeModulePkgTokenSpaceGuid.PcdExtFpdtBootRecordPadSize|0x300000
 
 [Components.common]
 
@@ -54,3 +64,12 @@
 !if $(TOKEN_RAM_DISK_SUPPORT) == FALSE
   MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
 !endif
+
+  #
+  # Firmware Performance Data Table (FPDT)
+  #
+  MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
+  MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableDxe/FirmwarePerformanceDxe.inf {
+    <LibraryClasses>
+      LockBoxLib|MdeModulePkg/Library/LockBoxNullLib/LockBoxNullLib.inf
+  }
