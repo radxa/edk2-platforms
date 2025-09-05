@@ -44,3 +44,9 @@
   # SATA Controller
   #
   INF MdeModulePkg/Bus/Pci/SataControllerDxe/SataControllerDxe.inf
+
+  #
+  # Firmware Performance Data Table (FPDT)
+  #
+  INF MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
+  INF MdeModulePkg/Universal/Acpi/FirmwarePerformanceDataTableDxe/FirmwarePerformanceDxe.inf
