@@ -37,6 +37,7 @@
   GpioLib
 
 [Pcd]
+  gArmTokenSpaceGuid.PcdSystemProductName
   gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName
   gCixTokenSpaceGuid.PcdPcieRootPort0PeResetPin
   gCixTokenSpaceGuid.PcdPcieRootPort1PeResetPin
