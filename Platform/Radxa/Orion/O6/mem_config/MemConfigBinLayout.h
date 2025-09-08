@@ -31,6 +31,9 @@ extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_x8;
 extern MEM_CONFIG_BUSCFG_LP5        MemLpddr5BusCfg_rs600_rayson;
 extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_rayson;
 
+extern MEM_CONFIG_BUSCFG_LP5        MemLpddr5BusCfg_rs600_12G;
+extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_12G;
+
 #define CDCB_BLOCK_LIST \
   /* default */ \
   CDCB_BLOCK(MemBiosSetup), \
@@ -57,5 +60,7 @@ extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_rayson;
   CDCB_BLOCK(MemPhyPadCfg_rs600_x8), \
   CDCB_BLOCK(MemLpddr5BusCfg_rs600_rayson), \
   CDCB_BLOCK(MemPhyPadCfg_rs600_rayson), \
+  CDCB_BLOCK(MemLpddr5BusCfg_rs600_12G), \
+  CDCB_BLOCK(MemPhyPadCfg_rs600_12G), \
 
 #endif
