@@ -47,14 +47,14 @@ LibResetSystem (
 {
   ARM_SMC_ARGS              ArmSmcArgs;
   EC_PARAMS_FORCE_EC_RESET  Params;
-  CHAR16 *                  PlatformDtbName;
+  CHAR16 *                  SystemProductName;
 
-  PlatformDtbName = (CHAR16 *)FixedPcdGetPtr (PcdSiliconDtbUpdateFileName);
+  SystemProductName = (CHAR16 *)FixedPcdGetPtr (PcdSystemProductName);
 
   switch (ResetType) {
     case EfiResetPlatformSpecific:
       // Map the platform specific reset as reboot
-      if (!StrCmp (L"sky1-orion-o6.dtb", PlatformDtbName)) {
+      if (!StrCmp (L"Radxa Orion O6", SystemProductName)) {
         Params.Reserved = 0;
         ForceEcReset (&Params);
 
@@ -74,15 +74,22 @@ LibResetSystem (
       GpioConfig (FixedPcdGet8 (PcdPcieRootPort3PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
       GpioConfig (FixedPcdGet8 (PcdPcieRootPort4PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
 
-      DEBUG ((DEBUG_INFO, "%a: disable additional GPIOs for %a\n", __FUNCTION__, PlatformDtbName));
-      if (!StrCmp (L"sky1-orion-o6.dtb", PlatformDtbName)) {
+      DEBUG ((DEBUG_INFO, "%a: disable additional GPIOs for %a\n", __FUNCTION__, SystemProductName));
+      if (!StrCmp (L"Radxa Orion O6", SystemProductName)) {
         GpioConfig (12, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of M2_SSD_PWREN
         GpioConfig (17, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of VGFX_PWREN
-      } else if (!StrCmp (L"sky1-orion-o6t.dtb", PlatformDtbName)) {
+      } else if (!StrCmp (L"Radxa Orion O6T", SystemProductName)) {
         GpioConfig (13, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of WLAN_PWREN
         GpioConfig (14, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of UFS_5V_EN
         GpioConfig (23, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of TPM_PWR_EN
         GpioConfig (70, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of OCULINK_PWREN
+        GpioConfig (73, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of BKEY_PWR_EN
+        GpioConfig (81, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of CAM_PWREN
+      } else if (!StrCmp (L"Radxa Orion O6N", SystemProductName)) {
+        GpioConfig ( 1, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of GPIO001_MKEY_EN
+        GpioConfig (13, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of WLAN_PWREN
+        GpioConfig (14, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of UFS_5V_EN
+        GpioConfig (23, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of TPM_PWR_EN
         GpioConfig (73, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of BKEY_PWR_EN
         GpioConfig (81, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of CAM_PWREN
       }

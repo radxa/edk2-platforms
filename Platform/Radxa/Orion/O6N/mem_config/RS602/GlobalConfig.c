@@ -1,0 +1,143 @@
+#include "BoardConfig.h"
+#include "MemConfigBinTool.h"
+#include "MemConfigurationTable.h"
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_8G = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = ORION_O6N_8G_MASK
+  },
+  .MaxFreq          = MEM_CFG_MEMFREQ,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 8,
+  .DeviceWidth      = 16,
+  .RankNum          = 1,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_12G = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = ORION_O6N_12G_MASK
+  },
+  .MaxFreq          = MEM_CFG_MEMFREQ,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 12,
+  .DeviceWidth      = 16,
+  .RankNum          = 1,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_16G = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = ORION_O6N_16G_MASK
+  },
+  .MaxFreq          = MEM_CFG_MEMFREQ,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 16,
+  .DeviceWidth      = 16,
+  .RankNum          = 1,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_32G = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = ORION_O6N_32G_MASK
+  },
+  .MaxFreq          = MEM_CFG_MEMFREQ,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 16,
+  .DeviceWidth      = 16,
+  .RankNum          = 2,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_32G_Lo = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = ORION_O6N_32G_LOW_MASK
+  },
+  .MaxFreq          = DDR4800_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 16,
+  .DeviceWidth      = 16,
+  .RankNum          = 2,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_32G_x8 = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = ORION_O6N_32G_HIVE_MASK
+  },
+  .MaxFreq          = DDR5500_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 8,
+  .DeviceWidth      = 8,
+  .RankNum          = 2,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_48G = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = ORION_O6N_48G_HIVE_MASK
+  },
+  .MaxFreq          = DDR5500_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 12,
+  .DeviceWidth      = 8,
+  .RankNum          = 2,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_24G = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = ORION_O6N_24G_HIVE_MASK
+  },
+  .MaxFreq          = DDR5500_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 12,
+  .DeviceWidth      = 16,
+  .RankNum          = 2,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_64G = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = ORION_O6N_64G_HYNIX_MASK
+  },
+  .MaxFreq          = DDR5500_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 16,
+  .DeviceWidth      = 8,
+  .RankNum          = 2,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_64G_Rayson = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = ORION_O6N_64G_RAYSON_MASK
+  },
+  .MaxFreq          = DDR5500_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 16,
+  .DeviceWidth      = 8,
+  .RankNum          = 2,
+};
