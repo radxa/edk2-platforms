@@ -33,20 +33,24 @@ formset
       text   = STRING_TOKEN(STR_PCB_SKU_NAME),
       text   = STRING_TOKEN(STR_PCB_SKU_VALUE);
 
-    text
-      help   = STRING_TOKEN(STR_EMPTY_STRING),
-      text   = STRING_TOKEN(STR_BOARD_REV_NAME),
-      text   = STRING_TOKEN(STR_BOARD_REV_VALUE);
+    suppressif FixedPcdGetBool (PcdEcAcpiI2cEn) == 0;
+      text
+        help   = STRING_TOKEN(STR_EMPTY_STRING),
+        text   = STRING_TOKEN(STR_BOARD_REV_NAME),
+        text   = STRING_TOKEN(STR_BOARD_REV_VALUE);
+    endif;
 
     text
       help   = STRING_TOKEN(STR_EMPTY_STRING),
       text   = STRING_TOKEN(STR_MEMORY_TYPE_NAME),
       text   = STRING_TOKEN(STR_MEMORY_TYPE_VALUE);
 
-    text
-      help   = STRING_TOKEN(STR_EMPTY_STRING),
-      text   = STRING_TOKEN(STR_PMIC_VER_NAME),
-      text   = STRING_TOKEN(STR_PMIC_VER_VALUE);
+    suppressif FixedPcdGetBool (PcdEcAcpiI2cEn) == 0;
+      text
+        help   = STRING_TOKEN(STR_EMPTY_STRING),
+        text   = STRING_TOKEN(STR_PMIC_VER_NAME),
+        text   = STRING_TOKEN(STR_PMIC_VER_VALUE);
+    endif;
 
     text
       help   = STRING_TOKEN(STR_EMPTY_STRING),
@@ -86,10 +90,12 @@ formset
       text   = STRING_TOKEN(STR_UEFI_VER_NAME),
       text   = STRING_TOKEN(STR_UEFI_VER_VALUE);
 
-    text
-      help   = STRING_TOKEN(STR_EMPTY_STRING),
-      text   = STRING_TOKEN(STR_EC_VER_NAME),
-      text   = STRING_TOKEN(STR_EC_VER_VALUE);
+    suppressif FixedPcdGetBool (PcdEcAcpiI2cEn) == 0;
+      text
+        help   = STRING_TOKEN(STR_EMPTY_STRING),
+        text   = STRING_TOKEN(STR_EC_VER_NAME),
+        text   = STRING_TOKEN(STR_EC_VER_VALUE);
+    endif;
 
     subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
     subtitle text = STRING_TOKEN(STR_SOURCE_CODE);

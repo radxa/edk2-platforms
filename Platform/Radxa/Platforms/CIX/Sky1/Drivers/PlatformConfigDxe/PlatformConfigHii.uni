@@ -31,14 +31,15 @@
 #string STR_IPV6_HTTP_BOOT_PROMPT       #language en-US "Ipv6 Http Boot"
 #string STR_IPV6_HTTP_BOOT_PROMPT_HELP  #language en-US "Enable/Disable Ipv6 Http boot"
 
-#string STR_RESTORE_AC_POWER_LOSS       #language en-US "Restore AC Power Loss"
-#string STR_RESTORE_AC_POWER_LOSS_HELP  #language en-US "Select AC power state when power is re-applied after a power failure."
+#string STR_STATE_AFTER_G3              #language en-US "Restore AC Power Loss"
+#string STR_STATE_AFTER_G3_HELP         #language en-US "Select AC power state when power is re-applied after a power failure."
 #string STR_S0_AFTER_G3_STRING          #language en-US "Power On"
 #string STR_S5_AFTER_G3_STRING          #language en-US "Power Off"
 #string STR_LASTSTATE_AFTER_G3_STRING   #language en-US "Last State"
 
-#string STR_ENABLE_SPCR_TABLE           #language en-US "Support SPCR"
-#string STR_ENABLE_SPCR_TABLE_HELP      #language en-US "Enable or Disable SPCR Table."
+#string STR_ENABLE_SPCR_TABLE           #language en-US "ACPI SPCR Table"
+#string STR_ENABLE_SPCR_TABLE_HELP      #language en-US "Enable/Disable Serial Port Console Redirection (SPCR) Table.\n"
+                                                        "This table provide OS the information of the firmware console port."
 
 #string STR_EC_FAN_MODE_PROMPT          #language en-US "EC Fan Mode"
 #string STR_EC_FAN_MODE_PROMPT_HELP     #language en-US "Select the default EC fan mode."

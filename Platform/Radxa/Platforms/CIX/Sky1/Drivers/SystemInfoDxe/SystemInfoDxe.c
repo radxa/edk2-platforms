@@ -16,6 +16,7 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiDriverEntryPoint.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
+#include <Library/GpioLib.h>
 
 #include "SystemInfoDxe.h"
 
@@ -66,18 +67,98 @@ AsciiToUnicode (
 }
 
 VOID
-InitializeHardwareInfo (
+Decode4BitMemType (
+  EFI_HII_HANDLE           HiiHandle,
+  UINT16                   MemType
+  )
+{
+  CHAR8   DateBuf[128]   = { 0 };
+  CHAR16  NewString[128] = { 0 };
+  CHAR8   *pFmtStr = NULL;
+  
+  switch (MemType) {
+    case 0:
+      pFmtStr = "4 GiB";
+      break;
+    case 2:
+      pFmtStr = "2 GiB";
+      break;
+    case 5:
+      pFmtStr = "3 GiB";
+      break;
+    case 6:
+      pFmtStr = "8 GiB (Hive)";
+      break;
+    case 7:
+      pFmtStr = "6 GiB (Hive)";
+      break;
+    case 8:
+      pFmtStr = "8 GiB (V1.1)";
+      break;
+    case 9:
+      pFmtStr = "12 GiB (Hive)";
+      break;
+    case 10:
+      pFmtStr = "16 GiB (Hynix)";
+      break;
+    case 11:
+      pFmtStr = "8 GiB";
+      break;
+    case 12:
+      pFmtStr = "16 GiB (Rayson)";
+      break;
+    case 15:
+      pFmtStr = "Development Sample";
+      break;
+    case (UINT16) -1:
+      pFmtStr = "Internal Error";
+      break;
+    default:
+      pFmtStr = "Undefined";
+      break;
+  }
+  AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%a | (Raw Value: %d)", pFmtStr, MemType);
+  AsciiToUnicode (DateBuf, NewString);
+  HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_TYPE_VALUE), NewString, NULL);
+}
+
+VOID
+Decode2BitMemType (
+  EFI_HII_HANDLE           HiiHandle,
+  UINT16                   MemType
+  )
+{
+  CHAR8   DateBuf[128]   = { 0 };
+  CHAR16  NewString[128] = { 0 };
+  CHAR8   *pFmtStr = NULL;
+  
+  switch (MemType) {
+    case 3:
+      pFmtStr = "Development Sample";
+      break;
+    case (UINT16) -1:
+      pFmtStr = "Internal Error";
+      break;
+    default:
+      pFmtStr = "Undefined";
+      break;
+  }
+  AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%a | (Raw Value: %d)", pFmtStr, MemType);
+  AsciiToUnicode (DateBuf, NewString);
+  HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_TYPE_VALUE), NewString, NULL);
+}
+
+VOID
+InitializeHardwareInfoWithEC (
   EFI_HII_HANDLE           HiiHandle
   )
 {
   EFI_STATUS                 Status;
   BOARD_ID_INFO              BoardID;
-  CIX_SOC_INFO_PROTOCOL      *pCixSocInfoProtocol = NULL;
   EC_PLATFORM_PROTOCOL       *pEcPlatformProtocol = NULL;
   EC_RESPONSE                EcResponse;
   CHAR8                      DateBuf[128]   = { 0 };
   CHAR16                     NewString[128] = { 0 };
-  CHAR8                      *pFmtStr = NULL;
 
   Status = gBS->LocateProtocol (&gCixEcPlatformProtocolGuid, NULL, (VOID **)&pEcPlatformProtocol);
   if (EFI_ERROR (Status)) {
@@ -90,16 +171,6 @@ InitializeHardwareInfo (
     DEBUG ((DEBUG_ERROR, "Get Board ID failed\n"));
     return;
   }
-
-  Status = gBS->LocateProtocol (&gCixSocInfoProtocolGuid, NULL, (VOID **)&pCixSocInfoProtocol);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "Locate Protocol failed for %g\n", &gCixSocInfoProtocolGuid));
-    return;
-  }
-
-  AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%d GiB", pCixSocInfoProtocol->MemInfo->TotalSize/1024);
-  AsciiToUnicode (DateBuf, NewString);
-  HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_SIZE_VALUE), NewString, NULL);
 
   BoardID.Bits.PcbSku = EcResponse.BoardId.Id.Sku + (EcResponse.BoardId.Id.SkuExt << 3);
   switch (BoardID.Bits.PcbSku) {
@@ -114,41 +185,7 @@ InitializeHardwareInfo (
   }
 
   BoardID.Bits.MemType = EcResponse.BoardId.Id.Memory + (EcResponse.BoardId.Id.MemExt << 3);
-  switch (BoardID.Bits.MemType) {
-    case 0:
-      pFmtStr = "4 GiB";
-      break;
-    case 2:
-      pFmtStr = "2 GiB";
-      break;
-    case 5:
-      pFmtStr = "3 GiB";
-      break;
-    case 7:
-      pFmtStr = "6 GiB";
-      break;
-    case 8:
-      pFmtStr = "8 GiB";
-      break;
-    case 9:
-      pFmtStr = "12 GiB";
-      break;
-    case 10:
-      pFmtStr = "16 GiB (Hynix)";
-      break;
-    case 11:
-      pFmtStr = "8 GiB";
-      break;
-    case 12:
-      pFmtStr = "16 GiB (Rayson)";
-      break;
-    default:
-      pFmtStr = "Undefined";
-      break;
-  }
-  AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%a | (Raw Value: %d)", pFmtStr, BoardID.Bits.MemType);
-  AsciiToUnicode (DateBuf, NewString);
-  HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_TYPE_VALUE), NewString, NULL);
+  Decode4BitMemType (HiiHandle, BoardID.Bits.MemType);
 
   BoardID.Bits.BoardRev = EcResponse.BoardId.Id.Rev;
   switch (BoardID.Bits.BoardRev) {
@@ -183,6 +220,102 @@ InitializeHardwareInfo (
     HiiSetString (HiiHandle, STRING_TOKEN (STR_PMIC_VER_VALUE), NewString, NULL);
   } else {
     HiiSetString (HiiHandle, STRING_TOKEN (STR_PMIC_VER_VALUE), L"Undefined", NULL);
+  }
+}
+
+/**
+  GPIOs is ordered from the lowest bit to the highest bit.
+**/
+EFI_STATUS
+GpioGetMultiple (
+  IN UINT32   *GPIOs,
+  IN UINT32   Count,
+  OUT UINT32  *Output
+  )
+{
+  UINT32              Index;
+  EFI_STATUS          Status;
+  IO_INOUT_VALUE_SEL  Value;
+
+  *Output = 0;
+
+  for (Index = 0; Index < Count; Index++) {
+    Status = GpioGet (GPIOs[Index], &Value);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a: GpioGet failed for %d: %r\n", __FUNCTION__, Index, Status));
+      *Output = -1;
+      return Status;
+    } else if (Value == INOUT_VALUE_DEFAULT) {
+      DEBUG ((DEBUG_ERROR, "%a: GpioGet returned default value for %d\n", __FUNCTION__, Index));
+      *Output = -1;
+      return EFI_DEVICE_ERROR;
+    }
+
+    DEBUG ((DEBUG_INFO, "%a: GPIOs[%d] = %d\n", __FUNCTION__, Index, Value));
+    *Output |= (Value << Index);
+    DEBUG ((DEBUG_INFO, "%a: Output = %d\n", __FUNCTION__, *Output));
+  }
+
+  DEBUG ((DEBUG_INFO, "%a: final Output = %d\n", __FUNCTION__, *Output));
+  return EFI_SUCCESS;
+}
+
+VOID
+InitializeHardwareInfoWithGPIO (
+  EFI_HII_HANDLE           HiiHandle
+  )
+{
+  EFI_STATUS          Status;
+  CHAR16 *            SystemProductName;
+  UINT32              MemType;
+  
+  SystemProductName = (CHAR16 *)FixedPcdGetPtr (PcdSystemProductName);
+  HiiSetString (HiiHandle, STRING_TOKEN (STR_PCB_SKU_VALUE), SystemProductName, NULL);
+
+  if (!StrCmp (L"Radxa Orion O6T", SystemProductName)) {
+    Status = GpioGetMultiple ((UINT32[]){49, 50}, 2, &MemType);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a: GpioGetMultiple failed: %r\n", __FUNCTION__, Status));
+      return;
+    }
+    Decode2BitMemType (HiiHandle, MemType);
+  } else if (!StrCmp (L"Radxa Orion O6N", SystemProductName)) {
+    Status = GpioGetMultiple ((UINT32[]){49, 50, 57, 60}, 4, &MemType);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a: GpioGetMultiple failed: %r\n", __FUNCTION__, Status));
+      return;
+    }
+    Decode4BitMemType (HiiHandle, MemType);
+  } else {
+    DEBUG ((DEBUG_ERROR, "%a: Unknown product: %a\n", __FUNCTION__, SystemProductName));
+    HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_TYPE_VALUE), L"Internal Error", NULL);
+  }
+}
+
+VOID
+InitializeHardwareInfo (
+  EFI_HII_HANDLE           HiiHandle
+  )
+{
+  EFI_STATUS                 Status;
+  CIX_SOC_INFO_PROTOCOL      *pCixSocInfoProtocol = NULL;
+  CHAR8                      DateBuf[128]   = { 0 };
+  CHAR16                     NewString[128] = { 0 };
+
+  Status = gBS->LocateProtocol (&gCixSocInfoProtocolGuid, NULL, (VOID **)&pCixSocInfoProtocol);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Locate Protocol failed for %g\n", &gCixSocInfoProtocolGuid));
+    return;
+  }
+
+  AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%d GiB", pCixSocInfoProtocol->MemInfo->TotalSize/1024);
+  AsciiToUnicode (DateBuf, NewString);
+  HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_SIZE_VALUE), NewString, NULL);
+
+  if (FixedPcdGetBool (PcdEcAcpiI2cEn)) {
+    InitializeHardwareInfoWithEC (HiiHandle);
+  } else {
+    InitializeHardwareInfoWithGPIO (HiiHandle);
   }
 }
 
