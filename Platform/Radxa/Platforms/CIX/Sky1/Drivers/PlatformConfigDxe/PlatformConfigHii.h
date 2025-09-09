@@ -26,6 +26,7 @@
 extern EFI_GUID  gPlatformConfigFormSetGuid;
 
 #define PLATFORM_CONFIG_FORM_ID     0x2001
-#define QUESTION_STATE_AFTER_G3_ID  0x2002
+#define CPU_CONFIG_FORM_ID          0x2014
+#define QUESTION_STATE_AFTER_G3_ID  0x1800
 
 #endif
