@@ -49,15 +49,17 @@ formset
 
     subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
 
-    oneof varid     = PlatformSetupVar.StateAfterG3,
-      questionid    = QUESTION_STATE_AFTER_G3_ID,
-      prompt        = STRING_TOKEN(STR_RESTORE_AC_POWER_LOSS),
-      help          = STRING_TOKEN(STR_RESTORE_AC_POWER_LOSS_HELP),
-      flags         = NUMERIC_SIZE_1 | INTERACTIVE | RESET_REQUIRED,
-      default       = FixedPcdGet8 (PcdStateAfterG3),
-      option text   = STRING_TOKEN(STR_S5_AFTER_G3_STRING),        value = 0, flags = RESET_REQUIRED;
-      option text   = STRING_TOKEN(STR_S0_AFTER_G3_STRING),        value = 1, flags = RESET_REQUIRED;
-    endoneof;
+    suppressif FixedPcdGetBool (PcdEcAcpiI2cEn) == 0;
+      oneof varid     = PlatformSetupVar.StateAfterG3,
+        questionid    = QUESTION_STATE_AFTER_G3_ID,
+        prompt        = STRING_TOKEN(STR_STATE_AFTER_G3),
+        help          = STRING_TOKEN(STR_STATE_AFTER_G3_HELP),
+        flags         = NUMERIC_SIZE_1 | INTERACTIVE | RESET_REQUIRED,
+        default       = FixedPcdGet8 (PcdStateAfterG3),
+        option text   = STRING_TOKEN(STR_S5_AFTER_G3_STRING),        value = 0, flags = RESET_REQUIRED;
+        option text   = STRING_TOKEN(STR_S0_AFTER_G3_STRING),        value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
 
     suppressif ideqval DtAcpiPref.Pref == DT_ACPI_SELECT_DT;
       oneof varid   = PlatformSetupVar.SpcrEnable,
@@ -69,13 +71,15 @@ formset
       endoneof;
     endif;
 
-    oneof varid   = PlatformSetupVar.EcFanMode,
-      prompt      = STRING_TOKEN(STR_EC_FAN_MODE_PROMPT),
-      help        = STRING_TOKEN(STR_EC_FAN_MODE_PROMPT_HELP),
-      default     = FixedPcdGet8 (PcdEcDefaultFanMode),
-      option text = STRING_TOKEN(STR_AUTO_MODE), value = 0, flags = RESET_REQUIRED;
-      option text = STRING_TOKEN(STR_PERF_MODE), value = 1, flags = RESET_REQUIRED;
-    endoneof;
+    suppressif FixedPcdGetBool (PcdEcAcpiI2cEn) == 0;
+      oneof varid   = PlatformSetupVar.EcFanMode,
+        prompt      = STRING_TOKEN(STR_EC_FAN_MODE_PROMPT),
+        help        = STRING_TOKEN(STR_EC_FAN_MODE_PROMPT_HELP),
+        default     = FixedPcdGet8 (PcdEcDefaultFanMode),
+        option text = STRING_TOKEN(STR_AUTO_MODE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_PERF_MODE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
 
     oneof varid     = NetworkStackVar.Enable,
       prompt        = STRING_TOKEN(STR_NETWORK_STACK_PROMPT),
