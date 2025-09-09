@@ -80,6 +80,7 @@
   gCixTokenSpaceGuid.PcdCpuCore9En
   gCixTokenSpaceGuid.PcdCpuCore10En
   gCixTokenSpaceGuid.PcdCpuCore11En
+  gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn
 
 [Depex]
   TRUE
