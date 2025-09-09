@@ -26,6 +26,8 @@
   PlatformConfigDxe.c
   PlatformConfigHii.vfr
   PlatformConfigHii.uni
+  CpuMenu/CpuConfig.hfr
+  CpuMenu/CpuConfig.uni
 
 [Packages]
   EmbeddedPkg/EmbeddedPkg.dec
@@ -66,6 +68,18 @@
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
   gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode
   gRadxaTokenSpaceGuid.PcdCpuFMax
+  gCixTokenSpaceGuid.PcdAcpiCppcType
+  gCixTokenSpaceGuid.PcdCpuCore1En
+  gCixTokenSpaceGuid.PcdCpuCore2En
+  gCixTokenSpaceGuid.PcdCpuCore3En
+  gCixTokenSpaceGuid.PcdCpuCore4En
+  gCixTokenSpaceGuid.PcdCpuCore5En
+  gCixTokenSpaceGuid.PcdCpuCore6En
+  gCixTokenSpaceGuid.PcdCpuCore7En
+  gCixTokenSpaceGuid.PcdCpuCore8En
+  gCixTokenSpaceGuid.PcdCpuCore9En
+  gCixTokenSpaceGuid.PcdCpuCore10En
+  gCixTokenSpaceGuid.PcdCpuCore11En
 
 [Depex]
   TRUE
