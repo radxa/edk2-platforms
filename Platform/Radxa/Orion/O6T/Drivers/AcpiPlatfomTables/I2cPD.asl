@@ -91,7 +91,7 @@ Scope (\_SB.I2C5)
     Name (_UID, 0x0)
     Name (_STA, 0xB)
     Name (_CRS, ResourceTemplate () {
-      I2cSerialBusV2 (0x50,
+      I2cSerialBusV2 (0x51,
                       ControllerInitiated,
                       100000,
                       AddressingMode7Bit,
