@@ -6,10 +6,10 @@
 #define USBC_PHY_MODE_COMBO  0x3 // USB and DP
 
 /* Full function */
-/* But we have no driver yet */
-#define USBC0_PD_EN      0
-#define USBC0_DEF_PMODE  USBC_PHY_MODE_USB
-#define USBC0_DISABLE_USB3   0
+#define USBC0_PD_EN         1
+#define USBC0_PD_DEVICE     \_SB.I2C5.PD10
+#define USBC0_DEF_PMODE     USBC_PHY_MODE_COMBO
+#define USBC0_DISABLE_USB3  0
 
 /**
  * HDMI & M.2 B Key
