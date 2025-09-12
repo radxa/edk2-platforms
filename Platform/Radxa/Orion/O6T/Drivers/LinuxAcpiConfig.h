@@ -17,7 +17,7 @@
  * Set Phy mode to combo mode.
  */
 #define USBC1_PD_EN      0
-#define USBC1_DEF_PMODE  USBC_PHY_MODE_COMBO
+#define USBC1_DEF_PMODE  USBC_PHY_MODE_DP
 #define USBC1_DISABLE_USB3   1
 
 /**
