@@ -14,7 +14,7 @@
 /**
  * HDMI & M.2 B Key
  * Work as usb host in high speed mode(USB2.0).
- * Set Phy mode to combo mode.
+ * Set Phy mode to Display only.
  */
 #define USBC1_PD_EN      0
 #define USBC1_DEF_PMODE  USBC_PHY_MODE_DP
@@ -76,5 +76,12 @@
 #define PCIE_X1_0_VCC_REGULATOR \_SB.PVC3
 #define PCIE_X1_1_VCC_SUPPLY 1
 #define PCIE_X1_1_VCC_REGULATOR \_SB.PVC4
+
+#define GPI0_LINE_NAMES \_SB.GPI0.GPIN
+#define GPI1_LINE_NAMES \_SB.GPI1.GPIN
+#define GPI2_LINE_NAMES \_SB.GPI2.GPIN
+#define GPI3_LINE_NAMES \_SB.GPI3.GPIN
+#define GPI4_LINE_NAMES \_SB.GPI4.GPIN
+#define GPI5_LINE_NAMES \_SB.GPI5.GPIN
 
 #endif
