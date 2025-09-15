@@ -17,6 +17,7 @@ DefinitionBlock("SsdtTable.aml", "SSDT", 2, "Radxa", "OrionO6N", 1) {
     include("MipiCamera.asl")
     include("I2cPD.asl")
     include("Iomux.asl")
+    // include("GpioBtns.asl")
     include("GpioInt.asl")
     include("GpioLeds.asl")
     include("EfiRtc.asl")

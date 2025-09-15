@@ -6,22 +6,13 @@
 
 **/
 
-External (\_SB.GPI0, DeviceObj)
 External (\_SB.GPI1, DeviceObj)
 External (\_SB.GPI4, DeviceObj)
-
-Scope (\_SB.GPI0)
-{
-  Name (_AEI, ResourceTemplate() {
-    GpioInt (Level, ActiveLow, ExclusiveAndWake, PullUp, , "\\_SB.GPI0") { 6 } // GPIO049
-    GpioInt (Level, ActiveLow, ExclusiveAndWake, PullUp, , "\\_SB.GPI0") { 7 } // GPIO050
-  })
-}
 
 Scope (\_SB.GPI1)
 {
   Name (_AEI, ResourceTemplate() {
-    GpioInt (Level, ActiveLow, ExclusiveAndWake, PullUp, , "\\_SB.GPI1") { 9 } // GPIO084
+    GpioInt (Level, ActiveLow, Exclusive, PullUp, , "\\_SB.GPI1") { 9 } // GPIO084
   })
 }
 

@@ -14,7 +14,7 @@
 /**
  * HDMI & M.2 B Key
  * Work as usb host in high speed mode(USB2.0).
- * Set Phy mode to combo mode.
+ * Set Phy mode to Display only.
  */
 #define USBC1_PD_EN      0
 #define USBC1_DEF_PMODE  USBC_PHY_MODE_DP
@@ -32,7 +32,7 @@
 /**
  * DisplayPort & Front USB 2.0
  * Work as usb host in high speed mode(USB2.0).
- * Set Phy mode to combo mode.
+ * Set Phy mode to Display only.
  */
 #define USBC3_PD_EN      0
 #define USBC3_DEF_PMODE  USBC_PHY_MODE_DP
