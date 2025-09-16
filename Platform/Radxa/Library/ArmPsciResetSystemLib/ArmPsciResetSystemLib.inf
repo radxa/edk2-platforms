@@ -38,7 +38,6 @@
 
 [Pcd]
   gArmTokenSpaceGuid.PcdSystemProductName
-  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName
   gCixTokenSpaceGuid.PcdPcieRootPort0PeResetPin
   gCixTokenSpaceGuid.PcdPcieRootPort1PeResetPin
   gCixTokenSpaceGuid.PcdPcieRootPort2PeResetPin
