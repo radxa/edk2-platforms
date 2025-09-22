@@ -45,6 +45,7 @@ ThermalZone(TZB0) {
   }
   Method(_SCP, 1, Serialized) {}      // Set Cooling Policy
   Method(_TZP) { Return(10) }         // Polling Interval: in 100ms
+  Name (_STR, Unicode ("CPU-B0"))
 }
 
 // Thermal Zone for CPU-B1
@@ -71,6 +72,7 @@ ThermalZone(TZB1) {
   }
   Method(_SCP, 1, Serialized) {}      // Set Cooling Policy
   Method(_TZP) { Return(10) }         // Polling Interval: in 100ms
+  Name (_STR, Unicode ("CPU-B1"))
 }
 
 // Thermal Zone for CPU-M0
@@ -97,6 +99,7 @@ ThermalZone(TZM0) {
   }
   Method(_SCP, 1, Serialized) {}      // Set Cooling Policy
   Method(_TZP) { Return(10) }         // Polling Interval: in 100ms
+  Name (_STR, Unicode ("CPU-M0"))
 }
 
 // Thermal Zone for CPU-M1
@@ -123,6 +126,7 @@ ThermalZone(TZM1) {
   }
   Method(_SCP, 1, Serialized) {}      // Set Cooling Policy
   Method(_TZP) { Return(10) }         // Polling Interval: in 100ms
+  Name (_STR, Unicode ("CPU-M1"))
 }
 
 //
