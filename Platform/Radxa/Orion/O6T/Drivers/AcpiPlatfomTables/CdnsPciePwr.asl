@@ -49,7 +49,7 @@ External (\_SB.PRC4, DeviceObj)
     Name (_CRS, ResourceTemplate () {
       PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "wlan_pwren", ResourceConsumer,)
       GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
-      "\\_SB.GPI0", 0, ResourceConsumer) { 12 } // GPIO013
+      "\\_SB.GPI4", 0, ResourceConsumer) { 12 } // GPIO013
     })
 
     Name (_DSD, Package () {
