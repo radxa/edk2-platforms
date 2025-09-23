@@ -141,3 +141,17 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_64G_Rayson = {
   .DeviceWidth      = 8,
   .RankNum          = 2,
 };
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_16G_Hive = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = RS600_16G_HIVE_MASK
+  },
+  .MaxFreq          = DDR5500_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 8,
+  .DeviceWidth      = 16,
+  .RankNum          = 2,
+};

@@ -2,7 +2,7 @@
 #include "BoardConfig.h"
 #include "MemConfigurationTable.h"
 
-#define ENTRY_COUNT 10
+#define ENTRY_COUNT 11
 
 // PCBID[6][2:0]
 #define RS600  4
@@ -18,6 +18,7 @@
 #define DRAM_16G_DR_x8_315  10
 #define DRAM_8G_DR_315      11
 #define DRAM_16G_RAYSON_315 12
+#define DRAM_4G_DR_315      13
 
 //               PCBID[2:0]    PCBID[5:3]         PCBID[6]           PCBID[7]
 #define PCB(b,d) (((b) & 7) + (((d) & 7) << 3) + (((b) & 8) << 3) + (((d) & 8) << 4))
@@ -39,5 +40,6 @@ MEM_CONFIG_BLOCK_BOARDID_MAP BoardIdMapBlock = {
     {PCB(RS600, DRAM_12G_DR_315    ), RS600_48G_ID},
     {PCB(RS600, DRAM_16G_DR_x8_315 ), RS600_64G_x8_ID},
     {PCB(RS600, DRAM_16G_RAYSON_315), RS600_64G_RAYSON_ID},
+    {PCB(RS600, DRAM_4G_DR_315     ), RS600_16G_HIVE_ID},
   }
 };
