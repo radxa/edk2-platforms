@@ -165,7 +165,7 @@ static pm_config_fan_t fan_config[MAX_FAN_NUM] = {
         .pwm_freq = {
             .fields = {
                 .valid = PM_CONFIG_VALID,
-                .raw_data = 1000, // the pwm frequence. depending on the fan's characteristic, 50~1000 is recommended.
+                .raw_data = 25000, // the pwm frequence. depending on the fan's characteristic, 50~1000 is recommended.
             }
         }
     },
