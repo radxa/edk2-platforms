@@ -406,6 +406,7 @@
 
   gCixPlatformTokenSpaceGuid.PcdAcpiPrefPmProf|0x01  # Desktop
   gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable|FALSE
+  gCixTokenSpaceGuid.PcdAcpiHdaEnable|FALSE
 
 [PcdsDynamicDefault.common]
 
