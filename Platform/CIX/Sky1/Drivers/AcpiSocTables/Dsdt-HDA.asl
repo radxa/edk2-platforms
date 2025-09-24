@@ -11,7 +11,7 @@ Device (HDA) {
   Name (_UID, 0x0)
 
   Method (_STA, 0x0, Serialized) {
-    If(\_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
+    If(FixedPcdGetBool(PcdAcpiHdaEnable) && \_SB.GETV(ARV_AUDIO_SUPPORT_OFFSET)){
         Return (0xF)
     } else {
         Return (0x0)

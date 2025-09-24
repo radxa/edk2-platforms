@@ -450,6 +450,7 @@
   gCixTokenSpaceGuid.PcdAcpiI2s7Enable|FALSE|BOOLEAN|0x0000A00F
   gCixTokenSpaceGuid.PcdAcpiI2s8Enable|FALSE|BOOLEAN|0x0000A010
   gCixTokenSpaceGuid.PcdAcpiI2s9Enable|FALSE|BOOLEAN|0x0000A011
+  gCixTokenSpaceGuid.PcdAcpiHdaEnable|TRUE|BOOLEAN|0x0000A012
 
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 
