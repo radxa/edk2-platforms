@@ -110,3 +110,4 @@
   gCixTokenSpaceGuid.PcdAcpiI2s7Enable
   gCixTokenSpaceGuid.PcdAcpiI2s8Enable
   gCixTokenSpaceGuid.PcdAcpiI2s9Enable
+  gCixTokenSpaceGuid.PcdAcpiHdaEnable
