@@ -312,21 +312,28 @@
   gCixTokenSpaceGuid.PcdPcieRootPort4PeResetPin|6
 
   gCixTokenSpaceGuid.PcdI2c0En|TRUE             # CAM 0
+  gCixTokenSpaceGuid.PcdI2c0Runtime|TRUE
   gCixTokenSpaceGuid.PcdI2c0BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c1En|TRUE             # CAM 1
+  gCixTokenSpaceGuid.PcdI2c1Runtime|TRUE
   gCixTokenSpaceGuid.PcdI2c1BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c2En|FALSE            # 40-pin
+  gCixTokenSpaceGuid.PcdI2c2Runtime|FALSE
   gCixTokenSpaceGuid.PcdI2c2BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c3En|TRUE             # RTC
-  gCixTokenSpaceGuid.PcdI2c3Runtime|TRUE        # For RTC runtime service
+  gCixTokenSpaceGuid.PcdI2c3Runtime|TRUE
   gCixTokenSpaceGuid.PcdI2c3BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c4En|FALSE            # 40-pin
+  gCixTokenSpaceGuid.PcdI2c4Runtime|FALSE
   gCixTokenSpaceGuid.PcdI2c4BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c5En|TRUE             # PD Charge
+  gCixTokenSpaceGuid.PcdI2c5Runtime|TRUE
   gCixTokenSpaceGuid.PcdI2c5BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c6En|FALSE            # Board ID
+  gCixTokenSpaceGuid.PcdI2c6Runtime|FALSE
   gCixTokenSpaceGuid.PcdI2c6BusFreq|50000
   gCixTokenSpaceGuid.PcdI2c7En|FALSE            # NC
+  gCixTokenSpaceGuid.PcdI2c7Runtime|FALSE
   gCixTokenSpaceGuid.PcdI2c7BusFreq|100000
 
   # RTC I2C canot be controlled in setup
@@ -406,7 +413,7 @@
 
   gCixPlatformTokenSpaceGuid.PcdAcpiPrefPmProf|0x01  # Desktop
   gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable|FALSE
-  gCixTokenSpaceGuid.PcdAcpiHdaEnable|FALSE
+  gCixTokenSpaceGuid.PcdAcpiHdaEnable|FALSE     # N/A
 
 [PcdsDynamicDefault.common]
 
