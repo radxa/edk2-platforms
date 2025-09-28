@@ -1,5 +1,6 @@
 // /** @file
 // The PCI bus driver will probe all PCI devices and allocate MMIO and IO space for these devices.
+// Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 //
 // Please use PCD feature flag PcdPciBusHotplugDeviceSupport to enable hot plug supporting.
 //

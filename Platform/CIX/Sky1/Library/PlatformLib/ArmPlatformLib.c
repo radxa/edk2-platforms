@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *  Copyright (c) 2014-2016, Linaro Limited. All rights reserved.
  *  Copyright (c) 2014, Red Hat, Inc.
  *  Copyright (c) 2011-2013, ARM Limited. All rights reserved.
@@ -19,6 +19,7 @@
 #include <Library/SocInitLib.h>
 #include <Library/PinMuxLib.h>
 #include <Library/BaseMemoryLib.h>
+#include <Library/MemoryAllocationLib.h>
 
 /**
   Return the current Boot Mode
@@ -52,6 +53,15 @@ SetPmuCounter (
   return RETURN_SUCCESS;
 }
 
+EFI_STATUS
+DebugModeConfigInitialize (
+  VOID
+  )
+{
+  MmioWrite32 (PcdGet32(PcdDebugModeFlagAddress),0);
+  return RETURN_SUCCESS;
+}
+
 /**
   This function is called by PrePeiCore, in the SEC phase.
 **/
@@ -62,6 +72,7 @@ ArmPlatformInitialize (
 {
   SetPmuCounter ();
   SetSocFchIpClockAndReset ();
+  DebugModeConfigInitialize();
  #ifdef CONFIG_RLOG_ENABLE
   CopyMem ((VOID *)FixedPcdGet64 (PcdRamLogLastBootSaveAddress), (VOID *)FixedPcdGet64 (PcdRamLogBaseAddress), FixedPcdGet32 (PcdRamLogSize)/2);
   rlog_init_printf ((char *)FixedPcdGet64 (PcdRamLogBaseAddress), FixedPcdGet32 (PcdRamLogSize));
@@ -76,13 +87,42 @@ ArmPlatformInitializeSystemMemory (
 {
 }
 
-STATIC ARM_CORE_INFO  mCixInfoTable[] = {
-  { 0x0, 0x0, },             // Cluster 0, Core 0
-  { 0x0, 0x1, },             // Cluster 0, Core 1
-  { 0x0, 0x2, },             // Cluster 0, Core 2
-  { 0x0, 0x3, },             // Cluster 0, Core 3
-};
+// STATIC ARM_CORE_INFO  mCixInfoTable[] = {
+//   { 0x0, 0x0, },             // Cluster 0, Core 0
+//   { 0x0, 0x1, },             // Cluster 0, Core 1
+//   { 0x0, 0x2, },             // Cluster 0, Core 2
+//   { 0x0, 0x3, },             // Cluster 0, Core 3
+// };
 
+/**
+ * This Function For Gather CPU CoreInfo from Special Reg
+ * Design Core Number Get From PcdCoreCount.
+ * Avaliable Core Counter Get From BitMask(0 for Core Living)
+ * Core MpId Calculate from (BitIndex << 8)
+ */
+ARM_CORE_INFO *
+GetArmCoreInfoFromReg (
+  IN  UINTN RegAddr,
+  OUT UINTN *AvlCoreCount
+){
+  ARM_CORE_INFO *CixCoreInfoTable,*TablePtr;
+  UINTN CoreBitMask = (MmioRead32 (RegAddr) ^ 0xFFF) & 0xFFF;
+  UINTN CoreCount = 0;
+  DEBUG ((DEBUG_INFO, "%a  CoreBitMask[%X] RegVal: %x\n", __FUNCTION__, CoreBitMask, MmioRead32 (RegAddr)));
+  for(UINTN Index=0; Index < 12; Index++){
+    if(CoreBitMask & BIT(Index)) CoreCount++;
+  }
+  CixCoreInfoTable = AllocateZeroPool(sizeof(ARM_CORE_INFO) * CoreCount);
+  TablePtr = CixCoreInfoTable;
+  for(UINTN Index=0; Index < 12; Index++){
+    if(CoreBitMask & BIT(Index)){
+      TablePtr->Mpidr = Index << 8;
+      TablePtr++;
+    }
+  }
+  *AvlCoreCount = CoreCount;
+  return CixCoreInfoTable;
+}
 STATIC
 EFI_STATUS
 PrePeiCoreGetMpCoreInfo (
@@ -91,8 +131,7 @@ PrePeiCoreGetMpCoreInfo (
   )
 {
   // Only support one cluster
-  *CoreCount    = sizeof (mCixInfoTable) / sizeof (ARM_CORE_INFO);
-  *ArmCoreTable = mCixInfoTable;
+  *ArmCoreTable = GetArmCoreInfoFromReg(PMCTRL_S5_BASE + CPU_CORE_INFO_OFFSET, CoreCount);
 
   return EFI_SUCCESS;
 }

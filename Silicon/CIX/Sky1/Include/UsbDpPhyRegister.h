@@ -1,3 +1,8 @@
+/**
+
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
+
+**/
 #ifndef USB_DP_PHY_REGISTER_H_
 #define USB_DP_PHY_REGISTER_H_
 
@@ -51,7 +56,7 @@ CDNSP_REG_SEQ
   { XCVR_DIAG_PLLDRC_CTRL_LANE3,  0x0019 },
 
   { CMN_PLL0_DSM_DIAG_M0,         0x0004 },
-  { CMN_PLL1_DSM_DIAG_M0,         0x0004 },
+  { CMN_PLL1_DSM_DIAG_M0,         0x8004 },
   { CMN_PDIAG_PLL1_ITRIM_M0,      0x003f },
   { CMN_PDIAG_PLL0_CP_PADJ_M0,    0x0B17 },
   { CMN_PDIAG_PLL1_CP_PADJ_M0,    0x0B17 },
@@ -211,7 +216,7 @@ CDNSP_REG_SEQ
   { XCVR_DIAG_PLLDRC_CTRL_LANE0,  0x0019 },
   { XCVR_DIAG_PLLDRC_CTRL_LANE1,  0x0019 },
   { CMN_PLL0_DSM_DIAG_M0,         0x0004 },
-  { CMN_PLL1_DSM_DIAG_M0,         0x0004 },
+  { CMN_PLL1_DSM_DIAG_M0,         0x8004 },
   { CMN_PDIAG_PLL1_ITRIM_M0,      0x003f },
   { CMN_PDIAG_PLL0_CP_PADJ_M0,    0x0B17 },
   { CMN_PDIAG_PLL1_CP_PADJ_M0,    0x0B17 },
@@ -373,7 +378,7 @@ CDNSP_REG_SEQ
   { XCVR_DIAG_PLLDRC_CTRL_LANE2,  0x0019 },
   { XCVR_DIAG_PLLDRC_CTRL_LANE3,  0x0019 },
   { CMN_PLL0_DSM_DIAG_M0,         0x0004 },
-  { CMN_PLL1_DSM_DIAG_M0,         0x0004 },
+  { CMN_PLL1_DSM_DIAG_M0,         0x8004 },
   { CMN_PDIAG_PLL1_ITRIM_M0,      0x003f },
 
   { CMN_PDIAG_PLL0_CP_PADJ_M0,    0x0b17 },

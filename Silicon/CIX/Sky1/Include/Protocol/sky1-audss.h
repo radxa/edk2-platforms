@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 
 /*
- * Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ * Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *
  * This header provides constants for Cixtech Sky1 audio subsystem clock controller.
  */

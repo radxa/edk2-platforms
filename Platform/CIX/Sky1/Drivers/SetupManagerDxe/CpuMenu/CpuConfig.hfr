@@ -1,5 +1,5 @@
 /**
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -10,13 +10,22 @@
         subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
 
         oneof varid   = PlatformSetupVar.CpuLpiState,
-        prompt      = STRING_TOKEN(STR_CPU_LPI_STATE_PROMPT),
-        help        = STRING_TOKEN(STR_CPU_LPI_STATE_HELP),
-        default     = FixedPcdGet8 (PcdAcpiCpuLpiState),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_CPU_LPI_STATE_0),  value = 1, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_CPU_LPI_STATE_1),  value = 2, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_CPU_LPI_STATE_2),  value = 3, flags = RESET_REQUIRED;
+            prompt      = STRING_TOKEN(STR_CPU_LPI_STATE_PROMPT),
+            help        = STRING_TOKEN(STR_CPU_LPI_STATE_HELP),
+            default     = FixedPcdGet8 (PcdAcpiCpuLpiState),
+            option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CPU_LPI_STATE_0),  value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CPU_LPI_STATE_1),  value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CPU_LPI_STATE_2),  value = 3, flags = RESET_REQUIRED;
+        endoneof;
+
+        oneof varid   = PlatformSetupVar.CpuCppcType,
+            prompt      = STRING_TOKEN(STR_CPU_CPPC_PROMPT),
+            help        = STRING_TOKEN(STR_CPU_CPPC_HELP),
+            default     = FixedPcdGet8 (PcdAcpiCppcType),
+            option text = STRING_TOKEN(STR_DISABLED),               value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CPU_CPPC_FAST_CHANNEL),  value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CPU_CPPC_PCC),           value = 2, flags = RESET_REQUIRED;
         endoneof;
 
       grayoutif TRUE;

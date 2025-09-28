@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  **/
 
 #ifndef _EC_LIB_H_
@@ -18,6 +18,9 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Protocol/I2cMaster.h>
+
+#define EC_DEVICE_ADDRESS      (FixedPcdGet8 (PcdEcI2cSlaveAddress))
+#define EC_DEVICE_INSTANCE_ID  (FixedPcdGet8 (PcdEcI2cDeviceInstanceId))
 
 #define I2C_FLAG_WRITE           0
 #define I2C_WR_THEN_RD_OP_COUNT  2
@@ -73,6 +76,7 @@
 #define EC_CMD_TRANS_PD_FW_BIN         0x3E10
 #define EC_CMD_FORCE_EC_RESET          0x3E19
 #define EC_CMD_SET_AUTO_ALS_CTRL       0x3E21
+#define EC_CMD_GET_4S_FORCE_SHD_EVT    0x3E23
 #define EC_CMD_GET_EC_VERSION          0x3FFF
 
 #define EC_BATT_FLAG_AC_PRESENT      0x01
@@ -81,6 +85,10 @@
 #define EC_BATT_FLAG_CHARGING        0x08
 #define EC_BATT_FLAG_LEVEL_CRITICAL  0x10
 #define EC_BATT_FLAG_INVALID_DATA    0x20
+
+#define EC_FAN_MODE_AUTO  0x01
+#define EC_FAN_MODE_MUTE  0x02
+#define EC_FAN_MODE_PERF  0x04
 
 enum {
   PD_FW_UPDATE_STATE_IDLE = 0,
@@ -279,6 +287,10 @@ typedef struct {
   UINT8    Mode;   // 1:AP, 0:EC
 } EC_PARAMS_ALS_MODE_CTL;
 
+typedef struct {
+  UINT8    ForceShutdown4S;
+} EC_RESPONSE_GET_4S_FORCE_SHD_EVT;
+
 #pragma pack(pop)
 
 EFI_STATUS
@@ -441,6 +453,12 @@ EFI_STATUS
 EFIAPI
 SetAlsMode (
   IN EC_PARAMS_ALS_MODE_CTL  *Info
+  );
+
+EFI_STATUS
+EFIAPI
+Get4SForceShutdown (
+  IN OUT EC_RESPONSE_GET_4S_FORCE_SHD_EVT  *Info
   );
 
 #endif

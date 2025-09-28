@@ -1,5 +1,5 @@
 ## @file
-#  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #  Copyright (c) 2016, Linaro, Ltd. All rights reserved.
 #  Copyright (c) 2017-2018, Andrei Warkentin <andrey.warkentin@gmail.com>
 #
@@ -33,13 +33,14 @@
   gCixSpiHostProtocolGuid = {0x79C83D2B, 0x8CE1, 0x4DD3, {0xAE, 0x24, 0x4B, 0xD2, 0xD8, 0x72, 0x36, 0xB1}}
   gCixPdProtocolGuid = {0x0ca5cc68, 0x66c7, 0x4e45, {0xa3, 0xf0, 0xe5, 0x3c, 0xc6, 0xdb, 0x51, 0x9a}}
   gEfiI2sMasterProtocolGuid = {0xf845b0dc, 0x3ab3, 0x11ef, { 0x87, 0xd4, 0xc3, 0xf6, 0xce, 0x87, 0xef, 0x83}}
-  gCixMmNorFlashProtocolGuid = { 0xD1CFF9E5, 0xE3CA, 0x459B, {0xAF, 0xDD, 0x74, 0x29, 0x2C, 0x25, 0xDF, 0x24 } }
 
 [Guids]
   gCixTokenSpaceGuid = {0xCF1B0CF3, 0x88C3, 0x7DBE, {0xF8, 0x6D, 0xB1, 0x6D, 0x4F, 0x06, 0x8F, 0xED}}
   gCixI2cDevicePathGuid = {0x85127A3C, 0x3F52, 0xA0F8, {0x3B, 0xE8, 0x03, 0xD5, 0xCC, 0x56, 0x26, 0x6F}}
   gCixNorFlashDevicePathGuid = {0x7D4BC61B, 0x2E8D, 0x4886, {0xBE, 0x2E, 0xAD, 0xF8, 0x91, 0x9E, 0x73, 0x8B}}
   gCixSpiDevicePathGuid = {0xEE36E7A4, 0xB9C2, 0x4978, {0x96, 0xBA, 0x2C, 0x92, 0x98, 0x2E, 0x37, 0xC5}}
+  gCixMmNorFlashCommunicateGuid = { 0xD1CFF9E5, 0xE3CA, 0x459B, {0xAF, 0xDD, 0x74, 0x29, 0x2C, 0x25, 0xDF, 0x24 } }
+  gCixMmSerialOutCommunicateGuid = { 0x2F2E4469, 0x149A, 0x49F4, {0xAD, 0xB3, 0x73, 0x21, 0x1D, 0x80, 0x83, 0xDF } }
 
 #Pcd token definition please refer to the following link:
 #https://confluence.cixtech.com/display/SW/SKY1+uefi+PCD+Token+definition
@@ -101,7 +102,7 @@
 
   gCixTokenSpaceGuid.PcdAudioHdaEn|FALSE|BOOLEAN|0x000000E0
 
-  gCixTokenSpaceGuid.PcdSpiClockFreq|100000000|UINT32|0x00000121  #100MHz
+  gCixTokenSpaceGuid.PcdSpiClockFreq|100000000|UINT32|0x00000141  #100MHz
 
   #USB2.0 Control
   gCixTokenSpaceGuid.PcdUsb2Control0Enable|FALSE|BOOLEAN|0x00000303
@@ -114,12 +115,13 @@
   gCixTokenSpaceGuid.PcdUsb2Control3MaxSpeed|3|UINT8|0x0000030a
 
   #USB3.0 drd Control
+  #MaxSpeed: 3(hign speed),4(super speed),5(super speed plus)
   gCixTokenSpaceGuid.PcdUsb3Control0Enable|FALSE|BOOLEAN|0x0000030b
-  gCixTokenSpaceGuid.PcdUsb3Control0MaxSpeed|3|UINT32|0x0000030c
+  gCixTokenSpaceGuid.PcdUsb3Control0MaxSpeed|5|UINT32|0x0000030c
   gCixTokenSpaceGuid.PcdUsb3Control0DataRole|FALSE|BOOLEAN|0x0000030d
 
   gCixTokenSpaceGuid.PcdUsb3Control1Enable|FALSE|BOOLEAN|0x0000030e
-  gCixTokenSpaceGuid.PcdUsb3Control1MaxSpeed|3|UINT8|0x0000030f
+  gCixTokenSpaceGuid.PcdUsb3Control1MaxSpeed|5|UINT8|0x0000030f
   gCixTokenSpaceGuid.PcdUsb3Control1DataRole|FALSE|BOOLEAN|0x00000311
 
   #USB TypeC drd
@@ -129,11 +131,11 @@
 
   #USB Typec Host
   gCixTokenSpaceGuid.PcdUsbCControl0Enable|FALSE|BOOLEAN|0x00000315
-  gCixTokenSpaceGuid.PcdUsbCControl0MaxSpeed|3|UINT8|0x00000316
+  gCixTokenSpaceGuid.PcdUsbCControl0MaxSpeed|5|UINT8|0x00000316
   gCixTokenSpaceGuid.PcdUsbCControl1Enable|FALSE|BOOLEAN|0x00000317
-  gCixTokenSpaceGuid.PcdUsbCControl1MaxSpeed|3|UINT8|0x00000318
+  gCixTokenSpaceGuid.PcdUsbCControl1MaxSpeed|5|UINT8|0x00000318
   gCixTokenSpaceGuid.PcdUsbCControl2Enable|FALSE|BOOLEAN|0x00000319
-  gCixTokenSpaceGuid.PcdUsbCControl2MaxSpeed|3|UINT8|0x0000031a
+  gCixTokenSpaceGuid.PcdUsbCControl2MaxSpeed|5|UINT8|0x0000031a
 
   #Typec phy
   gCixTokenSpaceGuid.PcdTypecDrdPhyBaseAddress|0x9030000|UINT32|0x0000031b
@@ -141,11 +143,11 @@
   gCixTokenSpaceGuid.PcdTypec1PhyBaseAddress|0x9110000|UINT32|0x0000031d
   gCixTokenSpaceGuid.PcdTypec2PhyBaseAddress|0x9180000|UINT32|0x0000031e
 
-  #When set typec phy disable, we also need to set related usb disable and dpu hw profile 0.
-  gCixTokenSpaceGuid.PcdTypecPhy0Enable|TRUE|BOOLEAN|0x0000031F
-  gCixTokenSpaceGuid.PcdTypecPhy1Enable|TRUE|BOOLEAN|0x00000320
-  gCixTokenSpaceGuid.PcdTypecPhy2Enable|TRUE|BOOLEAN|0x00000321
-  gCixTokenSpaceGuid.PcdTypecPhy3Enable|TRUE|BOOLEAN|0x00000322
+  # When USB 2.0 PHY configuration need to update, PHY PRST need to release accordingly
+  gCixTokenSpaceGuid.PcdUsb20PhyReleasePrstIdMap|0x00000000|UINT32|0x0000031F    # USB 20 PHY Reset ID: BIT0 - USBPHY_HS0_PRST_N, BIT1 - USBPHY_HS1_PRST_N, ..., BIT9 - USBPHY_HS9_PRST_N
+  gCixTokenSpaceGuid.PcdUsb20PhyConfig|{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}|VOID*|0x00000320
+  gCixTokenSpaceGuid.PcdUsb32PhyConfig|{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}|VOID*|0x00000322
+  gCixTokenSpaceGuid.PcdUsbComboPhyConfig|{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}|VOID*|0x00000323
 
   gArmTokenSpaceGuid.PcdArmFreeUncachedMemorySizeThreshold|0x20000000|UINT64|0x00000380
 # PCIe Root Port Support
@@ -291,15 +293,29 @@
   gCixTokenSpaceGuid.PcdI2c6BusFreq|400000|UINT32|0x00000110      # 100KHz, 400KHz, 1MHz
   gCixTokenSpaceGuid.PcdI2c7BusFreq|400000|UINT32|0x00000111      # 100KHz, 400KHz, 1MHz
   gCixTokenSpaceGuid.PcdI2cCtrlEn|0xFF|UINT8|0x00000112
+  gCixTokenSpaceGuid.PcdI2c0MutexId|0xFF|UINT8|0x00000113         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c1MutexId|0xFF|UINT8|0x00000114         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c2MutexId|0xFF|UINT8|0x00000115         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c3MutexId|0xFF|UINT8|0x00000116         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c4MutexId|0xFF|UINT8|0x00000117         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c5MutexId|0xFF|UINT8|0x00000118         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c6MutexId|0xFF|UINT8|0x00000119         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c7MutexId|0xFF|UINT8|0x0000011A         # Mutex ID: valid 0x48 - 0x4F, 0xFF means invalid
+  gCixTokenSpaceGuid.PcdI2c0Runtime|FALSE|BOOLEAN|0x0000011B
+  gCixTokenSpaceGuid.PcdI2c1Runtime|FALSE|BOOLEAN|0x0000011C
+  gCixTokenSpaceGuid.PcdI2c2Runtime|FALSE|BOOLEAN|0x0000011D
+  gCixTokenSpaceGuid.PcdI2c3Runtime|FALSE|BOOLEAN|0x0000011E
+  gCixTokenSpaceGuid.PcdI2c4Runtime|FALSE|BOOLEAN|0x0000011F
+  gCixTokenSpaceGuid.PcdI2c5Runtime|FALSE|BOOLEAN|0x00000120
+  gCixTokenSpaceGuid.PcdI2c6Runtime|FALSE|BOOLEAN|0x00000121
+  gCixTokenSpaceGuid.PcdI2c7Runtime|FALSE|BOOLEAN|0x00000122
 
   gCixTokenSpaceGuid.PcdRebootReasonRegisterAddr|0x16000500|UINT32|0x00002000      #Reboot Reason Register Address
 
   # Setup variable default define
   gCixTokenSpaceGuid.PcdStateAfterG3|0x00|UINT8|0x00002001
   gCixTokenSpaceGuid.PcdSystemTableSelect|0x01|UINT8|0x00002002 #0x1-DT 0-ACPI
-  gCixTokenSpaceGuid.PcdPrimaryDisplay|0x00|UINT8|0x00002003
   gCixTokenSpaceGuid.PcdDtbMenuEntry|0x00|UINT8|0x00002004
-  gCixTokenSpaceGuid.PcdBiosReset|0x00|UINT8|0x00002005
   gCixTokenSpaceGuid.PcdSocWatchdogTimer|0x00|UINT8|0x00002006
   gCixTokenSpaceGuid.PcdVddSocVoltage|750|UINT16|0x00002007
   gCixTokenSpaceGuid.PcdVddGpuVoltage|800|UINT16|0x00002008
@@ -350,23 +366,28 @@
   gCixTokenSpaceGuid.PcdCpuCore9En|TRUE|BOOLEAN|0x00002035
   gCixTokenSpaceGuid.PcdCpuCore10En|TRUE|BOOLEAN|0x00002036
   gCixTokenSpaceGuid.PcdCpuCore11En|TRUE|BOOLEAN|0x00002037
-  gCixTokenSpaceGuid.PcdAcpiCpuLpiState|0x01|UINT8|0x00002038       # ACPI CPU LPI State, 0-disable, 1-LPI0, 2-LPI1, 3-LPI2
 
-  gCixTokenSpaceGuid.PcdDP0HwProfile|0x01|UINT8|0x00002039          # 0-no display, 1-typec, 2-edp/dp
-  gCixTokenSpaceGuid.PcdDP1HwProfile|0x01|UINT8|0x0000203A          # 0-no display, 1-typec, 2-edp/dp
-  gCixTokenSpaceGuid.PcdDP2HwProfile|0x02|UINT8|0x0000203B          # 0-no display, 1-typec, 2-edp/dp
-  gCixTokenSpaceGuid.PcdDP3HwProfile|0x01|UINT8|0x0000203C          # 0-no display, 1-typec, 2-edp/dp
-  gCixTokenSpaceGuid.PcdDP4HwProfile|0x01|UINT8|0x0000203D          # 0-no display, 1-typec, 2-edp/dp
-  gCixTokenSpaceGuid.PcdGopDisplaySelect|0x02|UINT8|0x0000203E      # 0-4
+  gCixTokenSpaceGuid.PcdDP0Enable|TRUE|BOOLEAN|0x00002039
+  gCixTokenSpaceGuid.PcdDP1Enable|TRUE|BOOLEAN|0x0000203A
+  gCixTokenSpaceGuid.PcdDP2Enable|TRUE|BOOLEAN|0x0000203B
+  gCixTokenSpaceGuid.PcdDP3Enable|TRUE|BOOLEAN|0x0000203C
+  gCixTokenSpaceGuid.PcdDP4Enable|TRUE|BOOLEAN|0x0000203D
 
-  gCixTokenSpaceGuid.PcdSpi0En|FALSE|BOOLEAN|0x00000122
-  gCixTokenSpaceGuid.PcdSpi1En|FALSE|BOOLEAN|0x00000123
-  gCixTokenSpaceGuid.PcdSpi0BusFreqMHz|25|UINT32|0x00000124
-  gCixTokenSpaceGuid.PcdSpi1BusFreqMHz|25|UINT32|0x00000125
-  gCixTokenSpaceGuid.PcdSpi0ChipSelect|0x01|UINT8|0x00000126      #1-SPI_SS0 (chip select 0), 2-SPI_SS1 (chip select 1), 0x0F-SPI_NOSS (No chip select)
-  gCixTokenSpaceGuid.PcdSpi1ChipSelect|0x01|UINT8|0x00000127      #1-SPI_SS0 (chip select 0), 2-SPI_SS1 (chip select 1), 0x0F-SPI_NOSS (No chip select)
-  gCixTokenSpaceGuid.PcdSpi0Mode|0x01|UINT8|0x00000128            #0-SPI_MODE_0, 1-SPI_MODE_1 (0|SPI_CPHA), 2-SPI_MODE_2 (SPI_CPOL|0), 3-SPI_MODE_3 (SPI_CPOL|SPI_CPHA)
-  gCixTokenSpaceGuid.PcdSpi1Mode|0x01|UINT8|0x00000129            #0-SPI_MODE_0, 1-SPI_MODE_1 (0|SPI_CPHA), 2-SPI_MODE_2 (SPI_CPOL|0), 3-SPI_MODE_3 (SPI_CPOL|SPI_CPHA)
+  # Fill in dpu index to config display priority
+  gCixTokenSpaceGuid.PcdDPPriority0|2|UINT8|0x0000203E  # highest priority
+  gCixTokenSpaceGuid.PcdDPPriority1|0|UINT8|0x0000203F  #
+  gCixTokenSpaceGuid.PcdDPPriority2|1|UINT8|0x00002040  #
+  gCixTokenSpaceGuid.PcdDPPriority3|3|UINT8|0x00002041  #
+  gCixTokenSpaceGuid.PcdDPPriority4|4|UINT8|0x00002042  # lowest priority
+
+  gCixTokenSpaceGuid.PcdSpi0En|FALSE|BOOLEAN|0x00000142
+  gCixTokenSpaceGuid.PcdSpi1En|FALSE|BOOLEAN|0x00000143
+  gCixTokenSpaceGuid.PcdSpi0BusFreqMHz|25|UINT32|0x00000144
+  gCixTokenSpaceGuid.PcdSpi1BusFreqMHz|25|UINT32|0x00000145
+  gCixTokenSpaceGuid.PcdSpi0ChipSelect|0x01|UINT8|0x00000146      #1-SPI_SS0 (chip select 0), 2-SPI_SS1 (chip select 1), 0x0F-SPI_NOSS (No chip select)
+  gCixTokenSpaceGuid.PcdSpi1ChipSelect|0x01|UINT8|0x00000147      #1-SPI_SS0 (chip select 0), 2-SPI_SS1 (chip select 1), 0x0F-SPI_NOSS (No chip select)
+  gCixTokenSpaceGuid.PcdSpi0Mode|0x01|UINT8|0x00000148            #0-SPI_MODE_0, 1-SPI_MODE_1 (0|SPI_CPHA), 2-SPI_MODE_2 (SPI_CPOL|0), 3-SPI_MODE_3 (SPI_CPOL|SPI_CPHA)
+  gCixTokenSpaceGuid.PcdSpi1Mode|0x01|UINT8|0x00000149            #0-SPI_MODE_0, 1-SPI_MODE_1 (0|SPI_CPHA), 2-SPI_MODE_2 (SPI_CPOL|0), 3-SPI_MODE_3 (SPI_CPOL|SPI_CPHA)
 
   # GPU
   gCixTokenSpaceGuid.PcdGpuEnable|FALSE|BOOLEAN|0x000004C1
@@ -402,6 +423,19 @@
   gCixTokenSpaceGuid.PcdMemMbistEn|0xFF|UINT8|0x00005D5
   gCixTokenSpaceGuid.PcdMemMbistMode|0xFF|UINT8|0x00005D6
   gCixTokenSpaceGuid.PcdMemIEcc|0xFF|UINT8|0x00005D7
+  gCixTokenSpaceGuid.PcdMemWrDbi|0xFF|UINT8|0x00005D8
+  gCixTokenSpaceGuid.PcdMemRdDbi|0xFF|UINT8|0x00005D9
+
+  #Misc
+  gCixTokenSpaceGuid.PcdCixProcessorVersion|L"CIX P1"|VOID*|0x0003001
+
+  gCixTokenSpaceGuid.PcdAcpiCpuLpiState|0x01|UINT8|0x0000A001             # ACPI CPU LPI State, 0-disable, 1-LPI0, 2-LPI1, 3-LPI2
+  gCixTokenSpaceGuid.PcdAcpiCppcType|0x01|UINT8|0x0000A002                # CPPC Interface Type, 0-disable, 1-fastchannel, 2-pcc
+  gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable|TRUE|BOOLEAN|0x0000A003
+  gCixTokenSpaceGuid.PcdAcpiUart0Enable|TRUE|BOOLEAN|0x0000A004
+  gCixTokenSpaceGuid.PcdAcpiUart1Enable|TRUE|BOOLEAN|0x0000A005
+  gCixTokenSpaceGuid.PcdAcpiUart2Enable|TRUE|BOOLEAN|0x0000A006
+  gCixTokenSpaceGuid.PcdAcpiUart3Enable|FALSE|BOOLEAN|0x0000A007
 
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 

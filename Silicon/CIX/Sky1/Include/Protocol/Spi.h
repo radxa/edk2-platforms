@@ -1,5 +1,6 @@
 /**
 
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   Copyright (c) 2023-2024, CIX, Ltd. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -40,6 +41,20 @@ typedef struct {
 
 typedef
 EFI_STATUS
+(EFIAPI *SPI_CHIP_SELECT)(
+  IN SPI_HOST_PROTOCOL  *This,
+  IN SPI_DEVICE         *Device
+  );
+
+typedef
+EFI_STATUS
+(EFIAPI *SPI_CHIP_UNSELECT)(
+  IN SPI_HOST_PROTOCOL  *This,
+  IN SPI_DEVICE         *Device
+  );
+
+typedef
+EFI_STATUS
 (EFIAPI *SPI_TRANSFER)(
   IN SPI_HOST_PROTOCOL  *This,
   IN SPI_DEVICE         *Device
@@ -62,6 +77,8 @@ EFI_STATUS
   );
 
 struct _SPI_HOST_PROTOCOL {
+  SPI_CHIP_SELECT     ChipSelect;
+  SPI_CHIP_UNSELECT   ChipUnselect;
   SPI_TRANSFER        Transfer;
   SPI_SETUP_DEVICE    Setup;
   SPI_FREE_DEVICE     Free;

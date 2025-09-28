@@ -1,6 +1,6 @@
 /** UsbLib.h
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -11,6 +11,7 @@
 
 #include <Base.h>
 #include <UsbDpPhy.h>
+#include <Protocol/NonDiscoverableDevice.h>
 
 #define DEBUG_LOG_NONE  0
 
@@ -39,6 +40,10 @@
 
 #define PMCTRL_S5_USB_MODE_STAP   0x16000424
 #define PMCTRL_S5_USB_TYPEC_CTRL  0x16000420
+#define XEC_CFG_3XPORT_MODE             0x2040
+#define CFG_3XPORT_MODE_DIS_SSP         (~(1 << 31))
+#define USB_DISABLED_U3_MASK         (0x7)
+
 
 #define USB20ControlIndex0    2
 #define USB20ControlIndex1    9
@@ -50,6 +55,15 @@
 #define USBCControlIndex0     1
 #define USBCControlIndex1     4
 #define USBCControlIndex2     3
+
+typedef enum {
+  USBTYPE_UNDEFINED = 0,
+  USBTYPEA_USB20PHY = 1,
+  USBTYPEA_USB32PHY = 2,
+  USBTYPEC_USB32PHY = 3,
+  USBTYPEC_USB20PHY = 4,
+  USBT20ONLY_PHY    = 5
+} USBPHY_TYPE;
 
 typedef struct {
   UINT32     Offset;
@@ -122,6 +136,11 @@ GetUsbHostInfoArray (
 VOID
 DisableOverCurrentDetect (
   UINT32  Index
+  );
+
+EFI_STATUS
+UsbTypeAPhyOverride (
+  IN UINT32  Index
   );
 
 #endif

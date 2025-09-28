@@ -12,40 +12,9 @@
 #include <Library/EcLib.h>
 #include <Library/TimerLib.h>
 #include <Library/PlatformConfigParamsHookLib.h>
-#include "Pcf8563.h"
+#include "Hym8563.h"
 
 STATIC I2C_HOST_DESCRIPTOR  mHost;
-
-STATIC
-UINT32
-I2cGetBusClk (
-  IN UINT8  Bus
-  )
-{
-  switch (Bus) {
-    case 0:
-      return FixedPcdGet32 (PcdI2c0BusFreq);
-    case 1:
-      return FixedPcdGet32 (PcdI2c1BusFreq);
-    case 2:
-      return FixedPcdGet32 (PcdI2c2BusFreq);
-    case 3:
-      return FixedPcdGet32 (PcdI2c3BusFreq);
-    case 4:
-      return FixedPcdGet32 (PcdI2c4BusFreq);
-    case 5:
-      return FixedPcdGet32 (PcdI2c5BusFreq);
-    case 6:
-      return FixedPcdGet32 (PcdI2c6BusFreq);
-    case 7:
-      return FixedPcdGet32 (PcdI2c7BusFreq);
-    default:
-      DebugPrint (DEBUG_ERROR, "I2C[%d] bus frequency is not configured\n", Bus);
-      break;
-  }
-
-  return -1;
-}
 
 EFI_STATUS
 EFIAPI
@@ -80,7 +49,7 @@ GetRtcVoltDropFlag (
 {
   EFI_STATUS              Status         = EFI_SUCCESS;
   EFI_I2C_REQUEST_PACKET  *RequestPacket = NULL;
-  UINT8                   RtcTime[]      = { PCF8563_DATA_REG_OFFSET,
+  UINT8                   RtcTime[]      = { HYM8563_DATA_REG_OFFSET,
                                              DecimalToBcd8(0),
                                              DecimalToBcd8(0),
                                              DecimalToBcd8(0),
@@ -118,7 +87,7 @@ GetRtcVoltDropFlag (
     DEBUG ((DEBUG_INFO, "%a: RTC VL_seconds: 0x%x\n", __FUNCTION__, RtcTime[1]));
   }
 
-  if (RtcTime[1] & PCF8563_CLOCK_INVALID) {
+  if (RtcTime[1] & HYM8563_CLOCK_INVALID) {
     DEBUG ((DEBUG_INFO, "%a: RTC voltage dropped\n", __FUNCTION__));
     *Dropped                                  = TRUE;
 
@@ -173,7 +142,7 @@ SetBoardId (
   )
 {
   EFI_STATUS                 Status = EFI_SUCCESS;
-  EC_RESPONSE_BOARD_ID_INFO  BoardIdInfo;
+  EC_RESPONSE_BOARD_ID       BoardIdInfo;
 
   DEBUG ((DEBUG_ERROR, "%a: enter \n", __FUNCTION__));
   Status = GetBoardId (&BoardIdInfo);

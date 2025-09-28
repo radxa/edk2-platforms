@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *  Copyright (c) 2017-2018, Andrey Warkentin <andrey.warkentin@gmail.com>
  *  Copyright (c) 2011-2015, ARM Limited. All rights reserved.
  *
@@ -194,6 +194,18 @@ MemoryPeim (
     FixedPcdGet32 (PcdKernelBootImgSize),
     EfiReservedMemoryType
     );
+ #ifdef PI_TEST_SUPPORT
+  BuildMemoryAllocationHob (
+    0x100000000,
+    SIZE_4GB + SIZE_1GB,
+    EfiBootServicesData
+    );
+  BuildMemoryAllocationHob (
+    0x240000000,
+    SIZE_4KB,
+    EfiBootServicesData
+    );
+ #endif
  #if FixedPcdGetBool (PcdGpuEnable) == 1
   BuildMemoryAllocationHob (
     FixedPcdGet32 (PcdGpuReservedMemoryBase),
@@ -227,8 +239,20 @@ MemoryPeim (
  #endif
 
   BuildMemoryAllocationHob (
+    FixedPcdGet64 (PcdReservedSecureMemoryBase),
+    FixedPcdGet64 (PcdReservedSecureMemorySize),
+    EfiReservedMemoryType
+    );
+
+  BuildMemoryAllocationHob (
     FixedPcdGet64 (PcdReservedShareMemoryBase),
     FixedPcdGet64 (PcdReservedShareMemorySize),
+    EfiRuntimeServicesData
+    );
+
+  BuildMemoryAllocationHob (
+    FixedPcdGet64 (PcdReservedFwShareMemoryBase),
+    FixedPcdGet64 (PcdReservedFwShareMemorySize),
     EfiRuntimeServicesData
     );
 

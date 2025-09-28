@@ -1,6 +1,6 @@
 /**
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -46,6 +46,7 @@ GetRtcVoltDropFlag (
   UINT8                   Flag[2]        = { RA8900CE_FLAG_REG_OFFSET, 0 };
   UINT8                   Control[2]     = { RA8900CE_CTRL_REG_OFFSET, 0 };
   UINT8                   Time[8]        = { RA8900CE_DATA_REG_OFFSET, 0, 0, 0, 0x20, 0x15, 0x10, 0x21 };
+  UINT8                   TimeZone[3]    = { RA8900CE_TMR_CNT_REG_OFFSET, 0xFF, 0x07 };
   UINT8                   BackUp[2]      = { RA8900CE_BACKUP_REG_OFFSET, RA8900CE_BACKUP_REG_VDETOFF | RA8900CE_BACKUP_REG_SWOFF };
   UINT8                   Retry          = 0;
 
@@ -140,6 +141,18 @@ GetRtcVoltDropFlag (
 
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_ERROR, "%a: fail to set time to RTC, status %r\n", __FUNCTION__, Status));
+      goto EndReturn;
+    }
+
+    RequestPacket->OperationCount             = I2C_WR_OP_COUNT;
+    RequestPacket->Operation[0].Flags         = I2C_FLAG_WRITE;
+    RequestPacket->Operation[0].LengthInBytes = sizeof (TimeZone);
+    RequestPacket->Operation[0].Buffer        = (UINT8 *)&TimeZone[0];
+
+    Status = I2cMasterXfer (&mHost, FixedPcdGet8 (PcdRa8900ceI2cSlaveAddress), RequestPacket);
+
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a: fail to set time zone to RTC, status %r\n", __FUNCTION__, Status));
       goto EndReturn;
     }
   } else {

@@ -1,6 +1,6 @@
 /**
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -58,7 +58,7 @@ GetEcInfo (
   RequestPacket->Operation[1].LengthInBytes = sizeof (EC_HOST_RESPONSE_I2C) + *ResponseSize;
   RequestPacket->Operation[1].Buffer        = (UINT8 *)EcResponseBuffer;
 
-  Status = I2cMasterXfer (mHost, FixedPcdGet8 (PcdEcI2cSlaveAddress), RequestPacket);
+  Status = I2cMasterXfer (mHost, EC_DEVICE_ADDRESS, RequestPacket);
 
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: fail to get EC info, status %r\n", __FUNCTION__, Status));
@@ -137,7 +137,7 @@ GetEcVersion (
   Status = GetEcInfo (SwapBytes16 (EC_CMD_GET_EC_VERSION), NULL, 0, (VOID *)ResponseBuffer, &ResponseSize);
   if (!EFI_ERROR (Status)) {
     CopyMem (Info->String, ResponseBuffer->String, ResponseSize);
-    Info->String[EC_VER_TEXT_SIZE - 1] = '\0';
+    Info->String[ResponseSize] = '\0';
 
     DEBUG ((DEBUG_INFO, "EC response version info:\n"));
     DEBUG ((DEBUG_INFO, "\tVersion : %a\n", Info->String));
@@ -357,6 +357,8 @@ SetGpio (
   UINT8       OutBuf[2];
   UINTN       InSize;
   UINTN       InBuf;
+  UINTN       RetryCount    = 0;
+  UINTN       MaxRetryCount = 100;
 
   if (Info == NULL) {
     return EFI_INVALID_PARAMETER;
@@ -366,14 +368,20 @@ SetGpio (
   OutBuf[1] = Info->GpioVal;
   OutSize   = sizeof (EC_PARAMS_GPIO);
   InSize    = 0;
+  do {
+    Status = GetEcInfo (SwapBytes16 (EC_CMD_INT_WRITE_GPIO), (VOID *)OutBuf, OutSize, (VOID *)(&InBuf), &InSize);
+    if (!EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_INFO, "EC request set gpio info:\n"));
+      DEBUG ((DEBUG_INFO, "\tLen       : 0x%x\n", OutSize));
+      DEBUG ((DEBUG_INFO, "\tNum       : 0x%x\n", Info->GpioNum));
+      return Status;
+    }
 
-  Status = GetEcInfo (SwapBytes16 (EC_CMD_INT_WRITE_GPIO), (VOID *)OutBuf, OutSize, (VOID *)(&InBuf), &InSize);
-  if (!EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_INFO, "EC request set gpio info:\n"));
-    DEBUG ((DEBUG_INFO, "\tLen       : 0x%x\n", OutSize));
-    DEBUG ((DEBUG_INFO, "\tNum       : 0x%x\n", Info->GpioNum));
-  }
+    RetryCount++;
+    MicroSecondDelay (10 * 1000);
+  } while (Status != EFI_SUCCESS && RetryCount < MaxRetryCount);
 
+  DebugPrint (DEBUG_ERROR, "Set Ec Gpio%d failed, Status:%r\n", Info->GpioNum, Status);
   return Status;
 }
 
@@ -385,20 +393,29 @@ GetGpio (
 {
   EFI_STATUS  Status = EFI_SUCCESS;
   UINTN       ResponseSize;
+  UINTN       RetryCount    = 0;
+  UINTN       MaxRetryCount = 100;
 
   if (Info == NULL) {
     return EFI_INVALID_PARAMETER;
   }
 
-  ResponseSize = 1;
+  do {
+    ResponseSize = 1;
 
-  Status = GetEcInfo (SwapBytes16 (EC_CMD_INT_READ_GPIO), &(Info->GpioNum), 1, (VOID *)(&(Info->GpioVal)), &ResponseSize);
-  if (!EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_INFO, "EC request get gpio info:\n"));
-    DEBUG ((DEBUG_INFO, "\tNum       : 0x%x\n", Info->GpioNum));
-    DEBUG ((DEBUG_INFO, "\tVal       : 0x%x\n", Info->GpioVal));
-  }
+    Status = GetEcInfo (SwapBytes16 (EC_CMD_INT_READ_GPIO), &(Info->GpioNum), 1, (VOID *)(&(Info->GpioVal)), &ResponseSize);
+    if (!EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_INFO, "EC request get gpio info:\n"));
+      DEBUG ((DEBUG_INFO, "\tNum       : 0x%x\n", Info->GpioNum));
+      DEBUG ((DEBUG_INFO, "\tVal       : 0x%x\n", Info->GpioVal));
+      return Status;
+    }
 
+    RetryCount++;
+    MicroSecondDelay (10 * 1000);
+  } while (Status != EFI_SUCCESS && RetryCount < MaxRetryCount);
+
+  DebugPrint (DEBUG_ERROR, "GetGpio failed, Status:%r\n", Status);
   return Status;
 }
 
@@ -850,9 +867,9 @@ GetAcpiIntEvent (
     Info->Type  = ResponseBuffer->Type;
     Info->Event = SwapBytes32 (ResponseBuffer->Event);
 
-    DEBUG ((DEBUG_INFO, "EC response acpi interrupt info:\n"));
-    DEBUG ((DEBUG_INFO, "\tTYPE       : 0x%x\n", Info->Type));
-    DEBUG ((DEBUG_INFO, "\tACPI_INT_EVENT       : 0x%x\n", Info->Event));
+    DEBUG ((DEBUG_VERBOSE, "EC response acpi interrupt info:\n"));
+    DEBUG ((DEBUG_VERBOSE, "\tTYPE       : 0x%x\n", Info->Type));
+    DEBUG ((DEBUG_VERBOSE, "\tACPI_INT_EVENT       : 0x%x\n", Info->Event));
   }
 
   FreePool (ResponseBuffer);
@@ -1078,6 +1095,42 @@ SetAlsMode (
     DEBUG ((DEBUG_INFO, "Set als mode info:\n"));
     DEBUG ((DEBUG_INFO, "\tMode       : 0x%x\n", Info->Mode));
   }
+
+  return Status;
+}
+
+EFI_STATUS
+EFIAPI
+Get4SForceShutdown (
+  IN OUT EC_RESPONSE_GET_4S_FORCE_SHD_EVT  *Info
+  )
+{
+  EFI_STATUS                        Status          = EFI_SUCCESS;
+  EC_RESPONSE_GET_4S_FORCE_SHD_EVT  *ResponseBuffer = NULL;
+  UINTN                             ResponseSize;
+
+  if (Info == NULL) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  ResponseSize   = sizeof (EC_RESPONSE_GET_4S_FORCE_SHD_EVT);
+  ResponseBuffer = AllocateZeroPool (ResponseSize);
+
+  if (ResponseBuffer == NULL) {
+    Status = EFI_OUT_OF_RESOURCES;
+    DEBUG ((DEBUG_ERROR, "%a: fail to allocate buffer, status %r\n", __FUNCTION__, Status));
+    return Status;
+  }
+
+  Status = GetEcInfo (SwapBytes16 (EC_CMD_GET_4S_FORCE_SHD_EVT), NULL, 0, (VOID *)ResponseBuffer, &ResponseSize);
+  if (!EFI_ERROR (Status)) {
+    Info->ForceShutdown4S = ResponseBuffer->ForceShutdown4S;
+
+    DEBUG ((DEBUG_INFO, "EC response 4s force shutdown flag info:\n"));
+    DEBUG ((DEBUG_INFO, "\t4S force shutdown flag       : 0x%x\n", Info->ForceShutdown4S));
+  }
+
+  FreePool (ResponseBuffer);
 
   return Status;
 }

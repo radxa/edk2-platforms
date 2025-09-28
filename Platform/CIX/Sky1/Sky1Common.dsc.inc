@@ -1,6 +1,6 @@
 # @file
 #
-#  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #  Copyright (c) 2011 - 2020, ARM Limited. All rights reserved.
 #  Copyright (c) 2017 - 2018, Andrei Warkentin <andrey.warkentin@gmail.com>
 #  Copyright (c) 2015 - 2021, Intel Corporation. All rights reserved.
@@ -28,16 +28,9 @@
 !include Features/Ext4Pkg/Ext4.dsc.inc
 !endif
 [LibraryClasses.common]
-
-!if $(PRINT_TIMESTAMP_ENABLE) == TRUE
   DebugLib|Platform/CIX/Sky1/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
-!else
-  DebugLib|MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
-!endif
-
   PostCodeLib|Silicon/CIX/Sky1/Library/CixBasePostCodeLibMmio/BasePostCodeLibMmio.inf
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
-
   BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
   SafeIntLib|MdePkg/Library/BaseSafeIntLib/BaseSafeIntLib.inf
   BmpSupportLib|MdeModulePkg/Library/BaseBmpSupportLib/BaseBmpSupportLib.inf
@@ -63,10 +56,8 @@
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
   UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
   SortLib|MdeModulePkg/Library/UefiSortLib/UefiSortLib.inf
-
   UefiRuntimeLib|MdePkg/Library/UefiRuntimeLib/UefiRuntimeLib.inf
   OrderedCollectionLib|MdePkg/Library/BaseOrderedCollectionRedBlackTreeLib/BaseOrderedCollectionRedBlackTreeLib.inf
-
   #
   # Ramdisk Requirements
   #
@@ -127,13 +118,13 @@
 
   PartitionLib|Platform/CIX/Sky1/Library/PartitionLib/PartitionLib.inf
   FlashUpdateLib|Platform/CIX/Sky1/Library/FlashUpdateLib/FlashUpdateLib.inf
-!if $(SOC_USB_DEVICE_ENABLE) == TRUE
   AvbLib|Platform/CIX/Sky1/Library/avb/AvbLib.inf
   BootLib|Platform/CIX/Sky1/Library/BootLib/BootLib.inf
   LaunchEfiLib|Platform/CIX/Sky1/Library/LaunchEfiLib/LaunchEfiLib.inf
   MiniFastbootLib|Platform/CIX/Sky1/Library/FastbootLib/MiniFastbootLib.inf
-!endif
   OpteeLib|Platform/CIX/Sky1/Library/OpteeLib/OpteeLib.inf
+  EfusePublicKeyLib|Platform/CIX/Sky1/Library/EfusePublicKeyLib/EfusePublicKeyLib.inf
+  FctMiscLib|Platform/CIX/Sky1/Library/FctMiscLib/FctMiscLib.inf
 
   #
   # Secure Boot dependencies
@@ -172,6 +163,7 @@
   GpioTableLib|Silicon/CIX/Sky1/Library/GpioTableNullLib/GpioTableNullLib.inf
   FchDmaLib|Silicon/CIX/Sky1/Library/FchDmaLib/FchDmaLib.inf
   FchTimerLib|Silicon/CIX/Sky1/Library/FchTimerLib/FchTimerLib.inf
+  OpnLib|Silicon/CIX/Sky1/Library/OpnLib/OpnLib.inf
 !if $(SOC_HDA_ENABLE) == TRUE
   # HdaVerbTableLib|Silicon/CIX/Sky1/Library/HdaVerbTableNullLib/HdaVerbTableNullLib.inf
   HdaVerbTableLib|Platform/CIX/Sky1/Library/HdaVerbTableLib/HdaVerbTableLib.inf
@@ -181,16 +173,23 @@
 !endif
 !if $(SOC_I2C_ENABLE) == TRUE
   I2cLib|Silicon/CIX/Sky1/Library/I2cLib/I2cLib.inf
+  !if $(I2C_EC_ENABLE) == TRUE
   EcLib|Platform/CIX/Sky1/Library/Ite5570EcLib/Ite5570EcLib.inf
+  !else
+  EcLib|Platform/CIX/Library/EcLibNull/EcLibNull.inf
+  !endif
 !endif
   ConfigParamsHookLib|Silicon/CIX/Sky1/Library/ConfigParamsHookNullLib/ConfigParamsHookNullLib.inf
   PlatformConfigParamsHookLib|Platform/CIX/Sky1/Library/PlatformConfigParamsHookNullLib/PlatformConfigParamsHookNullLib.inf
   PlatformEnvHookLib|Platform/CIX/Sky1/Library/PlatformEnvHookNullLib/PlatformEnvHookNullLib.inf
   PlatformBootHookLib|Platform/CIX/Sky1/Library/PlatformBootHookNullLib/PlatformBootHookNullLib.inf
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
-  NorFlashLib|Silicon/CIX/Sky1/Library/NorFlashLib/NorFlashSmmRuntimeLib.inf
-!elseif $(SOC_XSPI_ENABLE) == TRUE || $(VARIABLE_SUPPORT) == "SPI"
+!if $(SOC_XSPI_ENABLE) == TRUE
+!if $(STMM_SUPPORT) == TRUE
+  NorFlashLib|Silicon/CIX/Sky1/Library/NorFlashLib/NorFlashStmmRuntimeLib.inf
+  NorFlashBasicLib|Silicon/CIX/Sky1/Library/NorFlashBasicLib/NorFlashBasicStmmLib.inf
+!else
   NorFlashLib|Silicon/CIX/Sky1/Library/NorFlashLib/NorFlashLib.inf
+!endif
 !endif
   PciHostBridgeLib|Silicon/CIX/Sky1/Library/PciHostBridgeLib/PciHostBridgeLib.inf
   PciSegmentLib|Silicon/CIX/Sky1/Library/PciSegmentLib/PciSegmentLib.inf
@@ -204,6 +203,7 @@
 
   ArmMtlLib|Silicon/CIX/Sky1/Library/CixMtlLib/CixMtlLib.inf
   DtbUpdateLib|Platform/CIX/Sky1/Library/DtbUpdateLib/DtbUpdateLib.inf
+  DtbCommonLib|Platform/CIX/Sky1/Library/DtbCommonLib/DtbCommonLib.inf
 
   ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf
   ArmMmuLib|ArmPkg/Library/ArmMmuLib/ArmMmuBaseLib.inf
@@ -211,11 +211,7 @@
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
   UefiBootManagerLib|MdeModulePkg/Library/UefiBootManagerLib/UefiBootManagerLib.inf
   BootLogoLib|MdeModulePkg/Library/BootLogoLib/BootLogoLib.inf
-!if $(COMPILE_SYSTEM_LOADER) == android
   PlatformBootManagerLib|Platform/CIX/Sky1/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
-!else
-  PlatformBootManagerLib|ArmPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
-!endif
   FileExplorerLib|MdeModulePkg/Library/FileExplorerLib/FileExplorerLib.inf
   AcpiLib|EmbeddedPkg/Library/AcpiLib/AcpiLib.inf
   SocInitLib|Silicon/CIX/Sky1/Library/SocInitLib/SocInitLib.inf
@@ -261,6 +257,45 @@
   HwHarvestLib|Silicon/CIX/Sky1/Library/HwHarvestLib/HwHarvestLib.inf
   #CommonLib|Platform/CIX/Sky1/Library/CommonLib/CommonLib.inf
   CixS3IoLib|Platform/CIX/Sky1/Library/CixS3IoLib/CixS3IoLib.inf
+  ArmScmiLib|Silicon/CIX/Sky1/Library/ArmScmiLib/ArmScmiLib.inf
+!if $(SMBIOS_ENABLE) == TRUE
+  OemMiscLib|Platform/CIX/Sky1/Library/SmbiosMiscLib/SmbiosMiscLib.inf
+!endif
+!if $(FUNC_BOOT_PERF_ENABLE) == TRUE
+  CixFwBootPerfLib|Platform/CIX/Sky1/Library/CixFwBootPerfLib/CixFwBootPerfLib.inf
+!else
+  CixFwBootPerfLib|Platform/CIX/Sky1/Library/CixFwBootPerfLib/CixFwBootPerfLibNull.inf
+!endif
+  EfiResetSystemLib|ArmPkg/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
+
+!if $(DTPM_SUPPORT) == TRUE || $(FTPM_SUPPORT) == TRUE
+  OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLib.inf
+  IntrinsicLib|CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
+  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
+  Tpm2CommandLib|SecurityPkg/Library/Tpm2CommandLib/Tpm2CommandLib.inf
+  #Tcg2PhysicalPresenceLib|SecurityPkg/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
+  Tcg2PhysicalPresenceLib|Platform/CIX/Sky1/Library/DxeTcg2PhysicalPresenceLib/DxeTcg2PhysicalPresenceLib.inf
+  Tcg2PpVendorLib|SecurityPkg/Library/Tcg2PpVendorLibNull/Tcg2PpVendorLibNull.inf
+  TpmMeasurementLib|SecurityPkg/Library/DxeTpmMeasurementLib/DxeTpmMeasurementLib.inf
+  TpmPlatformHierarchyLib|SecurityPkg/Library/PeiDxeTpmPlatformHierarchyLib/PeiDxeTpmPlatformHierarchyLib.inf
+  OpteeClientApiLib|Platform/CIX/Sky1/Library/OpteeClientApiLib/OpteeClientApiLib.inf
+  Tpm2DeviceLib|Platform/CIX/Sky1/Library/Tpm2DeviceLib/Tpm2DeviceLib.inf
+  !if $(DTPM_SUPPORT) == TRUE
+    DTpmDeviceLib|Platform/CIX/Sky1/Library/DTpmDeviceLib/DTpmDeviceLib.inf
+  !else
+    DTpmDeviceLib|Platform/CIX/Sky1/Library/DTpmDeviceLibNull/DTpmDeviceLibNull.inf
+  !endif
+  !if $(FTPM_SUPPORT) == TRUE
+    FTpmDeviceLib|Platform/CIX/Sky1/Library/FTpmDeviceLib/FTpmDeviceLib.inf
+  !else
+    FTpmDeviceLib|Platform/CIX/Sky1/Library/FTpmDeviceLibNull/FTpmDeviceLibNull.inf
+  !endif
+!else
+  Tcg2PhysicalPresenceLib|Platform/CIX/Sky1/Library/DxeTcg2PhysicalPresenceLibNull/DxeTcg2PhysicalPresenceLibNull.inf
+!endif
+
+  # Library for Vendor Guid Variable Sync From Flash
+  CixGPNVLib|Platform/CIX/Sky1/Library/CixGPNVLib/CixGPNVLib.inf
 
 [LibraryClasses.common.SEC]
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
@@ -309,12 +344,20 @@
   BaseHidParseReportLib|Platform/CIX/Sky1/Library/BaseHidParseReportLib/BaseHidParseReportLib.inf
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
+!if $(STMM_SUPPORT) == TRUE && $(RUNTIME_DEBUG_MSG_ENABLE) == TRUE
+  DebugLib|Platform/CIX/Sky1/Library/DxeRuntimeDebugLibSerialPort/DxeRuntimeDebugLibSerialPort.inf
+  SerialOutStmmLib|Silicon/CIX/Sky1/Library/SerialOutStmmLib/SerialOutStmmRuntimeLib.inf
+!else
   # Runtime debug messages may crash an OS unless serial output to MMIO mapped UARTs is inhibited
   DebugLib|MdePkg/Library/DxeRuntimeDebugLibSerialPort/DxeRuntimeDebugLibSerialPort.inf
+!endif
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
   EfiResetSystemLib|ArmPkg/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
   ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
+  HwMutexLib|Silicon/CIX/Sky1/Library/HwMutexLib/HwMutexRuntimeLib.inf
+  PinMuxLib|Silicon/CIX/Sky1/Library/PinMuxLib/PinMuxRuntimeLib.inf
+  GpioLib|Silicon/CIX/Sky1/Library/GpioLib/GpioRuntimeLib.inf
   VariablePolicyLib|MdeModulePkg/Library/VariablePolicyLib/VariablePolicyLibRuntimeDxe.inf
 
 !if $(SECURE_BOOT_ENABLE) == TRUE
@@ -332,6 +375,13 @@
 
 [BuildOptions]
   GCC:*_*_*_CC_FLAGS          = -fno-common
+!if $(PI_TEST_SUPPORT) == TRUE
+  GCC:*_*_*_CC_FLAGS          = -DPI_TEST_SUPPORT
+!endif
+!if $(CIX_GPNV_ENABLE) == TRUE
+  GCC:*_*_*_CC_FLAGS          = -DCIX_GPNV_ENABLE
+!endif
+
 [BuildOptions.common.EDKII.DXE_RUNTIME_DRIVER]
   GCC:*_*_AARCH64_DLINK_FLAGS = -z common-page-size=0x10000
 
@@ -347,7 +397,7 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdTurnOffUsbLegacySupport|TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutGopSupport|TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdInstallAcpiSdtProtocol|TRUE
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdEnableVariableRuntimeCache|FALSE
 !else
   gEfiMdeModulePkgTokenSpaceGuid.PcdVariableCollectStatistics|TRUE
@@ -374,11 +424,6 @@
   # CLEAR_MEMORY_ENABLED       0x08
   # ASSERT_BREAKPOINT_ENABLED  0x10
   # ASSERT_DEADLOOP_ENABLED    0x20
-!if $(TARGET) == RELEASE
-  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x21
-!else
-  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x2f
-!endif
   gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|$(DEBUG_PRINT_ERROR_LEVEL)
 
   gEfiMdePkgTokenSpaceGuid.PcdReportStatusCodePropertyMask|0x07
@@ -395,6 +440,7 @@
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceOffset|0x00000000
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"cix_sky1_alpha_0.6"
   gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultPlatformLangCodes|"en-US"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision|$(BUILD_NUMBER)
 
 [PcdsFixedAtBuild.common]
   gArmPlatformTokenSpaceGuid.PcdClusterCount|1
@@ -445,8 +491,10 @@
   !endif
   gCixPlatformTokenSpaceGuid.PcdKernelBootImgBase|0xA0000000
   gCixPlatformTokenSpaceGuid.PcdKernelBootImgSize|0x08000000
-  gCixPlatformTokenSpaceGuid.PcdReservedShareMemoryBase|0x80000000
-  gCixPlatformTokenSpaceGuid.PcdReservedShareMemorySize|0x04400000
+  gCixPlatformTokenSpaceGuid.PcdReservedSecureMemoryBase|0x80000000
+  gCixPlatformTokenSpaceGuid.PcdReservedSecureMemorySize|0x02500000
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemoryBase|0x82500000
+  gCixPlatformTokenSpaceGuid.PcdReservedShareMemorySize|0x01F00000
   gArmPlatformTokenSpaceGuid.PcdArmLcdDdrFrameBufferBase|0x84800000
   gArmPlatformTokenSpaceGuid.PcdArmLcdDdrFrameBufferSize|0x00800000
   gCixPlatformTokenSpaceGuid.PcdReservedLinuxBase|0x86000000
@@ -495,23 +543,29 @@
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultReceiveFifoDepth|0
   gArmPlatformTokenSpaceGuid.PL011UartInterrupt|330
 
+  # We enlarge  PcdDiskIoDataBufferBlockNum to 1024 to align with write buffer size in Fastboot
+  gEfiMdeModulePkgTokenSpaceGuid.PcdDiskIoDataBufferBlockNum|1024
+
   #
   # ACPI
   #
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiExposedTableVersions|0x20
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiACPIReclaimMemory|0
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiACPIMemoryNVS|0
-!if $(ACPI_ENABLE) == TRUE
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcBatterySupport|0
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcThermalSupport|0
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcLidSupport|0
-  gCixPlatformTokenSpaceGuid.PcdAcpiEcPowerButtonSupport|0
-  gCixPlatformTokenSpaceGuid.PcdAcpiI2cKeyboardSupport|0
-!endif
-  # SMBIOS entry point version
-  #
-  gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosVersion|0x0300
-  gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosDocRev|0x0
+
+  # Clearing BIT0 in this PCD prevents installing a 32-bit SMBIOS entry point,
+  # if the entry point version is >= 3.0. AARCH64 OSes cannot assume the
+  # presence of the 32-bit entry point anyway (because many AARCH64 systems
+  # don't have 32-bit addressable physical RAM), and the additional allocations
+  # below 4 GB needlessly fragment the memory map. So expose the 64-bit entry
+  # point only, for entry point versions >= 3.0.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosVersion|0x0306
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosEntryPointProvideMethod|0x2
+
+  gArmTokenSpaceGuid.PcdProcessorManufacturer|L"Cix Technology Group Co., Ltd."
+  gArmTokenSpaceGuid.PcdProcessorAssetTag|L" "
+  gArmTokenSpaceGuid.PcdProcessorPartNumber|L" "
+  gCixTokenSpaceGuid.PcdCixProcessorVersion|L"CIX P1 CD8180"
   #
   #
   #
@@ -525,16 +579,8 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange|FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdBootManagerMenuFile|{ 0x21, 0xaa, 0x2c, 0x46, 0x14, 0x76, 0x03, 0x45, 0x83, 0x6e, 0x8a, 0xb6, 0xf4, 0x66, 0x23, 0x31 }
 
-!if $(SOC_XSPI_ENABLE) == TRUE || $(VARIABLE_SUPPORT) == "SPI"
   gCixTokenSpaceGuid.PcdNorFlashNvramAddr|$(SPI_VARIABLE_BASE)
   gCixTokenSpaceGuid.PcdNorFlashNvramSize|$(SPI_VARIABLE_SIZE)
-!endif
-
-!if $(VARIABLE_SUPPORT) == "SPI"
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize|$(SPI_VARIABLE_SIZE)
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize|$(SPI_VARIABLE_SIZE)
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize|$(SPI_VARIABLE_SIZE)
-!endif
 
 !if $(SOC_GPU_ENABLE) == TRUE
   gCixTokenSpaceGuid.PcdGpuEnable|TRUE
@@ -548,7 +594,11 @@
 
 [PcdsPatchableInModule]
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialClockRate|500000000
-
+!if $(TARGET) == RELEASE
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x21
+!else
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x2f
+!endif
 [PcdsDynamicHii.common.DEFAULT]
   #
   # Reset-related.
@@ -558,8 +608,11 @@
   #
   # Common UEFI ones.
   #
-
+!if $(NO_GIC_NO_TIMER) == TRUE
+  gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|L"Timeout"|gEfiGlobalVariableGuid|0x0|0
+!else
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|L"Timeout"|gEfiGlobalVariableGuid|0x0|5
+!endif
   gEfiMdeModulePkgTokenSpaceGuid.PcdBootDiscoveryPolicy|L"BootDiscoveryPolicy"|gBootDiscoveryPolicyMgrFormsetGuid|0
 
 [PcdsDynamicDefault.common]
@@ -572,12 +625,19 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|480
 
 !if $(VARIABLE_SUPPORT) == "SPI"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize|$(SPI_VARIABLE_SIZE)
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize|$(SPI_VARIABLE_SIZE)
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize|$(SPI_VARIABLE_SIZE)
+!endif
+
+!if $(VARIABLE_SUPPORT) == "SPI"
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase64|$(SPI_VARIABLE_BASE)
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingBase64|($(SPI_VARIABLE_BASE) + $(SPI_VARIABLE_SIZE))
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase64|($(SPI_VARIABLE_BASE) + $(SPI_VARIABLE_SIZE) + $(SPI_VARIABLE_SIZE))
 !endif
 !if $(COMPILE_SYSTEM_LOADER) == android
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit|0x27fffffff
+  gCixPlatformTokenSpaceGuid.PcdAndroidBoot|TRUE
 !else
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit|0x17fffffff
 !endif
@@ -612,7 +672,6 @@
   MdeModulePkg/Core/Dxe/DxeMain.inf {
     <LibraryClasses>
       NULL|MdeModulePkg/Library/DxeCrc32GuidedSectionExtractLib/DxeCrc32GuidedSectionExtractLib.inf
-      #DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   }
 !endif
   MdeModulePkg/Universal/PCD/Dxe/Pcd.inf {
@@ -633,24 +692,23 @@
   Silicon/CIX/Sky1/Drivers/SocDxe/SocDxe.inf
   Platform/CIX/Sky1/Drivers/PlatformDxe/PlatformDxe.inf
   # Platform/CIX/Sky1/Drivers/SampleCodeDxe/SampleCodeDxe.inf
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
-  Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashSmmRuntimeDxe.inf
-!elseif $(SOC_XSPI_ENABLE) == TRUE || $(VARIABLE_SUPPORT) == "SPI"
-  Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashDxe.inf
-!endif
-!if $(VARIABLE_SUPPORT) == "SPI"
-  MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
-!endif
-!if $(PCIE_HOST_ENABLE) == TRUE
-  Silicon/CIX/Sky1/Drivers/PcieInitDxe/PcieInitDxe.inf
-!endif
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
-  Platform/CIX/Sky1/Drivers/MmCommunicationDxe/MmCommunication.inf {
+!if $(STMM_SUPPORT) == TRUE
+  Platform/CIX/Sky1/Drivers/MmCommunicationDxe/ArmMmCommunication.inf {
     <LibraryClasses>
       NULL|StandaloneMmPkg/Library/VariableMmDependency/VariableMmDependency.inf
   }
 !endif
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
+!if $(SOC_XSPI_ENABLE) == TRUE
+!if $(STMM_SUPPORT) == TRUE
+  Silicon/CIX/Sky1/Drivers/NorFlashStmmRuntimeDxe/NorFlashStmmRuntimeDxe.inf
+!else
+  Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashDxe.inf
+!endif
+!endif
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == FALSE
+  MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
+!endif
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
   MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmmRuntimeDxe.inf {
     <LibraryClasses>
       MmUnblockMemoryLib|MdePkg/Library/MmUnblockMemoryLib/MmUnblockMemoryLibNull.inf
@@ -661,6 +719,10 @@
       NULL|MdeModulePkg/Library/VarCheckUefiLib/VarCheckUefiLib.inf
       DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   }
+!endif
+
+!if $(PCIE_HOST_ENABLE) == TRUE
+  Silicon/CIX/Sky1/Drivers/PcieInitDxe/PcieInitDxe.inf
 !endif
 !if $(SECURE_BOOT_ENABLE) == TRUE
   MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf {
@@ -674,6 +736,7 @@
 !else
   MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
 !endif
+  Silicon/CIX/Sky1/Drivers/RngDxe/RngDxe.inf
   MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
   MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe.inf
   EmbeddedPkg/ResetRuntimeDxe/ResetRuntimeDxe.inf
@@ -727,17 +790,14 @@
 !if $(ACPI_ENABLE) == TRUE
   MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
   MdeModulePkg/Universal/Acpi/AcpiPlatformDxe/AcpiPlatformDxe.inf
-  !if $(WINDOWS_BOOT_ENABLE) == TRUE
-    Platform/CIX/Sky1/Drivers/AcpiTables/Windows/AcpiTables.inf
-  !else
-    Platform/CIX/Sky1/Drivers/AcpiTables/Linux/AcpiTables.inf
-  !endif
-  Platform/CIX/Sky1/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
+  Platform/CIX/Sky1/Drivers/AcpiSocTables/AcpiSocTables.inf
+  Platform/CIX/Sky1/Drivers/AcpiSocDxe/AcpiSocDxe.inf
 
   DynamicTablesPkg/Drivers/DynamicTableFactoryDxe/DynamicTableFactoryDxe.inf {
     <LibraryClasses>
       NULL|Platform/CIX/Sky1/Library/Acpi/CIX/AcpiMadtLibCIX/AcpiMadtLibCIX.inf
       NULL|Platform/CIX/Sky1/Library/Acpi/CIX/AcpiSsdtCpuTopologyLibCIX/SsdtCpuTopologyLibCIX.inf
+      NULL|Platform/CIX/Sky1/Library/Acpi/CIX/AcpiPpttLibCIX/AcpiPpttLibCIX.inf
   }
   Platform/CIX/Sky1/Drivers/DynamicTableManagerDxe/DynamicTableManagerDxe.inf
   Platform/CIX/Sky1/Drivers/ConfigurationManagerDxe/ConfigurationManagerDxe.inf
@@ -754,7 +814,8 @@
   #
 !if $(SMBIOS_ENABLE) == TRUE
   MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
-  Platform/CIX/Sky1/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
+  ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassDxe.inf
+  Platform/CIX/Sky1/Drivers/CixSmbiosDxe/CixSmbiosDxe.inf
 !endif
   #
   # RAM Disk
@@ -765,10 +826,14 @@
 
 !if $(SOC_I2C_ENABLE) == TRUE
   Silicon/CIX/Sky1/Drivers/I2cDxe/I2cDxe.inf
+  !if $(I2C_EC_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/EcPlatformDxe/EcPlatformDxe.inf
+  !endif
+  !if $(I2C_HID_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/I2cHidKeyboard/I2cHidKeyboard.inf
   Platform/CIX/Sky1/Drivers/I2cHidServiceDriver/I2cHidServiceDriver.inf
   Platform/CIX/Sky1/Drivers/I2cHidDeviceDxe/I2cHidDeviceDxe.inf
+  !endif
 !endif
 
 !if $(SOC_SPI_ENABLE) == TRUE
@@ -781,21 +846,17 @@
 
 !if $(SOC_CDNSP_ENABLE) == TRUE || $(SOC_CDNSP_HOST_ENABLE) == TRUE
   Silicon/CIX/Sky1/Drivers/TypecPhyDxe/TypecPhyDxe.inf
+  !if $(PLATFORM_PD_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/PdDxe/PdDxe.inf {
     <LibraryClasses>
     PdLib|Platform/CIX/Sky1/Library/Rts5453hPdLib/Rts5453hPdLib.inf
   }
+  !endif
 !endif
 
 !if $(SOC_USB_DEVICE_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/UsbDeviceControlDxe/UsbDeviceControlDxe.inf
-  Platform/CIX/Sky1/Application/Fastboot/Fastboot.inf {
-    <LibraryClasses>
-      BootLib|Platform/CIX/Sky1/Library/BootLib/BootLib.inf
-      FlashUpdateLib|Platform/CIX/Sky1/Library/FlashUpdateLib/FlashUpdateLib.inf
-      LibUfdt|EmbeddedPkg/Library/LibUfdt/LibUfdt.inf
-      PartitionLib|Platform/CIX/Sky1/Library/PartitionLib/PartitionLib.inf
-  }
+  Platform/CIX/Sky1/Application/Fastboot/Fastboot.inf 
   !if $(SOC_CDNSP_ENABLE) == TRUE
     Silicon/CIX/Sky1/Drivers/CdnspDxe/CdnspDxe.inf
   !endif
@@ -850,7 +911,7 @@
   #
   # NVMe boot devices
   #
-  MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+  Platform/CIX/Sky1/Drivers/NvmExpressDxe/NvmExpressDxe.inf
 
   # SCMI Driver
   Platform/CIX/Sky1/Drivers/ArmScmiDxe/ArmScmiDxe.inf
@@ -871,6 +932,7 @@
 !if $(SETUP_DEBUG_CFG_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/DebugConfigDxe/DebugConfigDxe.inf
 !endif
+  Platform/CIX/Sky1/Drivers/RealtekLan/RealtekLanDxe.inf
 
   # Bds
   #
@@ -908,7 +970,7 @@
 
 !endif
   MdeModulePkg/Application/HelloWorld/HelloWorld.inf
-!if $(FW_UPDATE_ENABLE) == TRUE && $(SOC_XSPI_ENABLE) == TRUE
+!if $(FW_UPDATE_ENABLE) == TRUE
   # firmware update protocol
   Platform/CIX/Sky1/Drivers/FirmwareUpdateDxe/FwUpdateProtocolDxe.inf
 !endif
@@ -934,31 +996,14 @@ ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf {
 }
 !endif
 
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
 !else
   MdeModulePkg/Application/VariableInfo/VariableInfo.inf
 !endif
 !if $(COMPILE_SYSTEM_LOADER) == android
-  Platform/CIX/Sky1/Application/LinuxLoader/LinuxLoader.inf {
-    <LibraryClasses>
-      FdtLib|EmbeddedPkg/Library/FdtLib/FdtLib.inf
-      LibUfdt|EmbeddedPkg/Library/LibUfdt/LibUfdt.inf
-      ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
-      BootLib|Platform/CIX/Sky1/Library/BootLib/BootLib.inf
-      FlashUpdateLib|Platform/CIX/Sky1/Library/FlashUpdateLib/FlashUpdateLib.inf
-      AvbLib|Platform/CIX/Sky1/Library/avb/AvbLib.inf
-      DtbUpdateLib|Platform/CIX/Sky1/Library/DtbUpdateLib/DtbUpdateLib.inf
-      PartitionLib|Platform/CIX/Sky1/Library/PartitionLib/PartitionLib.inf
-  }
-  Platform/CIX/Sky1/Application/ABSelect/ABSelect.inf {
-    <LibraryClasses>
-      LibUfdt|EmbeddedPkg/Library/LibUfdt/LibUfdt.inf
-      PartitionLib|Platform/CIX/Sky1/Library/PartitionLib/PartitionLib.inf
-      MiniFastbootLib|Platform/CIX/Sky1/Library/FastbootLib/MiniFastbootLib.inf
-      AblAuthenticateLib|Platform/CIX/Sky1/Library/AblAuthenticateLib/AblAuthenticateLib.inf
-      AvbLib|Platform/CIX/Sky1/Library/avb/AvbLib.inf
-  }
-  Platform/CIX/Sky1/Drivers/AndroidConfigDxe/AndroidConfigDxe.inf
+  Platform/CIX/Sky1/Application/LinuxLoader/LinuxLoader.inf 
+  Platform/CIX/Sky1/Application/ABSelect/ABSelect.inf 
+  Platform/CIX/Sky1/Drivers/AndroidConfigDxe/AndroidConfigDxe.inf 
 !endif
 
 !if $(PD_FW_UPDATE_ENABLE) == TRUE
@@ -967,4 +1012,26 @@ ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf {
 
 !if $(I2S_MC_SUPPORT) == TRUE
   Silicon/CIX/Sky1/Drivers/I2sDxe/I2sDxe.inf
+!endif
+
+  Silicon/CIX/Sky1/Drivers/ArmPsciMpServicesDxe/ArmPsciMpServicesDxe.inf
+  # Platform/CIX/Sky1/Drivers/ScmiRuntimeDxe/ScmiRuntimeDxe.inf
+!if $(POWER_BUTTON_ENABLE) == TRUE
+  Platform/CIX/Sky1/Drivers/PowerButtonDxe/PowerButtonDxe.inf
+!endif
+
+!if $(DTPM_SUPPORT) == TRUE || $(FTPM_SUPPORT) == TRUE
+  Platform/CIX/Sky1/Drivers/FTPMDxe/FTPMProtocol.inf
+  Platform/CIX/Sky1/Drivers/Tcg2Acpi/Tcg2Acpi.inf
+  Platform/CIX/Sky1/Drivers/TPMVariableDxe/TPMVariableDxe.inf
+  SecurityPkg/Tcg/Tcg2Dxe/Tcg2Dxe.inf {
+    <LibraryClasses>
+      HashLib|SecurityPkg/Library/HashLibBaseCryptoRouter/HashLibBaseCryptoRouterDxe.inf
+      Tpm2DeviceLib|Platform/CIX/Sky1/Library/Tpm2DeviceLib/Tpm2DeviceLib.inf
+      NULL|SecurityPkg/Library/Tpm2DeviceLibDTpm/Tpm2InstanceLibDTpm.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha1/HashInstanceLibSha1.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+  }
+  Platform/CIX/Sky1/Drivers/Tcg2Config/Tcg2ConfigDxe.inf
 !endif

@@ -1,5 +1,6 @@
 /** @file
   Driver Binding functions for PCI Bus module.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Single PCI bus driver instance will manager all PCI Root Bridges in one EFI based firmware,
   since all PCI Root Bridges' resources need to be managed together.

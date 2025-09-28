@@ -1,0 +1,26 @@
+#/**
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#
+#**/
+
+[Defines]
+  DEC_SPECIFICATION              = 0x0001001A
+  PACKAGE_NAME                   = Hym8563RealTimeClockLib
+  PACKAGE_GUID                   = 14425a81-70e3-44ed-bd7c-236a14525a2d
+  PACKAGE_VERSION                = 0.1
+
+[Guids]
+  gHym8563RealTimeClockLibTokenSpaceGuid = {0xb0cab1ac, 0xa6b5, 0x40bd, {0x84, 0x11, 0x1b, 0xbe, 0x81, 0x84, 0x9f, 0x79}}
+
+[Protocols]
+  gHym8563RealTimeClockLibI2cMasterProtocolGuid = {0x907d8b8b, 0x5c4d, 0x422e, {0xaf, 0x93, 0xcd, 0xe0, 0x81, 0x4c, 0x37, 0x25}}
+
+[PcdsFixedAtBuild]
+  gHym8563RealTimeClockLibTokenSpaceGuid.PcdI2cSlaveAddress|0x51|UINT8|0x00000001
+
+  # preferred/max I2C bus frequency in Hz for the HYM8563
+  gHym8563RealTimeClockLibTokenSpaceGuid.PcdI2cBusFrequency|400000|UINT32|0x00000002

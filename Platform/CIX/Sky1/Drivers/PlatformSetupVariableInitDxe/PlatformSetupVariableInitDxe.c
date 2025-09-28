@@ -1,3 +1,8 @@
+/** @file
+
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
+
+**/
 #include <Uefi.h>
 #include <Library/UefiLib.h>
 #include <Library/DebugLib.h>
@@ -8,12 +13,22 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/PcdLib.h>
 #include <PlatformSetupVar.h>
+#include <PlatformSetupVarEntry.h>
 #include <Library/ConfigParamsDataBlockLib.h>
 #include <Library/PlatformConfigParamsDataBlockLib.h>
 #include <Library/CpuInfoLib.h>
 #include <Protocol/ConfigParamsManageProtocol.h>
 #include <Protocol/PlatformConfigParamsManageProtocol.h>
+#include <Protocol/PlatformSetupDataInfoProtocol.h>
 #include <Guid/NetworkStackSetup.h>
+
+PLATFORM_SETUP_DATA_INFO_TABLE  mPlatformSetupDataInfoTable = {
+  PLATFORM_SETUP_VAR,
+  sizeof (PLATFORM_SETUP_DATA),
+  CIX_PLATFORM_SETUP_VARIABLE_GUID,
+  PlatformSetupDataEntry,
+  (sizeof (PlatformSetupDataEntry)/ sizeof (PLATFORM_SETUP_DATA_ENTRY))
+};
 
 EFI_STATUS
 EFIAPI
@@ -148,9 +163,79 @@ UpdateConfigParams (
 
     ConfigData->S5.SocWatchdogTimer = PlatformSetupVar.SocWatchdogTimer;
 
-    ConfigData->Cpu.LpiState = PlatformSetupVar.CpuLpiState;
+    ConfigData->Cpu.LpiState       = PlatformSetupVar.CpuLpiState;
+    ConfigData->Cpu.CoreNum        = PlatformSetupVar.CpuCoreNum;
+    ConfigData->Cpu.ShareInfo      = PlatformSetupVar.CpuShareInfo;
+    ConfigData->Cpu.CoreEnable[0]  = PlatformSetupVar.CpuCoreEnable[0];
+    ConfigData->Cpu.CoreEnable[1]  = PlatformSetupVar.CpuCoreEnable[1];
+    ConfigData->Cpu.CoreEnable[2]  = PlatformSetupVar.CpuCoreEnable[2];
+    ConfigData->Cpu.CoreEnable[3]  = PlatformSetupVar.CpuCoreEnable[3];
+    ConfigData->Cpu.CoreEnable[4]  = PlatformSetupVar.CpuCoreEnable[4];
+    ConfigData->Cpu.CoreEnable[5]  = PlatformSetupVar.CpuCoreEnable[5];
+    ConfigData->Cpu.CoreEnable[6]  = PlatformSetupVar.CpuCoreEnable[6];
+    ConfigData->Cpu.CoreEnable[7]  = PlatformSetupVar.CpuCoreEnable[7];
+    ConfigData->Cpu.CoreEnable[8]  = PlatformSetupVar.CpuCoreEnable[8];
+    ConfigData->Cpu.CoreEnable[9]  = PlatformSetupVar.CpuCoreEnable[9];
+    ConfigData->Cpu.CoreEnable[10] = PlatformSetupVar.CpuCoreEnable[10];
+    ConfigData->Cpu.CoreEnable[11] = PlatformSetupVar.CpuCoreEnable[11];
 
-    ConfigData->Dpu.GopDisplaySelect = PlatformSetupVar.GopDisplaySelect;
+    ConfigData->Mem.MemFreq                = PlatformSetupVar.MemFreq;
+    ConfigData->Mem.MemBreakPoint          = PlatformSetupVar.MemBreakPoint;
+    ConfigData->Mem.MemEyeScan             = PlatformSetupVar.MemEyeScan;
+    ConfigData->Mem.MemHarvesting          = PlatformSetupVar.MemHarvesting;
+    ConfigData->Mem.WckAlwaysOn            = PlatformSetupVar.WckAlwaysOn;
+    ConfigData->Mem.DataMask               = PlatformSetupVar.DataMask;
+    ConfigData->Mem.RfmEn                  = PlatformSetupVar.RfmEn;
+    ConfigData->Mem.AutoPrechargeEn        = PlatformSetupVar.AutoPrechargeEn;
+    ConfigData->Mem.PbrEn                  = PlatformSetupVar.PbrEn;
+    ConfigData->Mem.MbistEn                = PlatformSetupVar.MbistEn;
+    ConfigData->Mem.MbistMode              = PlatformSetupVar.MbistMode;
+    ConfigData->Mem.MemWrLEcc              = PlatformSetupVar.MemWrLEcc;
+    ConfigData->Mem.MemRdLEcc              = PlatformSetupVar.MemRdLEcc;
+    ConfigData->Mem.PortPriority           = PlatformSetupVar.PortPriority;
+    ConfigData->Mem.BdwP0Override          = PlatformSetupVar.BdwP0Override;
+    ConfigData->Mem.BdwP0                  = PlatformSetupVar.BdwP0;
+    ConfigData->Mem.BdwP1Override          = PlatformSetupVar.BdwP1Override;
+    ConfigData->Mem.BdwP1                  = PlatformSetupVar.BdwP1;
+    ConfigData->Mem.MemRPriorityP0Override = PlatformSetupVar.MemRPriorityP0Override;
+    ConfigData->Mem.MemRPriorityP0         = PlatformSetupVar.MemRPriorityP0;
+    ConfigData->Mem.MemWPriorityP0Override = PlatformSetupVar.MemWPriorityP0Override;
+    ConfigData->Mem.MemWPriorityP0         = PlatformSetupVar.MemWPriorityP0;
+    ConfigData->Mem.MemBdwOvflowP0         = PlatformSetupVar.MemBdwOvflowP0;
+    ConfigData->Mem.MemRPriorityP1Override = PlatformSetupVar.MemRPriorityP1Override;
+    ConfigData->Mem.MemRPriorityP1         = PlatformSetupVar.MemRPriorityP1;
+    ConfigData->Mem.MemWPriorityP1Override = PlatformSetupVar.MemWPriorityP1Override;
+    ConfigData->Mem.MemWPriorityP1         = PlatformSetupVar.MemWPriorityP1;
+    ConfigData->Mem.MemBdwOvflowP1         = PlatformSetupVar.MemBdwOvflowP1;
+    ConfigData->Mem.MemIEcc                = PlatformSetupVar.MemIEcc;
+    ConfigData->Mem.MemWrDbi               = PlatformSetupVar.MemWrDbi;
+    ConfigData->Mem.MemRdDbi               = PlatformSetupVar.MemRdDbi;
+
+    ConfigData->Pm.VddSocVoltage         = PlatformSetupVar.VddSocVoltage;
+    ConfigData->Pm.VddGpuVoltage         = PlatformSetupVar.VddGpuVoltage;
+    ConfigData->Pm.VddDpuVoltage         = PlatformSetupVar.VddDpuVoltage;
+    ConfigData->Pm.VddCpuBigCore0Voltage = PlatformSetupVar.VddCpuBigCore0Voltage;
+    ConfigData->Pm.VddCpuBigCore1Voltage = PlatformSetupVar.VddCpuBigCore1Voltage;
+    ConfigData->Pm.VddCpuMidCore0Voltage = PlatformSetupVar.VddCpuMidCore0Voltage;
+    ConfigData->Pm.VddCpuMidCore1Voltage = PlatformSetupVar.VddCpuMidCore1Voltage;
+    ConfigData->Pm.VddCpuLitCoreVoltage  = PlatformSetupVar.VddCpuLitCoreVoltage;
+    ConfigData->Pm.CpuCoreClkGating      = PlatformSetupVar.CpuCoreClkGating;
+    ConfigData->Pm.DsuClkGating          = PlatformSetupVar.DsuClkGating;
+    ConfigData->Pm.GicdClkGating         = PlatformSetupVar.GicdClkGating;
+    ConfigData->Pm.Ci700ClkGating        = PlatformSetupVar.Ci700ClkGating;
+    ConfigData->Pm.SysNi700ClkGating     = PlatformSetupVar.SysNi700ClkGating;
+    ConfigData->Pm.MmNi700ClkGating      = PlatformSetupVar.MmNi700ClkGating;
+    ConfigData->Pm.PcieNi700ClkGating    = PlatformSetupVar.PcieNi700ClkGating;
+    ConfigData->Pm.SmnNi700ClkGating     = PlatformSetupVar.SmnNi700ClkGating;
+    ConfigData->Pm.GpuClkGating          = PlatformSetupVar.GpuClkGating;
+    ConfigData->Pm.Dpu0ClkGating         = PlatformSetupVar.Dpu0ClkGating;
+    ConfigData->Pm.Dpu1ClkGating         = PlatformSetupVar.Dpu1ClkGating;
+    ConfigData->Pm.Dpu2ClkGating         = PlatformSetupVar.Dpu2ClkGating;
+    ConfigData->Pm.Dpu3ClkGating         = PlatformSetupVar.Dpu3ClkGating;
+    ConfigData->Pm.Dpu4ClkGating         = PlatformSetupVar.Dpu4ClkGating;
+    ConfigData->Pm.VpuClkGating          = PlatformSetupVar.VpuClkGating;
+    ConfigData->Misc.CpuCppcType         = PlatformSetupVar.CpuCppcType;
+    ConfigData->Spi.TPMDeviceSelect      = PlatformSetupVar.TPMDeviceSelect;
   }
 }
 
@@ -163,6 +248,8 @@ UpdatePlatformConfigParams (
   EFI_STATUS           Status;
   UINTN                VarSize;
   PLATFORM_SETUP_DATA  PlatformSetupVar;
+  SYSTEM_TABLE         SystemTableVar;
+  UINTN                SystemTableVarSize;
 
   VarSize = sizeof (PLATFORM_SETUP_DATA);
 
@@ -174,25 +261,38 @@ UpdatePlatformConfigParams (
                   &PlatformSetupVar
                   );
   if (!EFI_ERROR (Status) && !IsRtcPowerfailure ()) {
-    ConfigData->SystemTableSelect = PlatformSetupVar.SystemTableSelect;
-    ConfigData->DtbMenuEntry      = PlatformSetupVar.DtbMenuEntry;
-    ConfigData->GfxPower          = PlatformSetupVar.GfxPower;
-    ConfigData->TouchPanelPower   = PlatformSetupVar.TouchPanelPower;
-    ConfigData->TpmPower          = PlatformSetupVar.TpmPower;
-    ConfigData->WwanPower         = PlatformSetupVar.WwanPower;
-    ConfigData->PcieX2SlotPower   = PlatformSetupVar.PcieX2SlotPower;
-    ConfigData->FingerPrintPower  = PlatformSetupVar.FingerPrintPower;
-    ConfigData->WlanPower         = PlatformSetupVar.WlanPower;
-    ConfigData->M2SsdPower        = PlatformSetupVar.M2SsdPower;
-    ConfigData->OnBoardLanPower   = PlatformSetupVar.OnBoardLanPower;
-    ConfigData->IspCamera0Power   = PlatformSetupVar.IspCamera0Power;
-    ConfigData->IspCamera1Power   = PlatformSetupVar.IspCamera1Power;
-    ConfigData->IspCamera2Power   = PlatformSetupVar.IspCamera2Power;
-    ConfigData->IspCamera3Power   = PlatformSetupVar.IspCamera3Power;
-    ConfigData->StateAfterG3      = PlatformSetupVar.StateAfterG3;
-    ConfigData->RtcWakeup         = PlatformSetupVar.RtcWakeup;
-    ConfigData->LightSensorCtrl   = PlatformSetupVar.LightSensorCtrl;
-    ConfigData->SpcrEnable        = PlatformSetupVar.SpcrEnable;
+    ConfigData->DtbMenuEntry     = PlatformSetupVar.DtbMenuEntry;
+    ConfigData->GfxPower         = PlatformSetupVar.GfxPower;
+    ConfigData->TouchPanelPower  = PlatformSetupVar.TouchPanelPower;
+    ConfigData->TpmPower         = PlatformSetupVar.TpmPower;
+    ConfigData->WwanPower        = PlatformSetupVar.WwanPower;
+    ConfigData->PcieX2SlotPower  = PlatformSetupVar.PcieX2SlotPower;
+    ConfigData->FingerPrintPower = PlatformSetupVar.FingerPrintPower;
+    ConfigData->WlanPower        = PlatformSetupVar.WlanPower;
+    ConfigData->M2SsdPower       = PlatformSetupVar.M2SsdPower;
+    ConfigData->OnBoardLanPower  = PlatformSetupVar.OnBoardLanPower;
+    ConfigData->IspCamera0Power  = PlatformSetupVar.IspCamera0Power;
+    ConfigData->IspCamera1Power  = PlatformSetupVar.IspCamera1Power;
+    ConfigData->IspCamera2Power  = PlatformSetupVar.IspCamera2Power;
+    ConfigData->IspCamera3Power  = PlatformSetupVar.IspCamera3Power;
+    ConfigData->StateAfterG3     = PlatformSetupVar.StateAfterG3;
+    ConfigData->RtcWakeup        = PlatformSetupVar.RtcWakeup;
+    ConfigData->LightSensorCtrl  = PlatformSetupVar.LightSensorCtrl;
+    ConfigData->SpcrEnable       = PlatformSetupVar.SpcrEnable;
+    ConfigData->EcFanMode        = PlatformSetupVar.EcFanMode;
+  }
+
+  SystemTableVarSize = sizeof (SYSTEM_TABLE);
+
+  Status = gRT->GetVariable (
+                  SYSTEM_TABLE_VAR,
+                  &gCixGlobalVariableGuid,
+                  NULL,
+                  &SystemTableVarSize,
+                  &SystemTableVar
+                  );
+  if (!EFI_ERROR (Status) && !IsRtcPowerfailure ()) {
+    ConfigData->SystemTableSelect = SystemTableVar.SystemTableSelect;
   }
 }
 
@@ -358,16 +458,13 @@ ConstructSetupVariable (
   PlatformSetupVar->MemRPriorityP1  = FixedPcdGet8 (PcdMemRPriorityP1);
   PlatformSetupVar->MemWPriorityP1  = FixedPcdGet8 (PcdMemWPriorityP1);
   PlatformSetupVar->MemBdwOvflowP1  = FixedPcdGet8 (PcdMemBdwOvflowP1);
-  PlatformSetupVar->MemBreakPoint   = FixedPcdGet8 (PcdMemBreakPoint);
-  PlatformSetupVar->MemEyeScan      = FixedPcdGet8 (PcdMemEyeScan);
   PlatformSetupVar->MemIEcc         = FixedPcdGet8 (PcdMemIEcc);
+  PlatformSetupVar->MemWrDbi        = FixedPcdGet8 (PcdMemWrDbi);
+  PlatformSetupVar->MemRdDbi        = FixedPcdGet8 (PcdMemRdDbi);
 
-  PlatformSetupVar->StateAfterG3      = FixedPcdGet8 (PcdStateAfterG3);
-  PlatformSetupVar->SystemTableSelect = FixedPcdGet8 (PcdSystemTableSelect);
-  PlatformSetupVar->PrimaryDisplay    = FixedPcdGet8 (PcdPrimaryDisplay);
-  PlatformSetupVar->DtbMenuEntry      = FixedPcdGet8 (PcdDtbMenuEntry);
+  PlatformSetupVar->StateAfterG3 = FixedPcdGet8 (PcdStateAfterG3);
+  PlatformSetupVar->DtbMenuEntry = FixedPcdGet8 (PcdDtbMenuEntry);
 
-  PlatformSetupVar->BiosReset             = FixedPcdGet8 (PcdBiosReset);
   PlatformSetupVar->SocWatchdogTimer      = FixedPcdGet8 (PcdSocWatchdogTimer);
   PlatformSetupVar->VddSocVoltage         = FixedPcdGet16 (PcdVddSocVoltage);
   PlatformSetupVar->VddGpuVoltage         = FixedPcdGet16 (PcdVddGpuVoltage);
@@ -408,6 +505,7 @@ ConstructSetupVariable (
   PlatformSetupVar->RtcWakeup             = FixedPcdGet8 (PcdRtcWakeup);
   PlatformSetupVar->LightSensorCtrl       = FixedPcdGet8 (PcdLightSensorCtrl);
   PlatformSetupVar->SpcrEnable            = FixedPcdGetBool (PcdAcpiSpcrEnable);
+  PlatformSetupVar->EcFanMode             = FixedPcdGetBool (PcdEcDefaultFanMode);
 
   PlatformSetupVar->Usb2Control0Enable      = FixedPcdGetBool (PcdUsb2Control0Enable);
   PlatformSetupVar->Usb2Control1Enable      = FixedPcdGetBool (PcdUsb2Control1Enable);
@@ -435,35 +533,8 @@ ConstructSetupVariable (
   PlatformSetupVar->CpuCoreNum              = CpuCoreNum;
   PlatformSetupVar->CpuShareInfo            = CpuShareInfo;
   PlatformSetupVar->CpuLpiState             = FixedPcdGet8 (PcdAcpiCpuLpiState);
-  PlatformSetupVar->GopDisplaySelect        = FixedPcdGet8 (PcdGopDisplaySelect);
-}
-
-VOID
-EFIAPI
-SetSetupVariableCallBack (
-  IN EFI_EVENT  Event,
-  IN VOID       *Context
-  )
-{
-  EFI_STATUS           Status = EFI_SUCCESS;
-  UINTN                VarSize;
-  PLATFORM_SETUP_DATA  PlatformSetupVar;
-
-  if (Event != NULL) {
-    gBS->CloseEvent (Event);
-  }
-
-  VarSize = sizeof (PLATFORM_SETUP_DATA);
-  ZeroMem (&PlatformSetupVar, VarSize);
-  ConstructSetupVariable (&PlatformSetupVar);
-  Status = gRT->SetVariable (
-                  PLATFORM_SETUP_VAR,
-                  &gPlatformSetupVariableGuid,
-                  EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
-                  sizeof (PLATFORM_SETUP_DATA),
-                  &PlatformSetupVar
-                  );
-  ASSERT_EFI_ERROR (Status);
+  PlatformSetupVar->CpuCppcType             = FixedPcdGet8 (PcdAcpiCppcType);
+  PlatformSetupVar->TPMDeviceSelect         = FixedPcdGet8 (PcdDefaultTpmDeviceSelect);
 }
 
 EFI_STATUS
@@ -472,7 +543,6 @@ PlatformSetupVariableInit (
   )
 {
   EFI_STATUS           Status = EFI_SUCCESS;
-  EFI_EVENT            Event;
   UINTN                VarSize;
   PLATFORM_SETUP_DATA  PlatformSetupVar;
 
@@ -489,6 +559,7 @@ PlatformSetupVariableInit (
     //
     // Variable does not exist yet - create it
     //
+    ZeroMem (&PlatformSetupVar, VarSize);
     ConstructSetupVariable (&PlatformSetupVar);
 
     Status = gRT->SetVariable (
@@ -500,16 +571,6 @@ PlatformSetupVariableInit (
                     );
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_INFO, "%a: EfiSetVariable failed - %r\n", __FUNCTION__, Status));
-      Status = gBS->CreateEventEx (
-                      EVT_NOTIFY_SIGNAL,
-                      TPL_CALLBACK,
-                      SetSetupVariableCallBack,
-                      NULL,
-                      &gEfiEndOfDxeEventGroupGuid,
-                      &Event
-                      );
-
-      ASSERT_EFI_ERROR (Status);
     }
   } else {
     DEBUG ((DEBUG_INFO, "%a: EfiGetVariable Success - %r\n", __FUNCTION__, Status));
@@ -537,6 +598,7 @@ NetworkStackVariableInit (
                   &NetworkStack
                   );
   if (EFI_ERROR (Status) || IsRtcPowerfailure ()) {
+    ZeroMem (&NetworkStack, VarSize);
     //
     // Variable does not exist yet - create it
     //
@@ -563,6 +625,47 @@ NetworkStackVariableInit (
 }
 
 EFI_STATUS
+SystemTableVariableInit (
+  VOID
+  )
+{
+  EFI_STATUS    Status = EFI_SUCCESS;
+  UINTN         VarSize;
+  SYSTEM_TABLE  SystemTableVar;
+
+  VarSize = sizeof (SYSTEM_TABLE);
+
+  Status = gRT->GetVariable (
+                  SYSTEM_TABLE_VAR,
+                  &gCixGlobalVariableGuid,
+                  NULL,
+                  &VarSize,
+                  &SystemTableVar
+                  );
+
+  if (EFI_ERROR (Status) || IsRtcPowerfailure ()) {
+    //
+    // Variable does not exist yet - create it
+    //
+    SystemTableVar.SystemTableSelect = FixedPcdGet8 (PcdSystemTableSelect);
+    Status                           = gRT->SetVariable (
+                                              SYSTEM_TABLE_VAR,
+                                              &gCixGlobalVariableGuid,
+                                              EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
+                                              VarSize,
+                                              &SystemTableVar
+                                              );
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_INFO, "%a: EfiSetVariable failed - %r\n", __FUNCTION__, Status));
+    }
+  } else {
+    DEBUG ((DEBUG_INFO, "%a: EfiGetVariable Success - %r\n", __FUNCTION__, Status));
+  }
+
+  return Status;
+}
+
+EFI_STATUS
 EFIAPI
 PlatformSetupVariableInitDxeEntry (
   IN EFI_HANDLE        ImageHandle,
@@ -574,6 +677,7 @@ PlatformSetupVariableInitDxeEntry (
   CIX_CONFIG_PARAMS_MANAGE_PROTOCOL           *ConfigManage;
   PLATFORM_CONFIG_PARAMS_DATA_BLOCK           *PlatformConfigData = NULL;
   CIX_PLATFORM_CONFIG_PARAMS_MANAGE_PROTOCOL  *PlatformConfigManage;
+  CIX_PLATFORM_SETUP_DATA_INFO_PROTOCOL       *PlatformSetupDataInfoProtocol;
   VOID                                        *Registration;
   EFI_HANDLE                                  Handle;
 
@@ -593,6 +697,15 @@ PlatformSetupVariableInitDxeEntry (
     return Status;
   } else {
     DEBUG ((DEBUG_INFO, "%a: NetworkStackVariableInit Success - %r\n", __FUNCTION__, Status));
+  }
+
+  Status = SystemTableVariableInit ();
+
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_INFO, "%a: SystemTableVariableInit failed - %r\n", __FUNCTION__, Status));
+    return Status;
+  } else {
+    DEBUG ((DEBUG_INFO, "%a: SystemTableVariableInit Success - %r\n", __FUNCTION__, Status));
   }
 
   //
@@ -636,6 +749,17 @@ PlatformSetupVariableInitDxeEntry (
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_INFO, "%a: CheckCpuShareInfo failed - %r\n", __FUNCTION__, Status));
   }
+
+  PlatformSetupDataInfoProtocol          = AllocateZeroPool (sizeof (CIX_PLATFORM_SETUP_DATA_INFO_PROTOCOL));
+  PlatformSetupDataInfoProtocol->Version = CIX_PLATFORM_SETUP_DATA_INFO_PROTOCOL_VERSION;
+  CopyMem (&PlatformSetupDataInfoProtocol->Table, &mPlatformSetupDataInfoTable, sizeof (PLATFORM_SETUP_DATA_INFO_TABLE));
+
+  Status = gBS->InstallProtocolInterface (
+                  &ImageHandle,
+                  &gCixPlatformSetupDataInfoProtocolGuid,
+                  EFI_NATIVE_INTERFACE,
+                  PlatformSetupDataInfoProtocol
+                  );
 
   Handle = NULL;
   Status = gBS->InstallProtocolInterface (

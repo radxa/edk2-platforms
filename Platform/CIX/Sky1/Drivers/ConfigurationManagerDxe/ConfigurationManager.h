@@ -1,6 +1,6 @@
 #/** @file
 #
-#  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #
 #  @par Glossary:
 #    - Cm or CM   - Configuration Manager
@@ -103,11 +103,52 @@
   NominalPerf * GranularityMHz                        /* UINT32                                   NominalFrequencyInteger                   */  \
 }
 
+#define CPC_ENTRY_PCC(PCC_SUBSPACE_BASE)  { \
+  3,                                                                                       /* UINT32                                   Revision                                  */  \
+  {0x0A, 32, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,HighestPerfLevel)},         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   HighestPerformanceBuffer                  */  \
+  0,                                                                                       /* UINT32                                   HighestPerformanceInteger                 */  \
+  {0x0A, 32, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,NominalPerfLevel)},         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   NominalPerformanceBuffer                  */  \
+  0,                                                                                       /* UINT32                                   NominalPerformanceInteger                 */  \
+  {0x0A, 32, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,LowestNonlinearPerfLevel)}, /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   LowestNonlinearPerformanceBuffer          */  \
+  0,                                                                                       /* UINT32                                   LowestNonlinearPerformanceInteger         */  \
+  {0x0A, 32, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,LowestPerfLevel)},          /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   LowestPerformanceBuffer                   */  \
+  0,                                                                                       /* UINT32                                   LowestPerformanceInteger                  */  \
+  {0x0A, 32, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,GuaranteedPerfLevel)},      /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   GuaranteedPerformanceRegister             */  \
+  {0x0A, 32, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,DesiredPerfLevel)},         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   DesiredPerformanceRegister                */  \
+  CPC_NULL_BUFFER,                                                                         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   MinimumPerformanceRegister                */  \
+  CPC_NULL_BUFFER,                                                                         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   MaximumPerformanceRegister                */  \
+  CPC_NULL_BUFFER,                                                                         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   PerformanceReductionToleranceRegister     */  \
+  CPC_NULL_BUFFER,                                                                         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   TimeWindowRegister                        */  \
+  {0x0A, 0, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,Reserved)},                  /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   CounterWraparoundTimeBuffer               */  \
+  0,                                                                                       /* UINT32                                   CounterWraparoundTimeInteger              */  \
+  {0x0A, 64, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,ReferencePerfCounter)},     /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   ReferencePerformanceCounterRegister       */  \
+  {0x0A, 64, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,DeliveredPerfCounter)},     /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   DeliveredPerformanceCounterRegister       */  \
+  {0x0A, 32, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,PerfLevelLimited)},         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   PerformanceLimitedRegister                */  \
+  CPC_NULL_BUFFER,                                                                         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   CPPCEnableRegister                        */  \
+  {0x0A, 0, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,Reserved)},                  /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   AutonomousSelectionEnableBuffer           */  \
+  0,                                                                                       /* UINT32                                   AutonomousSelectionEnableInteger          */  \
+  CPC_NULL_BUFFER,                                                                         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   AutonomousActivityWindowRegister          */  \
+  CPC_NULL_BUFFER,                                                                         /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   EnergyPerformancePreferenceRegister       */  \
+  {0x0A, 32, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,ReferencePerf)},            /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   ReferencePerformanceBuffer                */  \
+  0,                                                                                       /* UINT32                                   ReferencePerformanceInteger               */  \
+  {0x0A, 32, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,LowestFreq)},               /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   LowestFrequencyBuffer                     */  \
+  0,                                                                                       /* UINT32                                   LowestFrequencyInteger                    */  \
+  {0x0A, 32, 0, 0, PCC_SUBSPACE_BASE + OFFSET_OF(PCC_CORE_REGS,NominalFreq)},              /* EFI_ACPI_6_4_GENERIC_ADDRESS_STRUCTURE   NominalFrequencyBuffer                    */  \
+  0                                                                                        /* UINT32                                   NominalFrequencyInteger                   */  \
+}
+
 /** The number of ACPI tables to install
 */
-#define CM_MANDATORY_ACPI_TABLES  2
+#define CM_MANDATORY_ACPI_TABLES  3
 #define OEM_ACPI_TABLES           0
 #define PLAT_ACPI_TABLE_COUNT     (CM_MANDATORY_ACPI_TABLES + OEM_ACPI_TABLES)
+
+#define CPPC_DISABLE       0
+#define CPPC_FAST_CHANNEL  1
+#define CPPC_PCC           2
+
+#define NUMBER_TO_BITMASK(n)  ((1U << (n)) - 1)
+#define ROUND_DIVISION(a, b)  (((a) / (b)) + ((((a) % (b)) * 2 >= (b)) ? 1 : 0))
 
 /** A structure describing the platform configuration
     manager repository information
@@ -136,9 +177,8 @@ typedef struct PlatformRepositoryInfo {
 
   /// Mapping table of CPU UID to core number
   UINTN                                    CpuUidtoCoreNumberMap[PLAT_CPU_COUNT];
+
+  CM_CIX_CPU_TOPO_INFO                     *CpuTopoInfo;
 } SKY1_PLATFORM_REPOSITORY_INFO;
 
 #endif // CONFIGURATION_MANAGER_H
-
-#define NUMBER_TO_BITMASK(n)  ((1U << (n)) - 1)
-#define ROUND_DIVISION(a, b)  (((a) / (b)) + ((((a) % (b)) * 2 >= (b)) ? 1 : 0))

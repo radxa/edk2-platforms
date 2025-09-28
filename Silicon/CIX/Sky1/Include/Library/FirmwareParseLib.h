@@ -1,5 +1,6 @@
 /** @file  FirmwareParseLib.h
 
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   Copyright (c) 2022-2023, CIX, Ltd. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -35,9 +36,12 @@ GetFlashConfig (
 
 EFI_STATUS
 EFIAPI
-GetFipImageFlashAddr (
-  IN  FIP_ENTRY_INDEX  EntryIndex,
-  OUT UINT32           *FlashAddr
+FindFirmwareEntryInfo (
+  IN  UINT8*        pImageBuff,
+  IN  UINT32*       ImageLength,
+  IN  FIRMWARE_TYPE FwType,
+  OUT UINT32*       FwBase,
+  OUT UINT32*       FwLength
   );
 
 #endif /* __FIRMWARE_PARSE_LIB_H__ */

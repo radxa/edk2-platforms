@@ -1,0 +1,47 @@
+#/**
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x0001001A
+  BASE_NAME                      = Hym8563RealTimeClockLib
+  FILE_GUID                      = 5874644f-f3d6-4c9c-903d-881525bc60f9
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = RealTimeClockLib
+
+[Sources.common]
+  Hym8563RealTimeClockLib.c
+
+[Packages]
+  EmbeddedPkg/EmbeddedPkg.dec
+  MdePkg/MdePkg.dec
+  Platform/Radxa/Orion/O6/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.dec
+
+[LibraryClasses]
+  BaseMemoryLib
+  DebugLib
+  IoLib
+  UefiBootServicesTableLib
+  UefiLib
+  UefiRuntimeLib
+  TimeBaseLib
+
+[Guids]
+  gEfiEventVirtualAddressChangeGuid
+
+[Protocols]
+  gEfiI2cMasterProtocolGuid                       ## CONSUMES
+  gHym8563RealTimeClockLibI2cMasterProtocolGuid   ## CONSUMES
+
+[FixedPcd]
+  gHym8563RealTimeClockLibTokenSpaceGuid.PcdI2cSlaveAddress
+  gHym8563RealTimeClockLibTokenSpaceGuid.PcdI2cBusFrequency
+
+[Depex]
+  gHym8563RealTimeClockLibI2cMasterProtocolGuid AND gEfiI2cMasterProtocolGuid

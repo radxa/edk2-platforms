@@ -1,5 +1,6 @@
 #
 #  Copyright (c) 2013-2021, Arm Limited. All rights reserved.<BR>
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -22,6 +23,7 @@
   EmbeddedPkg/EmbeddedPkg.dec
   MdePkg/MdePkg.dec
   Silicon/CIX/Sky1/CixPkg.dec
+  Platform/CIX/Sky1/Sky1.dec
 
 [LibraryClasses]
   ArmGenericTimerCounterLib
@@ -34,6 +36,8 @@
   UefiBootServicesTableLib
   UefiDriverEntryPoint
   UefiRuntimeServicesTableLib
+  HwHarvestLib
+  ArmSmcLib
 
 [Pcd.common]
   gArmTokenSpaceGuid.PcdGenericWatchdogControlBase
@@ -44,6 +48,7 @@
   gEfiWatchdogTimerArchProtocolGuid       ## ALWAYS_PRODUCES
   gHardwareInterrupt2ProtocolGuid         ## ALWAYS_CONSUMES
   gCixConfigParamsManageProtocolGuid
+  gCixSetupVarInitCompleteProtocolGuid
 
 [Depex]
   gHardwareInterrupt2ProtocolGuid

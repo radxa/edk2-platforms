@@ -1,5 +1,6 @@
 /** @file  NorFlashLib.h
 
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   Copyright (c) 2022-2023, CIX, Ltd. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -12,6 +13,7 @@
 #include <Library/DebugLib.h>
 #include <Protocol/BlockIo.h>
 #include <Protocol/DiskIo.h>
+#include <Pi/PiFirmwareVolume.h>
 #include <Protocol/FirmwareVolumeBlock.h>
 #include "MemoryMap.h"
 

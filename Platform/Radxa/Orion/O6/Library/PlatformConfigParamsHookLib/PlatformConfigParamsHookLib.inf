@@ -26,7 +26,7 @@
   Platform/CIX/Sky1/Sky1.dec
   Silicon/CIX/Sky1/CixPkg.dec
   Platform/Radxa/Radxa.dec
-  Silicon/NXP/Library/Pcf8563RealTimeClockLib/Pcf8563RealTimeClockLib.dec
+  Platform/Radxa/Orion/O6/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.dec
 
 [LibraryClasses]
   BaseMemoryLib
@@ -45,7 +45,7 @@
 
 [FixedPcd]
   gRadxaTokenSpaceGuid.PcdRtc8563I2cBus
-  gPcf8563RealTimeClockLibTokenSpaceGuid.PcdI2cSlaveAddress
+  gHym8563RealTimeClockLibTokenSpaceGuid.PcdI2cSlaveAddress
   gCixTokenSpaceGuid.PcdI2c0BusFreq
   gCixTokenSpaceGuid.PcdI2c1BusFreq
   gCixTokenSpaceGuid.PcdI2c2BusFreq

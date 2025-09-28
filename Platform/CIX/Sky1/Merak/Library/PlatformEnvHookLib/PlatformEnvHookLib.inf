@@ -1,6 +1,6 @@
 #/**
 #
-#  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -41,17 +41,26 @@
   GpioTableLib
   CixSipLib
   EcLib
+  MailBoxLib
+  CixFwBootPerfLib
+  PostCodeLib
+  CixGPNVLib
+  IoLib
 
 [Guids]
   gCixI2cDevicePathGuid
   gEfiNetworkStackSetupGuid
   gPlatformSetupVariableGuid
+  gEfiEventReadyToBootGuid
+  gCixGPNVGuid
+  gCixFarmEnableFlagGuid
 
 [Protocols]
   gEfiI2cMasterProtocolGuid
   gEfiDevicePathProtocolGuid
   gRa8900ceRealTimeClockLibI2cMasterProtocolGuid
   gCixEcPlatformProtocolGuid
+  gCixFastbootInfoProtocolGuid
 
 [FixedPcd]
   gCixPlatformTokenSpaceGuid.PcdRa8900ceI2cBus
@@ -67,3 +76,6 @@
 
 [Pcd]
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit
+  gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionBase
+  gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionSize
+  gCixPlatformTokenSpaceGuid.PcdDebugModeFlagAddress

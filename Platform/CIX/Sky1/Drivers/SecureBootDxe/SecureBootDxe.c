@@ -1,6 +1,6 @@
 /**
   Enroll default PK, KEK, db, dbx.
-Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 Copyright (c) 2021, ARM Ltd. All rights reserved.<BR>
 Copyright (c) 2021, Semihalf All rights reserved.<BR>
 
@@ -23,7 +23,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 VOID
 EFIAPI
-OnReadyToBoot (
+EnroolKeysFromDefault (
   IN EFI_EVENT  Event,
   IN VOID       *Context
   )
@@ -124,14 +124,19 @@ SecureBootDxeEntry (
   )
 {
   EFI_STATUS  Status;
-  EFI_EVENT   ReadyToBootEvent;
+  EFI_EVENT   EndOfDxeEvent;
 
-  Status = EfiCreateEventReadyToBootEx (
-             TPL_CALLBACK,
-             OnReadyToBoot,
-             NULL,
-             &ReadyToBootEvent
-             );
+  //
+  // Register EFI_END_OF_DXE_EVENT_GROUP_GUID event.
+  //
+  Status = gBS->CreateEventEx (
+                  EVT_NOTIFY_SIGNAL,
+                  TPL_CALLBACK,
+                  EnroolKeysFromDefault,
+                  NULL,
+                  &gEfiEndOfDxeEventGroupGuid,
+                  &EndOfDxeEvent
+                  );
   ASSERT_EFI_ERROR (Status);
 
   return Status;

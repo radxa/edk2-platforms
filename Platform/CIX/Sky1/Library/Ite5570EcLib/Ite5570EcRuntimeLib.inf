@@ -1,6 +1,6 @@
 #/**
 #
-#  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -42,10 +42,12 @@
 
 [Protocols]
   gEfiCpuArchProtocolGuid
+  gCixConfigParamsManageProtocolGuid
 
 [FixedPcd]
   gCixPlatformTokenSpaceGuid.PcdEcI2cBus
   gCixPlatformTokenSpaceGuid.PcdEcI2cSlaveAddress
+  gCixPlatformTokenSpaceGuid.PcdEcI2cDeviceInstanceId
   gCixTokenSpaceGuid.PcdI2c0BusFreq
   gCixTokenSpaceGuid.PcdI2c1BusFreq
   gCixTokenSpaceGuid.PcdI2c2BusFreq

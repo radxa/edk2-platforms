@@ -1,0 +1,32 @@
+#/** @file
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#
+#**/
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DtbCommonLib
+  FILE_GUID                      = D7B3E9B7-5B2D-4E0E-9A4F-6D4E8C6E5B7F
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = DtbCommonLib
+
+[Sources.common]
+  DtbCommonLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  PcdLib
+  UefiLib
+  FdtLib
+  IoLib
+  MemoryAllocationLib
+
+

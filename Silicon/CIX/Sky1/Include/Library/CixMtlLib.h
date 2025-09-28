@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   Copyright (c) 2017-2018, Arm Limited. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -21,7 +21,7 @@
 typedef struct {
   volatile UINT32    Reserved1;
   volatile UINT32    ChannelStatus;
-  //UINT64    Reserved2;
+  // UINT64    Reserved2;
   volatile UINT32    StatusCode;
   volatile UINT32    TraceCode;
   volatile UINT32    Flags;
@@ -37,9 +37,9 @@ typedef struct {
 
 // Channel Type, Low-priority, and High-priority
 typedef enum {
-  MTL_CHANNEL_TYPE_LOW  = 0,
-  AP_TO_TFA_SCMI = 1,
-  AP_TO_PM_PRIVATE = 2,
+  MTL_CHANNEL_TYPE_LOW = 0,
+  AP_TO_TFA_SCMI       = 1,
+  AP_TO_PM_PRIVATE     = 2,
 } MTL_CHANNEL_TYPE;
 
 typedef struct {

@@ -1,5 +1,6 @@
 /**
 
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   Copyright (c) 2023-2024, CIX, Ltd. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -19,6 +20,7 @@
 #include <Library/BaseMemoryLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/SpiLib.h>
+#include <Library/CixPostCodeLib.h>
 #include <Protocol/Spi.h>
 #include <Protocol/ConfigParamsManageProtocol.h>
 #include "Protocol/ClockId.h"

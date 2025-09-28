@@ -1,7 +1,7 @@
 /** @file
   I2c Lib to control I2c controller.
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -14,6 +14,7 @@
 #include <Pi/PiI2c.h>
 #include "IoConfig.h"
 #include "MemoryMap.h"
+#include "HwMutexLib.h"
 
 #define I2C0_MMIO_BASE  I2C0_BASE
 #define I2C1_MMIO_BASE  I2C1_BASE
@@ -42,6 +43,8 @@ typedef struct _I2C_HOST_DESCRIPTOR {
   UINT32    SendCount;
   UINT32    RecvCount;
   UINT32    BusClk;
+  UINT8     MutexId;
+  UINT8     DevInsId;
 } I2C_HOST_DESCRIPTOR;
 
 EFI_STATUS
@@ -68,8 +71,8 @@ I2cGetBusClk (
 
   @return  EFI_SUCCESS  successfuly reset the I2c module
 **/
-EFI_STATUS
-I2cReset (
+VOID
+I2cMasterReset (
   IN UINTN  Base
   );
 

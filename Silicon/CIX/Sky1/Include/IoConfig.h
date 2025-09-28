@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *
  *  SPDX-License-Identifier: BSD-2-Clause-Patent
  *
@@ -483,13 +483,16 @@ typedef enum _IO_INTERRUPT_TYPE_SEL {
 #define BITMAP_GPIO151    BIT12
 #define BITMAP_GPIO152    BIT13
 #define BITMAP_GPIO153    BIT14
-#define BITMAP_DP2_DIGON  BIT15
-#define BITMAP_DP2_BLON   BIT16
+#define BITMAP_DP2_BLON   BIT15
+#define BITMAP_DP2_DIGON  BIT16
 
 #define NUM_OF_GPIO6  17
 
 #define BITMAP_UNDEFINED  0
 
 #define NUM_OF_GPIOS  (NUM_OF_GPIO0 + NUM_OF_GPIO1 + NUM_OF_GPIO2 + NUM_OF_GPIO3 + NUM_OF_GPIO4 + NUM_OF_GPIO5 + NUM_OF_GPIO6)
+
+#define GPIO_ACTIVE_HIGH  0
+#define GPIO_ACTIVE_LOW   1
 
 #endif

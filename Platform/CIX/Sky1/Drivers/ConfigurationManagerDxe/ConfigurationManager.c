@@ -1,6 +1,6 @@
 #/** @file
 #
-#  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #
 #  @par Glossary:
 #    - Cm or CM   - Configuration Manager
@@ -24,8 +24,9 @@
 #include "ConfigurationManager.h"
 #include "MemoryMap.h"
 #include <Protocol/ArmScmiPerformanceProtocol.h>
-#include <PlatformSetupVar.h>
 #include <Library/CpuInfoLib.h>
+#include <Library/ConfigParamsDataBlockLib.h>
+#include <Protocol/ConfigParamsManageProtocol.h>
 
 /** The platform configuration repository information.
 */
@@ -53,6 +54,15 @@ SKY1_PLATFORM_REPOSITORY_INFO  Sky1PlatformRepositoryInfo = {
       NULL,
       EFI_ACPI_OEM_TABLE_ID,
       EFI_ACPI_OEM_REVISION
+    },
+    // PPTT Table
+    {
+      EFI_ACPI_6_3_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_STRUCTURE_SIGNATURE,
+      EFI_ACPI_6_3_PROCESSOR_PROPERTIES_TOPOLOGY_TABLE_REVISION,
+      CREATE_STD_ACPI_TABLE_GEN_ID (EStdAcpiTableIdPptt),
+      NULL,
+      EFI_ACPI_OEM_TABLE_ID,
+      EFI_ACPI_OEM_REVISION
     }
   },
 
@@ -72,7 +82,58 @@ SKY1_PLATFORM_REPOSITORY_INFO  Sky1PlatformRepositoryInfo = {
   PLAT_CPC_INFO
 };
 
-UINT32  CpuCount;
+STATIC BOOLEAN               CppcEnable = TRUE;
+STATIC CM_CIX_CPU_TOPO_INFO  mCpuTopoInfo;
+
+VOID
+EFIAPI
+SetCpuMaxFreqOnExitBootService (
+  EFI_EVENT  Event,
+  VOID       *Context
+  )
+{
+  EFI_STATUS                 Status = EFI_SUCCESS;
+  UINT32                     CpuCoreMask;
+  UINT32                     MaxCpuCoreNum;
+  UINT32                     DomainId;
+  UINT32                     NumLevels;
+  SCMI_PERFORMANCE_LEVEL     *LevelArra;
+  UINT32                     MaxLevel;
+  UINT32                     i;
+  SCMI_PERFORMANCE_PROTOCOL  *ScmiPerfProtocol = NULL;
+
+  DEBUG ((DEBUG_INFO, "%a\n", __FUNCTION__));
+
+  Status = gBS->LocateProtocol (
+                  &gArmScmiPerformanceProtocolGuid,
+                  NULL,
+                  (VOID **)&ScmiPerfProtocol
+                  );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a gArmScmiPerformanceProtocolGuid NOT found.\n", __FUNCTION__));
+    return;
+  }
+
+  GetCpuCoreMask (&CpuCoreMask, &MaxCpuCoreNum);
+  for (i = 0; i < MaxCpuCoreNum; i++) {
+    if (((CpuCoreMask>>i)&BIT0) == 1) {
+      continue;
+    }
+
+    GetCpuCorePerfDomainId (i, &DomainId);
+    Status = GetPerfDomainLevelArra (DomainId, &LevelArra, &NumLevels);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "Performance domain [%d] get performance level data failed.\n", DomainId));
+      continue;
+    }
+
+    MaxLevel = LevelArra[NumLevels-1].Level;
+    Status   = ScmiPerfProtocol->LevelSet (ScmiPerfProtocol, DomainId, MaxLevel);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "Set Performance domain [%d] to performance level [%d] failed.\n", DomainId, MaxLevel));
+    }
+  }
+}
 
 /** Get the Cpu performace capability granularity
 
@@ -132,65 +193,41 @@ GetCpuPerfData (
   IN OUT UINT32  *LowestPerf
   )
 {
-  EFI_STATUS                 Status;
-  SCMI_PERFORMANCE_PROTOCOL  *ScmiPerfProtocol = NULL;
-  UINT32                     DomainId;
-  UINT32                     NumLevels;
-  UINT32                     LevelArraySize = 0;
-  SCMI_PERFORMANCE_LEVEL     *LevelArra;
-  AML_PSD_INFO               PsdInfo[PLAT_CPU_COUNT] = PLAT_PSD_INFO;
+  EFI_STATUS              Status;
+  UINT32                  DomainId;
+  UINT32                  NumLevels;
+  SCMI_PERFORMANCE_LEVEL  *LevelArra;
+  AML_PSD_INFO            PsdInfo[PLAT_CPU_COUNT] = PLAT_PSD_INFO;
 
   if (CpuID >= PLAT_CPU_COUNT) {
     DEBUG ((DEBUG_ERROR, "Cpuid is over the max range, max cpuid = %d, current cpu id = %d\n", PLAT_CPU_COUNT - 1, CpuID));
     return EFI_INVALID_PARAMETER;
   }
 
-  Status = gBS->LocateProtocol (
-                  &gArmScmiPerformanceProtocolGuid,
-                  NULL,
-                  (VOID **)&ScmiPerfProtocol
-                  );
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "gArmScmiPerformanceProtocolGuid NOT found.\n"));
-    return Status;
-  }
-
   DomainId = PsdInfo[CpuID].Domain;
-
-  Status = ScmiPerfProtocol->DescribeLevels (ScmiPerfProtocol, DomainId, &NumLevels, &LevelArraySize, LevelArra);
-  if (Status == EFI_BUFFER_TOO_SMALL) {
-    Status = gBS->AllocatePool (EfiBootServicesData, LevelArraySize, (VOID **)&LevelArra);
-    if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "Out of memory resource\n"));
-      return Status;
-    }
-
-    Status = ScmiPerfProtocol->DescribeLevels (ScmiPerfProtocol, DomainId, &NumLevels, &LevelArraySize, LevelArra);
-    if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "Perfomance [%d] get DescribeLevels failed.\n", DomainId));
-      return Status;
-    }
-
-    for (UINT8 i = 0; i < NumLevels; i++) {
-      DEBUG ((
-        DEBUG_INFO,
-        "[CPU%d] Performace_Level = [%d].   Level = [%d]    ,  PowerCost = [%d], Latency = [%d]\n", \
-        CpuID,
-        i,
-        LevelArra[i].Level,
-        LevelArra[i].PowerCost,
-        LevelArra[i].Latency
-        ));
-    }
-
-    *HighestPerf         = LevelArra[NumLevels-1].Level;
-    *NominalPerf         = LevelArra[NumLevels-1].Level;
-    *LowestNonlinearPerf = LevelArra[0].Level;
-    *LowestPerf          = LevelArra[0].Level;
-  } else {
-    DEBUG ((DEBUG_ERROR, "Perfomance [%d] get DescribeLevels failed.\n", DomainId));
-    return Status;
+  Status   = GetPerfDomainLevelArra (DomainId, &LevelArra, &NumLevels);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Performance domain [%d] get performance level data failed.\n", DomainId));
   }
+
+  for (UINT8 i = 0; i < NumLevels; i++) {
+    DEBUG (
+      (
+       DEBUG_INFO,
+       "[CPU%d] Performace_Level = [%d].   Level = [%d]    ,  PowerCost = [%d], Latency = [%d]\n", \
+       CpuID,
+       i,
+       LevelArra[i].Level,
+       LevelArra[i].PowerCost,
+       LevelArra[i].Latency
+      )
+      );
+  }
+
+  *HighestPerf         = LevelArra[NumLevels-1].Level;
+  *NominalPerf         = LevelArra[NumLevels-1].Level;
+  *LowestNonlinearPerf = LevelArra[0].Level;
+  *LowestPerf          = LevelArra[0].Level;
 
   DEBUG ((DEBUG_INFO, "HighestPerf = %x\n", *HighestPerf));
   DEBUG ((DEBUG_INFO, "NominalPerf = %x\n", *NominalPerf));
@@ -259,9 +296,71 @@ InitializeCmArmCpcInfo (
   return EFI_SUCCESS;
 }
 
+/** Initialize the CPU topology information in platform configuration repository.
+
+  @param [in]  This           Pointer to the Configuration Manager Protocol.
+  @param [in]  ConfigData     Pointer to the Configuration Parameter data Block.
+
+  @retval EFI_SUCCESS           Success
+  @retval EFI_OUT_OF_RESOURCES  Not enough memory.
+**/
+STATIC
+EFI_STATUS
+EFIAPI
+InitializeCmCixCpuTopoInfo (
+  IN  CONST EDKII_CONFIGURATION_MANAGER_PROTOCOL  *CONST  This,
+  IN CONFIG_PARAMS_DATA_BLOCK                             *ConfigData
+  )
+{
+  EFI_STATUS                     Status;
+  UINT8                          ClusterIndex, CoreIndex, CpuCoreNum, CpuCoreEnableIndex;
+  UINT32                         ClusterUid = 1;
+  SKY1_PLATFORM_REPOSITORY_INFO  *PlatformRepo;
+  CpuTopology                    *CpuTopo = NULL;
+  CIX_CLUSTER_TOPO               *CixClusterTopo;
+  CIX_CPU_CORE                   *CixCoreTopo;
+
+  CpuCoreEnableIndex = 0;
+  GetValidCpuCoreNum (&CpuCoreNum);
+
+  GetCpuTopology (&CpuTopo);
+  PlatformRepo              = This->PlatRepoInfo;
+  PlatformRepo->CpuTopoInfo = &mCpuTopoInfo;
+
+  mCpuTopoInfo.ClusterNumber = CpuTopo->SocketTopo[0].ClusterNumber;
+  Status                     = gBS->AllocatePool (EfiBootServicesData, mCpuTopoInfo.ClusterNumber*sizeof (CIX_CLUSTER_TOPO), (VOID **)&mCpuTopoInfo.ClusterTopo);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Out of memory resource\n"));
+    return Status;
+  }
+
+  for (ClusterIndex = 0; ClusterIndex < mCpuTopoInfo.ClusterNumber; ClusterIndex++) {
+    CixClusterTopo             = &mCpuTopoInfo.ClusterTopo[ClusterIndex];
+    CixClusterTopo->CoreNumber = CpuTopo->SocketTopo[0].ClusterTopo[ClusterIndex].CoreNumber;
+    CixClusterTopo->Uid        = ClusterUid;
+    Status                     = gBS->AllocatePool (EfiBootServicesData, CixClusterTopo->CoreNumber*sizeof (CIX_CPU_CORE), (VOID **)&CixClusterTopo->Core);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "Out of memory resource\n"));
+      return Status;
+    }
+
+    for (CoreIndex = 0; CoreIndex < mCpuTopoInfo.ClusterTopo[ClusterIndex].CoreNumber; CoreIndex++) {
+      CixCoreTopo         = &CixClusterTopo->Core[CoreIndex];
+      CixCoreTopo->Coreid = CpuTopo->SocketTopo[0].ClusterTopo[ClusterIndex].Core[CoreIndex].Coreid;
+      CixCoreTopo->Uid    = CpuTopo->SocketTopo[0].ClusterTopo[ClusterIndex].Core[CoreIndex].Uid;
+      CixCoreTopo->Enable = ConfigData->Cpu.CoreEnable[CpuCoreEnableIndex];
+      CpuCoreEnableIndex++;
+    }
+
+    ClusterUid++;
+  }
+
+  return EFI_SUCCESS;
+}
+
 /** Initialize the GIC CPU interface information in platform configuration repository.
 
-  @param [in]  This     Pointer to the Configuration Manager Protocol.
+  @param [in]  This            Pointer to the Configuration Manager Protocol.
 
   @retval EFI_SUCCESS   Success
 **/
@@ -274,88 +373,39 @@ InitializeCmArmGiccInfo (
 {
   EFI_STATUS                     Status;
   SKY1_PLATFORM_REPOSITORY_INFO  *PlatformRepo;
-  UINT8                          CpuBootCoreId, CpuCoreNum;
-  UINT8                          SetupCpuIndex;
-  UINT32                         CpuCoreMask, MaxCpuCoreNum, i, Index;
-  UINTN                          VarSize;
+  UINT8                          ClusterIndex, CoreIndex, GicCIndex, CpuCoreNum;
+  CIX_CLUSTER_TOPO               *ClusterTopo;
+  CIX_CPU_CORE                   *CpuCore;
   CM_ARM_GICC_INFO               DefalutGicCInfo[PLAT_CPU_COUNT] = PLAT_GIC_CPU_INTERFACE;
-  PLATFORM_SETUP_DATA            PlatformSetupVar;
 
   PlatformRepo = This->PlatRepoInfo;
 
-  VarSize = sizeof (PLATFORM_SETUP_DATA);
-  Status  = gRT->GetVariable (
-                   PLATFORM_SETUP_VAR,
-                   &gPlatformSetupVariableGuid,
-                   NULL,
-                   &VarSize,
-                   &PlatformSetupVar
-                   );
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "Get platform setup variable Fail! %r\n", Status));
-    return EFI_NOT_FOUND;
-  }
-
-  GetCpuBootCoreId (&CpuBootCoreId);
-  DEBUG ((DEBUG_INFO, "Cpu Boot Core Id 0x%x.\n", CpuBootCoreId));
-
-  GetCpuCoreMask (&CpuCoreMask, &MaxCpuCoreNum);
   GetValidCpuCoreNum (&CpuCoreNum);
-  CpuCount = 0;
-  for (i = 0; i < CpuCoreNum; i++) {
-    if (PlatformSetupVar.CpuCoreEnable[i] == 1) {
-      CpuCount++;
-    }
-  }
-
-  if (CpuCount == 0) {
-    DEBUG ((DEBUG_ERROR, "All Cpu core not available!\n"));
-    return EFI_DEVICE_ERROR;
-  }
-
- #ifndef MULTICORE_ENABLE
-  CpuCount = 1;
- #endif
-
-  DEBUG ((DEBUG_INFO, "CpuCount 0x%x.\n", CpuCount));
-
-  Status = gBS->AllocatePool (EfiBootServicesData, CpuCount*sizeof (CM_ARM_GICC_INFO), (VOID **)&(PlatformRepo->GicCInfo));
+  Status = gBS->AllocatePool (EfiBootServicesData, CpuCoreNum*sizeof (CM_ARM_GICC_INFO), (VOID **)&(PlatformRepo->GicCInfo));
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "Out of memory resource\n"));
     return Status;
   }
 
-  ZeroMem (PlatformRepo->GicCInfo, CpuCount*sizeof (CM_ARM_GICC_INFO));
+  ZeroMem (PlatformRepo->GicCInfo, CpuCoreNum*sizeof (CM_ARM_GICC_INFO));
 
-  // Initialize the GIC CPU interface information
-  Index                                            = 0;
-  PlatformRepo->GicCInfo[Index]                    = DefalutGicCInfo[CpuBootCoreId];
-  PlatformRepo->GicCInfo[Index].CPUInterfaceNumber = 0;
-  PlatformRepo->GicCInfo[Index].AcpiProcessorUid   = Index;
-  PlatformRepo->CpuUidtoCoreNumberMap[Index]       = CpuBootCoreId;
-  CpuCoreMask                                      = CpuCoreMask|(1<<CpuBootCoreId);
-  Index++;
-  SetupCpuIndex = 0;
+  GicCIndex = 0;
 
-  if (CpuCount == 1) {
-    return EFI_SUCCESS;
-  }
+  for (ClusterIndex = 0; ClusterIndex < PlatformRepo->CpuTopoInfo->ClusterNumber; ClusterIndex++) {
+    ClusterTopo = &PlatformRepo->CpuTopoInfo->ClusterTopo[ClusterIndex];
+    for (CoreIndex = 0; CoreIndex < ClusterTopo->CoreNumber; CoreIndex++) {
+      CpuCore = &ClusterTopo->Core[CoreIndex];
 
-  for (i = 0; i < PLAT_CPU_COUNT; i++) {
-    if (((CpuCoreMask>>i)&BIT0) == 1) {
-      continue;
+      PlatformRepo->GicCInfo[GicCIndex]                    = DefalutGicCInfo[CpuCore->Coreid];
+      PlatformRepo->GicCInfo[GicCIndex].CPUInterfaceNumber = 0;
+      PlatformRepo->GicCInfo[GicCIndex].AcpiProcessorUid   = CpuCore->Uid;
+      if (!CpuCore->Enable) {
+        PlatformRepo->GicCInfo[GicCIndex].Flags &= ~EFI_ACPI_6_2_GIC_ENABLED;
+      }
+
+      PlatformRepo->CpuUidtoCoreNumberMap[GicCIndex] = CpuCore->Coreid;
+      GicCIndex++;
     }
-
-    SetupCpuIndex++;
-    if (PlatformSetupVar.CpuCoreEnable[SetupCpuIndex] == 0) {
-      continue;
-    }
-
-    PlatformRepo->GicCInfo[Index]                    = DefalutGicCInfo[i];
-    PlatformRepo->GicCInfo[Index].CPUInterfaceNumber = 0;
-    PlatformRepo->GicCInfo[Index].AcpiProcessorUid   = Index;
-    PlatformRepo->CpuUidtoCoreNumberMap[Index]       = i;
-    Index++;
   }
 
   return EFI_SUCCESS;
@@ -374,26 +424,79 @@ InitializePlatformRepository (
   IN  CONST EDKII_CONFIGURATION_MANAGER_PROTOCOL  *CONST  This
   )
 {
-  EFI_STATUS  Status = EFI_SUCCESS;
+  EFI_STATUS                         Status = EFI_SUCCESS;
+  EFI_EVENT                          Event  = NULL;
+  CIX_CONFIG_PARAMS_MANAGE_PROTOCOL  *ConfigManage;
+  CONFIG_PARAMS_DATA_BLOCK           *ConfigData                   = NULL;
+  CM_ARM_CPC_INFO                    CpuCpcInfoPcc[PLAT_CPU_COUNT] = PLAT_CPC_INFO_PCC;
+
+  CpuTopology  *CpuTopo = NULL;
+
+  Status = gBS->LocateProtocol (
+                  &gCixConfigParamsManageProtocolGuid,
+                  NULL,
+                  (VOID **)&ConfigManage
+                  );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: config parameters invalid %r\n", __FUNCTION__, Status));
+    return Status;
+  }
+
+  ConfigData = ConfigManage->Data;
+
+  Status = GetCpuTopology (&CpuTopo);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: Get cpu topology fail, %r\n", __FUNCTION__, Status));
+    return Status;
+  }
+
+  Status = InitializeCmCixCpuTopoInfo (This, ConfigData);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: Failed to initialize cix cpu topology info, %r\n", __FUNCTION__, Status));
+    return Status;
+  }
 
   Status = InitializeCmArmGiccInfo (This);
   if (EFI_ERROR (Status)) {
-    DEBUG ((
-      DEBUG_ERROR,
-      "ERROR: Failed to initialize GIC CPU interface information." \
-      " Status = %r\n",
-      Status
-      ));
+    DEBUG (
+      (
+       DEBUG_ERROR,
+       "ERROR: Failed to initialize GIC CPU interface information." \
+       " Status = %r\n",
+       Status
+      )
+      );
   }
 
-  Status = InitializeCmArmCpcInfo (This);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((
-      DEBUG_ERROR,
-      "ERROR: Failed to initialize CPU CPC interface information." \
-      " Status = %r\n",
-      Status
-      ));
+  if (ConfigData->Misc.CpuCppcType == CPPC_PCC) {
+    CopyMem ((VOID *)This->PlatRepoInfo->CpuCpcInfo, (VOID *)CpuCpcInfoPcc, sizeof (CpuCpcInfoPcc));
+  } else if (ConfigData->Misc.CpuCppcType == CPPC_DISABLE) {
+    CppcEnable = FALSE;
+    Status     = gBS->CreateEventEx (
+                        EVT_NOTIFY_SIGNAL,
+                        TPL_CALLBACK,
+                        SetCpuMaxFreqOnExitBootService,
+                        NULL,
+                        &gEfiEventExitBootServicesGuid,
+                        &Event
+                        );
+
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "Register Set Cpu Exit Boot Service Failed %x \n", Status));
+    }
+  } else {
+    // The default CPPC Interface Type is provided by Fast Channel.
+    Status = InitializeCmArmCpcInfo (This);
+    if (EFI_ERROR (Status)) {
+      DEBUG (
+        (
+         DEBUG_ERROR,
+         "ERROR: Failed to initialize CPU CPC interface information." \
+         " Status = %r\n",
+         Status
+        )
+        );
+    }
   }
 
   return Status;
@@ -494,12 +597,14 @@ GetStandardNameSpaceObject (
     default:
     {
       Status = EFI_NOT_FOUND;
-      DEBUG ((
-        DEBUG_ERROR,
-        "WARNING: Object 0x%x. Status = %r\n",
-        CmObjectId,
-        Status
-        ));
+      DEBUG (
+        (
+         DEBUG_ERROR,
+         "WARNING: Object 0x%x. Status = %r\n",
+         CmObjectId,
+         Status
+        )
+        );
       break;
     }
   }
@@ -552,15 +657,26 @@ GetCixNameSpaceObject (
                  );
       break;
 
+    case ECixObjCpuTopoInfo:
+      Status = HandleCmObject (
+                 CmObjectId,
+                 PlatformRepo->CpuTopoInfo,
+                 sizeof (CM_CIX_CPU_TOPO_INFO),
+                 1,
+                 CmObject
+                 );
+      break;
     default:
     {
       Status = EFI_NOT_FOUND;
-      DEBUG ((
-        DEBUG_ERROR,
-        "WARNING: Object 0x%x. Status = %r\n",
-        CmObjectId,
-        Status
-        ));
+      DEBUG (
+        (
+         DEBUG_ERROR,
+         "WARNING: Object 0x%x. Status = %r\n",
+         CmObjectId,
+         Status
+        )
+        );
       break;
     }
   }// switch
@@ -592,6 +708,7 @@ GetArmNameSpaceObject (
 {
   EFI_STATUS                     Status;
   SKY1_PLATFORM_REPOSITORY_INFO  *PlatformRepo;
+  UINT8                          CpuCoreNum;
 
   Status = EFI_SUCCESS;
   if ((This == NULL) || (CmObject == NULL)) {
@@ -604,11 +721,12 @@ GetArmNameSpaceObject (
 
   switch (GET_CM_OBJECT_ID (CmObjectId)) {
     case EArmObjGicCInfo:
+      GetValidCpuCoreNum (&CpuCoreNum);
       Status = HandleCmObject (
                  CmObjectId,
                  PlatformRepo->GicCInfo,
-                 CpuCount*sizeof (CM_ARM_GICC_INFO),
-                 CpuCount,
+                 CpuCoreNum*sizeof (CM_ARM_GICC_INFO),
+                 CpuCoreNum,
                  CmObject
                  );
       break;
@@ -644,6 +762,10 @@ GetArmNameSpaceObject (
       break;
 
     case EArmObjCpcInfo:
+      if (!CppcEnable) {
+        return EFI_NOT_FOUND;
+      }
+
       Status = HandleCmObject (
                  CmObjectId,
                  &PlatformRepo->CpuCpcInfo,
@@ -656,12 +778,14 @@ GetArmNameSpaceObject (
     default:
     {
       Status = EFI_NOT_FOUND;
-      DEBUG ((
-        DEBUG_ERROR,
-        "WARNING: Object 0x%x. Status = %r\n",
-        CmObjectId,
-        Status
-        ));
+      DEBUG (
+        (
+         DEBUG_ERROR,
+         "WARNING: Object 0x%x. Status = %r\n",
+         CmObjectId,
+         Status
+        )
+        );
       break;
     }
   }// switch
@@ -704,12 +828,14 @@ GetOemNameSpaceObject (
     default:
     {
       Status = EFI_NOT_FOUND;
-      DEBUG ((
-        DEBUG_ERROR,
-        "WARNING: Object 0x%x. Status = %r\n",
-        CmObjectId,
-        Status
-        ));
+      DEBUG (
+        (
+         DEBUG_ERROR,
+         "WARNING: Object 0x%x. Status = %r\n",
+         CmObjectId,
+         Status
+        )
+        );
       break;
     }
   }
@@ -765,12 +891,14 @@ Sky1PlatformGetObject (
     default:
     {
       Status = EFI_INVALID_PARAMETER;
-      DEBUG ((
-        DEBUG_ERROR,
-        "ERROR: Unknown Namespace Object = 0x%x. Status = %r\n",
-        CmObjectId,
-        Status
-        ));
+      DEBUG (
+        (
+         DEBUG_ERROR,
+         "ERROR: Unknown Namespace Object = 0x%x. Status = %r\n",
+         CmObjectId,
+         Status
+        )
+        );
       break;
     }
   }
@@ -841,12 +969,14 @@ ConfigurationManagerDxeInitialize (
                   (VOID *)&Sky1ConfigManagerProtocol
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((
-      DEBUG_ERROR,
-      "ERROR: Failed to install Configuration Manager Protocol." \
-      " Status = %r\n",
-      Status
-      ));
+    DEBUG (
+      (
+       DEBUG_ERROR,
+       "ERROR: Failed to install Configuration Manager Protocol." \
+       " Status = %r\n",
+       Status
+      )
+      );
     goto error_handler;
   }
 
@@ -854,12 +984,14 @@ ConfigurationManagerDxeInitialize (
              &Sky1ConfigManagerProtocol
              );
   if (EFI_ERROR (Status)) {
-    DEBUG ((
-      DEBUG_ERROR,
-      "ERROR: Failed to initialize the Platform Configuration Repository." \
-      " Status = %r\n",
-      Status
-      ));
+    DEBUG (
+      (
+       DEBUG_ERROR,
+       "ERROR: Failed to initialize the Platform Configuration Repository." \
+       " Status = %r\n",
+       Status
+      )
+      );
   }
 
 error_handler:

@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
@@ -65,16 +65,28 @@
 #define  ISP_1_LOCAL_RCSU_MUTEX_ID       0x33
 #define  GPU_LOCAL_RCSU_MUTEX_ID         0x34
 
+#define  MAILBOX_CHANNEL_1_A2P_MUTEX_ID  0x40
+
+#define  UNDEFINED_MUTEX_ID  0xFF
+
+// UEFI mutex instance IDs
+#define MUTEX_AP_UEFI_INSTANCE_1  0x18
+#define MUTEX_AP_UEFI_INSTANCE_2  0x19
+#define MUTEX_AP_UEFI_INSTANCE_3  0x1A
+#define MUTEX_AP_UEFI_INSTANCE_4  0x1B
+
 EFI_STATUS
 EFIAPI
 HwMutexLock (
-  UINT32  Id
+  UINT32  MutexId,
+  UINT8   InstanceId
   );
 
 EFI_STATUS
 EFIAPI
 HwMutexUnlock (
-  UINT32  Id
+  UINT32  MutexId,
+  UINT8   InstanceId
   );
 
 #endif // _HW_MUTEX_LIB_H__

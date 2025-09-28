@@ -1,3 +1,8 @@
+/**
+
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
+
+**/
 /* SPDX-License-Identifier: GPL-2.0-only */ /* * Author: Joakim Zhang <joakim.zhang@cixtech.com> */
 #ifndef DT_BINDING_RESET_AUDSS_SKY1_H
 #define DT_BINDING_RESET_AUDSS_SKY1_H

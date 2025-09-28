@@ -1,6 +1,6 @@
 ## @file
 #
-#  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -13,7 +13,6 @@
 !endif
 
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
-
   #
   # PI DXE Drivers producing Architectural Protocols (EFI Services)
   #
@@ -30,6 +29,7 @@
   INF Silicon/CIX/Sky1/Drivers/SocDxe/SocDxe.inf
   INF Platform/CIX/Sky1/Drivers/PlatformDxe/PlatformDxe.inf
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
+  INF Silicon/CIX/Sky1/Drivers/RngDxe/RngDxe.inf
   INF MdeModulePkg/Universal/CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf
 !if $(SOC_PWR_CLK_RST_ENABLE) == TRUE
   # SCMI Driver
@@ -52,7 +52,9 @@
 
 !if $(SOC_CDNSP_ENABLE) == TRUE || $(SOC_CDNSP_HOST_ENABLE) == TRUE
   INF Silicon/CIX/Sky1/Drivers/TypecPhyDxe/TypecPhyDxe.inf
+  !if $(PLATFORM_PD_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/PdDxe/PdDxe.inf
+  !endif
 !endif
 
 !if $(SOC_USB_DEVICE_ENABLE) == TRUE
@@ -79,18 +81,20 @@
   INF Silicon/CIX/Sky1/Drivers/Usb20HostDxe/Usb20HostDxe.inf
 !endif
 
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
-  INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashSmmRuntimeDxe.inf
-!elseif $(SOC_XSPI_ENABLE) == TRUE || $(VARIABLE_SUPPORT) == "SPI"
+!if $(STMM_SUPPORT) == TRUE
+  INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/ArmMmCommunication.inf
+!endif
+!if $(SOC_XSPI_ENABLE) == TRUE
+!if $(STMM_SUPPORT) == TRUE
+  INF Silicon/CIX/Sky1/Drivers/NorFlashStmmRuntimeDxe/NorFlashStmmRuntimeDxe.inf
+!else
   INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashDxe.inf
 !endif
-!if $(VARIABLE_SUPPORT) == "SPI"
+!endif
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == FALSE
   INF MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
 !endif
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
-  INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/MmCommunication.inf
-!endif
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
   INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmmRuntimeDxe.inf
 !else
   INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
@@ -131,6 +135,9 @@
   INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
 !endif
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
+!if $(POWER_BUTTON_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PowerButtonDxe/PowerButtonDxe.inf
+!endif
 
 #  INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
   INF Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf
@@ -150,10 +157,14 @@
 !endif
 !if $(SOC_I2C_ENABLE) == TRUE
   INF Silicon/CIX/Sky1/Drivers/I2cDxe/I2cDxe.inf
+  !if $(I2C_EC_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/EcPlatformDxe/EcPlatformDxe.inf
+  !endif
+  !if $(I2C_HID_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/I2cHidKeyboard/I2cHidKeyboard.inf
   INF Platform/CIX/Sky1/Drivers/I2cHidServiceDriver/I2cHidServiceDriver.inf
   INF Platform/CIX/Sky1/Drivers/I2cHidDeviceDxe/I2cHidDeviceDxe.inf
+  !endif
 !endif
 
 !if $(SOC_SPI_ENABLE) == TRUE
@@ -204,10 +215,19 @@
 !endif
 
 !if $(REALTEK_LAN_DRIVER_SUPPORT) == TRUE
+ INF Platform/CIX/Sky1/Drivers/RealtekLan/RealtekLanDxe.inf
  FILE DRIVER = 785277C5-20B9-4940-8D9F-341AEAAB4DEF
  {
    SECTION PE32 = Platform/CIX/Sky1/Drivers/RealtekLan/RtkUndiDxe.efi
    SECTION UI = "Realtek"
+   SECTION DXE_DEPEX = Platform/CIX/Sky1/Drivers/RealtekLan/RealtekLan.depex
+ }
+
+ FILE DRIVER = 2367AC97-E2F5-470C-8DE6-C481F2640928
+ {
+   SECTION PE32 = Platform/CIX/Sky1/Drivers/RealtekLan/RtkUsbUndiDxe.efi
+   SECTION UI = "Realtek-USB-LAN"
+   SECTION DXE_DEPEX = Platform/CIX/Sky1/Drivers/RealtekLan/RealtekLan.depex
  }
 !endif
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
@@ -232,12 +252,8 @@
   #
 !if $(ACPI_ENABLE) == TRUE
   INF MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
-  !if $(WINDOWS_BOOT_ENABLE) == TRUE
-    INF RuleOverride = ACPITABLE Platform/CIX/Sky1/Drivers/AcpiTables/Windows/AcpiTables.inf
-  !else
-    INF RuleOverride = ACPITABLE Platform/CIX/Sky1/Drivers/AcpiTables/Linux/AcpiTables.inf
-  !endif
-  INF Platform/CIX/Sky1/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
+  INF RuleOverride = ACPITABLE Platform/CIX/Sky1/Drivers/AcpiSocTables/AcpiSocTables.inf
+  INF Platform/CIX/Sky1/Drivers/AcpiSocDxe/AcpiSocDxe.inf
 
   INF Platform/CIX/Sky1/Drivers/ConfigurationManagerDxe/ConfigurationManagerDxe.inf
   INF DynamicTablesPkg/Drivers/DynamicTableFactoryDxe/DynamicTableFactoryDxe.inf
@@ -254,7 +270,8 @@
   #
 !if $(SMBIOS_ENABLE) == TRUE
   INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
-  INF Platform/CIX/Sky1/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
+  INF ArmPkg/Universal/Smbios/ProcessorSubClassDxe/ProcessorSubClassDxe.inf
+  INF Platform/CIX/Sky1/Drivers/CixSmbiosDxe/CixSmbiosDxe.inf
 !endif
   #
   # PCI Support
@@ -267,7 +284,7 @@
   #
   # NVMe boot devices
   #
-  INF MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+  INF Platform/CIX/Sky1/Drivers/NvmExpressDxe/NvmExpressDxe.inf
 !endif
 
 !if $(CAPSULE_ENABLE) == TRUE
@@ -283,7 +300,7 @@
      SECTION UI = "Pkcs7TestRoot"
      }
 !endif
-!if $(FW_UPDATE_ENABLE) == TRUE && $(SOC_XSPI_ENABLE) == TRUE
+!if $(FW_UPDATE_ENABLE) == TRUE
   # firmware update protocol
   INF Platform/CIX/Sky1/Drivers/FirmwareUpdateDxe/FwUpdateProtocolDxe.inf
   # FILE FREEFORM  = C0903BAC-CC0D-C264-B85B-70F1821A45C6 { # gEcFirmwareFileGuid
@@ -323,11 +340,27 @@
   INF ShellPkg/DynamicCommand/TftpDynamicCommand/TftpDynamicCommand.inf
   INF ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf
 !endif
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
 !else
   INF MdeModulePkg/Application/VariableInfo/VariableInfo.inf
 !endif
 !if $(I2S_MC_SUPPORT) == TRUE
   INF Silicon/CIX/Sky1/Drivers/I2sDxe/I2sDxe.inf
 !endif
+  # INF Platform/CIX/Sky1/Drivers/ScmiRuntimeDxe/ScmiRuntimeDxe.inf
+!if $(PI_TEST_SUPPORT) == TRUE
+  INF Silicon/CIX/Sky1/Drivers/ArmPsciMpServicesDxe/ArmPsciMpServicesDxe.inf
+!endif
 
+!if $(DTPM_SUPPORT) == TRUE || $(FTPM_SUPPORT) == TRUE
+  !if $(FTPM_SUPPORT) == TRUE
+    FILE FREEFORM = BC50D971-D4C9-42C4-82CB-343FB7F37896 {
+      SECTION RAW = Platform/CIX/Sky1/Bin/fTPM.bin
+    }
+    INF Platform/CIX/Sky1/Drivers/FTPMDxe/FTPMProtocol.inf
+  !endif
+  INF Platform/CIX/Sky1/Drivers/TPMVariableDxe/TPMVariableDxe.inf
+  INF SecurityPkg/Tcg/Tcg2Dxe/Tcg2Dxe.inf
+  INF Platform/CIX/Sky1/Drivers/Tcg2Acpi/Tcg2Acpi.inf
+  INF Platform/CIX/Sky1/Drivers/Tcg2Config/Tcg2ConfigDxe.inf
+!endif

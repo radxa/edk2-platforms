@@ -1,5 +1,5 @@
 /**
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -58,13 +58,6 @@ endif;
         option text = STRING_TOKEN(STR_S0_AFTER_G3_STRING),        value = 1, flags = RESET_REQUIRED;
       endoneof;
 suppressif TRUE;
-      oneof varid   = PlatformSetupVar.PrimaryDisplay,
-        prompt      = STRING_TOKEN(STR_PRIMARY_DISPLAY_PROMPT),
-        help        = STRING_TOKEN(STR_PRIMARY_DISPLAY_PROMPT_HELP),
-        option text = STRING_TOKEN(STR_AUTO), value = 0, flags = DEFAULT | RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_INTERNAL_DPU),  value = 1, flags = RESET_REQUIRED;
-      endoneof;
-
       oneof varid   = PlatformSetupVar.DtbMenuEntry,
         prompt      = STRING_TOKEN(STR_DTB_MEMU_ENTRY_PROMPT),
         help        = STRING_TOKEN(STR_DTB_MEMU_ENTRY_PROMPT_HELP),
@@ -106,27 +99,24 @@ endif;
         option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
       endoneof;
 
-      oneof varid   = PlatformSetupVar.GopDisplaySelect,
-        prompt      = STRING_TOKEN(STR_GOP_PROMPT),
-        help        = STRING_TOKEN(STR_GOP_PROMPT_HELP),
-        default     = FixedPcdGet8(PcdGopDisplaySelect),
-        suppressif  FixedPcdGet8(PcdDP0HwProfile) == 0;
-        option text = STRING_TOKEN(STR_DP0), value = 0, flags = RESET_REQUIRED;
-        endif;
-        suppressif FixedPcdGet8(PcdDP1HwProfile) == 0;
-        option text = STRING_TOKEN(STR_DP1), value = 1, flags = RESET_REQUIRED;
-        endif;
-        suppressif FixedPcdGet8(PcdDP2HwProfile) == 0;
-        option text = STRING_TOKEN(STR_DP2), value = 2, flags = RESET_REQUIRED;
-        endif;
-        suppressif FixedPcdGet8(PcdDP3HwProfile) == 0;
-        option text = STRING_TOKEN(STR_DP3), value = 3, flags = RESET_REQUIRED;
-        endif;
-        suppressif FixedPcdGet8(PcdDP4HwProfile) == 0;
-        option text = STRING_TOKEN(STR_DP4), value = 4, flags = RESET_REQUIRED;
-        endif;
+      oneof varid   = PlatformSetupVar.EcFanMode,
+        prompt      = STRING_TOKEN(STR_EC_FAN_MODE_PROMPT),
+        help        = STRING_TOKEN(STR_EC_FAN_MODE_PROMPT_HELP),
+        default     = FixedPcdGet8 (PcdEcDefaultFanMode),
+        option text = STRING_TOKEN(STR_AUTO_MODE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_PERF_MODE), value = 1, flags = RESET_REQUIRED;
       endoneof;
-suppressif ideqval PlatformSetupVar.SystemTableSelect == 0x01;
+#ifdef DEBUG_MODE_SUPPORT
+      oneof varid   = PlatformSetupVar.DebugMode,
+        prompt      = STRING_TOKEN(STR_DEBUG_MODE_PROMPT),
+        help        = STRING_TOKEN(STR_DEBUG_MODE_HELP),
+        default     = 0,
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+#endif
+
+suppressif ideqval SystemTableVar.SystemTableSelect == 0x01;
       goto DEVICE_POWER_CONTROL_FORM_ID,
         prompt = STRING_TOKEN(STR_DEVICE_POWER_CONTROL_FORM_TITLE),
         help   = STRING_TOKEN(STR_DEVICE_POWER_CONTROL_FORM_TITLE_HELP);

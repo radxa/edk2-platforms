@@ -1,6 +1,6 @@
 /**
 #
-#  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -17,12 +17,19 @@
 
 CIX_S3_SAVE_STATE_PROTOCOL      static  *gCixBootScriptSave = NULL;
 
+STATIC EFI_EVENT  mExitBootServicesEvent;
+STATIC BOOLEAN    mAtRuntime = FALSE;
+
 EFI_STATUS
 GetCixS3SaveStateProtocol (
   VOID
   )
 {
   EFI_STATUS  Status = EFI_SUCCESS;
+
+  if (mAtRuntime) {
+    return EFI_UNSUPPORTED;
+  }
 
   if (gCixBootScriptSave == NULL) {
     Status = gBS->LocateProtocol (
@@ -179,4 +186,34 @@ RwMem64S3 (
   if (!EFI_ERROR (Status)) {
     gCixBootScriptSave->Write (gCixBootScriptSave, CIX_S3_BOOT_SCRIPT_MEM_READ_WRITE_OPCODE, S3BootScriptWidthUint64, Address, &SetBit64, &ResetBit64);
   }
+}
+
+VOID
+EFIAPI
+LibExitBootServicesNotifyEvent (
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
+  )
+{
+  mAtRuntime = TRUE;
+}
+
+RETURN_STATUS
+EFIAPI
+CixS3IoLibConstructor (
+  VOID
+  )
+{
+  EFI_STATUS  Status = EFI_SUCCESS;
+
+  Status = gBS->CreateEvent (
+                  EVT_SIGNAL_EXIT_BOOT_SERVICES,
+                  TPL_CALLBACK,
+                  LibExitBootServicesNotifyEvent,
+                  NULL,
+                  &mExitBootServicesEvent
+                  );
+  ASSERT_EFI_ERROR (Status);
+
+  return Status;
 }

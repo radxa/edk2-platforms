@@ -1,6 +1,6 @@
 # @file
 #
-#  Copyright 2024 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
+#  Copyright 2024-2025 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
 #  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
 #  Copyright (c) 2011 - 2020, ARM Limited. All rights reserved.
 #  Copyright (c) 2017 - 2018, Andrei Warkentin <andrey.warkentin@gmail.com>
@@ -51,18 +51,23 @@
   DEFINE WATCH_DOG_ENABLE           = FALSE
   DEFINE NO_GIC_NO_TIMER            = FALSE
   DEFINE SOC_I2C_ENABLE             = TRUE
-  DEFINE SOC_XSPI_ENABLE            = TRUE
+  DEFINE I2C_EC_ENABLE              = TRUE
+  DEFINE I2C_HID_ENABLE             = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE PCIE_HOST_ENABLE           = TRUE
   DEFINE SOC_CDNSP_HOST_ENABLE      = TRUE
+  DEFINE PLATFORM_PD_ENABLE         = TRUE
   DEFINE SOC_GMAC_ENABLE            = FALSE
   DEFINE TOKEN_SETUP_SUPPORT        = FALSE
   DEFINE NTFS_DRIVER_SUPPORT        = FALSE
+  DEFINE EXT4_DRIVER_SUPPORT        = FALSE
   DEFINE AMD_GOP_DRIVER_SUPPORT     = TRUE
   DEFINE TOKEN_RAM_DISK_SUPPORT     = FALSE
-  DEFINE VARIABLE_SUPPORT           = SPI
+  DEFINE VARIABLE_SUPPORT           = $(COMPILE_VARIABLE_TYPE)
+  DEFINE STMM_SUPPORT               = $(COMPILE_STMM_SUPPORT)
   DEFINE REALTEK_LAN_DRIVER_SUPPORT = FALSE
   DEFINE PM_CONFIG_UPDATE_SUPPORT   = FALSE
+  DEFINE MEM_CONFIG_UPDATE_SUPPORT  = FALSE
   DEFINE DYNAMIC_ACPI_CPU_ENABLE    = TRUE
   DEFINE SOC_SPI_ENABLE             = TRUE
   # DEFINE SOC_GPIO_INTR_ENABLE       = TRUE
@@ -71,22 +76,28 @@
   DEFINE DYNAMIC_GET_MEM_SIZE       = TRUE
   DEFINE SECURE_BOOT_ENABLE         = TRUE
   DEFINE DEFAULT_KEYS               = TRUE
+  DEFINE SOC_XSPI_ENABLE            = TRUE
+  DEFINE FW_CONFIG_UPDATE_SUPPORT   = TRUE
+  DEFINE UEFI_FW_STAGE              = Beta2
+  DEFINE COMPILE_SYSTEM_LOADER      = android
+  DEFINE BOOT_LOGO_ENABLE           = FALSE
+  DEFINE GLOBAL_WATCHDOG_ENABLE     = TRUE
+  DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
+  DEFINE CAPSULE_ENABLE             = FALSE
+  DEFINE POWER_BUTTON_ENABLE        = TRUE
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
   DEFINE PCIE_HOST_ENABLE           = TRUE
-  DEFINE SOC_XSPI_ENABLE            = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE SOC_USB_DEVICE_ENABLE      = TRUE
   DEFINE SOC_CDNSP_ENABLE           = TRUE
 !elseif $(COMPILE_FASTBOOT_LOAD) == ddr
   DEFINE PCIE_HOST_ENABLE           = FALSE
-  DEFINE SOC_XSPI_ENABLE            = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE SOC_USB_DEVICE_ENABLE      = TRUE
   DEFINE SOC_CDNSP_ENABLE           = TRUE
 !elseif $(COMPILE_FASTBOOT_LOAD) == usb
   DEFINE SOC_CDNSP_HOST_ENABLE      = TRUE
-  DEFINE SOC_XSPI_ENABLE            = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE SOC_USB_DEVICE_ENABLE      = TRUE
   DEFINE SOC_CDNSP_ENABLE           = TRUE
@@ -113,17 +124,14 @@
 !endif
 
 #ACPI Boot
-!if $(COMPILE_ACPI_ENABLE) == 1
   DEFINE ACPI_ENABLE                = TRUE
-!endif
+  DEFINE SMBIOS_ENABLE              = TRUE
 
-# Windows Boot
-DEFINE WINDOWS_BOOT_ENABLE          = FALSE
-!if $(WINDOWS_BOOT_ENABLE) == TRUE
-!endif
 
-  DEFINE SPI_VARIABLE_BASE          = 0x00805000
-  DEFINE SPI_VARIABLE_SIZE          = 0x2000
+  DEFINE SPI_VARIABLE_BASE          = 0x00380000
+  DEFINE SPI_VARIABLE_SIZE          = 0x28000
+
+  DEFINE LINUX_ACPI_CONFIG_OVERRIDE = TRUE
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
 !include Platform/Radxa/RadxaCommon.dsc.inc
@@ -140,13 +148,17 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 [LibraryClasses.common]
   PlatformConfigParamsHookLib|Platform/Radxa/Orion/O6/Library/PlatformConfigParamsHookLib/PlatformConfigParamsHookLib.inf
   PlatformEnvHookLib|Platform/Radxa/Orion/O6/Library/PlatformEnvHookLib/PlatformEnvHookLib.inf
-  RealTimeClockLib|Silicon/NXP/Library/Pcf8563RealTimeClockLib/Pcf8563RealTimeClockLib.inf
+  RealTimeClockLib|Platform/Radxa/Orion/O6/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.inf
 
   PlatformBootHookLib|Platform/CIX/Sky1/Merak/Library/PlatformBootHookLib/PlatformBootHookLib.inf
 
   TrngLib|Silicon/CIX/Sky1/Library/TrngLib/TrngLib.inf
   RngLib|Silicon/CIX/Sky1/Library/RngLib/RngLib.inf
   DtbUpdateLibSi|Platform/CIX/Sky1/Library/DtbUpdateLibSi/DtbUpdateLib.inf
+
+[LibraryClasses.common.DXE_RUNTIME_DRIVER]
+  EfiResetSystemLib|Platform/Radxa/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
+  EcLib|Platform/CIX/Sky1/Library/Ite5570EcLib/Ite5570EcRuntimeLib.inf
 
 ################################################################################
 #
@@ -176,14 +188,20 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
       BcfgCommandLib|ShellPkg/Library/UefiShellBcfgCommandLib/UefiShellBcfgCommandLib.inf
 
     <PcdsFixedAtBuild>
-      gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0xFF
       gEfiShellPkgTokenSpaceGuid.PcdShellLibAutoInitialize|FALSE
       gEfiMdePkgTokenSpaceGuid.PcdUefiLibMaxPrintBufferSize|8000
       gEfiShellPkgTokenSpaceGuid.PcdShellFileOperationSize|0x200000
   }
 !endif
   Platform/CIX/Sky1/Drivers/DtbUpdateDxeSi/DtbUpdateDxe.inf
-  Platform/Radxa/Orion/O6/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
+!if $(ACPI_ENABLE) == TRUE
+  Platform/Radxa/Orion/O6/Drivers/AcpiPlatfomTables/AcpiPlatfomTables.inf
+  Platform/Radxa/Orion/O6//Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
+!endif
+!if $(SMBIOS_ENABLE) == TRUE
+  Platform/Radxa/Orion/O6/Drivers/PlatformSmbios/PlatformSmbios.inf
+!endif
+  Platform/Radxa/Orion/O6/DeviceTree/DeviceTree.inf
 
 ###################################################################################################
 # BuildOptions Section - Define the module specific tool chain flags that should be used as
@@ -249,6 +267,19 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   GCC:*_*_*_CC_FLAGS              = -DSOC_GPIO_INTR_ENABLE
 !endif
 
+!if $(LINUX_ACPI_CONFIG_OVERRIDE) == TRUE
+  GCC:*_*_*_ASLPP_FLAGS           = -DLINUX_ACPI_CONFIG_OVERRIDE
+  GCC:*_*_*_ASLPP_FLAGS           = -I$(WORKSPACE)/../edk2-platforms/Platform/Radxa/Orion/O6/Drivers
+!endif
+
+!if $(STMM_SUPPORT) == TRUE
+  GCC:*_*_*_CC_FLAGS              = -DSTMM_SUPPORT
+!endif
+
+!if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
+  GCC:*_*_*_VFRPP_FLAGS       = -DFW_CONFIG_UPDATE_SUPPORT=1
+!endif
+
 ################################################################################
 #
 # Pcd Section - list of all EDK II PCD Entries defined by this Platform
@@ -256,8 +287,8 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 #
 ################################################################################
 [PcdsFixedAtBuild.common]
-  gCixTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"SKY1-EVB.DTB"
-  gCixTokenSpaceGuid.PcdSiliconDtbUpdateEnable|TRUE
+  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"sky1-orion-o6.dtb"
+  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateEnable|TRUE
 
   gCixTokenSpaceGuid.PcdPcieRootPort0Enable|TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort1Enable|TRUE
@@ -280,9 +311,10 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   gCixTokenSpaceGuid.PcdPcieRootPort3PeResetPin|3
   gCixTokenSpaceGuid.PcdPcieRootPort4PeResetPin|6
 
-  gCixTokenSpaceGuid.PcdI2c2En|TRUE
+  gCixTokenSpaceGuid.PcdI2c2En|FALSE
   gCixTokenSpaceGuid.PcdI2c2BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c3En|TRUE
+  gCixTokenSpaceGuid.PcdI2c3Runtime|TRUE          # For RTC runtime service
   gCixTokenSpaceGuid.PcdI2c3BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c4En|TRUE
   gCixTokenSpaceGuid.PcdI2c4BusFreq|100000
@@ -292,15 +324,20 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   gCixTokenSpaceGuid.PcdI2c6BusFreq|50000
 
   # PD
+  gCixTokenSpaceGuid.PcdI2c0En|TRUE
+  gCixTokenSpaceGuid.PcdI2c0BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c1En|TRUE
   gCixTokenSpaceGuid.PcdI2c1BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c7En|TRUE
   gCixTokenSpaceGuid.PcdI2c7BusFreq|100000
 
-  gCixTokenSpaceGuid.PcdPdDevI2cBuses|{ 0x1, 0xFF, 0x1, 0xFF }
-  gCixTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0x30, 0xFF, 0x31, 0xFF }
-  gCixTokenSpaceGuid.PcdPdDevAlertPins|{ 9, 0xFF, 9, 0xFF }
-  gCixTokenSpaceGuid.PcdTypecPortDefaultModes|{ 1, 4, 1, 4}
+  # RTC I2C canot be controlled in setup
+  gCixTokenSpaceGuid.PcdI2cCtrlEn|0xF7
+
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses|{ 0x1, 0xFF, 0x1, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0x30, 0xFF, 0x31, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdPdDevAlertPins|{ 9, 0xFF, 9, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdTypecPortDefaultModes|{ 1, 4, 1, 4}
 
   # USB3_A
   gCixTokenSpaceGuid.PcdUsb3Control0Enable|TRUE
@@ -308,7 +345,7 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
 
   # USBC0
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|FALSE
+  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|TRUE
   # USBC1
   gCixTokenSpaceGuid.PcdUsbCControl0Enable|TRUE
   # USBC2
@@ -321,34 +358,10 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   gCixTokenSpaceGuid.PcdUsb2Control2Enable|TRUE
   gCixTokenSpaceGuid.PcdUsb2Control3Enable|TRUE
 
-  # GOPS
-  gCixTokenSpaceGuid.PcdDP1HwProfile|0x01
-  gCixTokenSpaceGuid.PcdDP4HwProfile|0x01
-  gCixTokenSpaceGuid.PcdGopDisplaySelect|0x04
-
   gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000
-
-!if $(WINDOWS_BOOT_ENABLE) == TRUE
-  gArmTokenSpaceGuid.PcdArmPrimaryCore|0x000  #core0
-
-  gCixTokenSpaceGuid.PcdUsbCControl0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsbCControl1Enable|TRUE
-
-  gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|FALSE
-  gCixTokenSpaceGuid.PcdUsb3Control0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsb3Control0DataRole|FALSE
-  gCixTokenSpaceGuid.PcdUsb3Control1Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsb3Control1DataRole|FALSE
-
-  gCixTokenSpaceGuid.PcdUsb2Control0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsb2Control1Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsb2Control2Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsb2Control3Enable|TRUE
-!endif
   gEfiNetworkPkgTokenSpaceGuid.PcdNetworkStackSupport|FALSE
-  gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|TRUE
-  gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|TRUE
+  gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|FALSE
+  gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|FALSE
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4HttpSupport|TRUE
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6HttpSupport|TRUE
 
@@ -359,22 +372,33 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   gCixTokenSpaceGuid.PcdIspCamera2Power|0x00
   gCixTokenSpaceGuid.PcdIspCamera3Power|0x00
 
-  gCixTokenSpaceGuid.PcdEcAcpiI2cEn|TRUE
-
-# ACPI
-!if $(ACPI_ENABLE) == TRUE
-  gCixTokenSpaceGuid.PcdAcpiEcBatterySupport|1
-  gCixTokenSpaceGuid.PcdAcpiEcThermalSupport|0
-  gCixTokenSpaceGuid.PcdAcpiEcLidSupport|1
-  gCixTokenSpaceGuid.PcdAcpiEcPowerButtonSupport|1
-!endif
+  gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn|TRUE
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio0IoMask|0x20000000 # vbus for usb port6-7
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio3IoMask|0x00018000 # pwm/edp en pin output
 
 # Platform specific defaults
   # Set SMBIOS product name
   gArmTokenSpaceGuid.PcdSystemProductName|L"Radxa Orion O6"
 
   # RTC (taken from Phecda PcdI2c3BusFreq)
-  gPcf8563RealTimeClockLibTokenSpaceGuid.PcdI2cBusFrequency|100000
+  gHym8563RealTimeClockLibTokenSpaceGuid.PcdI2cBusFrequency|100000
+
+  # Fill in dpu index to config display priority
+  # Index | Output Name
+  # ------|------------
+  #     0 | USB-C 0
+  #     1 | HDMI
+  #     2 | eDP
+  #     3 | USB-C 1
+  #     4 | DP
+  gCixTokenSpaceGuid.PcdDPPriority0|1 # highest priority
+  gCixTokenSpaceGuid.PcdDPPriority1|4 #
+  gCixTokenSpaceGuid.PcdDPPriority2|0 #
+  gCixTokenSpaceGuid.PcdDPPriority3|3 #
+  gCixTokenSpaceGuid.PcdDPPriority4|2 # lowest priority
+
+  gCixPlatformTokenSpaceGuid.PcdAcpiPrefPmProf|0x01  # Desktop
+  gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable|FALSE
 
 [PcdsDynamicDefault.common]
 
@@ -385,4 +409,5 @@ DEFINE WINDOWS_BOOT_ENABLE          = FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoHorizontalResolution|800
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|600
 
+  gCixPlatformTokenSpaceGuid.PcdDynamicUint64Test|0x11111111
 [PcdsDynamicHii.common.DEFAULT]

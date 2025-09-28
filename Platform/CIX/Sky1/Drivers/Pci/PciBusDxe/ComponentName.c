@@ -1,5 +1,6 @@
 /** @file
   EFI Component Name functions implementation for PCI Bus module.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
 Copyright (c) 2006 - 2011, Intel Corporation. All rights reserved.<BR>
 SPDX-License-Identifier: BSD-2-Clause-Patent

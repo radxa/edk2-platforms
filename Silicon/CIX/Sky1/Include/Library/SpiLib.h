@@ -1,5 +1,6 @@
 /** @file  SpiLib.h
 
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   Copyright (c) 2023, CIX, Ltd. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -37,6 +38,18 @@ typedef struct _SPI_DEVICE {
 UINT32
 GetMmioBaseAddress (
   IN UINT8  Bus
+  );
+
+VOID
+EFIAPI
+LibSpiChipSelect (
+  IN SPI_DEVICE  *Spi
+  );
+
+VOID
+EFIAPI
+LibSpiChipUnselect (
+  IN SPI_DEVICE  *Spi
   );
 
 EFI_STATUS

@@ -1,5 +1,6 @@
 /** @file
   PCI bus enumeration logic function declaration for PCI bus module.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
 Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
 SPDX-License-Identifier: BSD-2-Clause-Patent

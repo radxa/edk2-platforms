@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *   SPDX-License-Identifier: BSD-2-Clause-Patent
  **/
 
@@ -28,6 +28,7 @@ typedef enum {
   FIRMWARE_TYPE_MEM_CONF        = 3,
   FIRMWARE_TYPE_PM_CONF         = 4,
   FIRMWARE_TYPE_SECURE_DEBUG    = 5,
+  FIRMWARE_TYPE_BootLoader_3    = 7,
   FIRMWARE_TYPE_EC              = 10,
   FIRMWARE_TYPE_FIRMWARE_HEADER = 11,
   FIRMWARE_TYPE_UEFI_NVRAM      = 100
@@ -94,7 +95,8 @@ typedef UINT16 (*CIX_FIRMWARE_ENTRY_UPDATE) (
 typedef UINT16 (*CIX_FIRMWARE_GET_VERSION) (
   UINT32                      *HeaderOffset,
   UINT32                      *Bootloader1Ver,
-  UINT32                      *Bootloader2Ver
+  UINT32                      *Bootloader2Ver,
+  UINT32                    *Bootloader3Ver
   );
 
 //

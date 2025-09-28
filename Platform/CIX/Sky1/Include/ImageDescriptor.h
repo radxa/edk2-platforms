@@ -1,5 +1,6 @@
 /** @file
 
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
 **/
 
@@ -9,8 +10,10 @@
 #define PACKAGE_VERSION                     0xFFFFFFFF
 #define PACKAGE_VERSION_STRING              L"Unknown"
 
-#define CURRENT_FIRMWARE_VERSION            0x00000004
-#define CURRENT_FIRMWARE_VERSION_STRING     L"0x00000004"
+#define __BUILD_STRING(x)                   L ## #x
+#define BUILD_STRING(x)                     L"build #" __BUILD_STRING(x)
+#define CURRENT_FIRMWARE_VERSION           FixedPcdGet32(PcdFirmwareRevision)//0x00000004
+#define CURRENT_FIRMWARE_VERSION_STRING    BUILD_STRING(FixedPcdGet32(PcdFirmwareRevision))//L"0x00000004"
 #define LOWEST_SUPPORTED_FIRMWARE_VERSION   0x00000003
 
 #define IMAGE_ID                            SIGNATURE_64('C', 'I', 'X', ' ', 'S', 'K', 'Y', '1')

@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
@@ -21,6 +21,7 @@
 typedef enum CixObjectID {
   ECixObjReserved,                     ///<  0 - Reserved
   ECixObjCpuUidtoCoreNumberMap,        ///<  1 - Mapping table of CPU UID to core number
+  ECixObjCpuTopoInfo,                  ///<  2 - Cpu topology information
   ECixObjMax
 } ECIX_OBJECT_ID;
 
@@ -36,6 +37,23 @@ typedef struct AmlPsdInfo {
 } AML_PSD_INFO;
 
 typedef  UINTN CM_CIX_CPUUID_CORENUMBER_MAP;
+
+typedef struct CixCpuCore {
+  UINT32     Coreid;
+  UINT32     Uid;
+  BOOLEAN    Enable;
+} CIX_CPU_CORE;
+
+typedef struct CixClusterTopology {
+  CIX_CPU_CORE    *Core;
+  UINT32          Uid;
+  UINT32          CoreNumber;
+} CIX_CLUSTER_TOPO;
+
+typedef struct CmCixCpuTopoInfo {
+  CIX_CLUSTER_TOPO    *ClusterTopo;
+  UINT32              ClusterNumber;
+} CM_CIX_CPU_TOPO_INFO;
 
 #pragma pack()
 #endif

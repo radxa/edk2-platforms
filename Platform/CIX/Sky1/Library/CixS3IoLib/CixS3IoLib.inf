@@ -1,6 +1,6 @@
 #/**
 #
-#  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -14,6 +14,7 @@
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
   LIBRARY_CLASS                  = CixS3IoLib
+  CONSTRUCTOR                    = CixS3IoLibConstructor
 
 [Sources.common]
   CixS3IoLib.c

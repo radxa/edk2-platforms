@@ -1,5 +1,5 @@
 /**
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -51,7 +51,6 @@
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
       endoneof;
-suppressif FixedPcdGetBool(PcdTypecPhy0Enable) == FALSE;
       oneof varid   = PlatformSetupVar.UsbCDrdControl0Enable,
         prompt      = STRING_TOKEN(STR_USBC_DRD_CONTROL_PROMPT),
         help        = STRING_TOKEN(STR_USBC_DRD_CONTROL_HELP),
@@ -68,8 +67,6 @@ suppressif ideqval PlatformSetupVar.UsbCDrdControl0Enable == 0x0;
         option text = STRING_TOKEN(STR_USB_DATA_ROLE_DEVICE),  value = 1, flags = RESET_REQUIRED;
       endoneof;
 endif;
-endif;
-suppressif FixedPcdGetBool(PcdTypecPhy1Enable) == FALSE;
       oneof varid   = PlatformSetupVar.UsbCControl0Enable,
         prompt      = STRING_TOKEN(STR_USBC_CONTROL_PROMPT0),
         help        = STRING_TOKEN(STR_USBC_CONTROL_HELP),
@@ -77,8 +74,6 @@ suppressif FixedPcdGetBool(PcdTypecPhy1Enable) == FALSE;
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
       endoneof;
-endif;
-suppressif FixedPcdGetBool(PcdTypecPhy2Enable) == FALSE;
       oneof varid   = PlatformSetupVar.UsbCControl1Enable,
         prompt      = STRING_TOKEN(STR_USBC_CONTROL_PROMPT1),
         help        = STRING_TOKEN(STR_USBC_CONTROL_HELP),
@@ -86,8 +81,6 @@ suppressif FixedPcdGetBool(PcdTypecPhy2Enable) == FALSE;
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
       endoneof;
-endif;
-suppressif FixedPcdGetBool(PcdTypecPhy3Enable) == FALSE;
       oneof varid   = PlatformSetupVar.UsbCControl2Enable,
         prompt      = STRING_TOKEN(STR_USBC_CONTROL_PROMPT2),
         help        = STRING_TOKEN(STR_USBC_CONTROL_HELP),
@@ -95,5 +88,4 @@ suppressif FixedPcdGetBool(PcdTypecPhy3Enable) == FALSE;
         option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
       endoneof;
-endif;
     endform;

@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0-only */ /* * Author: Jerry Zhu <jerry.zhu@cixtech.com> */
 
+//  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 #ifndef __RESET_ID_H__
 #define __RESET_ID_H__
 

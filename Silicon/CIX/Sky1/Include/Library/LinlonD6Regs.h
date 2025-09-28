@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
 
+//  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 /*
  * (C) COPYRIGHT 2018 ARM Limited. All rights reserved.
  * Author: James.Qian.Wang <james.qian.wang@arm.com>

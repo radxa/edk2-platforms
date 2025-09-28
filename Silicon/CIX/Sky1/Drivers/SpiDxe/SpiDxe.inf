@@ -1,5 +1,6 @@
 #/**
 #
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 #  Component description file for SpiDxe module
 #
 #  Copyright (c) 2023-2024, CIX, Ltd. All rights reserved.
@@ -35,6 +36,7 @@
   UefiDriverEntryPoint
   UefiLib
   SpiLib
+  PostCodeLib
 
 [Guids]
   gCixSpiDevicePathGuid

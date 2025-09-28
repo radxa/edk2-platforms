@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  **/
 
 #ifndef _RA8900CE_REAL_TIME_CLOCK_LIB_H_
@@ -18,21 +18,23 @@
 #include <Protocol/I2cDevicePath.h>
 #include <Protocol/ConfigParamsManageProtocol.h>
 
-#define SLAVE_ADDRESS  (FixedPcdGet8 (PcdRa8900ceI2cSlaveAddress))
+#define RA8900CE_DEVICE_ADDRESS      (FixedPcdGet8 (PcdRa8900ceI2cSlaveAddress))
+#define RA8900CE_DEVICE_INSTANCE_ID  (FixedPcdGet8 (PcdRa8900ceI2cDeviceInstanceId))
 
-#define RA8900CE_DATA_REG_OFFSET    0x00
-#define RA8900CE_SEC_REG_OFFSET     0x00
-#define RA8900CE_MIN_REG_OFFSET     0x01
-#define RA8900CE_HOUR_REG_OFFSET    0x02
-#define RA8900CE_WEEK_REG_OFFSET    0x03
-#define RA8900CE_DAY_REG_OFFSET     0x04
-#define RA8900CE_MONTH_REG_OFFSET   0x05
-#define RA8900CE_YEAR_REG_OFFSET    0x06
-#define RA8900CE_ALARM_REG_OFFSET   0x08
-#define RA8900CE_EXT_REG_OFFSET     0x0D
-#define RA8900CE_FLAG_REG_OFFSET    0x0E
-#define RA8900CE_CTRL_REG_OFFSET    0x0F
-#define RA8900CE_BACKUP_REG_OFFSET  0x18
+#define RA8900CE_DATA_REG_OFFSET     0x00
+#define RA8900CE_SEC_REG_OFFSET      0x00
+#define RA8900CE_MIN_REG_OFFSET      0x01
+#define RA8900CE_HOUR_REG_OFFSET     0x02
+#define RA8900CE_WEEK_REG_OFFSET     0x03
+#define RA8900CE_DAY_REG_OFFSET      0x04
+#define RA8900CE_MONTH_REG_OFFSET    0x05
+#define RA8900CE_YEAR_REG_OFFSET     0x06
+#define RA8900CE_ALARM_REG_OFFSET    0x08
+#define RA8900CE_TMR_CNT_REG_OFFSET  0x0B
+#define RA8900CE_EXT_REG_OFFSET      0x0D
+#define RA8900CE_FLAG_REG_OFFSET     0x0E
+#define RA8900CE_CTRL_REG_OFFSET     0x0F
+#define RA8900CE_BACKUP_REG_OFFSET   0x18
 
 #define RA8900CE_SECONDS_MASK   0x7F
 #define RA8900CE_MINUTES_MASK   0x7F
@@ -86,6 +88,11 @@ typedef struct {
   UINT8           Reg;
   RTC_DATETIME    DateTime;
 } RTC_SET_DATETIME_PACKET;
+
+typedef struct {
+  UINT8    Reg;
+  INT16    TimeZone;
+} RTC_SET_TIMEZONE_PACKET;
 #pragma pack()
 
 typedef struct {

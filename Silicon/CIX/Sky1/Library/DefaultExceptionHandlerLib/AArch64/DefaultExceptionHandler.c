@@ -1,5 +1,6 @@
 /** @file
   Default exception handler
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Copyright (c) 2008 - 2010, Apple Inc. All rights reserved.<BR>
   Copyright (c) 2011 - 2014, ARM Ltd. All rights reserved.<BR>

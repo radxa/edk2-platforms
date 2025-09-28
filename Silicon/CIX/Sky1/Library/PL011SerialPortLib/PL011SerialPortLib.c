@@ -1,6 +1,6 @@
 /** @file
   Serial I/O Port library functions with no library constructor/destructor
-
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   Copyright (c) 2008 - 2010, Apple Inc. All rights reserved.<BR>
   Copyright (c) 2012 - 2016, ARM Ltd. All rights reserved.<BR>
   Copyright (c) 2015, Intel Corporation. All rights reserved.<BR>
@@ -16,7 +16,6 @@
 #include <Library/PL011UartClockLib.h>
 #include <Library/PL011UartLib.h>
 #include <Library/SerialPortLib.h>
-#include <Library/SocInitLib.h>
 
 /** Initialise the serial device hardware with default settings.
 
@@ -35,16 +34,15 @@ SerialPortInitialize (
   EFI_PARITY_TYPE     Parity;
   UINT8               DataBits;
   EFI_STOP_BITS_TYPE  StopBits;
-  UINT32              PL011Base;
 
   BaudRate         = FixedPcdGet64 (PcdUartDefaultBaudRate);
   ReceiveFifoDepth = 0;         // Use default FIFO depth
   Parity           = (EFI_PARITY_TYPE)FixedPcdGet8 (PcdUartDefaultParity);
   DataBits         = FixedPcdGet8 (PcdUartDefaultDataBits);
   StopBits         = (EFI_STOP_BITS_TYPE)FixedPcdGet8 (PcdUartDefaultStopBits);
-  PL011Base        = GetSocUartBaseAddress ();
+
   return PL011UartInitializePort (
-           (UINTN)PL011Base,                       //  (UINTN)PcdGet64 (PcdSerialRegisterBase),
+           (UINTN)PcdGet64 (PcdSerialRegisterBase),
            PL011UartClockGetFreq (),
            &BaudRate,
            &ReceiveFifoDepth,
@@ -71,12 +69,7 @@ SerialPortWrite (
   IN UINTN  NumberOfBytes
   )
 {
-  UINT32  PL011Base;
-
-  PL011Base = GetSocUartBaseAddress ();
-
-  return PL011UartWrite ((UINTN)PL011Base, Buffer, NumberOfBytes);
-  // return PL011UartWrite ((UINTN)PcdGet64 (PcdSerialRegisterBase), Buffer, NumberOfBytes);
+  return PL011UartWrite ((UINTN)PcdGet64 (PcdSerialRegisterBase), Buffer, NumberOfBytes);
 }
 
 /**
@@ -96,12 +89,7 @@ SerialPortRead (
   IN  UINTN  NumberOfBytes
   )
 {
-  UINT32  PL011Base;
-
-  PL011Base = GetSocUartBaseAddress ();
-
-  return PL011UartRead ((UINTN)PL011Base, Buffer, NumberOfBytes);
-  // return PL011UartRead ((UINTN)PcdGet64 (PcdSerialRegisterBase), Buffer, NumberOfBytes);
+  return PL011UartRead ((UINTN)PcdGet64 (PcdSerialRegisterBase), Buffer, NumberOfBytes);
 }
 
 /**
@@ -117,12 +105,7 @@ SerialPortPoll (
   VOID
   )
 {
-  UINT32  PL011Base;
-
-  PL011Base = GetSocUartBaseAddress ();
-
-  return PL011UartPoll ((UINTN)PL011Base);
-  // return PL011UartPoll ((UINTN)PcdGet64 (PcdSerialRegisterBase));
+  return PL011UartPoll ((UINTN)PcdGet64 (PcdSerialRegisterBase));
 }
 
 /**
@@ -167,9 +150,7 @@ SerialPortSetAttributes (
   IN OUT EFI_STOP_BITS_TYPE  *StopBits
   )
 {
-  UINT32  PL011Base;
 
-  PL011Base = GetSocUartBaseAddress ();
   if (*Timeout == 0)
   {
     *Timeout = 1000 * 1000;
@@ -177,7 +158,7 @@ SerialPortSetAttributes (
   }
 
   return PL011UartInitializePort (
-           (UINTN)PL011Base,                       // (UINTN)PcdGet64 (PcdSerialRegisterBase),
+           (UINTN)PcdGet64 (PcdSerialRegisterBase),
            PL011UartClockGetFreq (),
            BaudRate,
            ReceiveFifoDepth,
@@ -219,9 +200,6 @@ SerialPortSetControl (
   IN UINT32  Control
   )
 {
-  UINT32  PL011Base;
-
-  PL011Base = GetSocUartBaseAddress ();
 
   if (((Control & ~(EFI_SERIAL_REQUEST_TO_SEND             |
                     EFI_SERIAL_DATA_TERMINAL_READY         |
@@ -230,8 +208,7 @@ SerialPortSetControl (
                     EFI_SERIAL_HARDWARE_FLOW_CONTROL_ENABLE)) != 0))
     return EFI_UNSUPPORTED;
   else
-    return PL011UartSetControl((UINTN) PL011Base, Control);
-  // return PL011UartSetControl ((UINTN)PcdGet64 (PcdSerialRegisterBase), Control);
+    return PL011UartSetControl ((UINTN)PcdGet64 (PcdSerialRegisterBase), Control);
 }
 
 /**
@@ -272,10 +249,5 @@ SerialPortGetControl (
   OUT UINT32  *Control
   )
 {
-  UINT32  PL011Base;
-
-  PL011Base = GetSocUartBaseAddress ();
-
-  return PL011UartGetControl ((UINTN)PL011Base, Control);
-  // return PL011UartGetControl ((UINTN)PcdGet64 (PcdSerialRegisterBase), Control);
+  return PL011UartGetControl ((UINTN)PcdGet64 (PcdSerialRegisterBase), Control);
 }

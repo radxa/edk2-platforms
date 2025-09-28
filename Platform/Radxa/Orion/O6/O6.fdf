@@ -101,32 +101,49 @@ READ_LOCK_STATUS   = TRUE
 !endif
     # reset
     INF Silicon/CIX/Sky1/Drivers/ResetDxe/ResetDxe.inf
+    INF Platform/CIX/Sky1/Drivers/S3SaveStateDxe/S3SaveStateDxe.inf
     INF Silicon/CIX/Sky1/Drivers/SocDxe/SocDxe.inf
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
-  INF ArmPkg/Drivers/MmCommunicationDxe/MmCommunication.inf
+!if $(STMM_SUPPORT) == TRUE
+    INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/ArmMmCommunication.inf
 !endif
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
-  INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashSmmRuntimeDxe.inf
-!elseif $(SOC_XSPI_ENABLE) == TRUE || $(VARIABLE_SUPPORT) == "SPI"
+!if $(STMM_SUPPORT) == TRUE
+    INF Silicon/CIX/Sky1/Drivers/NorFlashStmmRuntimeDxe/NorFlashStmmRuntimeDxe.inf
+!else
     INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashDxe.inf
 !endif
-!if $(VARIABLE_SUPPORT) == "SPI"
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == FALSE
     INF MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
 !endif
-!if $(VARIABLE_SUPPORT) == "SPI_SEC"
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
     INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableSmmRuntimeDxe.inf
 !else
     INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
 !endif
+
+  INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
+  INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
+  INF Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf
+!if $(CFG_PARAM_MANAGE_ENABLE) == TRUE
+    INF Platform/CIX/Sky1/Drivers/PlatformConfigParamsManageDxe/PlatformConfigParamsManageDxe.inf
+    INF Silicon/CIX/Sky1/Drivers/ConfigParamsManageDxe/ConfigParamsManageDxe.inf
+!endif
+!if $(TOKEN_SETUP_SUPPORT) == FALSE
+    INF Platform/CIX/Sky1/Drivers/PlatformSetupVariableInitDxe/PlatformSetupVariableInitDxe.inf
+    INF Platform/CIX/Sky1/Drivers/PlatformDxe/PlatformDxe.inf
+!endif
   }
 
 # inf file list has be move to Sky1Common.fdf.inc
-# pease put xxx.inf to Sky1Common.fdf.inc
+# please put xxx.inf to Sky1Common.fdf.inc
 !include Platform/CIX/Sky1/Sky1Common.fdf.inc
 !include Platform/Radxa/Platforms/CIX/Sky1/Sky1Common.fdf.inc
-  INF Platform/Radxa/Orion/O6/Drivers/SmbiosPlatformDxe/SmbiosPlatformDxe.inf
-  INF Platform/Radxa/Drivers/RTL8126/RtkUndiDxe.inf
   INF Platform/CIX/Sky1/Drivers/DtbUpdateDxeSi/DtbUpdateDxe.inf
+
+!if $(ACPI_ENABLE) == TRUE
+  INF RuleOverride = ACPITABLE2 Platform/Radxa/Orion/O6/Drivers/AcpiPlatfomTables/AcpiPlatfomTables.inf
+  INF Platform/Radxa/Orion/O6/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
+!endif
+
   #
   # UEFI application (Shell Embedded Boot Loader)
   #
@@ -137,6 +154,13 @@ READ_LOCK_STATUS   = TRUE
   FILE FREEFORM  = 8943387b-c4ad-3199-42a9-dabc5b411615 { # gPkcs7CertDataGuid
       SECTION RAW = Platform/CIX/Sky1/Bin/ntroot.cer //root pubkey
   }
+!if $(SMBIOS_ENABLE) == TRUE
+  INF Platform/Radxa/Orion/O6/Drivers/PlatformSmbios/PlatformSmbios.inf
+!endif
+
+  INF Platform/Radxa/Drivers/RTL8126/RtkUndiDxe.inf
+
+  INF Platform/Radxa/Orion/O6/DeviceTree/DeviceTree.inf
 
 [FV.FVMAIN_COMPACT]
 FvAlignment        = 16
@@ -157,6 +181,9 @@ READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
   INF Platform/CIX/Sky1/PrePi/PeiUniCore.inf
+  !if $(FW_VERSION_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionDxe.inf
+  !endif
   FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {
     SECTION GUIDED EE4E5898-3914-4259-9D6E-DC7BD79403CF PROCESSING_REQUIRED = TRUE {
       SECTION FV_IMAGE = FVMAIN
@@ -266,6 +293,11 @@ READ_LOCK_STATUS   = TRUE
     RAW ASL                |.aml
   }
 
+  [Rule.Common.USER_DEFINED.ACPITABLE2]
+  FILE FREEFORM = $(NAMED_GUID) {
+    RAW ASL                |.aml
+  }
+
 [Rule.Common.DXE_DRIVER.BINARY]
   FILE DRIVER = $(NAMED_GUID) {
     DXE_DEPEX DXE_DEPEX Optional      |.depex
@@ -279,4 +311,16 @@ READ_LOCK_STATUS   = TRUE
     DXE_DEPEX DXE_DEPEX Optional      |.depex
     PE32      PE32                    |.efi
     UI        STRING="$(MODULE_NAME)" Optional
+  }
+
+[Rule.Common.USER_DEFINED]
+  FILE FREEFORM = $(NAMED_GUID) {
+    UI  STRING="$(MODULE_NAME)" Optional
+    RAW BIN                |.bin
+  }
+
+[Rule.Common.USER_DEFINED.BINARY]
+  FILE FREEFORM = $(NAMED_GUID) {
+    UI  STRING="$(MODULE_NAME)" Optional
+    RAW BIN                |.bin
   }

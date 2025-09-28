@@ -1,0 +1,51 @@
+## @file
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x0001001A
+  BASE_NAME                      = TPMVariableDxe
+  FILE_GUID                      = FDE25EDE-2AA2-CF6F-A4DE-09F8FCF1A244
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = TPMVariableDxeEntryPoint
+
+[Sources]
+  TPMVariableDxe.c
+
+[Packages]
+  ArmPkg/ArmPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
+  SecurityPkg/SecurityPkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  UefiLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  HiiLib
+  HobLib
+  Tcg2PpVendorLib
+
+[Guids]
+  gEfiTcg2PhysicalPresenceGuid
+[Protocols]
+  gEfiTcg2ProtocolGuid                 ## SOMETIMES_CONSUMES
+  gEdkiiVariableLockProtocolGuid       ## SOMETIMES_CONSUMES
+
+[Pcd]
+  gEfiSecurityPkgTokenSpaceGuid.PcdTcg2PhysicalPresenceFlags       ## SOMETIMES_CONSUMES
+
+[Depex]
+  TRUE

@@ -8,4 +8,24 @@
 ##
 
   INF Platform/Radxa/Drivers/Logo/LogoDxe.inf
-  INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
+  INF Platform/Radxa/Platforms/CIX/Sky1/Drivers/SystemInfoDxe/SystemInfoDxe.inf
+
+!if $(TOKEN_SETUP_SUPPORT) == FALSE
+  INF Platform/CIX/Sky1/Drivers/PlatformSetupVariableInitDxe/PlatformSetupVariableInitDxe.inf
+  INF Platform/Radxa/Platforms/CIX/Sky1/Drivers/PlatformConfigDxe/PlatformConfigDxe.inf
+!endif
+
+!if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
+  INF Platform/Radxa/Platforms/CIX/Sky1/Drivers/RadxaSetupVariableInitDxe/RadxaSetupVariableInitDxe.inf
+  INF Platform/Radxa/Platforms/CIX/Sky1/Drivers/FirmwareConfigUpdateDxe/FirmwareConfigUpdateDxe.inf
+!endif
+
+  INF EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf
+
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
+  INF MdeModulePkg/Application/VariableInfo/VariableInfo.inf
+!endif
+
+!if $(TOKEN_RAM_DISK_SUPPORT) == FALSE
+  INF MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
+!endif

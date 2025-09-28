@@ -1,6 +1,6 @@
 /**
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -9,6 +9,7 @@
 #include <Library/EcLib.h>
 #include <Library/UefiRuntimeLib.h>
 #include <Library/DxeServicesTableLib.h>
+#include <Protocol/ConfigParamsManageProtocol.h>
 
 extern I2C_HOST_DESCRIPTOR  *mHost;
 
@@ -23,9 +24,11 @@ I2cMemoryInitEventNotify (
   IN VOID       *Context
   )
 {
-  EFI_STATUS  Status;
-  UINTN       RuntimeMmioRegionBase;
-  UINTN       RuntimeMmioRegionSize;
+  EFI_STATUS                       Status;
+  UINTN                            RuntimeMmioRegionBase;
+  UINTN                            RuntimeMmioRegionSize;
+  UINTN                            NumberOfDescriptors, Index;
+  EFI_GCD_MEMORY_SPACE_DESCRIPTOR  *MemSpaceMap;
 
   if (Context == NULL) {
     return;
@@ -35,6 +38,18 @@ I2cMemoryInitEventNotify (
   RuntimeMmioRegionBase = ((I2C_HOST_DESCRIPTOR *)Context)->MemBase;
   RuntimeMmioRegionSize = SIZE_4KB;
 
+  Status = gDS->GetMemorySpaceMap (&NumberOfDescriptors, &MemSpaceMap);
+
+  for (Index = 0; Index < NumberOfDescriptors; Index++) {
+    if ((RuntimeMmioRegionBase >= MemSpaceMap[Index].BaseAddress) &&
+        ((RuntimeMmioRegionBase + RuntimeMmioRegionSize) <= (MemSpaceMap[Index].BaseAddress + MemSpaceMap[Index].Length)) &&
+        (MemSpaceMap[Index].GcdMemoryType == EfiGcdMemoryTypeMemoryMappedIo))
+    {
+      DEBUG ((DEBUG_INFO, "%a: memory space base 0x%x, length 0x%x already added\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize));
+      return;
+    }
+  }
+
   Status = gDS->AddMemorySpace (
                   EfiGcdMemoryTypeMemoryMappedIo,
                   RuntimeMmioRegionBase,
@@ -42,27 +57,24 @@ I2cMemoryInitEventNotify (
                   EFI_MEMORY_UC | EFI_MEMORY_RUNTIME
                   );
   if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_ERROR, "%a: fail to add memory space base 0x%x, size 0x%x, status %r\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize, Status);
-    ASSERT_EFI_ERROR (Status);
+    DebugPrint (DEBUG_ERROR, "%a: fail to add memory space base 0x%x, length 0x%x, status %r\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize, Status);
+  } else {
+    DEBUG ((DEBUG_INFO, "%a: add memory space base 0x%x, length 0x%x\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize));
+    Status = gDS->SetMemorySpaceAttributes (
+                    RuntimeMmioRegionBase,
+                    RuntimeMmioRegionSize,
+                    EFI_MEMORY_UC | EFI_MEMORY_RUNTIME
+                    );
+    if (EFI_ERROR (Status)) {
+      DebugPrint (DEBUG_ERROR, "%a: fail to set memory attributes base 0x%x, length 0x%x, status %r\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize, Status);
+      gDS->RemoveMemorySpace (
+             RuntimeMmioRegionBase,
+             RuntimeMmioRegionSize
+             );
+    } else {
+      DEBUG ((DEBUG_INFO, "%a: set memory space attribute 0x%llx\n", __FUNCTION__, EFI_MEMORY_UC | EFI_MEMORY_RUNTIME));
+    }
   }
-
-  DEBUG ((DEBUG_INFO, "%a: add memory space base 0x%x, length 0x%x\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize));
-
-  Status = gDS->SetMemorySpaceAttributes (
-                  RuntimeMmioRegionBase,
-                  RuntimeMmioRegionSize,
-                  EFI_MEMORY_UC | EFI_MEMORY_RUNTIME
-                  );
-  if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_ERROR, "%a: fail to set memory attributes base 0x%x, size 0x%x, status %r\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize, Status);
-    gDS->RemoveMemorySpace (
-           RuntimeMmioRegionBase,
-           RuntimeMmioRegionSize
-           );
-    ASSERT_EFI_ERROR (Status);
-  }
-
-  DEBUG ((DEBUG_INFO, "%a: set memory space attribute 0x%llx\n", __FUNCTION__, EFI_MEMORY_UC | EFI_MEMORY_RUNTIME));
 }
 
 /**
@@ -100,12 +112,31 @@ EcRuntimeLibConstructor (
   VOID
   )
 {
-  EFI_STATUS  Status = EFI_SUCCESS;
+  EFI_STATUS                         Status = EFI_SUCCESS;
+  CONFIG_PARAMS_DATA_BLOCK           *ConfigData;
+  CIX_CONFIG_PARAMS_MANAGE_PROTOCOL  *ConfigManage;
+
+  Status = gBS->LocateProtocol (
+                  &gCixConfigParamsManageProtocolGuid,
+                  NULL,
+                  (VOID **)&ConfigManage
+                  );
+
+  if (!EFI_ERROR (Status)) {
+    ConfigData = ConfigManage->Data;
+  } else {
+    DEBUG ((DEBUG_ERROR, "%a: config parameters is invalid %r\n", __FUNCTION__, Status));
+    return Status;
+  }
 
   mHost          = AllocateRuntimeZeroPool (sizeof (I2C_HOST_DESCRIPTOR));
   mHost->Bus     = FixedPcdGet8 (PcdEcI2cBus);
   mHost->MemBase = I2cGetMemBase (mHost->Bus);
   mHost->BusClk  = I2cGetBusClk (mHost->Bus);
+  mHost->MutexId = ConfigData->Fch.I2c[mHost->Bus].MutexId;
+  if (mHost->MutexId != UNDEFINED_MUTEX_ID) {
+    mHost->DevInsId = EC_DEVICE_INSTANCE_ID;
+  }
 
   if (PcdGetBool (PcdEcI2cHostInitialized) == FALSE) {
     I2cEnvInit (mHost->Bus);

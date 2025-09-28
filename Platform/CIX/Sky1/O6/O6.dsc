@@ -1,1 +1,0 @@
-../../../Radxa/Orion/O6/O6.dsc

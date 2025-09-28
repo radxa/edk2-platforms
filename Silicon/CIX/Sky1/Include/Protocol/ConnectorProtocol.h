@@ -1,13 +1,13 @@
 /** @file
  *
- *  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved. *
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved. *
  *
  *  SPDX-License-Identifier: BSD-2-Clause-Patent
  *
  **/
 
-#ifndef _ROCKCHIP_CONNECTOR_PROTOCOL_H_
-#define _ROCKCHIP_CONNECTOR_PROTOCOL_H_
+#ifndef _CIX_CONNECTOR_PROTOCOL_H_
+#define _CIX_CONNECTOR_PROTOCOL_H_
 
 #include <Library/DisplayLib.h>
 

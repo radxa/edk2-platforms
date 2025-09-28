@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   Copyright (c) 2011-2017, ARM Limited. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -16,7 +16,8 @@
 #include <Library/PrePiHobListPointerLib.h>
 #include <Library/TimerLib.h>
 #include <Library/PerformanceLib.h>
-
+#include <Library/CixPostCodeLib.h>
+#include <Library/CixFwBootPerfLib.h>
 #include <Ppi/GuidedSectionExtraction.h>
 #include <Ppi/ArmMpCoreInfo.h>
 #include <Ppi/SecPerformance.h>
@@ -176,6 +177,7 @@ CEntryPoint (
 {
   UINT64  StartTimeStamp;
 
+  cix_set_boot_phase (BLOADER_PHASE, RECORD_START);
   // Initialize the platform specific controllers
   ArmPlatformInitialize (MpId);
 

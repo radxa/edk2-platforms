@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -18,6 +18,8 @@
 
 #define ANDROID_VAR_CFG           L"AndroidVarCfg"
 #define MAX_EXTENDED_CMDLINE_LEN  128
+
+#define FASTBOOT_TEXT_ID  0x1000
 
 #pragma pack(1)
 typedef struct {

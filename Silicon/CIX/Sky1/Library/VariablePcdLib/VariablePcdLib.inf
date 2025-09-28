@@ -1,7 +1,7 @@
 ## @file
 #  Instance of Base Memory Library without assembly.
 #
-#  Copyright 2022-2024 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #  Copyright (c) 2020, Linaro Ltd. All rights reserved.<BR>
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -26,12 +26,19 @@
   MdePkg/MdePkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
   Silicon/CIX/Sky1/CixPkg.dec
+  StandaloneMmPkg/StandaloneMmPkg.dec
 
 [LibraryClasses]
   BaseLib
   DebugLib
+  BaseMemoryLib
   MmServicesTableLib
   PcdLib
+  HobLib
+
+[Guids]
+  gEfiHobListGuid
+  gNvramInformationHobGuid
 
 [Pcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase64

@@ -1,5 +1,6 @@
 // /** @file
 // Instance of Debug Library based on Serial Port Library.
+// Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 //
 // It uses Print Library to produce formatted output strings to seiral port device.
 //

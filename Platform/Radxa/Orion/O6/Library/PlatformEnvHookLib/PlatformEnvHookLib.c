@@ -32,13 +32,14 @@ GPIO_CFG  GpioCfgTable[] = {
   { 5,   OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // M2_WLAN_RST_L
   { 6,   OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // LOM_RST_L
   { 7,   INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_DISABLE,        EDGE_LOW               }, // EC_ACPI_INT_L
+  { 8,   OUTPUT,            INOUT_LOW,           INTERRUPT_TYPE_DEFAULT,   INTERRUPT_TYPE_DEFAULT }, // GPIO8(DEFAULT LOW, LED ON)
   { 9,   INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_DISABLE,        LEVEL_LOW              }, // I2C_INT_CPU_PD2
   { 10,  OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // LOM_PWREN
   { 11,  INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, LEVEL_LOW              }, // RTC_ALARM_L
   { 12,  OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // M2_SSD_PWREN
   { 13,  OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // WLAN_PWREN
   { 14,  INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, LEVEL_LOW              }, // HP_MIC_DET#
-  { 15,  OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // PWR_LED_EN
+  { 15,  OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // PWR_LED_EN GPIO15 (DEFAULT HIGH, LED ON)
   { 16,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // SSD_LED_EN
   { 17,  OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // VGFX_PWREN
   { 18,  INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, LEVEL_LOW              }, // GPIO018_WAKE_SSD
@@ -50,16 +51,20 @@ GPIO_CFG  GpioCfgTable[] = {
   { 31,  INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // SLT_X8_PEWAKE_L
   { 32,  INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // WLAN_WAKE_L
   { 33,  INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GBE2_PEWAKE_L
+  { 40,  OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // VBUS For USB Port6-7
   { 43,  OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // BOOT_STRAP
-  { 44,  OUTPUT,            INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO44
-  { 45,  OUTPUT,            INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO45
-  { 46,  OUTPUT,            INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO46
-  { 71,  OUTPUT,            INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO71
+  { 44,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO44 (DEFAULT LOW)
+  { 45,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO45 (DEFAULT LOW)
+  { 46,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO46 (DEFAULT LOW)
+  { 55,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO55 (DEFAULT LOW)
+  { 56,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO56 (DEFAULT LOW)
+  { 71,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO71 (DEFAULT LOW)
   { 72,  OUTPUT,            INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO72
-  { 76,  OUTPUT,            INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO76
-  { 78,  OUTPUT,            INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO78
-  { 79,  OUTPUT,            INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO79
-  { 80,  OUTPUT,            INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO80
+  { 76,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO76 (DEFAULT LOW)
+  { 78,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO78 (DEFAULT LOW)
+  { 79,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO79 (DEFAULT LOW)
+  { 80,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO80 (DEFAULT LOW)
+  { 81,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO81 (DEFAULT LOW)
   { 82,  OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // CAM2_PWDN
   { 83,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // CAM_PWREN
   { 84,  INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, LEVEL_LOW              }, // TPM_INT_L
@@ -68,9 +73,23 @@ GPIO_CFG  GpioCfgTable[] = {
   { 87,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // CAM3_PWDN
   { 88,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // CAM0_RST_L
   { 89,  OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // CAM3_PWDN
+  { 90,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO90 (DEFAULT LOW)
+  { 91,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO91 (DEFAULT LOW)
+  { 92,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO92 (DEFAULT LOW)
+  { 93,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO93 (DEFAULT LOW)
+  { 94,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO94 (DEFAULT LOW)
+  { 95,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO95 (DEFAULT LOW)
+  { 96,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO96 (DEFAULT LOW)
+  { 99,  OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO99 (DEFAULT LOW)
+  { 100, OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO100 (DEFAULT LOW)
   { 129, OUTPUT,            INOUT_HIGH,          INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO129_TP_RST
   { 136, INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, LEVEL_LOW              }, // TPNL_INT_L
   { 137, OUTPUT,            INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO137
+  { 138, OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO138 (DEFAULT LOW)
+  { 139, OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO139 (DEFAULT LOW)
+  { 140, OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO140 (DEFAULT LOW)
+  { 141, OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO141 (DEFAULT LOW)
+  { 142, OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // GPIO142 (DEFAULT LOW)
   { 143, INPUT,             INOUT_VALUE_DEFAULT, INTERRUPT_ENABLE_DEFAULT, LEVEL_LOW              }, // I2C_NVME_ALERT_L
   { 144, OUTPUT,            INOUT_LOW,           INTERRUPT_ENABLE_DEFAULT, INTERRUPT_TYPE_DEFAULT }, // AUDIO_PWR_EN
   // the end of GpioCfgTable, no more item allowed to add afterward
@@ -78,13 +97,14 @@ GPIO_CFG  GpioCfgTable[] = {
 };
 
 PINMUX_CFG  PinMuxCfgTable[] = {
-  { S5_DOMAIN,       IO_S5_USB_OC4_L,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBA_OC4_L
-  { S5_DOMAIN,       IO_S5_USB_OC5_L,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBA_OC5_L
-  { S5_DOMAIN,       IO_S5_USB_OC6_L,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBC_OC0_L
-  { S5_DOMAIN,       IO_S5_USB_OC7_L,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBC_OC1_L
-  { S5_DOMAIN,       IO_S5_USB_OC8_L,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBC_OC2_L
-  { S5_DOMAIN,       IO_S5_USB_OC9_L,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBC_OC3_L
-  { S5_DOMAIN,       IO_S5_USB_DRIVE_VBUS0,  IO_FUNC01,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // USB_DRIVE_VBUS0
+  { S5_DOMAIN,       IO_S5_USB_OC4_L,        IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBA_OC4_L
+  { S5_DOMAIN,       IO_S5_USB_OC5_L,        IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBA_OC5_L
+  { S5_DOMAIN,       IO_S5_USB_OC6_L,        IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBC_OC0_L
+  { S5_DOMAIN,       IO_S5_USB_OC7_L,        IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBC_OC1_L
+  { S5_DOMAIN,       IO_S5_USB_OC8_L,        IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBC_OC2_L
+  { S5_DOMAIN,       IO_S5_USB_OC9_L,        IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USBC_OC3_L
+  //{ S5_DOMAIN,       IO_S5_USB_DRIVE_VBUS0,  IO_FUNC01,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // USB_DRIVE_VBUS0
+  { S5_DOMAIN,       IO_S5_USB_DRIVE_VBUS0,  IO_FUNC00,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO VBUS For USB Port6-7
   { S5_DOMAIN,       IO_S5_USB_DRIVE_VBUS4,  IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USB_DRIVE_VBUS4
   { S5_DOMAIN,       IO_S5_USB_DRIVE_VBUS5,  IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USB_DRIVE_VBUS5
   { S0_DOMAIN,       IO_S0_GMAC1_RX_CTL,     IO_FUNC00,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // I2C_NVME_ALERT_L
@@ -108,9 +128,16 @@ PINMUX_CFG  PinMuxCfgTable[] = {
   { S5_DOMAIN,       IO_S5_SFI_GPIO5,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // BT_RADIO_DISABLE_L
   { S5_DOMAIN,       IO_S5_SFI_GPIO6,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // USB02F_DRIVE_VBUS
   { S5_DOMAIN,       IO_S5_SFI_GPIO7,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // 5GPHY2_PWR_EN
+  { S0_DOMAIN,       IO_S0_I2C2_SCL,         IO_FUNC02,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPOIO55
+  { S0_DOMAIN,       IO_S0_I2C2_SDA,         IO_FUNC02,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPOIO56
   { S0_DOMAIN,       IO_S0_I3C0_PUR_EN_L,    IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // I3C0_PUR_EN_L
   { S0_DOMAIN,       IO_S0_I3C1_PUR_EN_L,    IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // I3C1_PUR_EN_L
-  { S0_DOMAIN,       IO_S0_I2S3_MCLK,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // IR_EN
+  { S0_DOMAIN,       IO_S0_I2S2_RSCK,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO71
+  { S0_DOMAIN,       IO_S0_I2S2_DATA_IN1,    IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO76
+  { S0_DOMAIN,       IO_S0_I2S2_DATA_OUT1,   IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO78
+  { S0_DOMAIN,       IO_S0_I2S2_DATA_OUT2,   IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO79
+  { S0_DOMAIN,       IO_S0_I2S2_DATA_OUT3,   IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO80
+  { S0_DOMAIN,       IO_S0_I2S3_MCLK,        IO_FUNC01,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO81
   { S0_DOMAIN,       IO_S0_I2S3_RSCK,        IO_FUNC01,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // CAM2_PWDN
   { S0_DOMAIN,       IO_S0_I2S3_RWS,         IO_FUNC01,   PU_DISABLE, PD_ENABLE,  ST_DEFAULT, DRV_STREN_DEFAULT }, // CAM2_PWREN
   { S0_DOMAIN,       IO_S0_I2S3_TSCK,        IO_FUNC01,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // TPM_INT_L
@@ -124,14 +151,18 @@ PINMUX_CFG  PinMuxCfgTable[] = {
   { S0_DOMAIN,       IO_S0_I2S4_WS_LB,       IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // CAM1_RST_L
   { S0_DOMAIN,       IO_S0_I2S4_DATA_IN_LB,  IO_FUNC00,   PU_DISABLE, PD_ENABLE,  ST_DEFAULT, DRV_STREN_DEFAULT }, // CAM1_PWREN
   { S0_DOMAIN,       IO_S0_I2S4_DATA_OUT_LB, IO_FUNC00,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // CAM1_PWDN
+  { S0_DOMAIN,       IO_S0_UART0_TXD,        IO_FUNC02,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO95
+  { S0_DOMAIN,       IO_S0_UART0_RXD,        IO_FUNC02,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO96
+  { S0_DOMAIN,       IO_S0_UART1_TXD,        IO_FUNC02,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO99
+  { S0_DOMAIN,       IO_S0_UART1_RXD,        IO_FUNC02,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO100
   // NON_GMAC1
   { S0_DOMAIN,       IO_S0_GMAC1_REFCLK_25M, IO_FUNC00,   PU_ENABLE,  PD_DISABLE, ST_DEFAULT, DRV_STREN_DEFAULT }, // TPNL_INT_L
   { S0_DOMAIN,       IO_S0_GMAC1_TX_CTL,     IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // NFC_INT_L
-  { S0_DOMAIN,       IO_S0_GMAC1_TXD0,       IO_FUNC02,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // SPI2_MISO
-  { S0_DOMAIN,       IO_S0_GMAC1_TXD1,       IO_FUNC02,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // SPI2_CS0_L
-  { S0_DOMAIN,       IO_S0_GMAC1_TXD2,       IO_FUNC02,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // SPI2_CS1_L
-  { S0_DOMAIN,       IO_S0_GMAC1_TXD3,       IO_FUNC02,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // SPI2_MOSI
-  { S0_DOMAIN,       IO_S0_GMAC1_TX_CLK,     IO_FUNC02,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // SPI2_CLK
+  { S0_DOMAIN,       IO_S0_GMAC1_TXD0,       IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO138
+  { S0_DOMAIN,       IO_S0_GMAC1_TXD1,       IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO139
+  { S0_DOMAIN,       IO_S0_GMAC1_TXD2,       IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO140
+  { S0_DOMAIN,       IO_S0_GMAC1_TXD3,       IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO141
+  { S0_DOMAIN,       IO_S0_GMAC1_TX_CLK,     IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // GPIO142
   { S0_DOMAIN,       IO_S0_GMAC1_RXD0,       IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // PA0_PDB
   { S0_DOMAIN,       IO_S0_GMAC1_RXD1,       IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // PA1_PDB
   { S0_DOMAIN,       IO_S0_GMAC1_RXD2,       IO_FUNC00,   PU_DEFAULT, PD_DEFAULT, ST_DEFAULT, DRV_STREN_DEFAULT }, // PA2_PDB
@@ -220,7 +251,7 @@ InstallRtcProtocol (
             //
             Status = gBS->InstallProtocolInterface (
                             &Handle[Index],
-                            &gPcf8563RealTimeClockLibI2cMasterProtocolGuid,
+                            &gHym8563RealTimeClockLibI2cMasterProtocolGuid,
                             EFI_NATIVE_INTERFACE,
                             NULL
                             );
@@ -277,9 +308,23 @@ WakeupSourceInit (
 {
   EFI_STATUS  Status = EFI_SUCCESS;
 
-  // wakeup enable/disable sample
-  // WakeupCfg(S5_GPIO_U0,FALSE);//disable GPIO wakeup
+  DEBUG ((DEBUG_INFO, "%a\n",__func__));
 
+  /*usb3 typec ports*/
+  WakeupCfg(USB_C_SSP_0_HOST_IRQ,FALSE);
+  WakeupCfg(USB_C_SSP_1_HOST_IRQ,FALSE);
+  WakeupCfg(USB_C_SSP_2_HOST_IRQ,FALSE);
+  WakeupCfg(USB_C_SSP_3_HOST_IRQ,FALSE);
+
+  /*usb3 typea ports*/
+  WakeupCfg(USB_SSP_0_HOST_IRQ,FALSE);
+  WakeupCfg(USB_SSP_1_HOST_IRQ,FALSE);
+
+  /*usb2 ports*/
+  WakeupCfg(USB2_0_HOST_IRQ,FALSE);
+  WakeupCfg(USB2_1_HOST_IRQ,FALSE);
+  WakeupCfg(USB2_2_HOST_IRQ,FALSE);
+  WakeupCfg(USB2_3_HOST_IRQ,FALSE);
   return Status;
 }
 
@@ -290,7 +335,7 @@ OnboardDevicePowerOff (
   )
 {
   EFI_STATUS      Status = EFI_SUCCESS;
-  EC_W_GPIO_INFO  GpioInfo;
+  EC_PARAMS_GPIO  GpioInfo;
 
   DEBUG ((DEBUG_INFO, "[%a] EntryPoint\n", __FUNCTION__));
 
@@ -312,70 +357,70 @@ OnboardDevicePowerOff (
   if (ConfigData->PlatConfig->TouchPanelPower == 0) {
     // EC GPIO203
     DEBUG ((DEBUG_INFO, "EC GPIO203 Output Low TouchPanelPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 203;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 203;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO203
     DEBUG ((DEBUG_INFO, "EC GPIO203 Output High TouchPanelPower Power On\n"));
-    GpioInfo.GPIO_NUM = 203;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 203;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->TpmPower == 0) {
     // EC GPIO74
     DEBUG ((DEBUG_INFO, "EC GPIO74 Output Low TpmPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 74;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 74;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO74
     DEBUG ((DEBUG_INFO, "EC GPIO74 Output High TpmPower Power On\n"));
-    GpioInfo.GPIO_NUM = 74;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 74;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->WwanPower == 0) {
     // EC GPIO215
     DEBUG ((DEBUG_INFO, "EC GPIO215 Output Low WwanPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 215;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 215;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO215
     DEBUG ((DEBUG_INFO, "EC GPIO215 Output High WwanPower Power On\n"));
-    GpioInfo.GPIO_NUM = 215;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 215;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->PcieX2SlotPower == 0) {
     // EC GPIO214
     DEBUG ((DEBUG_INFO, "EC GPIO214 Output Low PcieX2SlotPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 214;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 214;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO214
     DEBUG ((DEBUG_INFO, "EC GPIO214 Output High PcieX2SlotPower Power On\n"));
-    GpioInfo.GPIO_NUM = 214;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 214;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
   if (ConfigData->PlatConfig->FingerPrintPower == 0) {
     // EC GPIO107
     DEBUG ((DEBUG_INFO, "EC GPIO107 Output Low FingerPrintPower Power Off\n"));
-    GpioInfo.GPIO_NUM = 107;
-    GpioInfo.GPIO_VAL = 0;
+    GpioInfo.GpioNum = 107;
+    GpioInfo.GpioVal = 0;
     SetGpio (&GpioInfo);
   } else {
     // EC GPIO107
     DEBUG ((DEBUG_INFO, "EC GPIO107 Output High FingerPrintPower Power On\n"));
-    GpioInfo.GPIO_NUM = 107;
-    GpioInfo.GPIO_VAL = 1;
+    GpioInfo.GpioNum = 107;
+    GpioInfo.GpioVal = 1;
     SetGpio (&GpioInfo);
   }
 
@@ -465,9 +510,9 @@ SetStateAfterG3 (
   )
 {
   EFI_STATUS                         Status;
-  EC_RESPONSE_EC_AUTO_POWER_ON_INFO  AutoPowerOnInfo;
+  EC_PARAMS_EC_AUTO_POWER_ON  AutoPowerOnInfo;
 
-  AutoPowerOnInfo.EC_AUTO_POWER_ON_FLG = ConfigData->PlatConfig->StateAfterG3;
+  AutoPowerOnInfo.EcAutoPowerOnFlg = ConfigData->PlatConfig->StateAfterG3;
   Status                               = SetECAutoPowerOn (&AutoPowerOnInfo);
   if (EFI_ERROR (Status)) {
     DebugPrint (DEBUG_ERROR, "SetECAutoPowerOn Status:%r\n", Status);
@@ -501,7 +546,7 @@ FarmFunctionControl (
   UINTN                     VarSize;
   NETWORK_STACK             NetworkStack;
   PLATFORM_SETUP_DATA       PlatformSetupVar;
-  EC_RESPONSE_FRAM_ID_INFO  FarmIdInfo;
+  EC_RESPONSE_FARM_ID       FarmIdInfo;
   UINT8                     FarmEnableFlag;
 
   Status = GetFarmId (&FarmIdInfo);
@@ -510,7 +555,7 @@ FarmFunctionControl (
     return Status;
   }
 
-  if (FarmIdInfo.FRAM_ID == 0) {
+  if (FarmIdInfo.Id == 0) {
     DebugPrint (DEBUG_INFO, "Farm Function Enable.\n");
     VarSize = sizeof (NETWORK_STACK);
     Status  = gRT->GetVariable (
@@ -672,6 +717,42 @@ FarmFunctionControl (
   return Status;
 }
 
+VOID
+EFIAPI
+InitEcDefaultSetting (
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
+  )
+{
+  EFI_STATUS                  Status = EFI_SUCCESS;
+  EC_PLATFORM_PROTOCOL        *Ec;
+  EC_PARAM                    Params;
+  ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData;
+
+  ConfigData = (ENV_HOOK_PARAMS_DATA_BLOCK *)Context;
+
+  Status = gBS->LocateProtocol (&gCixEcPlatformProtocolGuid, NULL, (VOID **)&Ec);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "EC platform not ready.\n"));
+    return;
+  }
+
+  switch (ConfigData->PlatConfig->EcFanMode) {
+    case 0: // auto mode
+      Params.ThermalAutoFanCtl.FanAutoFlg = EC_FAN_MODE_AUTO;
+      break;
+    case 1: // performance mode
+      Params.ThermalAutoFanCtl.FanAutoFlg = EC_FAN_MODE_PERF;
+      break;
+    default:
+      DEBUG ((DEBUG_INFO, "Undefined EC fan mode! mode=%d \n", ConfigData->PlatConfig->EcFanMode));
+      return;
+  }
+
+  Status = Ec->Transfer (Ec, EC_COMMAND_SET_THERMAL_AUTO_FAN_CTL, &Params, NULL);
+  DEBUG ((DEBUG_INFO, "EC Set Fan control mode Status:%r\n", Status));
+}
+
 STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 InitGpio                },
   { NULL,                        NULL,                 InitPinmux              },
@@ -682,6 +763,7 @@ STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 RtcWakupEnable          },
   { NULL,                        NULL,                 FarmFunctionControl     },
   { &gEfiI2cMasterProtocolGuid,  InstallRtcProtocol,   NULL                    },
+  { &gCixEcPlatformProtocolGuid, InitEcDefaultSetting, NULL                            },
   // add platform initialization routines on ENV phase BEFORE this line, and they were invoked from top to down.
   { NULL,                        NULL,                 NULL                    }
 };

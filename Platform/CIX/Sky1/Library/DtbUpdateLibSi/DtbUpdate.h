@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  **/
 
 #ifndef _DTS_UPDATE_DXE_H_
@@ -152,37 +152,5 @@
 #define DT_NODE_IMGSENSOR03  "/soc@0/i2c@04050000/imgsensor03@3a" // i2c4: i2c@04050000
 #define DT_NODE_CIX_VI_HW    "/cix_vi_hw"
 
-
-VOID
-DisableDtbNode (
-  IN  VOID         *fdt,
-  IN  CONST CHAR8  *NodePath
-  );
-
-VOID
-EnableDtbNode (
-  IN  VOID         *fdt,
-  IN  CONST CHAR8  *NodePath
-  );
-
-EFI_STATUS
-UpdateGpuDtbStatus (
-  IN  VOID  *fdt
-  );
-
-EFI_STATUS
-UpdateDpuDtbStatus (
-  IN  VOID  *fdt
-  );
-
-EFI_STATUS
-UpdateNpuDtbStatus (
-  IN  VOID  *fdt
-  );
-
-EFI_STATUS
-UpdateVpuDtbStatus (
-  IN  VOID  *fdt
-  );
 
 #endif

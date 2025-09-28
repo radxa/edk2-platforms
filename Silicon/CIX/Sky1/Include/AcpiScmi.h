@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *
  *  SPDX-License-Identifier: BSD-2-Clause-Patent
  *
@@ -130,5 +130,11 @@
 #define SCMI_VOLTD_CONFIG_GET         0x006
 #define SCMI_VOLTD_LEVEL_SET          0x007
 #define SCMI_VOLTD_LEVEL_GET          0x008
+
+//CIX SCMI Message Attribute
+#define CIX_SCMI_MESSAGE_ATTRIBUTES         0xc7f
+
+//CIX SCMI Message Header
+#define SCMI_MESSAGE_HEADER_FAN_MODE_SET    0x802
 
 #endif

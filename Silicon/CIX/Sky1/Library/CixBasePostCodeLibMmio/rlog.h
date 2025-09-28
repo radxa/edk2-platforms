@@ -1,5 +1,6 @@
 #ifndef __RAM_LOG_PRINTF__
 #define __RAM_LOG_PRINTF__
+//  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 typedef void (*LOCKFN)(void);
 typedef unsigned long long  (*GETTICK)(void);
 enum LOG_LEVEL

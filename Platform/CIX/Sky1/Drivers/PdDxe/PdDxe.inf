@@ -1,5 +1,6 @@
 #/** @file
 #
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 #  Component description file for PDController module
 #
 #  Copyright (c) 2022, CIX, Ltd. All rights reserved.
@@ -36,6 +37,7 @@
   PdLib
   TimerLib
   GpioLib
+  PostCodeLib
 
 [Guids]
 

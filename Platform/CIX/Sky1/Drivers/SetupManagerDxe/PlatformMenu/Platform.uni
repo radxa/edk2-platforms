@@ -1,5 +1,5 @@
 /**
-Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -123,11 +123,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_S5_AFTER_G3_STRING                           #language en-US "Power Off"
 #string STR_LASTSTATE_AFTER_G3_STRING                    #language en-US "Last State"
 
-#string STR_PRIMARY_DISPLAY_PROMPT                       #language en-US "Display Output Device"
-#string STR_PRIMARY_DISPLAY_PROMPT_HELP                  #language en-US "Select Display output between Internal DPU and External PCIE GPU Card"
-
-#string STR_INTERNAL_DPU                                 #language en-US "Internal DPU"
-
 #string STR_DTB_MEMU_ENTRY_PROMPT                        #language en-US "DTB Menu Entry"
 #string STR_DTB_MEMU_ENTRY_PROMPT_HELP                   #language en-US "Select Grub DTB Menu Entry for Linux DT OS\nIt is only valid when CIX Linux DT OS is installed"
 #string STR_TABLE_0                                      #language en-US "Table 0"
@@ -138,10 +133,10 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_ENABLE_SPCR_TABLE                            #language en-US "Support SPCR"
 #string STR_ENABLE_SPCR_TABLE_HELP                       #language en-US "Enable or Disable SPCR Table."
 
-#string STR_GOP_PROMPT                                   #language en-US "GOP Display Select"
-#string STR_GOP_PROMPT_HELP                              #language en-US "Select port for GOP Display"
-#string STR_DP0                                          #language en-US "DP0"
-#string STR_DP1                                          #language en-US "DP1"
-#string STR_DP2                                          #language en-US "DP2"
-#string STR_DP3                                          #language en-US "DP3"
-#string STR_DP4                                          #language en-US "DP4"
+#string STR_EC_FAN_MODE_PROMPT                           #language en-US "EC Fan Mode"
+#string STR_EC_FAN_MODE_PROMPT_HELP                      #language en-US "Select the default EC fan mode."
+#string STR_AUTO_MODE                                    #language en-US "Auto Mode"
+#string STR_PERF_MODE                                    #language en-US "Performance Mode"
+
+#string STR_DEBUG_MODE_PROMPT                            #language en-US "Debug Mode"
+#string STR_DEBUG_MODE_HELP                              #language en-US "Enable Debug Mode"

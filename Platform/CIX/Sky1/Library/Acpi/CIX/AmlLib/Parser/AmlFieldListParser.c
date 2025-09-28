@@ -1,5 +1,6 @@
 /** @file
   AML Field List Parser.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Copyright (c) 2019 - 2020, Arm Limited. All rights reserved.<BR>
 

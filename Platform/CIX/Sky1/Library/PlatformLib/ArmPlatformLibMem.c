@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *  Copyright (c) 2019, Pete Batard <pete@akeo.ie>
  *  Copyright (c) 2017-2018, Andrey Warkentin <andrey.warkentin@gmail.com>
  *  Copyright (c) 2014, Linaro Limited. All rights reserved.
@@ -25,7 +25,7 @@ extern UINT64  mSystemMemoryEnd;
 
 BOOLEAN
 ReportDramHighSpace (
-  IN OUT UINT32  *DramHighSize
+  IN OUT UINT64  *DramHighSize
   )
 {
   MEM_INIT_OUTPUT_BUFFER  *MemInfoAddr = NULL;
@@ -36,7 +36,7 @@ ReportDramHighSpace (
 
   if (MemInfoAddr->Signature == MEM_OUTPUT_BUFFER_SIG) {
     if (MemInfoAddr->AvailableSize > 0x7800) {
-      *DramHighSize = (MemInfoAddr->AvailableSize-0x7800)<<20;
+      *DramHighSize = (UINT64)(((UINT64)(MemInfoAddr->AvailableSize-0x7800))<<20);
       return TRUE;
     } else {
       return FALSE;
@@ -64,7 +64,7 @@ ArmPlatformGetVirtualMemoryMap (
   )
 {
   UINTN    Index        = 0;
-  UINT32   DramHighSize = 0;
+  UINT64   DramHighSize = 0;
   BOOLEAN  DramHigh     = FALSE;
 
   ARM_MEMORY_REGION_DESCRIPTOR  *VirtualMemoryTable;
@@ -80,6 +80,14 @@ ArmPlatformGetVirtualMemoryMap (
                         );
 
   DramHigh = ReportDramHighSpace (&DramHighSize);
+
+  // Reserved secure memory
+  BuildResourceDescriptorHob (
+    EFI_RESOURCE_SYSTEM_MEMORY,
+    ResourceAttributes,
+    PcdGet32 (PcdReservedSecureMemoryBase),
+    PcdGet32 (PcdReservedSecureMemorySize)
+    );
 
   // Reserved share memory
   BuildResourceDescriptorHob (
@@ -149,7 +157,12 @@ ArmPlatformGetVirtualMemoryMap (
     );
   */
   // reserved 0x80000000 ~ 0x824fffff secure memory
-  // reserved 0x82500000 ~ 0x843fffff shared no secure memory
+  VirtualMemoryTable[Index].PhysicalBase = FixedPcdGet32 (PcdReservedSecureMemoryBase);
+  VirtualMemoryTable[Index].VirtualBase  = FixedPcdGet32 (PcdReservedSecureMemoryBase);
+  VirtualMemoryTable[Index].Length       = FixedPcdGet32 (PcdReservedSecureMemorySize);
+  VirtualMemoryTable[Index++].Attributes = ARM_MEMORY_REGION_ATTRIBUTE_UNCACHED_UNBUFFERED;
+
+  // reserved 0x82500000 ~ 0x843fffff shared non secure memory
   VirtualMemoryTable[Index].PhysicalBase = FixedPcdGet32 (PcdReservedShareMemoryBase);
   VirtualMemoryTable[Index].VirtualBase  = FixedPcdGet32 (PcdReservedShareMemoryBase);
   VirtualMemoryTable[Index].Length       = FixedPcdGet32 (PcdReservedShareMemorySize);

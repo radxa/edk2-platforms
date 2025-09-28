@@ -1,5 +1,6 @@
 /** @file
   Support ResetSystem Runtime call using PSCI calls
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Note: A similar library is implemented in
   ArmVirtPkg/Library/ArmVirtualizationPsciResetSystemLib
@@ -20,6 +21,7 @@
 #include <Library/EfiResetSystemLib.h>
 #include <Library/ArmSmcLib.h>
 #include <Library/EcLib.h>
+#include <Library/GpioLib.h>
 
 #include <IndustryStandard/ArmStdSmc.h>
 
@@ -61,6 +63,11 @@ LibResetSystem (
       ArmSmcArgs.Arg0 = ARM_SMC_ID_PSCI_SYSTEM_RESET;
       break;
     case EfiResetShutdown:
+      GpioConfig (FixedPcdGet8 (PcdPcieRootPort0PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
+      GpioConfig (FixedPcdGet8 (PcdPcieRootPort1PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
+      GpioConfig (FixedPcdGet8 (PcdPcieRootPort2PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
+      GpioConfig (FixedPcdGet8 (PcdPcieRootPort3PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
+      GpioConfig (FixedPcdGet8 (PcdPcieRootPort4PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
       // Send a PSCI 0.2 SYSTEM_OFF command
       ArmSmcArgs.Arg0 = ARM_SMC_ID_PSCI_SYSTEM_OFF;
       break;

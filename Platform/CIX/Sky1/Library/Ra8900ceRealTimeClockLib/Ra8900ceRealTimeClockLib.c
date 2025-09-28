@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   Copyright (c) 2017, Linaro, Ltd. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -9,13 +9,72 @@
 
 #include <Library/Ra8900ceRealTimeClockLib.h>
 #include <Library/I2cLib.h>
+#include <Library/ArmScmiLib.h>
+#include <Library/TimerLib.h>
 #include <Library/DxeServicesTableLib.h>
+
+#define MAX_RETRY_COUNT  10
 
 STATIC I2C_HOST_DESCRIPTOR  *mHost;
 STATIC EFI_HANDLE           mI2cMasterHandle;
 STATIC EFI_EVENT            mRtcVirtualAddrChangeEvent;
 STATIC EFI_EVENT            mRtcExitBootServicesEvent;
 STATIC EFI_EVENT            mRtcMemoryInitEvent;
+
+STATIC
+EFI_STATUS
+I2cMasterXferWorker (
+  IN I2C_HOST_DESCRIPTOR     *Host,
+  IN UINT32                  SlaveAddress,
+  IN EFI_I2C_REQUEST_PACKET  *RequestPacket
+  )
+{
+  EFI_STATUS  Status;
+  BOOLEAN     ClockOrgState, ClockEnabled;
+  CHAR8       ClockName[SCMI_MAX_STR_LEN];
+  UINT8       Retry;
+
+  if (PcdGetBool (PcdRa8900ceI2cClockControlEn) && EfiAtRuntime ()) {
+    Status = ClockGetClockAttributes (CLK_TREE_FCH_I2C0_APB + Host->Bus, &ClockOrgState, ClockName);
+    if (Status != EFI_SUCCESS) {
+      return EFI_DEVICE_ERROR;
+    }
+
+    if (ClockOrgState == FALSE) {
+      Retry = 0;
+      do {
+        Status = ClockEnable (CLK_TREE_FCH_I2C0_APB + Host->Bus, TRUE);
+        if (Status != EFI_SUCCESS) {
+          return EFI_DEVICE_ERROR;
+        } else {
+          Status = ClockGetClockAttributes (CLK_TREE_FCH_I2C0_APB + Host->Bus, &ClockEnabled, ClockName);
+        }
+
+        Retry++;
+      } while ((ClockEnabled != TRUE) && (Retry <= MAX_RETRY_COUNT));
+    }
+  }
+
+  Status = I2cMasterXfer (Host, SlaveAddress, RequestPacket);
+
+  if (PcdGetBool (PcdRa8900ceI2cClockControlEn) && EfiAtRuntime ()) {
+    if (ClockOrgState == FALSE) {
+      Retry = 0;
+      do {
+        Status = ClockEnable (CLK_TREE_FCH_I2C0_APB + Host->Bus, FALSE);
+        if (Status != EFI_SUCCESS) {
+          return EFI_DEVICE_ERROR;
+        } else {
+          Status = ClockGetClockAttributes (CLK_TREE_FCH_I2C0_APB + Host->Bus, &ClockEnabled, ClockName);
+        }
+
+        Retry++;
+      } while ((ClockEnabled == TRUE) && (Retry <= MAX_RETRY_COUNT));
+    }
+  }
+
+  return Status;
+}
 
 /**
   Returns the current time and date information, and the time-keeping
@@ -41,6 +100,7 @@ LibGetTime (
 {
   RTC_GET_I2C_REQUEST  Op;
   RTC_DATETIME         DateTime;
+  INT16                TimeZone;
   EFI_STATUS           Status;
   UINT8                Reg;
 
@@ -60,7 +120,7 @@ LibGetTime (
   Op.GetDateTimeOp.LengthInBytes = sizeof (RTC_DATETIME);
   Op.GetDateTimeOp.Buffer        = (VOID *)&DateTime;
 
-  Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&Op);
+  Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&Op);
   if (EFI_ERROR (Status)) {
     return EFI_DEVICE_ERROR;
   }
@@ -72,6 +132,25 @@ LibGetTime (
   Time->Day        = BcdToDecimal8 (DateTime.Days & RA8900CE_DAYS_MASK);
   Time->Month      = BcdToDecimal8 (DateTime.Months & RA8900CE_MONTHS_MASK);
   Time->Year       = BcdToDecimal8 (DateTime.Years) + EPOCH_BASE;
+
+  Reg = RA8900CE_TMR_CNT_REG_OFFSET;
+
+  Op.OperationCount = 2;
+
+  Op.SetAddressOp.Flags         = 0;
+  Op.SetAddressOp.LengthInBytes = 1;
+  Op.SetAddressOp.Buffer        = &Reg;
+
+  Op.GetDateTimeOp.Flags         = I2C_FLAG_READ;
+  Op.GetDateTimeOp.LengthInBytes = sizeof (INT16);
+  Op.GetDateTimeOp.Buffer        = (VOID *)&TimeZone;
+
+  Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&Op);
+  if (EFI_ERROR (Status)) {
+    return EFI_DEVICE_ERROR;
+  }
+
+  Time->TimeZone = TimeZone;
 
   if (Capabilities != NULL) {
     Capabilities->Resolution = 1;
@@ -100,28 +179,46 @@ LibSetTime (
   )
 {
   RTC_SET_I2C_REQUEST      Op;
-  RTC_SET_DATETIME_PACKET  Packet;
+  RTC_SET_DATETIME_PACKET  DataTimePacket;
+  RTC_SET_TIMEZONE_PACKET  TimeZonePacket;
   EFI_STATUS               Status;
 
-  Packet.DateTime.Seconds  = DecimalToBcd8 (Time->Second);
-  Packet.DateTime.Minutes  = DecimalToBcd8 (Time->Minute);
-  Packet.DateTime.Hours    = DecimalToBcd8 (Time->Hour);
-  Packet.DateTime.Days     = DecimalToBcd8 (Time->Day);
-  Packet.DateTime.Weekdays = BIT0;
-  Packet.DateTime.Months   = DecimalToBcd8 (Time->Month);
-  Packet.DateTime.Years    = DecimalToBcd8 (Time->Year % 100);
+  DataTimePacket.DateTime.Seconds  = DecimalToBcd8 (Time->Second);
+  DataTimePacket.DateTime.Minutes  = DecimalToBcd8 (Time->Minute);
+  DataTimePacket.DateTime.Hours    = DecimalToBcd8 (Time->Hour);
+  DataTimePacket.DateTime.Days     = DecimalToBcd8 (Time->Day);
+  DataTimePacket.DateTime.Weekdays = BIT0;
+  DataTimePacket.DateTime.Months   = DecimalToBcd8 (Time->Month);
+  DataTimePacket.DateTime.Years    = DecimalToBcd8 (Time->Year % 100);
   if (Time->Year >= EPOCH_BASE + 100) {
     return EFI_DEVICE_ERROR;
   }
 
-  Packet.Reg = RA8900CE_DATA_REG_OFFSET;
+  DataTimePacket.Reg = RA8900CE_DATA_REG_OFFSET;
 
   Op.OperationCount             = 1;
   Op.Operation[0].Flags         = 0;
   Op.Operation[0].LengthInBytes = sizeof (RTC_SET_DATETIME_PACKET);
-  Op.Operation[0].Buffer        = (VOID *)&Packet;
+  Op.Operation[0].Buffer        = (VOID *)&DataTimePacket;
 
-  Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&Op);
+  Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&Op);
+  if (EFI_ERROR (Status)) {
+    return EFI_DEVICE_ERROR;
+  }
+
+  if (!IsValidTimeZone (Time->TimeZone)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  TimeZonePacket.Reg      = RA8900CE_TMR_CNT_REG_OFFSET;
+  TimeZonePacket.TimeZone = Time->TimeZone;
+
+  Op.OperationCount             = 1;
+  Op.Operation[0].Flags         = 0;
+  Op.Operation[0].LengthInBytes = sizeof (RTC_SET_TIMEZONE_PACKET);
+  Op.Operation[0].Buffer        = (VOID *)&TimeZonePacket;
+
+  Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&Op);
   if (EFI_ERROR (Status)) {
     return EFI_DEVICE_ERROR;
   }
@@ -175,7 +272,7 @@ LibGetWakeupTime (
   GetOp.GetDateTimeOp.LengthInBytes = 2;
   GetOp.GetDateTimeOp.Buffer        = (VOID *)&Buffer[1];
 
-  Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&GetOp);
+  Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&GetOp);
   if (!EFI_ERROR (Status)) {
     DEBUG ((DEBUG_INFO, "%a: flag register 0x%x, control register 0x%x\n", __FUNCTION__, Buffer[1], Buffer[2]));
     if (Buffer[1] & RA8900CE_FLAG_REG_AF) {
@@ -198,7 +295,7 @@ LibGetWakeupTime (
       SetOp.Operation[0].LengthInBytes = 2;
       SetOp.Operation[0].Buffer        = (VOID *)&Buffer[0];
 
-      Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&SetOp);
+      Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&SetOp);
     }
   } else {
     DEBUG ((DEBUG_ERROR, "%a: fail to get wake enable bit, status %r\n", __FUNCTION__, Status));
@@ -217,7 +314,7 @@ LibGetWakeupTime (
   GetOp.GetDateTimeOp.LengthInBytes = 3;
   GetOp.GetDateTimeOp.Buffer        = (VOID *)&Buffer[1];
 
-  Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&GetOp);
+  Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&GetOp);
   if (!EFI_ERROR (Status)) {
     // Ra8900 just support week hour day and minute, so we init time
     // zero Time
@@ -250,10 +347,10 @@ LibGetWakeupTime (
     GetOp.GetDateTimeOp.LengthInBytes = 2;
     GetOp.GetDateTimeOp.Buffer        = (VOID *)&Buffer[1];
 
-    Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&GetOp);
+    Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&GetOp);
     if (!EFI_ERROR (Status)) {
       Time->Month = BcdToDecimal8 (Buffer[1] & RA8900CE_MONTHS_MASK);
-      Time->Year  = BcdToDecimal8 (Buffer[2] & RA8900CE_YEARS_MASK);
+      Time->Year  = BcdToDecimal8 (Buffer[2] & RA8900CE_YEARS_MASK) + EPOCH_BASE;
     } else {
       DEBUG ((DEBUG_INFO, "Get RTC month and year error!\n"));
       return EFI_DEVICE_ERROR;
@@ -309,7 +406,7 @@ LibSetWakeupTime (
     SetOp.Operation[0].LengthInBytes = 4;
     SetOp.Operation[0].Buffer        = (VOID *)&Buffer[0];
 
-    Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&SetOp);
+    Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&SetOp);
     if (EFI_ERROR (Status)) {
       return EFI_DEVICE_ERROR;
     }
@@ -338,10 +435,10 @@ LibSetWakeupTime (
       GetOp.GetDateTimeOp.LengthInBytes = 2;
       GetOp.GetDateTimeOp.Buffer        = (VOID *)&Buffer[1];
 
-      Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&GetOp);
+      Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&GetOp);
       if (!EFI_ERROR (Status)) {
         Time->Month = BcdToDecimal8 (Buffer[1] & RA8900CE_MONTHS_MASK);
-        Time->Year  = BcdToDecimal8 (Buffer[2] & RA8900CE_YEARS_MASK);
+        Time->Year  = BcdToDecimal8 (Buffer[2] & RA8900CE_YEARS_MASK) + EPOCH_BASE;
       } else {
         DEBUG ((DEBUG_INFO, "Get RTC month and year error!\n"));
         return EFI_DEVICE_ERROR;
@@ -361,7 +458,7 @@ LibSetWakeupTime (
     GetOp.GetDateTimeOp.LengthInBytes = 1;
     GetOp.GetDateTimeOp.Buffer        = (VOID *)&Buffer[1];
 
-    Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&GetOp);
+    Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&GetOp);
     if (!EFI_ERROR (Status)) {
       Buffer[1] |= RA8900CE_EXT_REG_WADA;
 
@@ -370,7 +467,7 @@ LibSetWakeupTime (
       SetOp.Operation[0].LengthInBytes = 2;
       SetOp.Operation[0].Buffer        = (VOID *)&Buffer[0];
 
-      Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&SetOp);
+      Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&SetOp);
     }
   }
 
@@ -387,7 +484,7 @@ LibSetWakeupTime (
   GetOp.GetDateTimeOp.LengthInBytes = 1;
   GetOp.GetDateTimeOp.Buffer        = (VOID *)&Buffer[1];
 
-  Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&GetOp);
+  Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&GetOp);
 
   if (!EFI_ERROR (Status)) {
     if (Enabled) {
@@ -401,7 +498,7 @@ LibSetWakeupTime (
     SetOp.Operation[0].LengthInBytes = 2;
     SetOp.Operation[0].Buffer        = (VOID *)&Buffer[0];
 
-    Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&SetOp);
+    Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&SetOp);
   }
 
   return Status;
@@ -414,9 +511,11 @@ I2cMemoryInitEventNotify (
   IN VOID       *Context
   )
 {
-  EFI_STATUS  Status;
-  UINTN       RuntimeMmioRegionBase;
-  UINTN       RuntimeMmioRegionSize;
+  EFI_STATUS                       Status;
+  UINTN                            RuntimeMmioRegionBase;
+  UINTN                            RuntimeMmioRegionSize;
+  UINTN                            NumberOfDescriptors, Index;
+  EFI_GCD_MEMORY_SPACE_DESCRIPTOR  *MemSpaceMap;
 
   if (Context == NULL) {
     return;
@@ -426,6 +525,18 @@ I2cMemoryInitEventNotify (
   RuntimeMmioRegionBase = ((I2C_HOST_DESCRIPTOR *)Context)->MemBase;
   RuntimeMmioRegionSize = SIZE_4KB;
 
+  Status = gDS->GetMemorySpaceMap (&NumberOfDescriptors, &MemSpaceMap);
+
+  for (Index = 0; Index < NumberOfDescriptors; Index++) {
+    if ((RuntimeMmioRegionBase >= MemSpaceMap[Index].BaseAddress) &&
+        ((RuntimeMmioRegionBase + RuntimeMmioRegionSize) <= (MemSpaceMap[Index].BaseAddress + MemSpaceMap[Index].Length)) &&
+        (MemSpaceMap[Index].GcdMemoryType == EfiGcdMemoryTypeMemoryMappedIo))
+    {
+      DEBUG ((DEBUG_INFO, "%a: memory space base 0x%x, length 0x%x already added\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize));
+      return;
+    }
+  }
+
   Status = gDS->AddMemorySpace (
                   EfiGcdMemoryTypeMemoryMappedIo,
                   RuntimeMmioRegionBase,
@@ -433,27 +544,24 @@ I2cMemoryInitEventNotify (
                   EFI_MEMORY_UC | EFI_MEMORY_RUNTIME
                   );
   if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_ERROR, "%a: fail to add memory space base 0x%x, size 0x%x, status %r\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize, Status);
-    ASSERT_EFI_ERROR (Status);
+    DebugPrint (DEBUG_ERROR, "%a: fail to add memory space base 0x%x, length 0x%x, status %r\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize, Status);
+  } else {
+    DEBUG ((DEBUG_INFO, "%a: add memory space base 0x%x, length 0x%x\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize));
+    Status = gDS->SetMemorySpaceAttributes (
+                    RuntimeMmioRegionBase,
+                    RuntimeMmioRegionSize,
+                    EFI_MEMORY_UC | EFI_MEMORY_RUNTIME
+                    );
+    if (EFI_ERROR (Status)) {
+      DebugPrint (DEBUG_ERROR, "%a: fail to set memory attributes base 0x%x, length 0x%x, status %r\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize, Status);
+      gDS->RemoveMemorySpace (
+             RuntimeMmioRegionBase,
+             RuntimeMmioRegionSize
+             );
+    } else {
+      DEBUG ((DEBUG_INFO, "%a: set memory space attribute 0x%llx\n", __FUNCTION__, EFI_MEMORY_UC | EFI_MEMORY_RUNTIME));
+    }
   }
-
-  DEBUG ((DEBUG_INFO, "%a: add memory space base 0x%x, length 0x%x\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize));
-
-  Status = gDS->SetMemorySpaceAttributes (
-                  RuntimeMmioRegionBase,
-                  RuntimeMmioRegionSize,
-                  EFI_MEMORY_UC | EFI_MEMORY_RUNTIME
-                  );
-  if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_ERROR, "%a: fail to set memory attributes base 0x%x, size 0x%x, status %r\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize, Status);
-    gDS->RemoveMemorySpace (
-           RuntimeMmioRegionBase,
-           RuntimeMmioRegionSize
-           );
-    ASSERT_EFI_ERROR (Status);
-  }
-
-  DEBUG ((DEBUG_INFO, "%a: set memory space attribute 0x%llx\n", __FUNCTION__, EFI_MEMORY_UC | EFI_MEMORY_RUNTIME));
 }
 
 STATIC
@@ -508,7 +616,12 @@ RtcDeviceInitialize (
     }
 
     mHost          = AllocateRuntimeZeroPool (sizeof (I2C_HOST_DESCRIPTOR));
+    mHost->Bus     = ((I2C_DEVICE_PATH *)DevicePath)->Bus;
     mHost->MemBase = I2cGetMemBase (((I2C_DEVICE_PATH *)DevicePath)->Bus);
+    mHost->MutexId = ConfigData->Fch.I2c[mHost->Bus].MutexId;
+    if (mHost->MutexId != UNDEFINED_MUTEX_ID) {
+      mHost->DevInsId = RA8900CE_DEVICE_INSTANCE_ID;
+    }
   } else {
     DEBUG ((DEBUG_ERROR, "%a: device path is invalid %r\n", __FUNCTION__, Status));
     return Status;
@@ -549,7 +662,7 @@ RtcDeviceInitialize (
   GetOp.GetDateTimeOp.LengthInBytes = 3;
   GetOp.GetDateTimeOp.Buffer        = (VOID *)&InitSeq[1];
 
-  Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&GetOp);
+  Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&GetOp);
   if (!EFI_ERROR (Status)) {
     InitSeq[1] &= ~(RA8900CE_EXT_REG_TE | RA8900CE_EXT_REG_TEST);                           // TE, TEST set 0
     InitSeq[2] &= ~(RA8900CE_FLAG_REG_VDET | RA8900CE_FLAG_REG_AF | RA8900CE_FLAG_REG_VLF); // AF, VDET, VLF set 0
@@ -560,7 +673,7 @@ RtcDeviceInitialize (
     SetOp.Operation[0].LengthInBytes = 4;
     SetOp.Operation[0].Buffer        = (VOID *)&InitSeq[0];
 
-    Status = I2cMasterXfer (mHost, SLAVE_ADDRESS, (VOID *)&SetOp);
+    Status = I2cMasterXferWorker (mHost, RA8900CE_DEVICE_ADDRESS, (VOID *)&SetOp);
   }
 
   return Status;

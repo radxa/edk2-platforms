@@ -1,5 +1,6 @@
 /** @file  NorFlash.c
 
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   Copyright (c) 2022-2023, CIX, Ltd. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -124,22 +125,48 @@ GetFlashConfig (
 
 EFI_STATUS
 EFIAPI
-GetFipImageFlashAddr (
-  IN  FIP_ENTRY_INDEX  EntryIndex,
-  OUT UINT32           *FlashAddr
+FindFirmwareEntryInfo (
+  IN  UINT8*        pImageBuff,
+  IN  UINT32*       ImageLength,
+  IN  FIRMWARE_TYPE FwType,
+  OUT UINT32*       FwBase,
+  OUT UINT32*       FwLength
   )
 {
-  EFI_STATUS      Status;
-  FIRMWARE_ENTRY  *BL2Entry;
-  FIP_TOC_FORMAT  *BL2Fw;
+  FIRMWARE_HEADER* FwHeader = (FIRMWARE_HEADER*)pImageBuff;
+  FIRMWARE_ENTRY*  Entry;
+  UINT32           ExpectedImageLength = 0;
+  UINT32           InputEntyryCount = 0;
+  UINT32           EntryIndex = 0;
 
-  Status = FindFirmwareEntry (BOOT_LOADER_2, (FIRMWARE_ENTRY **)&BL2Entry);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a: BootLoader 2 not found\n", __FUNCTION__));
-    return EFI_NOT_FOUND;
+  if (FwHeader->Signature != FIRMWARE_HEADER_SIGNATURE) {
+    DEBUG ((DEBUG_ERROR, "[%a]: Firmware header signature not match\n", __FUNCTION__));
+    return EFI_INVALID_PARAMETER;
   }
 
-  BL2Fw = (FIP_TOC_FORMAT *)(UINTN)(BL2Entry->Base + FIRMWARE_LAYOUT_BASE_ADDRESS);
-  *FlashAddr = BL2Entry->Base + BL2Fw->Entries[EntryIndex].Offset;
-  return EFI_SUCCESS;
+  ExpectedImageLength = OFFSET_OF(FIRMWARE_HEADER, EntryNode) + sizeof(FIRMWARE_ENTRY) * FwHeader->EntryCount;
+
+  InputEntyryCount = (*ImageLength - OFFSET_OF(FIRMWARE_HEADER, EntryNode)) / sizeof(FIRMWARE_ENTRY);
+
+  if(InputEntyryCount > FwHeader->EntryCount) {
+    InputEntyryCount = FwHeader->EntryCount;
+  }
+
+  for (EntryIndex = 0; EntryIndex < InputEntyryCount; EntryIndex++) {
+    Entry = (FIRMWARE_ENTRY *)&FwHeader->EntryNode[EntryIndex];
+    if(Entry->Type == FwType) {
+      *FwBase = Entry->Base;
+      *FwLength = Entry->Length;
+      return EFI_SUCCESS;
+    }
+  }
+
+  if(*ImageLength < ExpectedImageLength) {
+    *ImageLength = ExpectedImageLength;
+    DEBUG ((DEBUG_ERROR, "[%a]: Firmware header is incompleted, iamge buffer too small\n", __FUNCTION__));
+    return EFI_BUFFER_TOO_SMALL;
+  }
+
+  DEBUG ((DEBUG_ERROR, "[%a]: Firmware type %d not found in firmware header\n", __FUNCTION__, FwType));
+  return EFI_NOT_FOUND;
 }

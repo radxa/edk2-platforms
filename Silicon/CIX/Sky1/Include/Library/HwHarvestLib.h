@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ * Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -52,8 +52,8 @@ typedef union {
     UINT32    Core10     : 1; // bit 10
     UINT32    Core11     : 1; // bit 11
     UINT32    BootCore   : 4; // bit 12-15
-    UINT32    NpuCore0   : 1; // bit 16
-    UINT32    NpuCore1_2 : 1; // bit 17
+    UINT32    NpuCore1_2 : 1; // bit 16
+    UINT32    NpuCore0   : 1; // bit 17
     UINT32    DpuCore0   : 1; // bit 18
     UINT32    DpuCore1   : 1; // bit 19
     UINT32    DpuCore2   : 1; // bit 20
@@ -70,5 +70,9 @@ typedef union {
 UINT32
 IsIpHarvested (
   IN HARVEST_TYPE  IpType
+  );
+
+BOOLEAN
+IsApWatchdogEnable (
   );
 #endif /* __HARVEST_H__ */

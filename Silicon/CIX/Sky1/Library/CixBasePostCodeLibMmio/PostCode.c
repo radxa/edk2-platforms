@@ -1,13 +1,13 @@
 /** @file
 
-  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
   Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
 #include <Base.h>
-#include <Library/PostCodeLib.h>
+#include <Library/CixPostCodeLib.h>
 #include <Library/PcdLib.h>
 #include <Library/IoLib.h>
 #include <Library/SerialPortLib.h>
@@ -15,6 +15,7 @@
 #include <Library/DebugLib.h>
 #include <Library/TimerLib.h>
 #include <Library/BaseLib.h>
+#include <Library/CixFwBootPerfLib.h>
 
 typedef struct {
   POST_CODE_KEY    Key;
@@ -72,8 +73,11 @@ POST_CODE_KEY_TO_VAL  PostCodeMapTable[] =
   { PdDxeEnd,                           0xE700, L"PdDxeEnd"                           },
   { DxeCoreDispatcherEnd,               0xE1FE, L"DxeCoreDispatcherEnd"               },
   { DxeMainEnd,                         0xE1FF, L"DxeMainEnd"                         },
-  //  { bds ,0xE200~},
-  { DxeReadyToBoot,                     0xEF01, L"DxeReadyToBoot"                     },
+  // boot manager       0xE541 ~0xE580  64
+  { BdsStart,                           0xE541, L"BdsStart"                           },
+  { BootLogo,                           0xE543, L"BootLogo"                           },
+  { BMAfterConsole,                     0xE550, L"BmAfterConsole"                     },
+  { DxeReadyToBoot,                     0xE580, L"DxeReadyToBoot"                     },
 
   { 0,                                  0,      NULL                                  }
 };
@@ -84,7 +88,7 @@ POST_CODE_KEY_TO_VAL  *CheckPointStatusCodes[] =
 };
 
 UINT32
-FindByteCode (
+FindAndMapByteCode (
   POST_CODE_KEY_TO_VAL  *Map,
   POST_CODE_KEY         Value
   )
@@ -97,7 +101,7 @@ FindByteCode (
     Map++;
   }
 
-  return 0;
+  return Value;
 }
 
 CHAR16 *
@@ -114,7 +118,7 @@ FindStrPostCode (
     Map++;
   }
 
-  return 0;
+  return NULL;
 }
 
 EFI_STATUS
@@ -176,7 +180,12 @@ SerialStrCheckpoint (
 {
   char  s[100];
 
-  AsciiSPrint (s, sizeof (s), "[UEFI] %x %s\n", PostCodeVal, pStrPostCode);
+  if (pStrPostCode == NULL) {
+    AsciiSPrint (s, sizeof (s), "[UEFI] %x\n", PostCodeVal);
+  } else {
+    AsciiSPrint (s, sizeof (s), "[UEFI] %x %s\n", PostCodeVal, pStrPostCode);
+  }
+
   SerialOutput (s);
  #ifdef CONFIG_RLOG_ENABLE
   rlog_printf (LOGLEVEL_INFO, s);
@@ -184,19 +193,24 @@ SerialStrCheckpoint (
 }
 
 VOID
-TimeStampPrint()
+TimeStampPrint (
+  )
 {
-  CHAR8  Buffer[32];
-  UINT64 Ticker,TimeStamp,Second,Remainder,MicroSecond;
-  Ticker    = GetPerformanceCounter ();
-  TimeStamp = GetTimeInNanoSecond (Ticker);
-  Second   = TimeStamp/(1000*1000*1000);
-  Remainder = TimeStamp%(1000*1000*1000);
-  MicroSecond = Remainder/(1000);
+  CHAR8   Buffer[32];
+  UINT64  Ticker, TimeStamp, Second, Remainder, MicroSecond;
+  UINT64  TimeStampStart = 0;
 
-  AsciiSPrint (Buffer, 13,"[%02lld.%06lld] ", Second,MicroSecond);
+  TimeStampStart = cix_get_boot_phase (BLOADER_PHASE, RECORD_START)*1000000;
+  Ticker         = GetPerformanceCounter ();
+  TimeStamp      = GetTimeInNanoSecond (Ticker);
+  TimeStamp      = TimeStamp - TimeStampStart;
+  Second         = TimeStamp/(1000*1000*1000);
+  Remainder      = TimeStamp%(1000*1000*1000);
+  MicroSecond    = Remainder/(1000*1000);
+
+  AsciiSPrint (Buffer, 13, "[%02d.%03d] ", Second, MicroSecond);
   SerialPortWrite ((UINT8 *)Buffer, AsciiStrLen (Buffer));
-    // Index++;
+  // Index++;
 }
 
 UINT32
@@ -208,11 +222,11 @@ PostCode (
   UINT32  PostCodeVal;
   CHAR16  *pStrPostCode;
 
-  PostCodeVal  = FindByteCode (CheckPointStatusCodes[0], Value);
+  PostCodeVal  = FindAndMapByteCode (CheckPointStatusCodes[0], Value);
   pStrPostCode = FindStrPostCode (CheckPointStatusCodes[0], Value);
 
   // SerialCheckpoint(PostCodeVal);
-  TimeStampPrint(); // Print timestamp
+  TimeStampPrint (); // Print timestamp
   SerialStrCheckpoint (PostCodeVal, pStrPostCode);
   MmioWrite32 (FixedPcdGet32 (PcdPostCodeApAddr), PostCodeVal<<8);
   // MmioWrite32 (FixedPcdGet32 (PcdPostCodeSeAddr), PostCodeVal);

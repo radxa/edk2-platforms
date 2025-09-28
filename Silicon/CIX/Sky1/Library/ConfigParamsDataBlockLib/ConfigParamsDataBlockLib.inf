@@ -1,6 +1,6 @@
 ## @file
 #
-#  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -22,6 +22,7 @@
   MdeModulePkg/MdeModulePkg.dec
   MdePkg/MdePkg.dec
   Silicon/CIX/Sky1/CixPkg.dec
+  Platform/CIX/Sky1/Sky1.dec
 
 [LibraryClasses]
   BaseLib
@@ -80,6 +81,14 @@
   gCixTokenSpaceGuid.PcdI2c5BusFreq
   gCixTokenSpaceGuid.PcdI2c6BusFreq
   gCixTokenSpaceGuid.PcdI2c7BusFreq
+  gCixTokenSpaceGuid.PcdI2c0MutexId
+  gCixTokenSpaceGuid.PcdI2c1MutexId
+  gCixTokenSpaceGuid.PcdI2c2MutexId
+  gCixTokenSpaceGuid.PcdI2c3MutexId
+  gCixTokenSpaceGuid.PcdI2c4MutexId
+  gCixTokenSpaceGuid.PcdI2c5MutexId
+  gCixTokenSpaceGuid.PcdI2c6MutexId
+  gCixTokenSpaceGuid.PcdI2c7MutexId
 
   gCixTokenSpaceGuid.PcdSpi0En
   gCixTokenSpaceGuid.PcdSpi1En
@@ -182,21 +191,84 @@
   gCixTokenSpaceGuid.PcdUsbCControl2Enable
   gCixTokenSpaceGuid.PcdUsbCControl2MaxSpeed
 
-  #Typec Phy
-  gCixTokenSpaceGuid.PcdTypecPhy0Enable
-  gCixTokenSpaceGuid.PcdTypecPhy1Enable
-  gCixTokenSpaceGuid.PcdTypecPhy2Enable
-  gCixTokenSpaceGuid.PcdTypecPhy3Enable
-
   #Watchdog Timer
   gCixTokenSpaceGuid.PcdSocWatchdogTimer
   # CPU LPI state
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
 
   # DPU Config
-  gCixTokenSpaceGuid.PcdGopDisplaySelect
-  gCixTokenSpaceGuid.PcdDP0HwProfile
-  gCixTokenSpaceGuid.PcdDP1HwProfile
-  gCixTokenSpaceGuid.PcdDP2HwProfile
-  gCixTokenSpaceGuid.PcdDP3HwProfile
-  gCixTokenSpaceGuid.PcdDP4HwProfile
+  gCixTokenSpaceGuid.PcdDP0Enable
+  gCixTokenSpaceGuid.PcdDP1Enable
+  gCixTokenSpaceGuid.PcdDP2Enable
+  gCixTokenSpaceGuid.PcdDP3Enable
+  gCixTokenSpaceGuid.PcdDP4Enable
+  gCixTokenSpaceGuid.PcdDPPriority0
+  gCixTokenSpaceGuid.PcdDPPriority1
+  gCixTokenSpaceGuid.PcdDPPriority2
+  gCixTokenSpaceGuid.PcdDPPriority3
+  gCixTokenSpaceGuid.PcdDPPriority4
+
+  gCixTokenSpaceGuid.PcdCpuCore1En
+  gCixTokenSpaceGuid.PcdCpuCore2En
+  gCixTokenSpaceGuid.PcdCpuCore3En
+  gCixTokenSpaceGuid.PcdCpuCore4En
+  gCixTokenSpaceGuid.PcdCpuCore5En
+  gCixTokenSpaceGuid.PcdCpuCore6En
+  gCixTokenSpaceGuid.PcdCpuCore7En
+  gCixTokenSpaceGuid.PcdCpuCore8En
+  gCixTokenSpaceGuid.PcdCpuCore9En
+  gCixTokenSpaceGuid.PcdCpuCore10En
+  gCixTokenSpaceGuid.PcdCpuCore11En
+
+  gCixTokenSpaceGuid.PcdMemFreq
+  gCixTokenSpaceGuid.PcdMemBreakPoint
+  gCixTokenSpaceGuid.PcdMemEyeScan
+  gCixTokenSpaceGuid.PcdMemHarvesting
+  gCixTokenSpaceGuid.PcdMemWckAlwaysOn
+  gCixTokenSpaceGuid.PcdMemDataMask
+  gCixTokenSpaceGuid.PcdMemRfmEn
+  gCixTokenSpaceGuid.PcdMemAutoPrechargeEn
+  gCixTokenSpaceGuid.PcdMemPbrEn
+  gCixTokenSpaceGuid.PcdMemMbistEn
+  gCixTokenSpaceGuid.PcdMemMbistMode
+  gCixTokenSpaceGuid.PcdMemWrLEcc
+  gCixTokenSpaceGuid.PcdMemRdLEcc
+  gCixTokenSpaceGuid.PcdMemPortPriority
+  gCixTokenSpaceGuid.PcdMemBdwP0
+  gCixTokenSpaceGuid.PcdMemBdwP1
+  gCixTokenSpaceGuid.PcdMemRPriorityP0
+  gCixTokenSpaceGuid.PcdMemWPriorityP0
+  gCixTokenSpaceGuid.PcdMemBdwOvflowP0
+  gCixTokenSpaceGuid.PcdMemRPriorityP1
+  gCixTokenSpaceGuid.PcdMemWPriorityP1
+  gCixTokenSpaceGuid.PcdMemBdwOvflowP1
+  gCixTokenSpaceGuid.PcdMemIEcc
+  gCixTokenSpaceGuid.PcdMemWrDbi
+  gCixTokenSpaceGuid.PcdMemRdDbi
+
+  gCixTokenSpaceGuid.PcdVddSocVoltage
+  gCixTokenSpaceGuid.PcdVddGpuVoltage
+  gCixTokenSpaceGuid.PcdVddDpuVoltage
+  gCixTokenSpaceGuid.PcdVddCpuBigCore0Voltage
+  gCixTokenSpaceGuid.PcdVddCpuBigCore1Voltage
+  gCixTokenSpaceGuid.PcdVddCpuMidCore0Voltage
+  gCixTokenSpaceGuid.PcdVddCpuMidCore1Voltage
+  gCixTokenSpaceGuid.PcdVddCpuLitCoreVoltage
+  gCixTokenSpaceGuid.PcdCpuCoreClkGating
+  gCixTokenSpaceGuid.PcdDsuClkGating
+  gCixTokenSpaceGuid.PcdGicdClkGating
+  gCixTokenSpaceGuid.PcdCi700ClkGating
+  gCixTokenSpaceGuid.PcdSysNi700ClkGating
+  gCixTokenSpaceGuid.PcdMmNi700ClkGating
+  gCixTokenSpaceGuid.PcdPcieNi700ClkGating
+  gCixTokenSpaceGuid.PcdSmnNi700ClkGating
+  gCixTokenSpaceGuid.PcdGpuClkGating
+  gCixTokenSpaceGuid.PcdDpu0ClkGating
+  gCixTokenSpaceGuid.PcdDpu1ClkGating
+  gCixTokenSpaceGuid.PcdDpu2ClkGating
+  gCixTokenSpaceGuid.PcdDpu3ClkGating
+  gCixTokenSpaceGuid.PcdDpu4ClkGating
+  gCixTokenSpaceGuid.PcdVpuClkGating
+
+  gCixTokenSpaceGuid.PcdAcpiCppcType
+  gCixPlatformTokenSpaceGuid.PcdDefaultTpmDeviceSelect

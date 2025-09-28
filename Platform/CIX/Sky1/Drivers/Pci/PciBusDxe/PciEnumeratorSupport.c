@@ -1,5 +1,6 @@
 /** @file
   PCI emumeration support functions implementation for PCI Bus module.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
 Copyright (c) 2006 - 2021, Intel Corporation. All rights reserved.<BR>
 (C) Copyright 2015 Hewlett Packard Enterprise Development LP<BR>
@@ -1816,7 +1817,7 @@ PciParseBar (
     }
 
     //
-    // Workaround. Some platforms implement IO bar with 0 length
+    // Some platforms implement IO bar with 0 length
     // Need to treat it as no-bar
     //
     if (PciIoDevice->PciBar[BarIndex].Length == 0) {

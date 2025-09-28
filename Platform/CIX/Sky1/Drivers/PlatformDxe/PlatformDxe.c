@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   Copyright (c) 2021, ARM Limited. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -8,6 +8,11 @@
 **/
 
 #include "PlatformDxe.h"
+
+
+STATIC CIX_FASTBOOT_INFO_PROTOCOL  CixFastbootInfoProtocol = {
+  NULL
+};
 
 /**
   Entrypoint of Platform Dxe Driver
@@ -37,6 +42,20 @@ PlatformDxeEntryPoint (
   CIX_PLATFORM_CONFIG_PARAMS_MANAGE_PROTOCOL  *PlatformConfigManage;
 
   POST_CODE (PlatformDxeStart);
+
+  Status = gBS->InstallProtocolInterface (
+                  &ImageHandle,
+                  &gCixFastbootInfoProtocolGuid,
+                  EFI_NATIVE_INTERFACE,
+                  &CixFastbootInfoProtocol
+                  );
+  if (EFI_ERROR (Status)) {
+    DEBUG (
+      (DEBUG_ERROR,
+       "%a: failed to install fastboot info protocol (Status == %r)\n",
+       __FUNCTION__, Status)
+      );
+  }
 
   EnvConfigData  = AllocateZeroPool (sizeof (ENV_HOOK_PARAMS_DATA_BLOCK));
   BootConfigData = AllocateZeroPool (sizeof (BOOT_HOOK_PARAMS_DATA_BLOCK));

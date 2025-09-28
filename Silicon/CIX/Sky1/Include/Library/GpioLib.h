@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
@@ -68,6 +68,20 @@ EFIAPI
 GpioGetIntMask (
   IN     UINT32  Bank,
   IN OUT UINT32  *IntMask
+  );
+
+EFI_STATUS
+EFIAPI
+GpioGetIntStatusByPin (
+  IN     UINT32   Num,
+  IN OUT BOOLEAN  *Triggered
+  );
+
+EFI_STATUS
+EFIAPI
+GpioGetIntMaskByPin (
+  IN     UINT32   Num,
+  IN OUT BOOLEAN  *Masked
   );
 
 EFI_STATUS

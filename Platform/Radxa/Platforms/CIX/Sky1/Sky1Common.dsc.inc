@@ -9,8 +9,9 @@
   # Default State After G3 is Power On
   gCixTokenSpaceGuid.PcdStateAfterG3|0x01
 
-  # Currently we only support Device Tree boot
-  gCixTokenSpaceGuid.PcdSystemTableSelect|0x01
+  # SPCR use UART2
+  gArmPlatformTokenSpaceGuid.PcdSerialDbgRegisterBase|0x040D0000
+  gArmPlatformTokenSpaceGuid.PcdSerialDbgInterrupt|330
 
 [Components.common]
 
@@ -24,4 +25,28 @@
 !endif
 
   Platform/Radxa/Drivers/Logo/LogoDxe.inf
-  MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
+
+  Platform/Radxa/Platforms/CIX/Sky1/Drivers/SystemInfoDxe/SystemInfoDxe.inf
+
+!if $(TOKEN_SETUP_SUPPORT) == FALSE
+  Platform/CIX/Sky1/Drivers/PlatformSetupVariableInitDxe/PlatformSetupVariableInitDxe.inf
+  Platform/Radxa/Platforms/CIX/Sky1/Drivers/PlatformConfigDxe/PlatformConfigDxe.inf
+!endif
+
+!if $(FW_CONFIG_UPDATE_SUPPORT) == TRUE
+  Platform/Radxa/Platforms/CIX/Sky1/Drivers/RadxaSetupVariableInitDxe/RadxaSetupVariableInitDxe.inf
+  Platform/Radxa/Platforms/CIX/Sky1/Drivers/FirmwareConfigUpdateDxe/FirmwareConfigUpdateDxe.inf
+!endif
+
+  EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf {
+    <LibraryClasses>
+      DtPlatformDtbLoaderLib|EmbeddedPkg/Library/DxeDtPlatformDtbLoaderLibDefault/DxeDtPlatformDtbLoaderLibDefault.inf
+  }
+
+!if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE
+  MdeModulePkg/Application/VariableInfo/VariableInfo.inf
+!endif
+
+!if $(TOKEN_RAM_DISK_SUPPORT) == FALSE
+  MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
+!endif

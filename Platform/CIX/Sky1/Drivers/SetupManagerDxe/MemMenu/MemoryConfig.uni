@@ -1,5 +1,5 @@
 /**
-Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -17,18 +17,18 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_MANUAL                             #language en-US "Manual"
 #string STR_VALUE                              #language en-US "    Value"
 
-#string STR_MEM_FREQUENCY_PROMPT               #language en-US "Memory Frequency"
-#string STR_MEM_FREQUENCY_PROMPT_HELP          #language en-US "Memory Frequency Config"
-#string STR_DDR_1600                           #language en-US "1600MHz"
-#string STR_DDR_2133                           #language en-US "2133MHz"
-#string STR_DDR_2750                           #language en-US "2750MHz"
-#string STR_DDR_3200                           #language en-US "3200MHz"
-#string STR_DDR_3733                           #language en-US "3733MHz"
-#string STR_DDR_4266                           #language en-US "4266MHz"
-#string STR_DDR_4800                           #language en-US "4800MHz"
-#string STR_DDR_5500                           #language en-US "5500MHz"
-#string STR_DDR_6000                           #language en-US "6000MHz"
-#string STR_DDR_6400                           #language en-US "6400MHz"
+#string STR_MEM_FREQUENCY_PROMPT               #language en-US "Memory Data Rate"
+#string STR_MEM_FREQUENCY_PROMPT_HELP          #language en-US "Memory Data Rate Config"
+#string STR_DDR_1600                           #language en-US "1600MT/s"
+#string STR_DDR_2133                           #language en-US "2133MT/s"
+#string STR_DDR_2750                           #language en-US "2750MT/s"
+#string STR_DDR_3200                           #language en-US "3200MT/s"
+#string STR_DDR_3733                           #language en-US "3733MT/s"
+#string STR_DDR_4266                           #language en-US "4266MT/s"
+#string STR_DDR_4800                           #language en-US "4800MT/s"
+#string STR_DDR_5500                           #language en-US "5500MT/s"
+#string STR_DDR_6000                           #language en-US "6000MT/s"
+#string STR_DDR_6400                           #language en-US "6400MT/s"
 #string STR_MEM_BREAK_POINT_PROMPT             #language en-US "Break Point"
 #string STR_MEM_BREAK_POINT_PROMPT_HELP        #language en-US "Enable/Disable memory breakpoint feature during memory initialization"
 #string STR_MEM_EYE_SCAN_PROMPT                #language en-US "Eye Scan"
@@ -90,3 +90,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_MEM_BIST_MARCH_C                   #language en-US "MARCH_C"
 #string STR_MEM_BIST_GALPAT                    #language en-US "GALPAT"
 #string STR_MEM_BIST_PRBS                      #language en-US "PRBS"
+#string STR_MEM_WRDBI_PROMPT                   #language en-US "WrDBI"
+#string STR_MEM_WRDBI_PROMPT_HELP              #language en-US "Write DBI"
+#string STR_MEM_RDDBI_PROMPT                   #language en-US "RdDBI"
+#string STR_MEM_RDDBI_PROMPT_HELP              #language en-US "Read DBI"

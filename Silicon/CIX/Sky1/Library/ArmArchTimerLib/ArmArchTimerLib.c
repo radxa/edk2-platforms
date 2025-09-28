@@ -1,5 +1,6 @@
 /** @file
   Generic ARM implementation of TimerLib.h
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
 
   Copyright (c) 2011 - 2021, Arm Limited. All rights reserved.<BR>
 

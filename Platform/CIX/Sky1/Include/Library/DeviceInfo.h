@@ -1,6 +1,6 @@
 /** @DeviceInfo.h
  *
- *  Copyright 2022 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *  Copyright (c) 2011, 2014 - 2015, 2017, 2021 The Linux Foundation. All rights
  *
  *  SPDX-License-Identifier: BSD-2-Clause-Patent

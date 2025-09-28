@@ -1,6 +1,6 @@
 /** @file
  *
- *  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+ *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
  *
  *  SPDX-License-Identifier: BSD-2-Clause-Patent
  *
@@ -609,7 +609,7 @@
 #define GPU_RCSU_CONTROLLER_BASE  0x15000000
 #define GPU_RCSU_CONTROLLER_SIZE  0x10000
 #define GPU_CONTROLLER_BASE       0x15010000
-#define GPU_CONTROLLER_SIZE       0xFF0000
+#define GPU_CONTROLLER_SIZE       0x480000
 #define GPU_RCSU_PD_REG           0x15000218
 #define GPU_RCSU_BASE_REG         0x15000000
 

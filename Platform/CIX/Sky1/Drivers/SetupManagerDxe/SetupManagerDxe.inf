@@ -1,5 +1,5 @@
 #
-#  Copyright 2023 Cix Technology (Shanghai) Co., Ltd. All Rights Reserved.
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -144,9 +144,7 @@
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6HttpSupport
   gCixTokenSpaceGuid.PcdStateAfterG3
   gCixTokenSpaceGuid.PcdSystemTableSelect
-  gCixTokenSpaceGuid.PcdPrimaryDisplay
   gCixTokenSpaceGuid.PcdDtbMenuEntry
-  gCixTokenSpaceGuid.PcdBiosReset
   gCixTokenSpaceGuid.PcdSocWatchdogTimer
   gCixTokenSpaceGuid.PcdVddSocVoltage
   gCixTokenSpaceGuid.PcdVddGpuVoltage
@@ -207,6 +205,8 @@
   gCixTokenSpaceGuid.PcdMemRPriorityP1
   gCixTokenSpaceGuid.PcdMemWPriorityP1
   gCixTokenSpaceGuid.PcdMemBdwOvflowP1
+  gCixTokenSpaceGuid.PcdMemWrDbi
+  gCixTokenSpaceGuid.PcdMemRdDbi
   gCixTokenSpaceGuid.PcdGmac0Enable
   gCixTokenSpaceGuid.PcdGmac1Enable
   gCixTokenSpaceGuid.PcdGmac0MacAddress
@@ -237,16 +237,8 @@
   gCixPlatformTokenSpaceGuid.PcdLightSensorCtrl
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable
-  gCixTokenSpaceGuid.PcdDP0HwProfile
-  gCixTokenSpaceGuid.PcdDP1HwProfile
-  gCixTokenSpaceGuid.PcdDP2HwProfile
-  gCixTokenSpaceGuid.PcdDP3HwProfile
-  gCixTokenSpaceGuid.PcdDP4HwProfile
-  gCixTokenSpaceGuid.PcdGopDisplaySelect
-  gCixTokenSpaceGuid.PcdTypecPhy0Enable
-  gCixTokenSpaceGuid.PcdTypecPhy1Enable
-  gCixTokenSpaceGuid.PcdTypecPhy2Enable
-  gCixTokenSpaceGuid.PcdTypecPhy3Enable
+  gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode
+  gCixTokenSpaceGuid.PcdAcpiCppcType
 
 [Depex]
   TRUE
