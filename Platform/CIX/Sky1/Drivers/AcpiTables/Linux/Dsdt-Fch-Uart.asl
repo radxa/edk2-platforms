@@ -42,6 +42,13 @@ Device (COM0) {
           Package () { "sky1,fch_cru", UCRU },
         }
   })
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_UART0_APB, "apb_pclk", \_SB.COM0},
+    Package() {CLK_TREE_FCH_UART0_FUNC, "uartclk", \_SB.COM0},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.DMA0 , \_SB.COM0, 0},
+  })
 }
 
 Device (COM1) {
@@ -65,6 +72,13 @@ Device (COM1) {
           Package () { "sky1,fch_cru", UCRU },
         }
   })
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_UART1_APB, "apb_pclk", \_SB.COM1},
+    Package() {CLK_TREE_FCH_UART1_FUNC, "uartclk", \_SB.COM1},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.DMA0 , \_SB.COM1, 0},
+  })
 }
 
 Device (COM2) {
@@ -83,6 +97,13 @@ Device (COM2) {
           Package () { "uartclk", UCLK },
         }
   })
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_UART2_APB, "apb_pclk", \_SB.COM2},
+    Package() {CLK_TREE_FCH_UART2_FUNC, "uartclk", \_SB.COM2},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.DMA0 , \_SB.COM2, 0},
+  })
 }
 
 Device (COM3) {
@@ -92,5 +113,9 @@ Device (COM3) {
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, UART3_BASE, UART3_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_UART3_INTERRUPT_ID }
+  })
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_UART3_APB, "apb_pclk", \_SB.COM3},
+    Package() {CLK_TREE_FCH_UART3_FUNC, "uartclk", \_SB.COM3},
   })
 }

@@ -85,6 +85,87 @@ PlatformConfigDataFindEntry (
   return EFI_SUCCESS;
 }
 
+EFI_STATUS
+EFIAPI
+PlatformConfigDataModifyEntry (
+  IN     CIX_PLATFORM_CONFIG_PARAMS_MANAGE_PROTOCOL  *This,
+  IN     PLATFORM_CONFIG_PARAMS_DATA_ENTRY           *Entry,
+  IN     VOID                                        *Buffer,
+  IN     UINTN                                       BufferSize
+  )
+{
+  EFI_STATUS                           Status = EFI_SUCCESS;
+  UINT64                               Value;
+  UINT32                               Num, Index;
+  PLATFORM_CONFIG_PARAMS_DATA_OPTIONS  Options[MAX_PARAMS_OPTION_NUM];
+
+  if ((Buffer == NULL) || (Entry == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  if (BufferSize > Entry->Size) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  switch (Entry->Type) {
+    case PARAMS_DATA_BOOLEAN_TYPE:
+      Status = ParsePlatformConfigDataOption (Entry->Option, &Num, Options);
+      if (!EFI_ERROR (Status)) {
+        if (Num != 2) {
+          Status = EFI_DEVICE_ERROR;
+        } else {
+          for (Index = 0; Index < Num; Index++) {
+            if (Options[Index].Value == *(BOOLEAN *)Buffer) {
+              CopyMem ((VOID *)(((UINT8 *)(This->Data)) + Entry->Offset), (VOID *)Buffer, BufferSize);
+              break;
+            }
+          }
+
+          if (Index == Num) {
+            Status = EFI_NOT_FOUND;
+          }
+        }
+      }
+
+      break;
+    case PARAMS_DATA_MULTI_OPTION_TYPE:
+      Status = ParsePlatformConfigDataOption (Entry->Option, &Num, Options);
+      if (!EFI_ERROR (Status)) {
+        if (BufferSize == sizeof (UINT8)) {
+          Value = *(UINT8 *)Buffer;
+        } else if (BufferSize == sizeof (UINT16)) {
+          Value = *(UINT16 *)Buffer;
+        } else if (BufferSize == sizeof (UINT32)) {
+          Value = *(UINT32 *)Buffer;
+        } else if (BufferSize == sizeof (UINT64)) {
+          Value = *(UINT64 *)Buffer;
+        }
+
+        for (Index = 0; Index < Num; Index++) {
+          if (Options[Index].Value == Value) {
+            CopyMem ((VOID *)(((UINT8 *)(This->Data)) + Entry->Offset), (VOID *)Buffer, BufferSize);
+            break;
+          }
+        }
+
+        if (Index == Num) {
+          Status =  EFI_NOT_FOUND;
+        }
+      }
+
+      break;
+    case PARAMS_DATA_INTEGER_TYPE:
+    case PARAMS_DATA_STRING_TYPE:
+      CopyMem ((VOID *)(((UINT8 *)(This->Data)) + Entry->Offset), (VOID *)Buffer, BufferSize);
+      break;
+    default:
+      Status = EFI_INVALID_PARAMETER;
+      break;
+  }
+
+  return Status;
+}
+
 /**
   Entrypoint of Platform Config Params Manage Dxe Driver
 
@@ -117,11 +198,13 @@ PlatformConfigParamsManageDxeEntryPoint (
 
   ConfigManage = AllocateZeroPool (sizeof (CIX_PLATFORM_CONFIG_PARAMS_MANAGE_PROTOCOL));
   if (ConfigManage != NULL) {
-    ConfigManage->Data      = ConfigData;
-    ConfigManage->Entry     = ConfigDataEntry;
-    ConfigManage->EntryNum  = mPlatformConfigDataEntryNum;
-    ConfigManage->GetEntry  = PlatformConfigDataGetEntry;
-    ConfigManage->FindEntry = PlatformConfigDataFindEntry;
+    ConfigManage->Version     = CIX_PLATFORM_CONFIG_PARAMS_MANAGE_PROTOCOL_VERSION;
+    ConfigManage->Data        = ConfigData;
+    ConfigManage->Entry       = ConfigDataEntry;
+    ConfigManage->EntryNum    = mPlatformConfigDataEntryNum;
+    ConfigManage->GetEntry    = PlatformConfigDataGetEntry;
+    ConfigManage->FindEntry   = PlatformConfigDataFindEntry;
+    ConfigManage->ModifyEntry = PlatformConfigDataModifyEntry;
 
     gBS->InstallProtocolInterface (
            &ImageHandle,

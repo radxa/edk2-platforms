@@ -150,7 +150,7 @@ Device (CSI0) {
 Device (CSI1) {
   Name (_HID, "CIXH3027")
   Name (_UID, 0x1)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, CSI_RCSU1_CONTROLLER_BASE, CSI_RCSU1_CONTROLLER_SIZE)
@@ -182,7 +182,7 @@ Device (CBD0) {
 Device (CBD1) {
   Name (_HID, "CIXH3028")
   Name (_UID, 0x1)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, CSI_BRIDGE1_CONTROLLER_BASE, CSI_BRIDGE1_CONTROLLER_SIZE)
@@ -203,7 +203,7 @@ Device (CBD1) {
 Device (CBD2) {
   Name (_HID, "CIXH3028")
   Name (_UID, 0x2)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, CSI_BRIDGE2_CONTROLLER_BASE, CSI_BRIDGE2_CONTROLLER_SIZE)
@@ -224,7 +224,7 @@ Device (CBD2) {
 Device (CBD3) {
   Name (_HID, "CIXH3028")
   Name (_UID, 0x3)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, CSI_BRIDGE3_CONTROLLER_BASE, CSI_BRIDGE3_CONTROLLER_SIZE)
@@ -252,7 +252,7 @@ Device (MPC0) {
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { CSI_IRQ0_INTERRUPT_ID }
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { CSI_ERR_IRQ0_INTERRUPT_ID }
   })
-  MIPI_CSI_PORT_INIT(1, 0, \_SB.DPR1, "port@1", "endpoint@0", \_SB.CBD0, "port@0", "endpoint@0")
+  MIPI_CSI_PORT_INIT(4, 0, \_SB.DPR1, "port@1", "endpoint@0", \_SB.CBD0, "port@0", "endpoint@0")
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_CSI_CTRL0_PCLK, "csi_pclk", \_SB.MPC0},
@@ -271,14 +271,14 @@ Device (MPC0) {
 Device (MPC1) {
   Name (_HID, "CIXH3029")
   Name (_UID, 0x1)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, MIPI_CSI1_CONTROLLER_BASE, MIPI_CSI1_CONTROLLER_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { CSI_IRQ1_INTERRUPT_ID }
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { CSI_ERR_IRQ1_INTERRUPT_ID }
   })
-  MIPI_CSI_PORT_INIT(1, 1, \_SB.DPR2, "port@1", "endpoint@0", \_SB.CBD1, "port@0", "endpoint@0")
+  MIPI_CSI_PORT_INIT(4, 1, \_SB.DPR2, "port@1", "endpoint@0", \_SB.CBD1, "port@0", "endpoint@0")
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_CSI_CTRL1_PCLK, "csi_pclk", \_SB.MPC1},
@@ -293,14 +293,14 @@ Device (MPC1) {
 Device (MPC2) {
   Name (_HID, "CIXH3029")
   Name (_UID, 0x2)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, MIPI_CSI2_CONTROLLER_BASE, MIPI_CSI2_CONTROLLER_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { CSI_IRQ2_INTERRUPT_ID }
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { CSI_ERR_IRQ2_INTERRUPT_ID }
   })
-  MIPI_CSI_PORT_INIT(1, 2, \_SB.DPR4, "port@1", "endpoint@0", \_SB.CBD2, "port@0", "endpoint@0")
+  MIPI_CSI_PORT_INIT(4, 2, \_SB.DPR4, "port@1", "endpoint@0", \_SB.CBD2, "port@0", "endpoint@0")
 
   Name (CLKT, Package() {
       Package() {CLK_TREE_CSI_CTRL2_PCLK, "csi_pclk", \_SB.MPC2},
@@ -319,14 +319,14 @@ Device (MPC2) {
 Device (MPC3) {
   Name (_HID, "CIXH3029")
   Name (_UID, 0x3)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, MIPI_CSI3_CONTROLLER_BASE, MIPI_CSI3_CONTROLLER_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { CSI_IRQ3_INTERRUPT_ID }
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { CSI_ERR_IRQ3_INTERRUPT_ID }
   })
-  MIPI_CSI_PORT_INIT(1, 3, \_SB.DPR5, "port@1", "endpoint@0", \_SB.CBD3, "port@0", "endpoint@0")
+  MIPI_CSI_PORT_INIT(4, 3, \_SB.DPR5, "port@1", "endpoint@0", \_SB.CBD3, "port@0", "endpoint@0")
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_CSI_CTRL3_PCLK, "csi_pclk", \_SB.MPC3},
@@ -367,7 +367,7 @@ Device (DPH0) {
 Device (DPH1) {
   Name (_HID, "CIXH302A")
   Name (_UID, 0x1)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, CSI_DPHY_HW1_CONTROLLER_BASE, CSI_DPHY_HW1_CONTROLLER_SIZE)
@@ -378,7 +378,6 @@ Device (DPH1) {
       Package () { "cix-dphy-hw", 1},
     }
   })
-
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_CSI_PHY1_PSM, "phy_psmclk", \_SB.DPH1},
@@ -396,7 +395,7 @@ Device (DPR0) {
   Name (_UID, 0x0)
   Name (_STA, 0x0)
   Name (_CCA, 0)
-  MIPI_DPHY_PORT_INIT(0, \_SB.DPH0, \_SB.I2C3.UXC0, "port@0", "endpoint@0", \_SB.MPC0, "port@0", "endpoint@1")
+  MIPI_DPHY_PORT_INIT(0, \_SB.DPH0, \_SB.I2C0.UXC0, "port@0", "endpoint@0", \_SB.MPC0, "port@0", "endpoint@1")
 }
 
 Device (DPR1) {
@@ -404,15 +403,15 @@ Device (DPR1) {
   Name (_UID, 0x1)
   Name (_STA, 0xF)
   Name (_CCA, 0)
-  MIPI_DPHY_PORT_INIT(1, \_SB.DPH0, \_SB.I2C3.UXC0, "port@0", "endpoint@0", \_SB.MPC0, "port@0", "endpoint@1")
+  MIPI_DPHY_PORT_INIT(1, \_SB.DPH0, \_SB.I2C0.UXC0, "port@0", "endpoint@0", \_SB.MPC0, "port@0", "endpoint@1")
 }
 
 Device (DPR2) {
   Name (_HID, "CIXH302B")
   Name (_UID, 0x2)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
-  MIPI_DPHY_PORT_INIT(2, \_SB.DPH0, \_SB.I2C3.UXC1, "port@0", "endpoint@0", \_SB.MPC1, "port@0", "endpoint@1")
+  MIPI_DPHY_PORT_INIT(2, \_SB.DPH0, \_SB.I2C0.UXC1, "port@0", "endpoint@0", \_SB.MPC1, "port@0", "endpoint@1")
 }
 
 Device (DPR3) {
@@ -420,21 +419,21 @@ Device (DPR3) {
   Name (_UID, 0x3)
   Name (_STA, 0x0)
   Name (_CCA, 0)
-  MIPI_DPHY_PORT_INIT(3, \_SB.DPH1, \_SB.I2C3.UXC0, "port@0", "endpoint@0", \_SB.MPC2, "port@0", "endpoint@1")
+  MIPI_DPHY_PORT_INIT(3, \_SB.DPH1, \_SB.I2C0.UXC0, "port@0", "endpoint@0", \_SB.MPC2, "port@0", "endpoint@1")
 }
 
 Device (DPR4) {
   Name (_HID, "CIXH302B")
   Name (_UID, 0x4)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
-  MIPI_DPHY_PORT_INIT(4, \_SB.DPH1, \_SB.I2C3.UXC2, "port@0", "endpoint@0", \_SB.MPC2, "port@0", "endpoint@1")
+  MIPI_DPHY_PORT_INIT(4, \_SB.DPH1, \_SB.I2C0.UXC2, "port@0", "endpoint@0", \_SB.MPC2, "port@0", "endpoint@1")
 }
 
 Device (DPR5) {
   Name (_HID, "CIXH302B")
   Name (_UID, 0x5)
-  Name (_STA, 0xF)
+  Name (_STA, 0x0)
   Name (_CCA, 0)
-  MIPI_DPHY_PORT_INIT(5, \_SB.DPH1, \_SB.I2C3.UXC3, "port@0", "endpoint@0", \_SB.MPC3, "port@0", "endpoint@1")
+  MIPI_DPHY_PORT_INIT(5, \_SB.DPH1, \_SB.I2C0.UXC3, "port@0", "endpoint@0", \_SB.MPC3, "port@0", "endpoint@1")
 }

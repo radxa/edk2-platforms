@@ -192,6 +192,7 @@ UpdatePlatformConfigParams (
     ConfigData->StateAfterG3      = PlatformSetupVar.StateAfterG3;
     ConfigData->RtcWakeup         = PlatformSetupVar.RtcWakeup;
     ConfigData->LightSensorCtrl   = PlatformSetupVar.LightSensorCtrl;
+    ConfigData->SpcrEnable        = PlatformSetupVar.SpcrEnable;
   }
 }
 
@@ -359,6 +360,7 @@ ConstructSetupVariable (
   PlatformSetupVar->MemBdwOvflowP1  = FixedPcdGet8 (PcdMemBdwOvflowP1);
   PlatformSetupVar->MemBreakPoint   = FixedPcdGet8 (PcdMemBreakPoint);
   PlatformSetupVar->MemEyeScan      = FixedPcdGet8 (PcdMemEyeScan);
+  PlatformSetupVar->MemIEcc         = FixedPcdGet8 (PcdMemIEcc);
 
   PlatformSetupVar->StateAfterG3      = FixedPcdGet8 (PcdStateAfterG3);
   PlatformSetupVar->SystemTableSelect = FixedPcdGet8 (PcdSystemTableSelect);
@@ -405,6 +407,7 @@ ConstructSetupVariable (
   PlatformSetupVar->VpuClkGating          = FixedPcdGet8 (PcdVpuClkGating);
   PlatformSetupVar->RtcWakeup             = FixedPcdGet8 (PcdRtcWakeup);
   PlatformSetupVar->LightSensorCtrl       = FixedPcdGet8 (PcdLightSensorCtrl);
+  PlatformSetupVar->SpcrEnable            = FixedPcdGetBool (PcdAcpiSpcrEnable);
 
   PlatformSetupVar->Usb2Control0Enable      = FixedPcdGetBool (PcdUsb2Control0Enable);
   PlatformSetupVar->Usb2Control1Enable      = FixedPcdGetBool (PcdUsb2Control1Enable);
@@ -432,11 +435,6 @@ ConstructSetupVariable (
   PlatformSetupVar->CpuCoreNum              = CpuCoreNum;
   PlatformSetupVar->CpuShareInfo            = CpuShareInfo;
   PlatformSetupVar->CpuLpiState             = FixedPcdGet8 (PcdAcpiCpuLpiState);
-  PlatformSetupVar->DPHwProfile[0]          = FixedPcdGet8 (PcdDP0HwProfile);
-  PlatformSetupVar->DPHwProfile[1]          = FixedPcdGet8 (PcdDP1HwProfile);
-  PlatformSetupVar->DPHwProfile[2]          = FixedPcdGet8 (PcdDP2HwProfile);
-  PlatformSetupVar->DPHwProfile[3]          = FixedPcdGet8 (PcdDP3HwProfile);
-  PlatformSetupVar->DPHwProfile[4]          = FixedPcdGet8 (PcdDP4HwProfile);
   PlatformSetupVar->GopDisplaySelect        = FixedPcdGet8 (PcdGopDisplaySelect);
 }
 

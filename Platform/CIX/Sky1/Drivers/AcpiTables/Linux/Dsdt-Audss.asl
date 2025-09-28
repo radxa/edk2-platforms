@@ -62,6 +62,17 @@ Device (ADSS) {
         Package() {CLK_MB_0_APB, "mb0clk", \_SB.DSP},
         Package() {CLK_MB_1_APB, "mb1clk", \_SB.DSP},
     })
+    Name (CLKT, Package() {
+      Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.ADSS.ACLK},
+      Package() {CLK_TREE_AUDIO_CLK1, "audio_clk1", \_SB.ADSS.ACLK},
+      Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.ADSS.ACLK},
+      Package() {CLK_TREE_AUDIO_CLK3, "audio_clk3", \_SB.ADSS.ACLK},
+      Package() {CLK_TREE_AUDIO_CLK4, "audio_clk4", \_SB.ADSS.ACLK},
+      Package() {CLK_TREE_AUDIO_CLK5, "audio_clk5", \_SB.ADSS.ACLK},
+    })
+    Name (RSTL, Package() {
+      Package() {\_SB.RST0, SKY1_AUDIO_HIFI5_NOC_RESET_N, \_SB.ADSS.ACLK, "noc"},
+    })
 
     PowerResource(PPRS, 0, 0)
     {

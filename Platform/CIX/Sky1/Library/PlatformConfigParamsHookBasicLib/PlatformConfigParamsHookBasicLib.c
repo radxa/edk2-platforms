@@ -15,37 +15,6 @@
 
 STATIC I2C_HOST_DESCRIPTOR  mHost;
 
-STATIC
-UINT32
-I2cGetBusClk (
-  IN UINT8  Bus
-  )
-{
-  switch (Bus) {
-    case 0:
-      return FixedPcdGet32 (PcdI2c0BusFreq);
-    case 1:
-      return FixedPcdGet32 (PcdI2c1BusFreq);
-    case 2:
-      return FixedPcdGet32 (PcdI2c2BusFreq);
-    case 3:
-      return FixedPcdGet32 (PcdI2c3BusFreq);
-    case 4:
-      return FixedPcdGet32 (PcdI2c4BusFreq);
-    case 5:
-      return FixedPcdGet32 (PcdI2c5BusFreq);
-    case 6:
-      return FixedPcdGet32 (PcdI2c6BusFreq);
-    case 7:
-      return FixedPcdGet32 (PcdI2c7BusFreq);
-    default:
-      DebugPrint (DEBUG_ERROR, "I2C[%d] bus frequency is not configured\n", Bus);
-      break;
-  }
-
-  return -1;
-}
-
 EFI_STATUS
 EFIAPI
 PlatformConfigParamsHookLibConstructor (
@@ -59,7 +28,7 @@ PlatformConfigParamsHookLibConstructor (
   mHost.MemBase = I2cGetMemBase (mHost.Bus);
   mHost.BusClk  = I2cGetBusClk (mHost.Bus);
 
-  I2cEnvInit (mHost.MemBase);
+  I2cEnvInit (mHost.Bus);
   Status = I2cInitialize (&mHost);
 
   return Status;

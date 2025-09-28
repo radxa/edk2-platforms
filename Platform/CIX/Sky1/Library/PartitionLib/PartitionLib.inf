@@ -59,15 +59,15 @@
 	gEfiEraseBlockProtocolGuid
 
 [FixedPcd]
-	gCixTokenSpaceGuid.KernelLoadAddress
-	gCixTokenSpaceGuid.RamdiskLoadAddress
-	gCixTokenSpaceGuid.KernelEndAddr
-	gCixTokenSpaceGuid.DeviceTreeLoadAddr
-	gCixTokenSpaceGuid.KernelLoadAddress32
-	gCixTokenSpaceGuid.EnableNewNodeSearchFuc
+	gCixPlatformTokenSpaceGuid.KernelLoadAddress
+	gCixPlatformTokenSpaceGuid.RamdiskLoadAddress
+	gCixPlatformTokenSpaceGuid.KernelEndAddr
+	gCixPlatformTokenSpaceGuid.DeviceTreeLoadAddr
+	gCixPlatformTokenSpaceGuid.KernelLoadAddress32
+	gCixPlatformTokenSpaceGuid.EnableNewNodeSearchFuc
 
 [Pcd]
-	gCixTokenSpaceGuid.AvbWithBackDoor
+	gCixPlatformTokenSpaceGuid.AvbWithBackDoor
 
 [Depex]
 	TRUE

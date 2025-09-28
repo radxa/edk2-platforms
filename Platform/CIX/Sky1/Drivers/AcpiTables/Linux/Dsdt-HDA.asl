@@ -32,10 +32,21 @@ Device (HDA) {
       Package () { "cru-ctrl", \_SB.ACRU },
     }
   })
+
+  Name (RSTL, Package() {
+    Package() {\_SB.ADSS.ARST, AUDSS_HDA_SW_RST_N  ,\_SB.HDA, "hda"},
+  })
+  Name (DLKL, Package() {
+    Package() {\_SB.DMA1, \_SB.HDA, 0},
+  })
 }
 
 Device (HDAC) {
   Name (_HID, "CIXH6030")
   Name (_UID, 0x0)
   Name (_STA, 0xF)
+
+  Name (DLKL, Package() {
+    Package() {\_SB.HDA, \_SB.HDAC, 0},
+  })
 }

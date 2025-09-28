@@ -95,7 +95,7 @@ GetCpcGranularity (
   SCMI_PERFORMANCE_DOMAIN_ATTRIBUTES  DomainAttribute;
 
   if (CpuID >= PLAT_CPU_COUNT) {
-    DebugPrint (DEBUG_ERROR, "Cpuid is over the max range, max cpuid = %d, current cpu id = %d\n", PLAT_CPU_COUNT - 1, CpuID);
+    DEBUG ((DEBUG_ERROR, "Cpuid is over the max range, max cpuid = %d, current cpu id = %d\n", PLAT_CPU_COUNT - 1, CpuID));
     return EFI_INVALID_PARAMETER;
   }
 
@@ -105,7 +105,7 @@ GetCpcGranularity (
                   (VOID **)&ScmiPerfProtocol
                   );
   if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_ERROR, "gArmScmiPerformanceProtocolGuid NOT found.\n");
+    DEBUG ((DEBUG_ERROR, "gArmScmiPerformanceProtocolGuid NOT found.\n"));
     return Status;
   }
 
@@ -113,7 +113,7 @@ GetCpcGranularity (
 
   Status = ScmiPerfProtocol->GetDomainAttributes (ScmiPerfProtocol, DomainId, &DomainAttribute);
   if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_ERROR, "Perfomance [%d] get domain attributes failed.\n", DomainId);
+    DEBUG ((DEBUG_ERROR, "Perfomance [%d] get domain attributes failed.\n", DomainId));
     return Status;
   }
 
@@ -141,7 +141,7 @@ GetCpuPerfData (
   AML_PSD_INFO               PsdInfo[PLAT_CPU_COUNT] = PLAT_PSD_INFO;
 
   if (CpuID >= PLAT_CPU_COUNT) {
-    DebugPrint (DEBUG_ERROR, "Cpuid is over the max range, max cpuid = %d, current cpu id = %d\n", PLAT_CPU_COUNT - 1, CpuID);
+    DEBUG ((DEBUG_ERROR, "Cpuid is over the max range, max cpuid = %d, current cpu id = %d\n", PLAT_CPU_COUNT - 1, CpuID));
     return EFI_INVALID_PARAMETER;
   }
 
@@ -151,7 +151,7 @@ GetCpuPerfData (
                   (VOID **)&ScmiPerfProtocol
                   );
   if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_ERROR, "gArmScmiPerformanceProtocolGuid NOT found.\n");
+    DEBUG ((DEBUG_ERROR, "gArmScmiPerformanceProtocolGuid NOT found.\n"));
     return Status;
   }
 
@@ -161,13 +161,13 @@ GetCpuPerfData (
   if (Status == EFI_BUFFER_TOO_SMALL) {
     Status = gBS->AllocatePool (EfiBootServicesData, LevelArraySize, (VOID **)&LevelArra);
     if (EFI_ERROR (Status)) {
-      DebugPrint (DEBUG_ERROR, "Out of memory resource\n");
+      DEBUG ((DEBUG_ERROR, "Out of memory resource\n"));
       return Status;
     }
 
     Status = ScmiPerfProtocol->DescribeLevels (ScmiPerfProtocol, DomainId, &NumLevels, &LevelArraySize, LevelArra);
     if (EFI_ERROR (Status)) {
-      DebugPrint (DEBUG_ERROR, "Perfomance [%d] get DescribeLevels failed.\n", DomainId);
+      DEBUG ((DEBUG_ERROR, "Perfomance [%d] get DescribeLevels failed.\n", DomainId));
       return Status;
     }
 
@@ -188,7 +188,7 @@ GetCpuPerfData (
     *LowestNonlinearPerf = LevelArra[0].Level;
     *LowestPerf          = LevelArra[0].Level;
   } else {
-    DebugPrint (DEBUG_ERROR, "Perfomance [%d] get DescribeLevels failed.\n", DomainId);
+    DEBUG ((DEBUG_ERROR, "Perfomance [%d] get DescribeLevels failed.\n", DomainId));
     return Status;
   }
 
@@ -235,14 +235,14 @@ InitializeCmArmCpcInfo (
     // Get CPU performace parameter
     Status = GetCpuPerfData (i, &HighestPerf, &NominalPerf, &LowestNonlinearPerf, &LowestPerf);
     if (EFI_ERROR (Status)) {
-      DebugPrint (DEBUG_ERROR, "Get CPU%d performance data fail!\n");
+      DEBUG ((DEBUG_ERROR, "Get CPU%d performance data fail!\n"));
       continue;
     }
 
     // Get CPU performace granularity
     Status = GetCpcGranularity (i, &CpcGranularity);
     if (EFI_ERROR (Status)) {
-      DebugPrint (DEBUG_ERROR, "Get CPU%d performance granularity fail!\n");
+      DEBUG ((DEBUG_ERROR, "Get CPU%d performance granularity fail!\n"));
       continue;
     }
 
@@ -292,7 +292,7 @@ InitializeCmArmGiccInfo (
                    &PlatformSetupVar
                    );
   if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_ERROR, "Get platform setup variable Fail! %r\n", Status);
+    DEBUG ((DEBUG_ERROR, "Get platform setup variable Fail! %r\n", Status));
     return EFI_NOT_FOUND;
   }
 
@@ -309,7 +309,7 @@ InitializeCmArmGiccInfo (
   }
 
   if (CpuCount == 0) {
-    DebugPrint (DEBUG_ERROR, "All Cpu core not available!\n");
+    DEBUG ((DEBUG_ERROR, "All Cpu core not available!\n"));
     return EFI_DEVICE_ERROR;
   }
 
@@ -321,7 +321,7 @@ InitializeCmArmGiccInfo (
 
   Status = gBS->AllocatePool (EfiBootServicesData, CpuCount*sizeof (CM_ARM_GICC_INFO), (VOID **)&(PlatformRepo->GicCInfo));
   if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_ERROR, "Out of memory resource\n");
+    DEBUG ((DEBUG_ERROR, "Out of memory resource\n"));
     return Status;
   }
 
@@ -378,22 +378,22 @@ InitializePlatformRepository (
 
   Status = InitializeCmArmGiccInfo (This);
   if (EFI_ERROR (Status)) {
-    DebugPrint (
+    DEBUG ((
       DEBUG_ERROR,
       "ERROR: Failed to initialize GIC CPU interface information." \
       " Status = %r\n",
       Status
-      );
+      ));
   }
 
   Status = InitializeCmArmCpcInfo (This);
   if (EFI_ERROR (Status)) {
-    DebugPrint (
+    DEBUG ((
       DEBUG_ERROR,
       "ERROR: Failed to initialize CPU CPC interface information." \
       " Status = %r\n",
       Status
-      );
+      ));
   }
 
   return Status;
@@ -494,12 +494,12 @@ GetStandardNameSpaceObject (
     default:
     {
       Status = EFI_NOT_FOUND;
-      DebugPrint (
+      DEBUG ((
         DEBUG_ERROR,
         "WARNING: Object 0x%x. Status = %r\n",
         CmObjectId,
         Status
-        );
+        ));
       break;
     }
   }
@@ -555,12 +555,12 @@ GetCixNameSpaceObject (
     default:
     {
       Status = EFI_NOT_FOUND;
-      DebugPrint (
+      DEBUG ((
         DEBUG_ERROR,
         "WARNING: Object 0x%x. Status = %r\n",
         CmObjectId,
         Status
-        );
+        ));
       break;
     }
   }// switch
@@ -656,12 +656,12 @@ GetArmNameSpaceObject (
     default:
     {
       Status = EFI_NOT_FOUND;
-      DebugPrint (
+      DEBUG ((
         DEBUG_ERROR,
         "WARNING: Object 0x%x. Status = %r\n",
         CmObjectId,
         Status
-        );
+        ));
       break;
     }
   }// switch
@@ -704,12 +704,12 @@ GetOemNameSpaceObject (
     default:
     {
       Status = EFI_NOT_FOUND;
-      DebugPrint (
+      DEBUG ((
         DEBUG_ERROR,
         "WARNING: Object 0x%x. Status = %r\n",
         CmObjectId,
         Status
-        );
+        ));
       break;
     }
   }
@@ -765,12 +765,12 @@ Sky1PlatformGetObject (
     default:
     {
       Status = EFI_INVALID_PARAMETER;
-      DebugPrint (
+      DEBUG ((
         DEBUG_ERROR,
         "ERROR: Unknown Namespace Object = 0x%x. Status = %r\n",
         CmObjectId,
         Status
-        );
+        ));
       break;
     }
   }
@@ -841,12 +841,12 @@ ConfigurationManagerDxeInitialize (
                   (VOID *)&Sky1ConfigManagerProtocol
                   );
   if (EFI_ERROR (Status)) {
-    DebugPrint (
+    DEBUG ((
       DEBUG_ERROR,
       "ERROR: Failed to install Configuration Manager Protocol." \
       " Status = %r\n",
       Status
-      );
+      ));
     goto error_handler;
   }
 
@@ -854,12 +854,12 @@ ConfigurationManagerDxeInitialize (
              &Sky1ConfigManagerProtocol
              );
   if (EFI_ERROR (Status)) {
-    DebugPrint (
+    DEBUG ((
       DEBUG_ERROR,
       "ERROR: Failed to initialize the Platform Configuration Repository." \
       " Status = %r\n",
       Status
-      );
+      ));
   }
 
 error_handler:

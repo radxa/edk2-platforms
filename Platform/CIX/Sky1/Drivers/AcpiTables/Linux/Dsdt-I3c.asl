@@ -24,6 +24,11 @@ Device (I3C0) {
       }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_I3C0_APB, "pclk", \_SB.I3C0},
+    Package() {CLK_TREE_FCH_I3C0_FUNC, "sysclk", \_SB.I3C0},
+  })
+
   /* mmc5633 */
   Device (MMC1) {
     Name (_ADR, 0x0)
@@ -51,5 +56,10 @@ Device (I3C1) {
     Memory32Fixed (ReadWrite, I3C1_BASE, I3C1_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I3C1_INTERRUPT_ID }
     PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_fch_i3c1", ResourceConsumer,)
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_I3C1_APB, "pclk", \_SB.I3C1},
+    Package() {CLK_TREE_FCH_I3C1_FUNC, "sysclk", \_SB.I3C1},
   })
 }

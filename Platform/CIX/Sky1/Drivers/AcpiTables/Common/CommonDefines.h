@@ -37,8 +37,8 @@
 // MM Hub, the following defines are valid when MM_HUB_SMMU_ENABLE = 1.
 #define DPU_SMMU_ENABLE  1
 #define NPU_SMMU_ENABLE  1
-#define ISP_SMMU_ENABLE  0
-#define CSI_SMMU_ENABLE  0
+#define ISP_SMMU_ENABLE  1
+#define CSI_SMMU_ENABLE  1
 
 // GTDT
 #define GTDT_WATCHDOG_ENABLE  0
@@ -49,7 +49,7 @@
 #define SUB_SYSTEM_SMMU_ID  2
 
 // DEBUG
-#define ASL_UART_DEBUG_ENABLE  0
+#define ASL_UART_DEBUG_ENABLE  1
 
 // RMR
 #define RMR_GOP_ENABLE  1

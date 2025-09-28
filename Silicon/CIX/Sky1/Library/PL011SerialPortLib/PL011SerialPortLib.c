@@ -170,6 +170,11 @@ SerialPortSetAttributes (
   UINT32  PL011Base;
 
   PL011Base = GetSocUartBaseAddress ();
+  if (*Timeout == 0)
+  {
+    *Timeout = 1000 * 1000;
+    //This is the initial value of the edk2 setting, and we will continue to use this parameter
+  }
 
   return PL011UartInitializePort (
            (UINTN)PL011Base,                       // (UINTN)PcdGet64 (PcdSerialRegisterBase),
@@ -218,7 +223,14 @@ SerialPortSetControl (
 
   PL011Base = GetSocUartBaseAddress ();
 
-  return PL011UartSetControl ((UINTN)PL011Base, Control);
+  if (((Control & ~(EFI_SERIAL_REQUEST_TO_SEND             |
+                    EFI_SERIAL_DATA_TERMINAL_READY         |
+                    EFI_SERIAL_HARDWARE_LOOPBACK_ENABLE    |
+                    EFI_SERIAL_SOFTWARE_LOOPBACK_ENABLE    |
+                    EFI_SERIAL_HARDWARE_FLOW_CONTROL_ENABLE)) != 0))
+    return EFI_UNSUPPORTED;
+  else
+    return PL011UartSetControl((UINTN) PL011Base, Control);
   // return PL011UartSetControl ((UINTN)PcdGet64 (PcdSerialRegisterBase), Control);
 }
 

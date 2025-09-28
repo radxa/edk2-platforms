@@ -21,6 +21,13 @@ Device (GPI0) {
       Package () { "id", 3 },
     }
   })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_GPIO_APB, "", \_SB.GPI0},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST1, SW_GPIO_RST_APB_N, \_SB.GPI0, "apb_reset"},
+  })
 }
 
 Device (GPI1) {
@@ -37,6 +44,13 @@ Device (GPI1) {
       Package () { "ngpios", 32 },
       Package () { "id", 4 },
     }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_GPIO_APB, "", \_SB.GPI1},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST1, SW_GPIO_RST_APB_N, \_SB.GPI1, "apb_reset"},
   })
 }
 
@@ -55,6 +69,13 @@ Device (GPI2) {
       Package () { "id", 5 },
     }
   })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_GPIO_APB, "", \_SB.GPI2},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST1, SW_GPIO_RST_APB_N, \_SB.GPI2, "apb_reset"},
+  })
 }
 
 Device (GPI3) {
@@ -71,6 +92,13 @@ Device (GPI3) {
       Package () { "ngpios", 17 },
       Package () { "id", 6 },
     }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_GPIO_APB, "", \_SB.GPI3},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST1, SW_GPIO_RST_APB_N, \_SB.GPI3, "apb_reset"},
   })
 }
 
@@ -89,6 +117,9 @@ Device (GPI4) {
       Package () { "id", 0 },
     }
   })
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_GPIO_APB, "", \_SB.GPI4},
+  })
 }
 
 Device (GPI5) {
@@ -105,6 +136,9 @@ Device (GPI5) {
       Package () { "ngpios", 10 },
       Package () { "id", 1 },
     }
+  })
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_GPIO_APB, "", \_SB.GPI5},
   })
 }
 

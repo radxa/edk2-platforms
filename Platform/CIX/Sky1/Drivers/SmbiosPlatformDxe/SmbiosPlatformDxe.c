@@ -38,6 +38,7 @@ be found at http://opensource.org/licenses/bsd-license.php
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Protocol/Smbios.h>
+#include <Protocol/SocInfoProtocol.h>
 
 #define TYPE0_STRINGS                                                          \
   "Cix Technology Corp.\0" /* Vendor */                                        \
@@ -448,7 +449,7 @@ STATIC CONST ARM_TYPE16  mArmDefaultType16 = {
 };
 
 // Memory device
-STATIC CONST ARM_TYPE17  mArmDefaultType17 = {
+STATIC ARM_TYPE17  mArmDefaultType17 = {
   {
     {
       // SMBIOS_STRUCTURE Hdr
@@ -545,11 +546,42 @@ InstallMemoryStructure (
   SmbiosHandle                                  = MemoryDescriptor.Base.Hdr.Handle;
 
   Status = Smbios->Add (
-                        Smbios,
-                        NULL,
-                        &SmbiosHandle,
-                        (EFI_SMBIOS_TABLE_HEADER *)&MemoryDescriptor
-                        );
+                     Smbios,
+                     NULL,
+                     &SmbiosHandle,
+                     (EFI_SMBIOS_TABLE_HEADER *)&MemoryDescriptor
+                     );
+  return Status;
+}
+
+/**
+   Update memory device (type17) table
+
+**/
+EFI_STATUS
+UpdateSmbiosType17 (
+  VOID
+  )
+{
+  EFI_STATUS             Status = EFI_SUCCESS;
+  CIX_SOC_INFO_PROTOCOL  *pSocInfoProtocol;
+
+  Status = gBS->LocateProtocol (
+                  &gCixSocInfoProtocolGuid,
+                  NULL,
+                  (VOID **)&pSocInfoProtocol
+                  );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: soc info protocol not found\n", __FUNCTION__));
+    return EFI_NOT_FOUND;
+  }
+
+  if (pSocInfoProtocol->MemInfo == NULL) {
+    DEBUG ((DEBUG_ERROR, "MemInfo not find!\n"));
+    return EFI_NOT_FOUND;
+  }
+
+  mArmDefaultType17.Base.Size = pSocInfoProtocol->MemInfo->TotalSize;
   return Status;
 }
 
@@ -573,11 +605,11 @@ InstallStructures (
     SmbiosHandle =
       ((EFI_SMBIOS_TABLE_HEADER *)DefaultTables[TableEntry])->Handle;
     Status = Smbios->Add (
-                          Smbios,
-                          NULL,
-                          &SmbiosHandle,
-                          (EFI_SMBIOS_TABLE_HEADER *)DefaultTables[TableEntry]
-                          );
+                       Smbios,
+                       NULL,
+                       &SmbiosHandle,
+                       (EFI_SMBIOS_TABLE_HEADER *)DefaultTables[TableEntry]
+                       );
     if (EFI_ERROR (Status)) {
       break;
     }
@@ -605,6 +637,12 @@ InstallAllStructures (
   mArmDefaultType0.Base.SystemBiosMinorRelease =
     PcdGet32 (PcdFirmwareRevision) & 0xFF;
 
+  // Update memory device (type17) table
+  Status = UpdateSmbiosType17 ();
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Fail to update smbios type17!\n"));
+  }
+
   //
   // Add all table entries
   //
@@ -613,10 +651,10 @@ InstallAllStructures (
 
   // Generate memory descriptors for the two memory ranges we know about
   Status = InstallMemoryStructure (
-                                   Smbios,
-                                   PcdGet64 (PcdSystemMemoryBase),
-                                   PcdGet64 (PcdSystemMemorySize)
-                                   );
+             Smbios,
+             PcdGet64 (PcdSystemMemoryBase),
+             PcdGet64 (PcdSystemMemorySize)
+             );
   ASSERT_EFI_ERROR (Status);
 
   return Status;

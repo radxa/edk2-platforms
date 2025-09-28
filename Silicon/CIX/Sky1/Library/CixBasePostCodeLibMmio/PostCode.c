@@ -68,6 +68,8 @@ POST_CODE_KEY_TO_VAL  PostCodeMapTable[] =
   { XspiInitDxeEnd,                     0xE400, L"XspiInitDxeEnd"                     },
   { HdaInitDxeStart,                    0xE401, L"HdaInitDxeStart"                    },
   { HdaInitDxeEnd,                      0xE440, L"HdaInitDxeEnd"                      },
+  { PdDxeStart,                         0xE6C1, L"PdDxeStart"                         },
+  { PdDxeEnd,                           0xE700, L"PdDxeEnd"                           },
   { DxeCoreDispatcherEnd,               0xE1FE, L"DxeCoreDispatcherEnd"               },
   { DxeMainEnd,                         0xE1FF, L"DxeMainEnd"                         },
   //  { bds ,0xE200~},

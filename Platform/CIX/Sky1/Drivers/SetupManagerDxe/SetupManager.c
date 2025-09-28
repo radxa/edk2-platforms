@@ -433,16 +433,14 @@ VOID
 InitializeHardwareInfo (
   )
 {
-  EFI_STATUS                 Status;
-  EFI_HII_HANDLE             HiiHandle;
-  BOARD_ID_INFO              BoardID;
-  CIX_SOC_INFO_PROTOCOL      *pCixSocInfoProtocol = NULL;
-  EC_PLATFORM_PROTOCOL       *pEcPlatformProtocol = NULL;
-  EC_RESPONSE_BOARD_ID_INFO  BoardIdInfo;
-  EC_RESPONSE_PD_VER_INFO    PdVerInfo;
-  EC_RESPONSE_PMIC_VER_INFO  PmicVerInfo;
-  CHAR8                      DateBuf[11]   = { 0 };
-  CHAR16                     NewString[11] = { 0 };
+  EFI_STATUS             Status;
+  EFI_HII_HANDLE         HiiHandle;
+  BOARD_ID_INFO          BoardID;
+  CIX_SOC_INFO_PROTOCOL  *pCixSocInfoProtocol = NULL;
+  EC_PLATFORM_PROTOCOL   *pEcPlatformProtocol = NULL;
+  EC_RESPONSE            EcResponse;
+  CHAR8                  DateBuf[11]   = { 0 };
+  CHAR16                 NewString[11] = { 0 };
 
   Status = gBS->LocateProtocol (&gCixEcPlatformProtocolGuid, NULL, (VOID **)&pEcPlatformProtocol);
   if (EFI_ERROR (Status)) {
@@ -450,7 +448,7 @@ InitializeHardwareInfo (
     return;
   }
 
-  Status = pEcPlatformProtocol->GetBoardId (pEcPlatformProtocol, &BoardIdInfo);
+  Status = pEcPlatformProtocol->Transfer (pEcPlatformProtocol, EC_COMMAND_GET_BOARD_ID, NULL, &EcResponse);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "Get Board ID failed\n"));
     return;
@@ -464,11 +462,13 @@ InitializeHardwareInfo (
 
   HiiHandle = gSetupManagerPrivate.HiiHandle;
 
+  ZeroMem (DateBuf, sizeof (DateBuf));
+  ZeroMem (NewString, sizeof (NewString));
   AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%dGB", pCixSocInfoProtocol->MemInfo->TotalSize/1024);
   AsciiToUnicode (DateBuf, NewString);
   HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_SIZE_VALUE), NewString, NULL);
 
-  BoardID.Bits.PcbSku = BoardIdInfo.Id.Sku + (BoardIdInfo.Id.SkuExt << 3);
+  BoardID.Bits.PcbSku = EcResponse.BoardId.Id.Sku + (EcResponse.BoardId.Id.SkuExt << 3);
   switch (BoardID.Bits.PcbSku) {
     case 0:
       HiiSetString (HiiHandle, STRING_TOKEN (STR_PCB_SKU_VALUE), L"MERAK", NULL);
@@ -496,7 +496,7 @@ InitializeHardwareInfo (
       break;
   }
 
-  BoardID.Bits.MemType = BoardIdInfo.Id.Memory + (BoardIdInfo.Id.MemExt << 3);
+  BoardID.Bits.MemType = EcResponse.BoardId.Id.Memory + (EcResponse.BoardId.Id.MemExt << 3);
   switch (BoardID.Bits.MemType) {
     case 0:
       HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_TYPE_VALUE), L"4GB Samsung LP5 315b", NULL);
@@ -515,7 +515,7 @@ InitializeHardwareInfo (
       break;
   }
 
-  BoardID.Bits.BoardRev = BoardIdInfo.Id.Rev;
+  BoardID.Bits.BoardRev = EcResponse.BoardId.Id.Rev;
   switch (BoardID.Bits.BoardRev) {
     case 0:
       HiiSetString (HiiHandle, STRING_TOKEN (STR_BOARD_REV_VALUE), L"Rev A", NULL);
@@ -533,24 +533,28 @@ InitializeHardwareInfo (
       break;
   }
 
-  Status = pEcPlatformProtocol->GetPdVersion (pEcPlatformProtocol, &PdVerInfo);
+  Status = pEcPlatformProtocol->Transfer (pEcPlatformProtocol, EC_COMMAND_GET_PD_VERSION, NULL, &EcResponse);
   if (!EFI_ERROR (Status)) {
+    ZeroMem (DateBuf, sizeof (DateBuf));
+    ZeroMem (NewString, sizeof (NewString));
     AsciiSPrint (
       (CHAR8 *)DateBuf,
       sizeof (DateBuf),
       "%d.%d %d.%d",
-      PdVerInfo.Pd2Ver & 0xFF,
-      (PdVerInfo.Pd2Ver & 0xFF00) >> 8,
-      PdVerInfo.Pd1Ver & 0xFF,
-      (PdVerInfo.Pd1Ver & 0xFF00) >> 8
+      EcResponse.PdVer.Pd2Ver & 0xFF,
+      (EcResponse.PdVer.Pd2Ver & 0xFF00) >> 8,
+      EcResponse.PdVer.Pd1Ver & 0xFF,
+      (EcResponse.PdVer.Pd1Ver & 0xFF00) >> 8
       );
     AsciiToUnicode (DateBuf, NewString);
     HiiSetString (HiiHandle, STRING_TOKEN (STR_PD_VER_VALUE), NewString, NULL);
   }
 
-  Status = pEcPlatformProtocol->GetPmicVersion (pEcPlatformProtocol, &PmicVerInfo);
+  Status = pEcPlatformProtocol->Transfer (pEcPlatformProtocol, EC_COMMAND_GET_PMIC_VERSION, NULL, &EcResponse);
   if (!EFI_ERROR (Status)) {
-    AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%d %d %d", PmicVerInfo.Pmic3Ver, PmicVerInfo.Pmic2Ver, PmicVerInfo.Pmic1Ver);
+    ZeroMem (DateBuf, sizeof (DateBuf));
+    ZeroMem (NewString, sizeof (NewString));
+    AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%d %d %d", EcResponse.PmicVer.Pmic3Ver, EcResponse.PmicVer.Pmic2Ver, EcResponse.PmicVer.Pmic1Ver);
     AsciiToUnicode (DateBuf, NewString);
     HiiSetString (HiiHandle, STRING_TOKEN (STR_PMIC_VER_VALUE), NewString, NULL);
   }

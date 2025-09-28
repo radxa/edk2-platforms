@@ -4,7 +4,6 @@
  **/
 
 #include "DtbUpdate.h"
-#include <Library/DtbUpdateLib.h>
 #include <libfdt.h>
 #include <fdt.h>
 #include <Library/HwHarvestLib.h>
@@ -81,7 +80,7 @@ fdt_create_phandle (
 }
 
 UINT32
-fdt_check_header_ext (
+fdt_check_header_ext_si (
   VOID  *fdt
   )
 {
@@ -200,7 +199,8 @@ DisableDtbNode (
 VOID
 NpuHarvest (
   IN  VOID         *fdt,
-  IN  CONST CHAR8  *NodePath
+  IN  CONST CHAR8  *NodePath,
+  IN  UINT8        HarvestInfoValue
   )
 {
   INT32  Node;
@@ -215,7 +215,7 @@ NpuHarvest (
     return;
   }
 
-  Rc = fdt_setprop_cell (fdt, Node, "harvest_info", 0x1);
+  Rc = fdt_setprop_cell (fdt, Node, "core_mask", HarvestInfoValue);
   if (Rc < 0) {
     DEBUG ((DEBUG_ERROR, "%a: failed to set status to 'disabled' on '%a': %a\n", __FUNCTION__, NodePath, fdt_strerror (Rc)));
   }
@@ -312,19 +312,40 @@ DbtNodePropRm (
  #endif
 }
 
+typedef struct {
+    UINT8 HarvestStatus;
+    UINT8 HarvestInfoValue;
+} NpuCoreStatus;
+
+NpuCoreStatus NpuStatus[] = {
+  {3, 0},
+  {2, 1},
+  {1, 2},
+  {0, 3}
+};
+
 EFI_STATUS
 UpdateDtbStatus (
   IN  VOID  *fdt
   )
 {
+  UINT32 NpuHarvestStatus = 0;
+  UINT32 HarvestInfoValue = 3;
   // PCIE
   if (IsIpHarvested (PcieX8)) {
     DisableDtbNode (fdt, DT_NODE_PCIEX8_RC);
   }
 
   // NPU
-  if (IsIpHarvested (NpuCore1_2)) {
-    NpuHarvest (fdt, DT_NODE_AIPU);
+  NpuHarvestStatus = (IsIpHarvested (NpuCore0)<<1)|IsIpHarvested (NpuCore1_2);
+  if (NpuHarvestStatus) {
+    for(UINT32 i = 0; i < 4; i++) {
+      if (NpuHarvestStatus == NpuStatus[i].HarvestStatus) {
+        HarvestInfoValue = NpuStatus[i].HarvestInfoValue;
+        break;
+      }
+    }
+    NpuHarvest (fdt, DT_NODE_AIPU, HarvestInfoValue);
   }
 
   // AUDIO
@@ -712,7 +733,7 @@ DumpIspDtbStatus (
 }
 
 VOID
-DumpDtbStatus (
+DumpDtbStatusSi (
   VOID  *fdt
   )
 {
@@ -736,7 +757,7 @@ DumpDtbStatus (
 }
 
 EFI_STATUS
-UpdateDtb (
+UpdateDtbSi (
   VOID   *fdt,
   UINTN  *ImageSize
   )
@@ -745,7 +766,7 @@ UpdateDtb (
   INT32       ret;
   UINT32      PaddSize;
 
-  ret = fdt_check_header (fdt) || fdt_check_header_ext (fdt);
+  ret = fdt_check_header (fdt) || fdt_check_header_ext_si (fdt);
   if (ret) {
     DEBUG ((EFI_D_ERROR, "ERROR: Invalid device tree header ...\n"));
     return EFI_NOT_FOUND;

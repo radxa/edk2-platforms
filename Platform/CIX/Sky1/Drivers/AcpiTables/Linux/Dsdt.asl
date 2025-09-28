@@ -9,11 +9,18 @@
 #include <IndustryStandard/Acpi.h>
 #include <Library/AcpiLib.h>
 #include <Library/PcdLib.h>
+#include <Protocol/ClockId.h>
+#include <Protocol/sky1-reset.h>
+#include <Protocol/sky1-reset-fch.h>
+#include <Protocol/sky1-reset-audss.h>
 #include <AcpiRamVariable.h>
 #include "Include/MemoryMap.h"
 #include "Include/InterruptId.h"
 #include "Include/DMACommon.h"
 #include "../Common/CommonDefines.h"
+
+#define RESOURCE_MEM 0x0200
+#define RESOURCE_IRQ 0x0400
 
 DefinitionBlock("DsdtTable.aml", "DSDT", 5, "CIXTEK", "SKY1EDK2", 1) {
   Scope(_SB) {
@@ -27,7 +34,7 @@ DefinitionBlock("DsdtTable.aml", "DSDT", 5, "CIXTEK", "SKY1EDK2", 1) {
     include("Dsdt-ResLookup.asl")
     include("Dsdt-Reset.asl")
     include("Dsdt-Gmac.asl")
-    //include("../Common/Dsdt-Thermal.asl")
+    include("../Common/Dsdt-Thermal.asl")
     include("../Common/Dsdt-ScmiMailbox.asl")
     include("Dsdt-Audss.asl")
     include("../Common/Dsdt-Gpio.asl")
@@ -43,6 +50,7 @@ DefinitionBlock("DsdtTable.aml", "DSDT", 5, "CIXTEK", "SKY1EDK2", 1) {
     include("Dsdt-Spi.asl")
     include("Dsdt-I3c.asl")
     include("../Common/Dsdt-Pcie.asl")
+    include("Dsdt-CdnsPcie.asl")
     include("Dsdt-Vpu.asl")
     include("Dsdt-Dpu.asl")
     include("Dsdt-GPU.asl")
@@ -50,11 +58,13 @@ DefinitionBlock("DsdtTable.aml", "DSDT", 5, "CIXTEK", "SKY1EDK2", 1) {
     include("Dsdt-Wlan.asl")
     include("Dsdt-I2s.asl")
     include("Dsdt-SndCard.asl")
-    // include("Dsdt-SUSB.asl")
     include("../Common/Dsdt-USB.asl")
+    include("Dsdt-SUSB.asl")
     include("../Common/Dsdt-EC.asl")
-    // include("Dsdt-ISP.asl")
-    // include("Dsdt-CSI-DMA.asl")
+    include("Dsdt-ISP.asl")
+    include("Dsdt-CSI-DMA.asl")
     include("../Common/Dsdt-AcpiRam.asl")
+    include("../Common/Dsdt-WMI.asl")
+    include("../Common/Dsdt-Platform.asl")
   }
 }

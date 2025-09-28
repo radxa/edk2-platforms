@@ -28,7 +28,8 @@ PLATFORM_CONFIG_PARAMS_DATA_BLOCK  mPlatformConfigParamsDataBlock = {
   FixedPcdGet8 (PcdIspCamera3Power),
   FixedPcdGet8 (PcdStateAfterG3),
   FixedPcdGet8 (PcdRtcWakeup),
-  FixedPcdGet8 (PcdLightSensorCtrl)
+  FixedPcdGet8 (PcdLightSensorCtrl),
+  FixedPcdGetBool (PcdAcpiSpcrEnable)
 };
 
 PLATFORM_CONFIG_PARAMS_DATA_ENTRY  mPlatformConfigDataEntryTable[] = {
@@ -52,6 +53,7 @@ PLATFORM_CONFIG_PARAMS_DATA_ENTRY  mPlatformConfigDataEntryTable[] = {
   { PARAMS_DATA_STATE_AFTER_G3_ID,      PLATFORM_PARAMS_DATA_OFFSET_SIZE (StateAfterG3),      PARAMS_DATA_MULTI_OPTION_TYPE, L"Restore AC Power Loss",    L"0:Power Off, 1:Power On"                    },
   { PARAMS_DATA_RTC_WAKE_UP_ID,         PLATFORM_PARAMS_DATA_OFFSET_SIZE (RtcWakeup),         PARAMS_DATA_MULTI_OPTION_TYPE, L"RTC Wakeup",               L"0:Disable, 1:Enable"                        },
   { PARAMS_DATA_LIGHT_SENSOR_CTRL_ID,   PLATFORM_PARAMS_DATA_OFFSET_SIZE (LightSensorCtrl),   PARAMS_DATA_MULTI_OPTION_TYPE, L"Light Sensor Control",     L"0:EC Mode, 1:AP Mode"                       },
+  { PARAMS_DATA_SPCR_ENABLE_ID,         PLATFORM_PARAMS_DATA_OFFSET_SIZE (SpcrEnable),        PARAMS_DATA_MULTI_OPTION_TYPE, L"Support SPCR",             L"0:Disable, 1:Enable"                        },
 };
 
 UINT32  mPlatformConfigDataEntryNum = sizeof (mPlatformConfigDataEntryTable) / sizeof (PLATFORM_CONFIG_PARAMS_DATA_ENTRY);

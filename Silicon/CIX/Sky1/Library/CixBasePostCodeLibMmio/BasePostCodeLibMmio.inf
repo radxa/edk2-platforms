@@ -43,5 +43,5 @@
   gEfiMdePkgTokenSpaceGuid.PcdPostCodePropertyMask  ## CONSUMES
   gCixTokenSpaceGuid.PcdPostCodeApAddr
   gCixTokenSpaceGuid.PcdPostCodeSeAddr
-  gCixTokenSpaceGuid.PcdRamLogBaseAddress
-  gCixTokenSpaceGuid.PcdRamLogSize
+  gCixPlatformTokenSpaceGuid.PcdRamLogBaseAddress
+  gCixPlatformTokenSpaceGuid.PcdRamLogSize

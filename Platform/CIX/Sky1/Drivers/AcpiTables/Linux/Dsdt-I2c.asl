@@ -7,13 +7,19 @@
 **/
 #include <sky1-iomux.h>
 
-#define I2C_KEYBOARD_SUPPORT 0
-
 #define MIPI_LT7911UXC_PORT_INIT(RemoteDeviceReference,RemotePort,RemoteEndPoint) \
      Name (_DSD, Package () { \
+            ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"), \
+            Package () { \
+                Package () { "pwdn-gpios",  Package () { ^UXC0, 0, 0, 0 } },   \
+                Package () { "power-gpios",  Package () { ^UXC0, 1, 0, 0 } },  \
+                Package () { "power1-gpios",  Package () { ^UXC0, 1, 1, 0 } },   \
+                Package () { "reset-gpios",  Package () { ^UXC0, 1, 2, 0 } },    \
+                Package () { "pinctrl-names", Package () {"default", "gpio"}},   \
+            }, \
             ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),\
-            Package () {\
-                Package () { "port@0", "PRT0" },\
+            Package () { \
+                Package () { "port@0", "PRT0" }, \
             }\
         })\
         Name (PRT0, Package() {\
@@ -119,9 +125,12 @@ Device (I2C0) {
         Return (0x0)
     }
   }
+
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, I2C0_BASE, I2C0_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_I2C0_INTERRUPT_ID }
+    // Pinctrl
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_fch_i2c0", ResourceConsumer,)
   })
 
   //
@@ -164,11 +173,18 @@ Device (I2C0) {
       }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_I2C0_APB, "", \_SB.I2C0},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST1, SW_I2C0_RST_APB_N, \_SB.I2C0, "i2c_reset"},
+  })
+
 //ISP imgsensor00
   Device (IIS0) {
     Name (_HID, "CIXH3024")
     Name (_UID, 0x00)
-    Name (_STA, 0x00)
+    Name (_STA, 0x0F)
     Name (_CCA, 0)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x34,
@@ -181,14 +197,139 @@ Device (I2C0) {
                       ,
                       Exclusive
                       ,)
+      PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_cam0_hw", ResourceConsumer,)
+      GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+      "\\_SB.GPI1", 0, ResourceConsumer) { 18, 16, 12, 15 }
     })
     Name (_DSD, Package () {
       ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
-          Package () {"actuator-src", \_SB_.I2C3.MTR0},
-          Package () {"isp-src", \_SB_.ISP0},
+          Package () {"actuator-src", \_SB.I2C0.MTR0},
+          Package () {"isp-src", \_SB.ISP0},
+          Package () {"cix,camera-module-index", 0},
+          Package () { "pwren-gpios",  Package () { ^IIS0, 0, 0, 0 } },
+          Package () { "pwren0-gpios",  Package () { ^IIS0, 0, 1, 0 } },
+          Package () { "reset-gpios",  Package () { ^IIS0, 0, 2, 0 } },
+          Package () { "pwdn-gpios",  Package () { ^IIS0, 0, 3, 0 } },
       }
     })
+    Name (CLKT, Package() {
+      Package() {CLK_TREE_CAMERA_MCLK0, "mclk", \_SB.I2C0.IIS0},
+    })
+  }
+  //ISP motor
+  Device (MTR0) {
+    Name (_HID, "CIXH3023")
+    Name (_UID, 0x0)
+    Name (_STA, 0xF)
+    Name (_CCA, 0)
+    Name (_CRS, ResourceTemplate () {
+      I2cSerialBusV2 (0x40,
+                      ControllerInitiated,
+                      124999999,
+                      AddressingMode7Bit,
+                      "\\_SB.I2C0",
+                      0x0,
+                      ResourceConsumer,
+                      ,
+                      Exclusive
+                      ,)
+    })
+    Name (_DSD, Package () {
+      ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+      Package () {
+          Package () {"pi-max-frequency", 124999999},
+      }
+    })
+  }
+
+//MIPI lt7911uxc
+  Device (UXC0) {
+    Name (_HID, "CIXH302C")
+    Name (_UID, 0x0)
+    Name (_STA, 0xF)
+    Name (_CCA, 0)
+    Name (_CRS, ResourceTemplate () {
+      I2cSerialBusV2 (0x43,
+                      ControllerInitiated,
+                      400000,
+                      AddressingMode7Bit,
+                      "\\_SB.I2C0",
+                      0x0,
+                      ResourceConsumer,
+                      ,
+                      Exclusive
+                      ,)
+      PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_lt7911_hw", ResourceConsumer, , RawDataBuffer () { 0x0 })
+      PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_lt7911_hw", ResourceConsumer, , RawDataBuffer () { 0x1 })
+      GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+      "\\_SB.GPI0", 0, ResourceConsumer) { 15 }
+      GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+      "\\_SB.GPI1", 0, ResourceConsumer) { 16, 18, 12 }
+    })
+    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR1, "port@0", "endpoint@1")
+  }
+
+
+//MIPI Virtual0 lt7911uxc
+  Device (UXC1) {
+    Name (_HID, "CIXH302C")
+    Name (_UID, 0x01)
+    Name (_STA, 0x0)
+    Name (_CCA, 0)
+    Name (_CRS, ResourceTemplate () {
+      I2cSerialBusV2 (0x0d,
+                      ControllerInitiated,
+                      400000,
+                      AddressingMode7Bit,
+                      "\\_SB.I2C0",
+                      0x0,
+                      ResourceConsumer,
+                      ,
+                      Exclusive
+                      ,)
+    })
+    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR2, "port@0", "endpoint@1")
+  }
+//MIPI Virtual1 lt7911uxc
+  Device (UXC2) {
+    Name (_HID, "CIXH302C")
+    Name (_UID, 0x02)
+    Name (_STA, 0x0)
+    Name (_CCA, 0)
+    Name (_CRS, ResourceTemplate () {
+      I2cSerialBusV2 (0x1d,
+                      ControllerInitiated,
+                      400000,
+                      AddressingMode7Bit,
+                      "\\_SB.I2C0",
+                      0x0,
+                      ResourceConsumer,
+                      ,
+                      Exclusive
+                      ,)
+    })
+    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR4, "port@0", "endpoint@1")
+  }
+//MIPI Virtual2 lt7911uxc
+  Device (UXC3) {
+    Name (_HID, "CIXH302C")
+    Name (_UID, 0x03)
+    Name (_STA, 0x0)
+    Name (_CCA, 0)
+    Name (_CRS, ResourceTemplate () {
+      I2cSerialBusV2 (0x2d,
+                      ControllerInitiated,
+                      400000,
+                      AddressingMode7Bit,
+                      "\\_SB.I2C0",
+                      0x0,
+                      ResourceConsumer,
+                      ,
+                      Exclusive
+                      ,)
+    })
+    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR5, "port@0", "endpoint@1")
   }
 }
 
@@ -211,8 +352,12 @@ Device (I2C1) {
     ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
         Package () {"ClockName", "fch_i2c1_apb"},
-        Package () { "clock-frequency", 400000 },
+        Package () { "clock-frequency", 100000 },
       }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_I2C1_APB, "", \_SB.I2C1},
   })
 
   Device (PD10) {
@@ -222,7 +367,7 @@ Device (I2C1) {
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x30,
                       ControllerInitiated,
-                      400000,
+                      100000,
                       AddressingMode7Bit,
                       "\\_SB.I2C1",
                       0x0,
@@ -249,7 +394,7 @@ Device (I2C1) {
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x31,
                       ControllerInitiated,
-                      400000,
+                      100000,
                       AddressingMode7Bit,
                       "\\_SB.I2C1",
                       0x0,
@@ -286,12 +431,22 @@ Device (I2C1) {
                       ,
                       Exclusive
                       ,)
+      PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_cam2_hw", ResourceConsumer,)
+      GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+      "\\_SB.GPI1", 0, ResourceConsumer) { 11, 8, 10, 7 }
     })
     Name (_DSD, Package () {
       ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
-          Package () {"isp-src", \_SB_.ISP0},
+          Package () {"cix,camera-module-index", 2},
+          Package () { "pwren-gpios",  Package () { ^IIS2, 0, 0, 0 } },
+          Package () { "pwren0-gpios",  Package () { ^IIS2, 0, 1, 0 } },
+          Package () { "reset-gpios",  Package () { ^IIS2, 0, 2, 0 } },
+          Package () { "pwdn-gpios",  Package () { ^IIS2, 0, 3, 0 } },
       }
+    })
+    Name (CLKT, Package() {
+      Package() {CLK_TREE_CAMERA_MCLK2, "mclk", \_SB.I2C1.IIS2},
     })
   }
 }
@@ -323,6 +478,13 @@ Device (I2C2) {
         Package () { "scl-gpios", Package () { ^I2C2, 0, 0, 0 } },
         Package () { "sda-gpios", Package () { ^I2C2, 0, 1, 0 } },
       }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_I2C2_APB, "", \_SB.I2C2},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST1, SW_I2C2_RST_APB_N, \_SB.I2C2, "i2c_reset"},
   })
 
     /* mmc5633 */
@@ -383,7 +545,7 @@ Device (I2C3) {
     If(\_SB.GETV(ARV_FCH_I2C_3_ENABLE_OFFSET)){
         Return (0xF)
     } else {
-        Return (0xF)
+        Return (0x0)
     }
   }
   Name (_CRS, ResourceTemplate () {
@@ -399,16 +561,19 @@ Device (I2C3) {
       }
   })
 
-  //ISP motor
-  Device (MTR0) {
-    Name (_HID, "CIXH3023")
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_I2C3_APB, "", \_SB.I2C3},
+  })
+
+// RTC RX8900
+  Device (RTC0) {
+    Name (_HID, "RX8900")
     Name (_UID, 0x0)
     Name (_STA, 0xF)
-    Name (_CCA, 0)
     Name (_CRS, ResourceTemplate () {
-      I2cSerialBusV2 (0x40,
+      I2cSerialBusV2 (0x32,
                       ControllerInitiated,
-                      124999999,
+                      400000,
                       AddressingMode7Bit,
                       "\\_SB.I2C3",
                       0x0,
@@ -416,12 +581,9 @@ Device (I2C3) {
                       ,
                       Exclusive
                       ,)
-    })
-    Name (_DSD, Package () {
-      ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-      Package () {
-          Package () {"pi-max-frequency", 124999999},
-      }
+      PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0,
+                       "pinctrl_ra8900ce_irq", ResourceConsumer,)
+      GpioInt(Level, ActiveLow, Exclusive, PullUp, , "\\_SB.GPI4") { 10 }
     })
   }
 
@@ -442,95 +604,23 @@ Device (I2C3) {
                       ,
                       Exclusive
                       ,)
+      PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_cam1_hw", ResourceConsumer,)
+      GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+      "\\_SB.GPI1", 0, ResourceConsumer) { 18, 16, 17, 19 }
     })
     Name (_DSD, Package () {
       ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
-          Package () {"isp-src", \_SB_.ISP0},
+          Package () {"cix,camera-module-index", 1 },
+          Package () { "pwren-gpios",  Package () { ^IIS1, 0, 0, 0 } },
+          Package () { "pwren0-gpios",  Package () { ^IIS1, 0, 1, 0 } },
+          Package () { "reset-gpios",  Package () { ^IIS1, 0, 2, 0 } },
+          Package () { "pwdn-gpios",  Package () { ^IIS1, 0, 3, 0 } },
       }
     })
-  }
-
-//MIPI lt7911uxc
-  Device (UXC0) {
-    Name (_HID, "CIXH302C")
-    Name (_UID, 0x0)
-    Name (_STA, 0xF)
-    Name (_CCA, 0)
-    Name (_CRS, ResourceTemplate () {
-      I2cSerialBusV2 (0x43,
-                      ControllerInitiated,
-                      400000,
-                      AddressingMode7Bit,
-                      "\\_SB.I2C3",
-                      0x0,
-                      ResourceConsumer,
-                      ,
-                      Exclusive
-                      ,)
+    Name (CLKT, Package() {
+      Package() {CLK_TREE_CAMERA_MCLK1, "mclk", \_SB.I2C3.IIS1},
     })
-    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR1, "port@0", "endpoint@1")
-  }
-
-//MIPI Virtual0 lt7911uxc
-  Device (UXC1) {
-    Name (_HID, "CIXH302C")
-    Name (_UID, 0x01)
-    Name (_STA, 0x0)
-    Name (_CCA, 0)
-    Name (_CRS, ResourceTemplate () {
-      I2cSerialBusV2 (0x0d,
-                      ControllerInitiated,
-                      400000,
-                      AddressingMode7Bit,
-                      "\\_SB.I2C3",
-                      0x0,
-                      ResourceConsumer,
-                      ,
-                      Exclusive
-                      ,)
-    })
-    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR2, "port@0", "endpoint@1")
-  }
-//MIPI Virtual1 lt7911uxc
-  Device (UXC2) {
-    Name (_HID, "CIXH302C")
-    Name (_UID, 0x02)
-    Name (_STA, 0x0)
-    Name (_CCA, 0)
-    Name (_CRS, ResourceTemplate () {
-      I2cSerialBusV2 (0x1d,
-                      ControllerInitiated,
-                      400000,
-                      AddressingMode7Bit,
-                      "\\_SB.I2C3",
-                      0x0,
-                      ResourceConsumer,
-                      ,
-                      Exclusive
-                      ,)
-    })
-    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR4, "port@0", "endpoint@1")
-  }
-//MIPI Virtual2 lt7911uxc
-  Device (UXC3) {
-    Name (_HID, "CIXH302C")
-    Name (_UID, 0x03)
-    Name (_STA, 0x0)
-    Name (_CCA, 0)
-    Name (_CRS, ResourceTemplate () {
-      I2cSerialBusV2 (0x2d,
-                      ControllerInitiated,
-                      400000,
-                      AddressingMode7Bit,
-                      "\\_SB.I2C3",
-                      0x0,
-                      ResourceConsumer,
-                      ,
-                      Exclusive
-                      ,)
-    })
-    MIPI_LT7911UXC_PORT_INIT(\_SB_.DPR5, "port@0", "endpoint@1")
   }
 }
 
@@ -557,11 +647,15 @@ Device (I2C4) {
       }
   })
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_I2C4_APB, "", \_SB.I2C4},
+  })
+
 //ISP imgsensor03
   Device (IIS3) {
     Name (_HID, "CIXH3024")
-    Name (_UID, 0x03)
-    Name (_STA, 0x00)
+    Name (_UID, 0x3)
+    Name (_STA, 0xF)
     Name (_CCA, 0)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x3a,
@@ -574,12 +668,22 @@ Device (I2C4) {
                       ,
                       Exclusive
                       ,)
+      PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_cam3_hw", ResourceConsumer,)
+      GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+      "\\_SB.GPI1", 0, ResourceConsumer) { 11, 8, 13, 14 }
     })
     Name (_DSD, Package () {
       ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
-          Package () {"isp-src", \_SB_.ISP0},
+          Package () {"cix,camera-module-index", 3},
+          Package () { "pwren-gpios",  Package () { ^IIS3, 0, 0, 0 } },
+          Package () { "pwren0-gpios",  Package () { ^IIS3, 0, 1, 0 } },
+          Package () { "reset-gpios",  Package () { ^IIS3, 0, 2, 0 } },
+          Package () { "pwdn-gpios",  Package () { ^IIS3, 0, 3, 0 } },
       }
+    })
+    Name (CLKT, Package() {
+      Package() {CLK_TREE_CAMERA_MCLK3, "mclk", \_SB.I2C4.IIS3},
     })
   }
 }
@@ -606,6 +710,10 @@ Device (I2C5) {
         Package () { "clock-frequency", 400000 },
       }
   })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_I2C5_APB, "", \_SB.I2C5},
+  })
 }
 
 Device (I2C7) {
@@ -627,8 +735,12 @@ Device (I2C7) {
     ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
         Package () {"ClockName", "fch_i2c7_apb"},
-        Package () { "clock-frequency", 400000 },
+        Package () { "clock-frequency", 100000 },
       }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_I2C7_APB, "", \_SB.I2C7},
   })
 
   Device (PD00) {
@@ -638,7 +750,7 @@ Device (I2C7) {
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x30,
                       ControllerInitiated,
-                      400000,
+                      100000,
                       AddressingMode7Bit,
                       "\\_SB.I2C7",
                       0x0,
@@ -665,7 +777,7 @@ Device (I2C7) {
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x31,
                       ControllerInitiated,
-                      400000,
+                      100000,
                       AddressingMode7Bit,
                       "\\_SB.I2C7",
                       0x0,
@@ -686,68 +798,3 @@ Device (I2C7) {
   }
 }
 
-#if I2C_KEYBOARD_SUPPORT
-Device (IKBD)
-{
-    Name (_ADR, One)
-    Name (_HID, "PNP0C50")
-    Name (_CID, "PNP0C50")
-    Name (_UID, One)
-
-    Method(_DSM, 0x4, NotSerialized)
-    {
-        // DSM UUID for HIDI2C. Do Not change.
-        If(LEqual(Arg0, ToUUID("3CDFF6F7-4267-4555-AD05-B30A3D8938DE")))
-        {
-            // Function 0 : Query Function
-            If(LEqual(Arg2, Zero))
-            {
-                // Revision 1
-                If(LEqual(Arg1, One))
-                {
-                    Return(Buffer(One) { 0x03 })
-                }
-                Else
-                {
-                    Return(Buffer(One) { 0x00 })
-                }
-            }
-            // Function 1 : HID Function
-            If(LEqual(Arg2, One))
-            {
-                // HID Descriptor Address (IHV Specific)
-                Return(0x0001)
-            }
-        }
-        Else
-        {
-            Return(Buffer(One) { 0x00 })
-        }
-    }
-
-    Method (_STA, 0, NotSerialized)
-    {
-        Return (0x0F)
-    }
-
-    Method (_CRS, 0, Serialized)
-    {
-        Name (RBUF, ResourceTemplate ()
-        {
-            I2cSerialBus (
-                0x3A,                  //SlaveAddress: bus address
-                ControllerInitiated,   //SlaveMode: Default to ControllerInitiated
-                100000,                //ConnectionSpeed: in Hz
-                AddressingMode7Bit,    //Addressing Mode: default to 7 bit
-                "\\_SB.I2C5",          //ResourceSource: I2C bus controller name
-                ,                      //ResourceSourceIndex: defaults to 0
-                ,                      //ResourceUsage: Defaults to ResourceConsumer
-                ,                      //Descriptor Name: creates name for offset of resource descriptor
-            )
-            GpioIO(Shared, PullUp, 0, 0, IoRestrictionNone, "\\_SB.GPI4", 0, ResourceConsumer, , ) { 0 }
-            GpioInt(Level, ActiveLow, Shared, PullUp, 0, "\\_SB.GPI4",) { 0 }
-        })
-        Return (RBUF)
-    }
-}  // Device (IKBD)
-#endif

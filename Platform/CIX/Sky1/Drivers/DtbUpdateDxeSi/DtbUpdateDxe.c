@@ -4,7 +4,7 @@
  **/
 
 #include "DtbUpdateDxe.h"
-#include <Library/DtbUpdateLib.h>
+#include <Library/DtbUpdateLibSi.h>
 #include <libfdt.h>
 #include <fdt.h>
 
@@ -123,7 +123,7 @@ DtsImageUpdateCallBack (
     }
 
     DEBUG ((DEBUG_INFO, "Before UpdateDeviceTree Data size :%d\n", ImageSize));
-    Status = UpdateDtb (ImageBuffer, &ImageSize);
+    Status = UpdateDtbSi (ImageBuffer, &ImageSize);
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_INFO, "UpdateDeviceTree Status :%r\n", Status));
       goto exit;
@@ -287,7 +287,7 @@ DumpDtbBootEventNotify (
       goto exit;
     }
 
-    DumpDtbStatus (ImageBuffer);
+    DumpDtbStatusSi (ImageBuffer);
   } else {
     DEBUG ((DEBUG_INFO, "File not found\n"));
     return;

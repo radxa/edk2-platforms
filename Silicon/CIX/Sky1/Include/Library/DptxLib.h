@@ -150,6 +150,7 @@ struct DptxDevice {
   CONST VOID                 *Private;
   BOOLEAN                    TimingFix;     /* if timing is fixed */
   UINT32                     Delay;         /* us, delay After Training */
+  BOOLEAN                    eDPPanel;      /* eDP panel is mounted */
 };
 
 #endif

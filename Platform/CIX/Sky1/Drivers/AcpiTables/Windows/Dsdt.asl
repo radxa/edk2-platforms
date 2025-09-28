@@ -10,6 +10,8 @@
 #include <Library/AcpiLib.h>
 #include <Library/PcdLib.h>
 #include <AcpiRamVariable.h>
+#include <Protocol/ClockId.h>
+#include <Protocol/sky1-reset-fch.h>
 #include "Include/MemoryMap.h"
 #include "Include/InterruptId.h"
 #include "Include/DMACommon.h"
@@ -54,5 +56,7 @@ DefinitionBlock("DsdtTable.aml", "DSDT", 5, "CIXTEK", "SKY1EDK2", 1) {
     // include("Dsdt-ISP.asl")
     // include("Dsdt-CSI-DMA.asl")
     include("../Common/Dsdt-AcpiRam.asl")
+    include("../Common/Dsdt-WMI.asl")
+    include("../Common/Dsdt-Platform.asl")
   }
 }

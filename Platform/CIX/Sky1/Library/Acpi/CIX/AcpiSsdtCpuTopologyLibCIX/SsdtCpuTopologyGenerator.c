@@ -321,11 +321,7 @@ CreateAmlLpiMethod (
   return Status;
 }
 
-/** Create and add an CPUL Node to _SB scope
-  CPUL means valid CPU Name List
-
-  This generates the following ASL code:
-  Name (CPUL, Package () { \_SB_.CPU0, \_SB_.CPU1, \_SB_.CPU2, \_SB_.CPU3 })
+/** Create a set of CPU passive thermal node to _SB scope
 
   @param [in] CfgMgrProtocol   Pointer to the Configuration Manager
                                Protocol Interface.
@@ -338,7 +334,7 @@ CreateAmlLpiMethod (
 STATIC
 EFI_STATUS
 EFIAPI
-CreateAmlCpulNode (
+CreateAmlCpuPTNode (
   IN  CONST EDKII_CONFIGURATION_MANAGER_PROTOCOL  *CONST  CfgMgrProtocol,
   IN        AML_OBJECT_NODE_HANDLE                        ScopeNode
   )
@@ -347,9 +343,19 @@ CreateAmlCpulNode (
   CM_ARM_GICC_INFO  *GicCInfo;
   UINT32            GicCInfoCount;
   UINT32            CpuIndex;
+  UINT32            CoreId;
   UINT32            CpuNameStringLength = SB_SCOPE_PREFIX_SIZE + AML_NAME_SEG_SIZE;
   CHAR8             CpuName[AML_NAME_SEG_SIZE + 1];
-  CHAR8             CpuNameStringList[PLAT_CPU_COUNT][CpuNameStringLength];
+  CHAR8             CpuAllNameStringList[PLAT_CPU_COUNT][CpuNameStringLength];
+  CHAR8             CpuL0NameStringList[PLAT_CPU_L0_COUNT][CpuNameStringLength];
+  CHAR8             CpuM0NameStringList[PLAT_CPU_M0_COUNT][CpuNameStringLength];
+  CHAR8             CpuM1NameStringList[PLAT_CPU_M1_COUNT][CpuNameStringLength];
+  CHAR8             CpuB0NameStringList[PLAT_CPU_B0_COUNT][CpuNameStringLength];
+  CHAR8             CpuB1NameStringList[PLAT_CPU_B1_COUNT][CpuNameStringLength];
+  UINT8             CpuL0Count = 0, CpuM0Count = 0, CpuM1Count = 0, CpuB0Count = 0, CpuB1Count = 0;
+
+  CM_CIX_CPUUID_CORENUMBER_MAP  *CpuUidtoCoreNumberMap;
+  UINT32                        CpuUidtoCoreNumberMapCount;
 
   ASSERT (CfgMgrProtocol != NULL);
   ASSERT (ScopeNode != NULL);
@@ -365,6 +371,17 @@ CreateAmlCpulNode (
     return Status;
   }
 
+  Status = GetECixObjCpuUidtoCoreNumberMap (
+             CfgMgrProtocol,
+             CM_NULL_TOKEN,
+             &CpuUidtoCoreNumberMap,
+             &CpuUidtoCoreNumberMapCount
+             );
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+    return Status;
+  }
+
   // Convert cpu number to cpu name string list
   for (CpuIndex = 0; CpuIndex < GicCInfoCount; CpuIndex++) {
     Status = WriteCpuAslName (CpuIndex, CpuName);
@@ -373,12 +390,91 @@ CreateAmlCpulNode (
       return Status;
     }
 
-    CopyMem (CpuNameStringList[CpuIndex], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
-    CopyMem (CpuNameStringList[CpuIndex]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
+    CoreId = CpuUidtoCoreNumberMap[CpuIndex];
+    if ((CoreId >= 0) && (CoreId <= 3)) {
+      CopyMem (CpuL0NameStringList[CpuL0Count], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
+      CopyMem (CpuL0NameStringList[CpuL0Count]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
+      CpuL0Count++;
+    } else if ((CoreId >= 4) && (CoreId <= 5)) {
+      CopyMem (CpuM0NameStringList[CpuM0Count], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
+      CopyMem (CpuM0NameStringList[CpuM0Count]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
+      CpuM0Count++;
+    } else if ((CoreId >= 6) && (CoreId <= 7)) {
+      CopyMem (CpuM1NameStringList[CpuM1Count], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
+      CopyMem (CpuM1NameStringList[CpuM1Count]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
+      CpuM1Count++;
+    } else if ((CoreId >= 8) && (CoreId <= 9)) {
+      CopyMem (CpuB0NameStringList[CpuB0Count], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
+      CopyMem (CpuB0NameStringList[CpuB0Count]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
+      CpuB0Count++;
+    } else if ((CoreId >= 10) && (CoreId <= 11)) {
+      CopyMem (CpuB1NameStringList[CpuB1Count], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
+      CopyMem (CpuB1NameStringList[CpuB1Count]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
+      CpuB1Count++;
+    }
+
+    CopyMem (CpuAllNameStringList[CpuIndex], SB_SCOPE_PREFIX, SB_SCOPE_PREFIX_SIZE);
+    CopyMem (CpuAllNameStringList[CpuIndex]+ SB_SCOPE_PREFIX_SIZE - 1, CpuName, 5);
   }
 
-  Status = AmlCreateCpulNode (
-             (CHAR8 *)CpuNameStringList,
+  Status = AmlCreateCpuPTNode (
+             "CPL0",
+             (CHAR8 *)CpuL0NameStringList,
+             CpuL0Count,
+             CpuNameStringLength,
+             ScopeNode
+             );
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+  }
+
+  Status = AmlCreateCpuPTNode (
+             "CPM0",
+             (CHAR8 *)CpuM0NameStringList,
+             CpuM0Count,
+             CpuNameStringLength,
+             ScopeNode
+             );
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+  }
+
+  Status = AmlCreateCpuPTNode (
+             "CPM1",
+             (CHAR8 *)CpuM1NameStringList,
+             CpuM1Count,
+             CpuNameStringLength,
+             ScopeNode
+             );
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+  }
+
+  Status = AmlCreateCpuPTNode (
+             "CPB0",
+             (CHAR8 *)CpuB0NameStringList,
+             CpuB0Count,
+             CpuNameStringLength,
+             ScopeNode
+             );
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+  }
+
+  Status = AmlCreateCpuPTNode (
+             "CPB1",
+             (CHAR8 *)CpuB1NameStringList,
+             CpuB1Count,
+             CpuNameStringLength,
+             ScopeNode
+             );
+  if (EFI_ERROR (Status)) {
+    ASSERT (0);
+  }
+
+  Status = AmlCreateCpuPTNode (
+             "CPUL",
+             (CHAR8 *)CpuAllNameStringList,
              GicCInfoCount,
              CpuNameStringLength,
              ScopeNode
@@ -637,7 +733,7 @@ BuildSsdtCpuTopologyTable (
     goto exit_handler;
   }
 
-  Status = CreateAmlCpulNode (
+  Status = CreateAmlCpuPTNode (
              CfgMgrProtocol,
              ScopeNode
              );

@@ -184,11 +184,6 @@ GetSocDtb (
   void    *tags
   );
 
-BOOLEAN
-GetDtboNeeded (
-  VOID
-  );
-
 VOID *
 GetBoardDtb (
   BootInfo  *Info,

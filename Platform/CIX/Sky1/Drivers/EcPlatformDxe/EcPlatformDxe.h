@@ -12,5 +12,4 @@
 #include <Protocol/EcPlatformProtocol.h>
 #include <Protocol/ConfigParamsManageProtocol.h>
 
-#define EC_PROTOCOL_VERSION  0x01
 #endif

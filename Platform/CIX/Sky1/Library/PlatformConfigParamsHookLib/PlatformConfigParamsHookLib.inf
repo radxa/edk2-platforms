@@ -41,8 +41,8 @@
 [Protocols]
 
 [FixedPcd]
-  gCixTokenSpaceGuid.PcdRa8900ceI2cBus
-  gCixTokenSpaceGuid.PcdRa8900ceI2cSlaveAddress
+  gCixPlatformTokenSpaceGuid.PcdRa8900ceI2cBus
+  gCixPlatformTokenSpaceGuid.PcdRa8900ceI2cSlaveAddress
   gCixTokenSpaceGuid.PcdI2c0BusFreq
   gCixTokenSpaceGuid.PcdI2c1BusFreq
   gCixTokenSpaceGuid.PcdI2c2BusFreq

@@ -43,7 +43,7 @@ typedef struct {
 
 typedef struct {
   EFI_ACPI_6_0_IO_REMAPPING_RMR_NODE      RmrNodeHeadr;
-  EFI_ACPI_6_0_IO_REMAPPING_ID_TABLE      RmrIdMap[2];
+  EFI_ACPI_6_0_IO_REMAPPING_ID_TABLE      RmrIdMap[10];
   EFI_ACPI_6_0_IO_REMAPPING_MEM_RANGE_DESC  RmrDescArray[1];
 } SKY1_EFI_ACPI_6_0_IO_REMAPPING_RMR_NODE;
 
@@ -393,7 +393,7 @@ ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE  Iort =
         sizeof (SKY1_EFI_ACPI_6_0_IO_REMAPPING_RMR_NODE),  // Length
         3,                                                 // Revision
         0,                                                 // Identifier
-        2,                                                 // NumIdMapping
+        10,                                                 // NumIdMapping
         OFFSET_OF (SKY1_EFI_ACPI_6_0_IO_REMAPPING_RMR_NODE, RmrIdMap), // IdReference
       },
       0x11, //flags, allow remap, normal non-cacheable
@@ -401,8 +401,16 @@ ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE  Iort =
       OFFSET_OF (SKY1_EFI_ACPI_6_0_IO_REMAPPING_RMR_NODE, RmrDescArray), // MemoryRangeDesc
     },
     {
+      SKY1_ID_MAPPING_SINGLE (0x00, MmSmmuNode),
+      SKY1_ID_MAPPING_SINGLE (0x01, MmSmmuNode),
+      SKY1_ID_MAPPING_SINGLE (0x06, MmSmmuNode),
+      SKY1_ID_MAPPING_SINGLE (0x07, MmSmmuNode),
       SKY1_ID_MAPPING_SINGLE (0x0C, MmSmmuNode),
       SKY1_ID_MAPPING_SINGLE (0x0D, MmSmmuNode),
+      SKY1_ID_MAPPING_SINGLE (0x12, MmSmmuNode),
+      SKY1_ID_MAPPING_SINGLE (0x13, MmSmmuNode),
+      SKY1_ID_MAPPING_SINGLE (0x18, MmSmmuNode),
+      SKY1_ID_MAPPING_SINGLE (0x19, MmSmmuNode),
     },
     {
       {

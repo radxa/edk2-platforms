@@ -21,6 +21,14 @@ CsuPmMsgGetFirmwareVersion (
   );
 
 EFI_STATUS
+CsuPmMsgRegisterS3ScritTable (
+  IN UINT32  AddressL32,
+  IN UINT32  AddressH32,
+  IN UINT32  CrcL32,
+  IN UINT32  CrcH32
+  );
+
+EFI_STATUS
 CsuPmIpcCommandGetPayload (
   OUT UINT32  **Payload
   );
@@ -31,4 +39,5 @@ CsuPmIpcCommandExecute (
   IN OUT UINT32  *PayloadLength,
   OUT    UINT32  **ReturnValues OPTIONAL
   );
+
 #endif // CSU_PM_IPC_LIB

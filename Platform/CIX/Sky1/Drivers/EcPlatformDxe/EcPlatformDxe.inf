@@ -31,9 +31,9 @@
   EcLib
 
 [Pcd]
-  gCixTokenSpaceGuid.PcdEcAcpiI2cEn
-  gCixTokenSpaceGuid.PcdEcI2cBus
-  gCixTokenSpaceGuid.PcdEcI2cSlaveAddress
+  gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn
+  gCixPlatformTokenSpaceGuid.PcdEcI2cBus
+  gCixPlatformTokenSpaceGuid.PcdEcI2cSlaveAddress
 
 [Guids]
 

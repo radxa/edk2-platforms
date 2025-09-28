@@ -29,7 +29,6 @@
   UefiBootServicesTableLib
   UefiDriverEntryPoint
   UefiLib
-  UefiRuntimeLib
   PostCodeLib
 
 [Guids]

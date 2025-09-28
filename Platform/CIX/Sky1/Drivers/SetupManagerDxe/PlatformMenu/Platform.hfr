@@ -98,30 +98,39 @@ endif;
         option text = STRING_TOKEN(STR_AP_MODE), value = 1, flags = RESET_REQUIRED;
       endoneof;
 
+      oneof varid   = PlatformSetupVar.SpcrEnable,
+        prompt      = STRING_TOKEN(STR_ENABLE_SPCR_TABLE),
+        help        = STRING_TOKEN(STR_ENABLE_SPCR_TABLE_HELP),
+        default     = FixedPcdGet8 (PcdAcpiSpcrEnable),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
       oneof varid   = PlatformSetupVar.GopDisplaySelect,
         prompt      = STRING_TOKEN(STR_GOP_PROMPT),
         help        = STRING_TOKEN(STR_GOP_PROMPT_HELP),
         default     = FixedPcdGet8(PcdGopDisplaySelect),
-        suppressif ideqval PlatformSetupVar.DPHwProfile[0] == 0;
+        suppressif  FixedPcdGet8(PcdDP0HwProfile) == 0;
         option text = STRING_TOKEN(STR_DP0), value = 0, flags = RESET_REQUIRED;
         endif;
-        suppressif ideqval PlatformSetupVar.DPHwProfile[1] == 0;
+        suppressif FixedPcdGet8(PcdDP1HwProfile) == 0;
         option text = STRING_TOKEN(STR_DP1), value = 1, flags = RESET_REQUIRED;
         endif;
-        suppressif ideqval PlatformSetupVar.DPHwProfile[2] == 0;
+        suppressif FixedPcdGet8(PcdDP2HwProfile) == 0;
         option text = STRING_TOKEN(STR_DP2), value = 2, flags = RESET_REQUIRED;
         endif;
-        suppressif ideqval PlatformSetupVar.DPHwProfile[3] == 0;
+        suppressif FixedPcdGet8(PcdDP3HwProfile) == 0;
         option text = STRING_TOKEN(STR_DP3), value = 3, flags = RESET_REQUIRED;
         endif;
-        suppressif ideqval PlatformSetupVar.DPHwProfile[4] == 0;
+        suppressif FixedPcdGet8(PcdDP4HwProfile) == 0;
         option text = STRING_TOKEN(STR_DP4), value = 4, flags = RESET_REQUIRED;
         endif;
       endoneof;
-
+suppressif ideqval PlatformSetupVar.SystemTableSelect == 0x01;
       goto DEVICE_POWER_CONTROL_FORM_ID,
         prompt = STRING_TOKEN(STR_DEVICE_POWER_CONTROL_FORM_TITLE),
         help   = STRING_TOKEN(STR_DEVICE_POWER_CONTROL_FORM_TITLE_HELP);
+endif;
 suppressif TRUE;
       goto CLOCK_GATING_CONTROL_FORM_ID,
         prompt = STRING_TOKEN(STR_CLOCK_GATING_CONTROL_FORM_TITLE),

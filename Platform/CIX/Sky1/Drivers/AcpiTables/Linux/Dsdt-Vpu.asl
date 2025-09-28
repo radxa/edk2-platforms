@@ -62,6 +62,14 @@ Device (VPU0) {
   Name(_PR0, Package(1){PPRS})
   Name(_PR3, Package(1){PPRS})
 
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_VPU_APBCLK, "vpu_clk", \_SB.VPU0},
+  })
+  Name (RSTL, Package() {
+    Package() {\_SB.RST0, SKY1_VPU_RESET_N, \_SB.VPU0, "vpu_reset"},
+    Package() {\_SB.RST0, SKY1_VPU_RCSU_RESET_N, \_SB.VPU0, "vpu_rcsu_reset"},
+  })
+
   Device (CRE0) {
     Name(_ADR, 0x00)
     Name (_STA, 0xE)
