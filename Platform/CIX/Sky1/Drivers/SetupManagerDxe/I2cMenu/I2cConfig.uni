@@ -41,6 +41,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_I2C7_BUS_FREQ_PROMPT              #language en-US "I2C Bus Frequency"
 #string STR_I2C_BUS_FREQ_HELP                 #language en-US "I2C Bus Frequency Setting."
 
+#string STR_I2C_BUS_FREQ_50K                  #language en-US "50KHz"
 #string STR_I2C_BUS_FREQ_100K                 #language en-US "100KHz"
 #string STR_I2C_BUS_FREQ_400K                 #language en-US "400KHz"
 #string STR_I2C_BUS_FREQ_1M                   #language en-US "1MHz"

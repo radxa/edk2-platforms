@@ -153,6 +153,11 @@ endif;
 
     text
       help   = STRING_TOKEN(STR_EMPTY_STRING),
+      text   = STRING_TOKEN(STR_MEMORY_FREQ_NAME),
+      text   = STRING_TOKEN(STR_MEMORY_FREQ_VALUE);
+
+    text
+      help   = STRING_TOKEN(STR_EMPTY_STRING),
       text   = STRING_TOKEN(STR_PMIC_VER_NAME),
       text   = STRING_TOKEN(STR_PMIC_VER_VALUE);
 
@@ -192,6 +197,11 @@ endif;
       help   = STRING_TOKEN(STR_EMPTY_STRING),
       text   = STRING_TOKEN(STR_UEFI_VER_NAME),
       text   = STRING_TOKEN(STR_UEFI_VER_VALUE);
+
+    text
+      help   = STRING_TOKEN(STR_EMPTY_STRING),
+      text   = STRING_TOKEN(STR_STMM_VER_NAME),
+      text   = STRING_TOKEN(STR_STMM_VER_VALUE);
 
     text
       help   = STRING_TOKEN(STR_EMPTY_STRING),

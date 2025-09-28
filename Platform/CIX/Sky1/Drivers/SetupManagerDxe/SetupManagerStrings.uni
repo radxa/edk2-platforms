@@ -83,6 +83,8 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_TEE_VER_VALUE                            #language en-US " "
 #string STR_UEFI_VER_NAME                            #language en-US "UEFI Version"
 #string STR_UEFI_VER_VALUE                           #language en-US " "
+#string STR_STMM_VER_NAME                            #language en-US "STMM Version"
+#string STR_STMM_VER_VALUE                           #language en-US " "
 #string STR_EC_VER_NAME                              #language en-US "EC Version"
 #string STR_EC_VER_VALUE                             #language en-US " "
 

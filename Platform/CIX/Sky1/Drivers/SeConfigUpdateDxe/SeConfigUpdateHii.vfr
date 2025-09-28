@@ -1,0 +1,40 @@
+/** @file
+
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
+**/
+
+#include <Uefi/UefiMultiPhase.h>
+#include <Guid/HiiPlatformSetupFormset.h>
+#include <SeConfigSetupVar.h>
+
+#define SE_CONFIG_MANAGER_FORM_ID     0x500
+
+#define SE_CONFIG_FORMSET_GUID \
+  {0x45f0def4, 0xde9a, 0x449e, {0x85, 0x2, 0x49, 0x48, 0xc4, 0xf4, 0x30, 0xe0}}
+
+#define SE_CONFIG_SETUP_VARIABLE_GUID \
+  {0x5c0efc49, 0xe1b2, 0x451a, { 0xac, 0x69, 0x88, 0x4d, 0xef, 0xc6, 0x19, 0x56}}
+
+formset
+    guid      = SE_CONFIG_FORMSET_GUID,
+    title     = STRING_TOKEN(STR_SE_CONFIG_FORM_TITLE),
+    help      = STRING_TOKEN(STR_EMPTY_STRING),
+    classguid = gCixPrivateSetupFormsetGuid,
+
+    efivarstore SE_CONFIG_SETUP_VAR,
+        attribute = EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_NON_VOLATILE,
+        name  = SeConfigSetupVar,
+        guid  = SE_CONFIG_SETUP_VARIABLE_GUID;
+
+    form formid = SE_CONFIG_MANAGER_FORM_ID,
+      title  = STRING_TOKEN(STR_SE_CONFIG_FORM_TITLE);
+
+      oneof varid     = SeConfigSetupVar.MemTagExtension,
+          prompt      = STRING_TOKEN(STR_MEM_TAG_EXT_PROMPT),
+          help        = STRING_TOKEN(STR_MEM_TAG_EXT_HELP),
+          option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0;
+          option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT;
+      endoneof;
+
+    endform;
+endformset;

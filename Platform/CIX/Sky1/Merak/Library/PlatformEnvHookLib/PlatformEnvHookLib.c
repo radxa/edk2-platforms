@@ -698,6 +698,26 @@ FarmFunctionControl (
 
 EFI_STATUS
 EFIAPI
+BlueToothEnable (
+  IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
+  )
+{
+  EFI_STATUS      Status = EFI_SUCCESS;
+  EC_PARAMS_GPIO  GpioInfo;
+
+  DEBUG ((DEBUG_INFO, "[%a] EntryPoint\n", __FUNCTION__));
+
+  // EC GPIO209
+  DEBUG ((DEBUG_INFO, "EC GPIO209 Output High BT_RADIO_DISABLE_L\n"));
+  GpioInfo.GpioNum = 209;
+  GpioInfo.GpioVal = 1;
+  SetGpio (&GpioInfo);
+
+  return Status;
+}
+
+EFI_STATUS
+EFIAPI
 UpdateDebugLevelControl (
   IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
   )
@@ -769,6 +789,7 @@ STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 RtcWakupEnable                  },
   { NULL,                        NULL,                 FarmFunctionControl             },
   { NULL,                        NULL,                 UpdateFastbootSN                },
+  { NULL,                        NULL,                 BlueToothEnable                 },
   { &gEfiI2cMasterProtocolGuid,  InstallRtcProtocol,   NULL                            },
   { &gCixEcPlatformProtocolGuid, InitEcDefaultSetting, NULL                            },
   { NULL,                        NULL,                 CixFwBootPerfInit               },

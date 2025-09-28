@@ -41,6 +41,7 @@
 # Define override here for evb
 ##################################################
   DEFINE DTB_UPDATE_ENABLE          = FALSE
+  DEFINE PLATFORM_DTB_UPDATE_ENABLE = TRUE
   DEFINE SMBIOS_ENABLE              = FALSE
   DEFINE ACPI_ENABLE                = FALSE
   DEFINE TOKEN_CONSOLE_PREF_SUPPORT = FALSE
@@ -66,6 +67,7 @@
   DEFINE STMM_SUPPORT               = $(COMPILE_STMM_SUPPORT)
   DEFINE REALTEK_LAN_DRIVER_SUPPORT = TRUE
   DEFINE PM_CONFIG_UPDATE_SUPPORT   = FALSE
+  DEFINE SE_CONFIG_UPDATE_SUPPORT   = FALSE
   DEFINE DYNAMIC_ACPI_CPU_ENABLE    = TRUE
   DEFINE SOC_SPI_ENABLE             = TRUE
   # DEFINE SOC_GPIO_INTR_ENABLE       = TRUE
@@ -345,6 +347,7 @@
 
   # USB3_A
   gCixTokenSpaceGuid.PcdUsb3Control0Enable|TRUE
+  gCixTokenSpaceGuid.PcdUsb3Control0DataRole|FALSE
   gCixTokenSpaceGuid.PcdUsb3Control1Enable|TRUE
 
   # USBC0

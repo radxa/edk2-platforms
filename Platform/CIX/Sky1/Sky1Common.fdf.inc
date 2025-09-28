@@ -152,6 +152,9 @@
 !if $(DTB_UPDATE_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/DtbUpdateDxe/DtbUpdateDxe.inf
 !endif
+!if $(PLATFORM_DTB_UPDATE_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PlatformDtbUpdateDxe/PlatformDtbUpdateDxe.inf
+!endif
 !if $(RLOG_DUMP_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/RamLogDumpDxe/RamLogDumpDxe.inf
 !endif
@@ -309,6 +312,9 @@
 !endif
 !if $(PM_CONFIG_UPDATE_SUPPORT) == TRUE
   INF Platform/CIX/Sky1/Drivers/PmConfigUpdateDxe/PmConfigUpdateDxe.inf
+!endif
+!if $(SE_CONFIG_UPDATE_SUPPORT) == TRUE
+  INF Platform/CIX/Sky1/Drivers/SeConfigUpdateDxe/SeConfigUpdateDxe.inf
 !endif
 !if $(MEM_CONFIG_UPDATE_SUPPORT) == TRUE
   INF Platform/CIX/Sky1/Drivers/MemConfigUpdateDxe/MemConfigUpdateDxe.inf

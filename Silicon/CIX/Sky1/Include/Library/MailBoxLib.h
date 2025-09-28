@@ -30,6 +30,7 @@ typedef enum _MBOX_COMMAND {
   MBOX_GET_FW_VERSION        = 0x8200000F,
   MBOX_GET_TRNG              = 0x82000010,
   MBOX_ENABLE_GASKET_FENCING = 0x82000012,
+  MBOX_MTE_CONTROL           = 0x82000020,
 } MBOX_COMMAND;
 
 typedef enum _GASKET_FENCE_RANGE_ID {
@@ -113,6 +114,13 @@ EFIAPI
 MboxEnableGasketFencing (
   MBOX_GASKET_FENCING_PARAMETER  *Params,
   MBOX_GASKET_FENCING_RESPONSE   *Respon
+  );
+
+EFI_STATUS
+EFIAPI
+MboxMemTagExtensionControl (
+  UINT16  *Params,
+  UINT8   *Respon
   );
 
 #endif /* _MAIL_BOX_LIB_H_ */

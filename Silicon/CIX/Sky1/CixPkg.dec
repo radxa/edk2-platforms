@@ -436,6 +436,16 @@
   gCixTokenSpaceGuid.PcdAcpiUart1Enable|TRUE|BOOLEAN|0x0000A005
   gCixTokenSpaceGuid.PcdAcpiUart2Enable|TRUE|BOOLEAN|0x0000A006
   gCixTokenSpaceGuid.PcdAcpiUart3Enable|FALSE|BOOLEAN|0x0000A007
+  gCixTokenSpaceGuid.PcdAcpiI2s0Enable|FALSE|BOOLEAN|0x0000A008
+  gCixTokenSpaceGuid.PcdAcpiI2s1Enable|FALSE|BOOLEAN|0x0000A009
+  gCixTokenSpaceGuid.PcdAcpiI2s2Enable|FALSE|BOOLEAN|0x0000A00A
+  gCixTokenSpaceGuid.PcdAcpiI2s3Enable|FALSE|BOOLEAN|0x0000A00B
+  gCixTokenSpaceGuid.PcdAcpiI2s4Enable|FALSE|BOOLEAN|0x0000A00C
+  gCixTokenSpaceGuid.PcdAcpiI2s5Enable|FALSE|BOOLEAN|0x0000A00D
+  gCixTokenSpaceGuid.PcdAcpiI2s6Enable|FALSE|BOOLEAN|0x0000A00E
+  gCixTokenSpaceGuid.PcdAcpiI2s7Enable|FALSE|BOOLEAN|0x0000A00F
+  gCixTokenSpaceGuid.PcdAcpiI2s8Enable|FALSE|BOOLEAN|0x0000A010
+  gCixTokenSpaceGuid.PcdAcpiI2s9Enable|FALSE|BOOLEAN|0x0000A011
 
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 

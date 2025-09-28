@@ -59,6 +59,7 @@ suppressif ideqval PlatformSetupVar.I2cEnable[0] == 0x0;
           prompt      =   STRING_TOKEN(STR_I2C0_BUS_FREQ_PROMPT),
           help        =   STRING_TOKEN(STR_I2C_BUS_FREQ_HELP),
           default     =   FixedPcdGet32 (PcdI2c0BusFreq),
+          option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_50K),   value = 50000,   flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_100K),  value = 100000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_400K),  value = 400000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_1M),    value = 1000000,  flags = RESET_REQUIRED;
@@ -83,6 +84,7 @@ suppressif ideqval PlatformSetupVar.I2cEnable[1] == 0x0;
           prompt      =   STRING_TOKEN(STR_I2C1_BUS_FREQ_PROMPT),
           help        =   STRING_TOKEN(STR_I2C_BUS_FREQ_HELP),
           default     =   FixedPcdGet32 (PcdI2c1BusFreq),
+          option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_50K),   value = 50000,   flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_100K),  value = 100000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_400K),  value = 400000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_1M),    value = 1000000,  flags = RESET_REQUIRED;
@@ -107,6 +109,7 @@ suppressif ideqval PlatformSetupVar.I2cEnable[2] == 0x0;
           prompt      =   STRING_TOKEN(STR_I2C2_BUS_FREQ_PROMPT),
           help        =   STRING_TOKEN(STR_I2C_BUS_FREQ_HELP),
           default     =   FixedPcdGet32 (PcdI2c2BusFreq),
+          option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_50K),   value = 50000,   flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_100K),  value = 100000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_400K),  value = 400000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_1M),    value = 1000000,  flags = RESET_REQUIRED;
@@ -131,6 +134,7 @@ suppressif ideqval PlatformSetupVar.I2cEnable[3] == 0x0;
           prompt      =   STRING_TOKEN(STR_I2C3_BUS_FREQ_PROMPT),
           help        =   STRING_TOKEN(STR_I2C_BUS_FREQ_HELP),
           default     =   FixedPcdGet32 (PcdI2c3BusFreq),
+          option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_50K),   value = 50000,   flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_100K),  value = 100000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_400K),  value = 400000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_1M),    value = 1000000,  flags = RESET_REQUIRED;
@@ -155,6 +159,7 @@ suppressif ideqval PlatformSetupVar.I2cEnable[4] == 0x0;
           prompt      =   STRING_TOKEN(STR_I2C4_BUS_FREQ_PROMPT),
           help        =   STRING_TOKEN(STR_I2C_BUS_FREQ_HELP),
           default     =   FixedPcdGet32 (PcdI2c4BusFreq),
+          option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_50K),   value = 50000,   flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_100K),  value = 100000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_400K),  value = 400000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_1M),    value = 1000000,  flags = RESET_REQUIRED;
@@ -179,6 +184,7 @@ suppressif ideqval PlatformSetupVar.I2cEnable[5] == 0x0;
           prompt      =   STRING_TOKEN(STR_I2C5_BUS_FREQ_PROMPT),
           help        =   STRING_TOKEN(STR_I2C_BUS_FREQ_HELP),
           default     =   FixedPcdGet32 (PcdI2c5BusFreq),
+          option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_50K),   value = 50000,   flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_100K),  value = 100000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_400K),  value = 400000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_1M),    value = 1000000,  flags = RESET_REQUIRED;
@@ -203,6 +209,7 @@ suppressif ideqval PlatformSetupVar.I2cEnable[6] == 0x0;
           prompt      =   STRING_TOKEN(STR_I2C6_BUS_FREQ_PROMPT),
           help        =   STRING_TOKEN(STR_I2C_BUS_FREQ_HELP),
           default     =   FixedPcdGet32 (PcdI2c6BusFreq),
+          option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_50K),   value = 50000,   flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_100K),  value = 100000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_400K),  value = 400000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_1M),    value = 1000000,  flags = RESET_REQUIRED;
@@ -227,6 +234,7 @@ suppressif ideqval PlatformSetupVar.I2cEnable[7] == 0x0;
           prompt      =   STRING_TOKEN(STR_I2C7_BUS_FREQ_PROMPT),
           help        =   STRING_TOKEN(STR_I2C_BUS_FREQ_HELP),
           default     =   FixedPcdGet32 (PcdI2c7BusFreq),
+          option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_50K),   value = 50000,   flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_100K),  value = 100000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_400K),  value = 400000,  flags = RESET_REQUIRED;
           option text =   STRING_TOKEN(STR_I2C_BUS_FREQ_1M),    value = 1000000,  flags = RESET_REQUIRED;

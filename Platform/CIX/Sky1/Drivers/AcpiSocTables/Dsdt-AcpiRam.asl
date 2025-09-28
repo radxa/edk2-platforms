@@ -6,6 +6,16 @@
 
 **/
 
+#define HW_SPINLOCK_BASE 0x06510000
+
+/* Number of Hardware Spinlocks*/
+#define HWSPINLOCK_NUMBER_MAX       100
+
+/* Hardware spinlock register offsets */
+#define HWSPINLOCK_OFFSET(x)    (0x900 + 0x4 * (x))
+
+#define HWSPINLOCK_OWNER_ID     0x01
+
 Name (GNVA, 0xFFFFFFFF)  // System GPNV Base address
 Name (GNVL, 0xAA55)      // System GPNV Length
 
@@ -94,4 +104,62 @@ Method(DMRP, 4, Serialized)
         return (ENBL)
     }
     return (0)
+}
+
+/* Try to get hardware spinlock between ASL env and PM
+ *
+ * Arg0: Mutex Index
+ * Arg1: Timeout
+ */
+Method(TGSP, 2, Serialized)
+{
+	if (Arg0 >= HWSPINLOCK_NUMBER_MAX) {
+		return (0)
+    }
+
+    Local0 = HW_SPINLOCK_BASE + HWSPINLOCK_OFFSET(Arg0)
+    Local1 = Arg1
+
+    OperationRegion(HMEM, SystemMemory, Local0, 0x4)
+    Field (HMEM, DWordAcc, NoLock, Preserve) {
+        HLCK, 32,
+    }
+
+	while (1) {
+        HLCK = HWSPINLOCK_OWNER_ID
+		if (HWSPINLOCK_OWNER_ID == (HLCK & 0xFF)) {
+            return (1)
+        }
+
+		if (Local1) {
+			Local1--;
+			if (Local1 == 0x0) {
+                return (0)
+            }
+		}
+	}
+
+	return (0)
+}
+
+/* Release hardware spinlock
+ *
+ * Arg0: Mutex Index
+ */
+
+Method(RLSP, 1, Serialized)
+{
+	if (Arg0 >= HWSPINLOCK_NUMBER_MAX) {
+        return (0)
+    }
+
+    Local0 = HW_SPINLOCK_BASE + HWSPINLOCK_OFFSET(Arg0)
+    OperationRegion(HMEM, SystemMemory, Local0, 0x4)
+    Field (HMEM, DWordAcc, NoLock, Preserve) {
+        HLCK, 32,
+    }
+
+	if ((HLCK & 0xFF) == HWSPINLOCK_OWNER_ID) {
+        HLCK = HWSPINLOCK_OWNER_ID
+    }
 }

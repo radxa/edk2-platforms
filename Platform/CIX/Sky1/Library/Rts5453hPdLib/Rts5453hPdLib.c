@@ -109,28 +109,6 @@ GetPdDevConfig (
   return EFI_SUCCESS;
 }
 
-BOOLEAN
-IsPdDeviceValid (
-  UINT8  PdDevIdx
-  )
-{
-  EFI_STATUS  Status       = EFI_SUCCESS;
-  UINT8       I2cBus       = 0xFF;
-  UINT8       SlaveAddress = 0xFF;
-
-  Status = GetPdDevConfig (PdDevIdx, &I2cBus, &SlaveAddress);
-
-  DEBUG ((
-    DEBUG_INFO,
-    "Pd Device %d get device config, I2C bus: %x, Slave Address:%x\n",
-    PdDevIdx,
-    I2cBus,
-    SlaveAddress
-    ));
-
-  return Status == EFI_SUCCESS;
-}
-
 EFI_STATUS
 GetI2cDeviceHandle (
   IN  UINT8          I2cBus,
@@ -196,6 +174,46 @@ GetI2cDeviceHandle (
   }
 
   return Status;
+}
+
+BOOLEAN
+IsPdDeviceValid (
+  UINT8  PdDevIdx
+  )
+{
+  EFI_STATUS  Status       = EFI_SUCCESS;
+  UINT8       I2cBus       = 0xFF;
+  UINT8       SlaveAddress = 0xFF;
+  EFI_HANDLE  I2cDevHandle;
+
+  Status = GetPdDevConfig (PdDevIdx, &I2cBus, &SlaveAddress);
+  DEBUG ((
+    DEBUG_INFO,
+    "Pd Device %d get device config, I2C bus: %x, Slave Address:%x\n",
+    PdDevIdx,
+    I2cBus,
+    SlaveAddress
+    ));
+  if (EFI_ERROR(Status)) {
+    DEBUG ((
+      DEBUG_ERROR,
+      "Pd Device %d i2c config is not valid\n",
+      PdDevIdx
+      ));
+    return FALSE;
+  }
+
+  Status = GetI2cDeviceHandle (I2cBus, &I2cDevHandle);
+  if (EFI_ERROR(Status)) {
+    DEBUG ((
+      DEBUG_ERROR,
+      "Pd Device %d i2c protocol in not installed\n",
+      PdDevIdx
+      ));
+    return FALSE;
+  }
+
+  return TRUE;
 }
 
 EFI_STATUS

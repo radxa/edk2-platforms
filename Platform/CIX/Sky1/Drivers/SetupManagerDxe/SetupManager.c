@@ -442,18 +442,6 @@ InitializeHardwareInfo (
   CHAR8                  DateBuf[11]   = { 0 };
   CHAR16                 NewString[11] = { 0 };
 
-  Status = gBS->LocateProtocol (&gCixEcPlatformProtocolGuid, NULL, (VOID **)&pEcPlatformProtocol);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "Locate Protocol failed for %g\n", &gCixEcPlatformProtocolGuid));
-    return;
-  }
-
-  Status = pEcPlatformProtocol->Transfer (pEcPlatformProtocol, EC_COMMAND_GET_BOARD_ID, NULL, &EcResponse);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "Get Board ID failed\n"));
-    return;
-  }
-
   Status = gBS->LocateProtocol (&gCixSocInfoProtocolGuid, NULL, (VOID **)&pCixSocInfoProtocol);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "Locate Protocol failed for %g\n", &gCixSocInfoProtocolGuid));
@@ -467,6 +455,24 @@ InitializeHardwareInfo (
   AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%dGB", pCixSocInfoProtocol->MemInfo->TotalSize/1024);
   AsciiToUnicode (DateBuf, NewString);
   HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_SIZE_VALUE), NewString, NULL);
+
+  ZeroMem (DateBuf, sizeof (DateBuf));
+  ZeroMem (NewString, sizeof (NewString));
+  AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%dMHz", pCixSocInfoProtocol->MemInfo->MaxFreq*2);
+  AsciiToUnicode (DateBuf, NewString);
+  HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_FREQ_VALUE), NewString, NULL);
+
+  Status = gBS->LocateProtocol (&gCixEcPlatformProtocolGuid, NULL, (VOID **)&pEcPlatformProtocol);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Locate Protocol failed for %g\n", &gCixEcPlatformProtocolGuid));
+    return;
+  }
+
+  Status = pEcPlatformProtocol->Transfer (pEcPlatformProtocol, EC_COMMAND_GET_BOARD_ID, NULL, &EcResponse);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Get Board ID failed\n"));
+    return;
+  }
 
   BoardID.Bits.PcbSku = EcResponse.BoardId.Id.Sku + (EcResponse.BoardId.Id.SkuExt << 3);
   switch (BoardID.Bits.PcbSku) {
@@ -661,6 +667,13 @@ GetFirmwareVersionInfo (
     HiiSetString (HiiHandle, STRING_TOKEN (STR_UEFI_VER_VALUE), pFwVerBuff, NULL);
   } else {
     HiiSetString (HiiHandle, STRING_TOKEN (STR_UEFI_VER_VALUE), L"N/A", NULL);
+  }
+
+  Status = pFwVerProtocol->GetFwVersion (FwVerSTMM, &pFwVerBuff, &FwVerSize);
+  if (!EFI_ERROR (Status)) {
+    HiiSetString (HiiHandle, STRING_TOKEN (STR_STMM_VER_VALUE), pFwVerBuff, NULL);
+  } else {
+    HiiSetString (HiiHandle, STRING_TOKEN (STR_STMM_VER_VALUE), L"N/A", NULL);
   }
 
   Status = pFwVerProtocol->GetFwVersion (FwVerEC, &pFwVerBuff, &FwVerSize);

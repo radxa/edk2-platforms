@@ -57,6 +57,7 @@
   gCixGPNVGuid = {0xA4D3F1E5, 0xC2B7, 0x4D8A, {0x9C, 0xE5, 0xA6, 0xB2, 0xA1, 0xF7, 0xC9, 0xE3}}
   gCixFarmEnableFlagGuid = {0x3f7b73c7, 0xfb70, 0x4e91, { 0x86, 0xe7, 0x34, 0xea, 0xd7, 0x6a, 0xc7, 0x4d } }
   gOpteeFtpmTaGuid = { 0xbc50d971, 0xd4c9, 0x42c4, { 0x82, 0xcb, 0x34, 0x3f, 0xb7, 0xf3, 0x78, 0x96 }}
+  gCixMmStmmInfoCommunicateGuid = { 0xCDE34D96, 0x7209, 0x4751, { 0xAD, 0xB0, 0x3E, 0x0E, 0xEF, 0x32, 0x14, 0x87 } }
 
 [PcdsFixedAtBuild.common]
 
@@ -144,6 +145,7 @@
 
   gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"SKY1-EVB.DTB"|VOID*|0x0000A301
   gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateEnable|FALSE|BOOLEAN|0x0000A302
+  gCixPlatformTokenSpaceGuid.PcdPlatformDtbUpdateEnable|FALSE|BOOLEAN|0x0000A303
 
   # ACPI
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable|FALSE|BOOLEAN|0x0000A005
@@ -159,6 +161,8 @@
   gCixPlatformTokenSpaceGuid.PcdRtcWakeup|0x00|UINT8|0x00002001
   #Ligt Sensor Control
   gCixPlatformTokenSpaceGuid.PcdLightSensorCtrl|0x01|UINT8|0x00002002
+
+  gCixPlatformTokenSpaceGuid.PcdStmmFirmwareVersionString|L""|VOID*|0x00002006
 
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 

@@ -1,0 +1,19 @@
+/** @file
+*
+// Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved
+*  Copyright (c) 2017, Linaro, Ltd. All rights reserved.
+*
+*  SPDX-License-Identifier: BSD-2-Clause-Patent
+*
+**/
+
+#langdef en-US  "English"
+
+#string STR_SE_CONFIG_FORM_TITLE                         #language en-US "SE Configuration"
+
+#string STR_MEM_TAG_EXT_PROMPT                           #language en-US "Memory Tagging Extension"
+#string STR_MEM_TAG_EXT_HELP                             #language en-US "Memory Tagging Extension Enable/Disable"
+#string STR_EMPTY_STRING                                 #language en-US ""
+
+#string STR_ENABLED                                      #language en-US "Enabled"
+#string STR_DISABLED                                     #language en-US "Disabled"

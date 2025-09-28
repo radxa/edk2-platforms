@@ -1,10 +1,10 @@
 /** @file
  *
- *  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+ *  Copyright 2025 Cix Technology Group Co., Ltd. All Rights Reserved.
  **/
 
-#ifndef _DTS_UPDATE_DXE_H_
-#define _DTS_UPDATE_DXE_H_
+#ifndef _PLATFORM_DTS_UPDATE_LIB_H_
+#define _PLATFORM_DTS_UPDATE_LIB_H_
 
 #include <Uefi.h>
 #include <Uefi/UefiBaseType.h>
@@ -14,9 +14,7 @@
 #include <Library/DebugLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/MemoryAllocationLib.h>
-#include <Library/IoLib.h>
 #include <Protocol/SimpleFileSystem.h>
-#include <Library/SocInitLib.h>
 #include <Guid/FileInfo.h>
 #include <Guid/EventGroup.h>
 
@@ -28,9 +26,14 @@
 #define DT_NODE_AIPU          "/soc@0/aipu@14260000"
 #define DT_NODE_SMMU_MMHUB    "/iommu@0b1b0000"
 #define DT_NODE_SMMU_PCIEHUB  "/iommu@0b010000"
-#define DT_NODE_PCIEX8_RC     "/soc@0/pcie@0a010000"
-#define DT_NODE_PCIEX4_RC     "/soc@0/pcie@0a070000"
-#define DT_NODE_ITS           "/soc@0/interrupt-controller@0e001000/its@0e050000"
+// PCIe
+#define DT_NODE_PCIEX8_RC    "/soc@0/pcie@0a010000"
+#define DT_NODE_PCIEX4_RC    "/soc@0/pcie@0a070000"
+#define DT_NODE_PCIEX2_RC    "/soc@0/pcie@0a0c0000"
+#define DT_NODE_PCIEX1_0_RC  "/soc@0/pcie@0a0d0000"
+#define DT_NODE_PCIEX1_1_RC  "/soc@0/pcie@0a0e0000"
+// ITS
+#define DT_NODE_ITS  "/soc@0/interrupt-controller@0e001000/its@0e050000"
 // s5_gpio0
 #define DT_NODE_S5_GPIO0  "/soc@0/gpio-controller@16004000"
 #define DT_NODE_VPU       "/soc@0/vpu@14230000"
@@ -46,9 +49,17 @@
 // TYPE A
 #define DT_NODE_USBSS_4             "/soc@0/usb@91c0300"
 #define DT_NODE_USBSS_4_CONTROLLER  "/soc@0/usb@91c0300/usb-controller@91d0000"
-
+#define DT_NODE_USBSS_5             "/soc@0/usb@91c0304"
+#define DT_NODE_USBSS_5_CONTROLLER  "/soc@0/usb@91c0304/usb-controller@91e0000"
+// USB2
 #define DT_NODE_USBHS_0             "/soc@0/usb@9250000"
 #define DT_NODE_USBHS_0_CONTROLLER  "/soc@0/usb@9250000/usb-controller@9260000"
+#define DT_NODE_USBHS_1             "/soc@0/usb@9280000"
+#define DT_NODE_USBHS_1_CONTROLLER  "/soc@0/usb@9280000/usb-controller@9290000"
+#define DT_NODE_USBHS_2             "/soc@0/usb@92b0000"
+#define DT_NODE_USBHS_2_CONTROLLER  "/soc@0/usb@92b0000/usb-controller@92c0000"
+#define DT_NODE_USBHS_3             "/soc@0/usb@92e0000"
+#define DT_NODE_USBHS_3_CONTROLLER  "/soc@0/usb@92e0000/usb-controller@92f0000"
 
 // GMAC
 #define DT_NODE_GMAC0  "/soc@0/ethernet@9320000"
@@ -147,9 +158,50 @@
 #define DT_NODE_ISP_ISPMEM   "/armcb_ispmem"
 #define DT_NODE_IMGSENSOR00  "/soc@0/i2c@04010000/imgsensor00@34"
 #define DT_NODE_MOTOR0       "/soc@0/i2c@04010000/motor0@40"
-#define DT_NODE_IMGSENSOR01  "/soc@0/i2c@04040000/imgsensor01@38" // i2c3: i2c@04040000
-#define DT_NODE_IMGSENSOR02  "/soc@0/i2c@04020000/imgsensor02@36" // i2c1: i2c@04020000
-#define DT_NODE_IMGSENSOR03  "/soc@0/i2c@04050000/imgsensor03@3a" // i2c4: i2c@04050000
+#define DT_NODE_IMGSENSOR01  "/soc@0/i2c@04040000/imgsensor01@38"        // i2c3: i2c@04040000
+#define DT_NODE_IMGSENSOR02  "/soc@0/i2c@04020000/imgsensor02@36"        // i2c1: i2c@04020000
+#define DT_NODE_IMGSENSOR03  "/soc@0/i2c@04050000/imgsensor03@3a"        // i2c4: i2c@04050000
 #define DT_NODE_CIX_VI_HW    "/cix_vi_hw"
+
+UINT32
+fdt_check_header_ext (
+  VOID  *fdt
+  );
+
+VOID
+DisableDtbNode (
+  IN  VOID         *fdt,
+  IN  CONST CHAR8  *NodePath
+  );
+
+VOID
+EnableDtbNode (
+  IN  VOID         *fdt,
+  IN  CONST CHAR8  *NodePath
+  );
+
+VOID
+UpdateDtbNodePropertyValue (
+  IN  VOID         *fdt,
+  IN  CONST CHAR8  *NodePath,
+  IN  CONST CHAR8  *PropertyName,
+  IN  UINT32       PropertyValue
+  );
+
+VOID
+UpdateDtbNodePropertyString (
+  IN  VOID         *fdt,
+  IN  CONST CHAR8  *NodePath,
+  IN  CONST CHAR8  *PropertyName,
+  IN  CONST CHAR8  *PropertyValue
+  );
+
+VOID
+DbtNodePropRm (
+  IN  VOID         *Fdt,
+  IN  CONST CHAR8  *DeviceNodeName0,
+  IN  CONST CHAR8  *DeviceNodeName1,
+  IN  CONST CHAR8  *PropName
+  );
 
 #endif

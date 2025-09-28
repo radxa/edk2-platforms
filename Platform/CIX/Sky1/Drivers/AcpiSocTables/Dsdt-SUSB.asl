@@ -531,7 +531,7 @@ Device (SUB2)
       Package () {
             Package () { "maximum-speed", "super-speed-plus" },
             Package () { "dr_mode", "host" },
-            Package () { "cdnsp,usb3-phy", \_SB.UCP0.USBP },
+            Package () { "cdnsp,usb3-phy", \_SB.UCP2.USBP },
           },
     })
 #endif //USBC2_PD_EN

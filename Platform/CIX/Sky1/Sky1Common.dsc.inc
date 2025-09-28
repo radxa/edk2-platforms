@@ -125,6 +125,7 @@
   OpteeLib|Platform/CIX/Sky1/Library/OpteeLib/OpteeLib.inf
   EfusePublicKeyLib|Platform/CIX/Sky1/Library/EfusePublicKeyLib/EfusePublicKeyLib.inf
   FctMiscLib|Platform/CIX/Sky1/Library/FctMiscLib/FctMiscLib.inf
+  StmmInfoLib|Platform/CIX/Sky1/Library/StmmInfoLib/StmmInfoLib.inf
 
   #
   # Secure Boot dependencies
@@ -204,7 +205,9 @@
   ArmMtlLib|Silicon/CIX/Sky1/Library/CixMtlLib/CixMtlLib.inf
   DtbUpdateLib|Platform/CIX/Sky1/Library/DtbUpdateLib/DtbUpdateLib.inf
   DtbCommonLib|Platform/CIX/Sky1/Library/DtbCommonLib/DtbCommonLib.inf
-
+!if $(PLATFORM_DTB_UPDATE_ENABLE) == TRUE
+  PlatformDtbUpdateLib|Platform/CIX/Sky1/Library/PlatformDtbUpdateLib/PlatformDtbUpdateLib.inf
+!endif
   ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf
   ArmMmuLib|ArmPkg/Library/ArmMmuLib/ArmMmuBaseLib.inf
   ArmPlatformLib|Platform/CIX/Sky1/Library/PlatformLib/PlatformLib.inf
@@ -777,6 +780,9 @@
 !if $(DTB_UPDATE_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/DtbUpdateDxe/DtbUpdateDxe.inf
 !endif
+!if $(PLATFORM_DTB_UPDATE_ENABLE) == TRUE
+  Platform/CIX/Sky1/Drivers/PlatformDtbUpdateDxe/PlatformDtbUpdateDxe.inf
+!endif
 !if $(RLOG_DUMP_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/RamLogDumpDxe/RamLogDumpDxe.inf
 !endif
@@ -976,6 +982,9 @@
 !endif
 !if $(PM_CONFIG_UPDATE_SUPPORT) == TRUE
   Platform/CIX/Sky1/Drivers/PmConfigUpdateDxe/PmConfigUpdateDxe.inf
+!endif
+!if $(SE_CONFIG_UPDATE_SUPPORT) == TRUE
+  Platform/CIX/Sky1/Drivers/SeConfigUpdateDxe/SeConfigUpdateDxe.inf
 !endif
 !if $(MEM_CONFIG_UPDATE_SUPPORT) == TRUE
   Platform/CIX/Sky1/Drivers/MemConfigUpdateDxe/MemConfigUpdateDxe.inf

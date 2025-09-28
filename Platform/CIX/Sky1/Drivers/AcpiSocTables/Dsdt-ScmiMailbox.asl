@@ -353,19 +353,4 @@ Device(PMMX){
     //Process response
     Return(RESP)
   }
-
-  /* Shared mutex between OS and ASL env via _DLM obj to get/release mutex. */
-  Device (MTXD) {
-    Name (_HID, "CIXHA007")
-    Name (_UID, 0x4)
-    Name (_STA, 0xB)
-
-    Name (_DLM, Package (1)
-    {
-      Package (1)
-      {
-        \_SB.MBXM,
-      }
-    })
-  }
 }

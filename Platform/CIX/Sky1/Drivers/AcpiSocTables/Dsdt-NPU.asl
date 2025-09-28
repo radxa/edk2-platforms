@@ -64,9 +64,11 @@ Device (NPU0) {
     }
     Method(_OFF, 0, Serialized)
     {
+      \_SB.TGSP(NPU_MUTEX_IDX, MUTEX_ACQUIRE_TIMEOUT)
       Local0 = TMSK
       Local0 = Local0 & ~PD_PG_EN
       TMSK = Local0
+      \_SB.RLSP(NPU_MUTEX_IDX)
     }
   }
 
@@ -106,9 +108,11 @@ Device (NPU0) {
       }
       Method(_OFF, 0, Serialized)
       {
+        \_SB.TGSP(NPU_MUTEX_IDX, MUTEX_ACQUIRE_TIMEOUT)
         Local0 = MSK0
         Local0 = Local0 & ~PD_PG_EN
         MSK0 = Local0
+        \_SB.RLSP(NPU_MUTEX_IDX)
       }
     }
 
@@ -148,9 +152,11 @@ Device (NPU0) {
       }
       Method(_OFF, 0, Serialized)
       {
+        \_SB.TGSP(NPU_MUTEX_IDX, MUTEX_ACQUIRE_TIMEOUT)
         Local0 = MSK1
         Local0 = Local0 & ~PD_PG_EN
         MSK1 = Local0
+        \_SB.RLSP(NPU_MUTEX_IDX)
       }
     }
 
@@ -190,9 +196,11 @@ Device (NPU0) {
       }
       Method(_OFF, 0, Serialized)
       {
+        \_SB.TGSP(NPU_MUTEX_IDX, MUTEX_ACQUIRE_TIMEOUT)
         Local0 = MSK2
         Local0 = Local0 & ~PD_PG_EN
         MSK2 = Local0
+        \_SB.RLSP(NPU_MUTEX_IDX)
       }
     }
 

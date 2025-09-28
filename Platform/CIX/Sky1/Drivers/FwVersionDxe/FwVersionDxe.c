@@ -19,6 +19,7 @@
 #include <Protocol/EcPlatformProtocol.h>
 #include <Protocol/SocInfoProtocol.h>
 #include <Library/CacheMaintenanceLib.h>
+#include <Library/StmmInfoLib.h>
 #include "UefiMemRecords.h"
 
 // #ifdef DEBUG
@@ -151,7 +152,7 @@ GetFwVersion (
         return EFI_NOT_FOUND;
       }
 
-      // DEBUG ((DEBUG_INFO, "[VER] PBL:%s\n", FwVerAddr));
+      // DEBUG ((DEBUG_INFO, "[VER] SE:%s\n", FwVerAddr));
       break;
     case FwVerPM:
       FwVerAddr = SmemGetAddr (SMEM_VER_PM, &SmemSize);
@@ -159,7 +160,7 @@ GetFwVersion (
         return EFI_NOT_FOUND;
       }
 
-      // DEBUG ((DEBUG_INFO, "[VER] PBL:%s\n", FwVerAddr));
+      // DEBUG ((DEBUG_INFO, "[VER] PM:%s\n", FwVerAddr));
       break;
     case FwVerTEE:
       FwVerAddr = SmemGetAddr (SMEM_VER_TEE, &SmemSize);
@@ -167,7 +168,7 @@ GetFwVersion (
         return EFI_NOT_FOUND;
       }
 
-      // DEBUG ((DEBUG_INFO, "[VER] PBL:%s\n", FwVerAddr));
+      // DEBUG ((DEBUG_INFO, "[VER] TEE:%s\n", FwVerAddr));
       break;
     case FwVerPBL:
       FwVerAddr = SmemGetAddr (SMEM_VER_PBL, &SmemSize);
@@ -188,6 +189,14 @@ GetFwVersion (
     case FwVerUEFI:
       *FwVerBuff = (CHAR16 *)PcdGetPtr (PcdFirmwareVersionString);
       *FwVerSize = StrLen (*FwVerBuff);
+      return EFI_SUCCESS;
+
+    case FwVerSTMM:
+      Status = StmmInfoGetVersion (FwVerBuff, FwVerSize);
+      if (EFI_ERROR (Status)) {
+        return EFI_NOT_FOUND;
+      }
+
       return EFI_SUCCESS;
 
     case FwVerEC:
@@ -265,6 +274,29 @@ SetUefiVersion (
 STATIC
 VOID
 EFIAPI
+SetStmmVersion (
+
+  )
+{
+  EFI_STATUS  Status;
+  VOID        *FwVerAddrStmm;
+  UINT32      SmemSize;
+  CHAR16      *FwVerStmmBuff;
+  UINT32      FwVerStmmSize;
+
+  Status = StmmInfoGetVersion (&FwVerStmmBuff, &FwVerStmmSize);
+  if (Status == EFI_SUCCESS) {
+    FwVerAddrStmm = SmemGetAddr (SMEM_VER_STMM, &SmemSize);
+    ZeroMem (FwVerAddrStmm, SmemSize);
+    UnicodeToAscii (FwVerStmmBuff, StrLen (FwVerStmmBuff), (CHAR8 *)FwVerAddrStmm);
+  }
+
+  return;
+}
+
+STATIC
+VOID
+EFIAPI
 SetBoardInfo (
   )
 {
@@ -274,7 +306,7 @@ SetBoardInfo (
   EC_PLATFORM_PROTOCOL  *Ec;
   EC_RESPONSE           EcResponse;
   UINT32                EcVersionSize;
-  void                  *FwVerAddrEc,*VerAddrPd;
+  void                  *FwVerAddrEc, *VerAddrPd;
 
   DEBUG ((DEBUG_INFO, "%a Entry\n", __FUNCTION__));
 
@@ -321,11 +353,13 @@ SetBoardInfo (
     DebugPrint (DEBUG_INFO, "EC platform not ready.\n");
     return;
   }
+
   VerAddrPd = SmemGetAddr (SMEM_VER_PD, &SmemSize);
-  if(VerAddrPd == NULL){
+  if (VerAddrPd == NULL) {
     return;
   }
-  //DebugPrint (DEBUG_INFO, "PdVer:0x%x 0x%x.\nPdAddr:0x%x\n",EcResponse.PdVer.Pd1Ver, EcResponse.PdVer.Pd2Ver,(UINTN)VerAddrPd);
+
+  // DebugPrint (DEBUG_INFO, "PdVer:0x%x 0x%x.\nPdAddr:0x%x\n",EcResponse.PdVer.Pd1Ver, EcResponse.PdVer.Pd2Ver,(UINTN)VerAddrPd);
   ZeroMem (VerAddrPd, SmemSize);
   MmioWrite32 ((UINTN)VerAddrPd, EcResponse.PdVer.Pd2Ver | EcResponse.PdVer.Pd1Ver);
 
@@ -567,6 +601,7 @@ FwVersionDxeEntryPoint (
   DEBUG ((DEBUG_INFO, "%a start.\n", __FUNCTION__));
 
   SetUefiVersion ();
+  SetStmmVersion ();
   SetBoardInfo ();
 
   Status = gBS->InstallProtocolInterface (

@@ -260,6 +260,7 @@ Device (DP00) {
     Memory32Fixed (ReadWrite, DP0_DP_CONTROLLER_BASE, DP0_CONTROLLER_SIZE, DP)
     Memory32Fixed (ReadWrite, DP0_DSC_CONTROLLER_BASE, DP0_CONTROLLER_SIZE, DSC)
     Memory32Fixed (ReadWrite, DP0_DP_PHY_CONTROLLER_BASE, DP0_PHY_CONTROLLER_SIZE, DPHY)
+    Memory32Fixed (ReadWrite, DP0_DP_RCSU_CONTROLLER_BASE, DP0_RCSU_CONTROLLER_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { DP_DP0_APB_INT_INTERRUPT_ID }
   })
 
@@ -293,6 +294,7 @@ Device (DP01) {
     Memory32Fixed (ReadWrite, DP1_DP_CONTROLLER_BASE, DP1_CONTROLLER_SIZE, DP)
     Memory32Fixed (ReadWrite, DP1_DSC_CONTROLLER_BASE, DP1_CONTROLLER_SIZE, DSC)
     Memory32Fixed (ReadWrite, DP1_DP_PHY_CONTROLLER_BASE, DP1_PHY_CONTROLLER_SIZE, DPHY)
+    Memory32Fixed (ReadWrite, DP1_DP_RCSU_CONTROLLER_BASE, DP1_RCSU_CONTROLLER_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { DP_DP1_APB_INT_INTERRUPT_ID }
   })
 
@@ -320,12 +322,13 @@ Device (DP02) {
         Return (0x0)
     }
   }
-  
+
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DP2_DP_CONTROLLER_BASE, DP2_CONTROLLER_SIZE, DP)
     Memory32Fixed (ReadWrite, DP2_DSC_CONTROLLER_BASE, DP2_CONTROLLER_SIZE, DSC)
     Memory32Fixed (ReadWrite, DP2_DP_PHY_CONTROLLER_BASE, DP2_CONTROLLER_SIZE, DPHY)
+    Memory32Fixed (ReadWrite, DP2_DP_RCSU_CONTROLLER_BASE, DP2_RCSU_CONTROLLER_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { DP_DP2_APB_INT_INTERRUPT_ID }
   })
 
@@ -347,8 +350,6 @@ Device (DP02) {
   })
 }
 
-
-
 Device (DP03) {
   Name (_HID, "CIXH502F")
   Name (_UID, 0x3)
@@ -360,12 +361,13 @@ Device (DP03) {
         Return (0x0)
     }
   }
-  
+
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DP3_DP_CONTROLLER_BASE, DP3_CONTROLLER_SIZE, DP)
     Memory32Fixed (ReadWrite, DP3_DSC_CONTROLLER_BASE, DP3_CONTROLLER_SIZE, DSC)
     Memory32Fixed (ReadWrite, DP3_DP_PHY_CONTROLLER_BASE, DP3_PHY_CONTROLLER_SIZE, DPHY)
+    Memory32Fixed (ReadWrite, DP3_DP_RCSU_CONTROLLER_BASE, DP3_RCSU_CONTROLLER_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { DP_DP3_APB_INT_INTERRUPT_ID }
   })
 
@@ -393,12 +395,13 @@ Device (DP04) {
         Return (0x0)
     }
   }
-  
+
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DP4_DP_CONTROLLER_BASE, DP4_CONTROLLER_SIZE, DP)
     Memory32Fixed (ReadWrite, DP4_DSC_CONTROLLER_BASE, DP4_CONTROLLER_SIZE, DSC)
     Memory32Fixed (ReadWrite, DP4_DP_PHY_CONTROLLER_BASE, DP4_PHY_CONTROLLER_SIZE, DPHY)
+    Memory32Fixed (ReadWrite, DP4_DP_RCSU_CONTROLLER_BASE, DP4_RCSU_CONTROLLER_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { DP_DP4_APB_INT_INTERRUPT_ID }
   })
 

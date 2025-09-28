@@ -1,0 +1,48 @@
+#/** @file
+#
+#  Copyright 2025 Cix Technology Group Co., Ltd. All Rights Reserved.
+#
+#**/
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PlatformDtbUpdateDxe
+  FILE_GUID                      = 67850E35-5471-445F-9913-1AC67E382F5F
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = PlatformDtbUpdateEntry
+
+[Sources.common]
+  PlatformDtbUpdateDxe.h
+  PlatformDtbUpdateDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  PcdLib
+  UefiLib
+  FdtLib
+  # IoLib
+  UefiDriverEntryPoint
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  PlatformDtbUpdateLib
+
+[Guids]
+  gEfiFileInfoGuid
+  gEfiEventReadyToBootGuid
+
+[Protocols]
+  gEfiSimpleFileSystemProtocolGuid
+
+[FixedPcd]
+  gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName
+  gCixPlatformTokenSpaceGuid.PcdPlatformDtbUpdateEnable
+
+[Depex]
+  TRUE
