@@ -20,7 +20,6 @@ Device (NPU0) {
 
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, NPU_CONTROLLER_BASE, NPU_CONTROLLER_SIZE)
-    Memory32Fixed (ReadWrite, FixedPcdGet32 (PcdNpuReservedMemoryBase) , FixedPcdGet32 (PcdNpuReservedMemorySize))
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { NPU_EXT_U_NPU_CORE_IRQO_INTERRUPT_ID }
   })
 
@@ -77,7 +76,9 @@ Device (NPU0) {
 
   Device(CRE0)
   {
-    Name(_ADR, 0x00)
+    Name (_HID, "CIXH4010")
+    Name (_UID, 0x0)
+    Name (_STA, 0xB)
 
     PowerResource(PRS0, 0, 0)
     {
@@ -116,12 +117,14 @@ Device (NPU0) {
       }
     }
 
-    Name(_PR0, Package(2){PRS0, \_SB_.NPU0.PPRS})
-    Name(_PR3, Package(2){PRS0, \_SB_.NPU0.PPRS})
+    Name(_PR0, Package(2){ \_SB.NPU0.PPRS, PRS0 })
+    Name(_PR3, Package(2){ \_SB.NPU0.PPRS, PRS0 })
   }
   Device(CRE1)
   {
-    Name(_ADR, 0x01)
+    Name (_HID, "CIXH4010")
+    Name (_UID, 0x1)
+    Name (_STA, 0xB)
 
     PowerResource(PRS1, 0, 0)
     {
@@ -160,12 +163,14 @@ Device (NPU0) {
       }
     }
 
-    Name(_PR0, Package(2){PRS1, \_SB_.NPU0.PPRS})
-    Name(_PR3, Package(2){PRS1, \_SB_.NPU0.PPRS})
+    Name(_PR0, Package(2){ \_SB.NPU0.PPRS, PRS1 })
+    Name(_PR3, Package(2){ \_SB.NPU0.PPRS, PRS1 })
   }
   Device(CRE2)
   {
-    Name(_ADR, 0x02)
+    Name (_HID, "CIXH4010")
+    Name (_UID, 0x2)
+    Name (_STA, 0xB)
 
     PowerResource(PRS2, 0, 0)
     {
@@ -204,7 +209,7 @@ Device (NPU0) {
       }
     }
 
-    Name(_PR0, Package(2){PRS2, \_SB_.NPU0.PPRS})
-    Name(_PR3, Package(2){PRS2, \_SB_.NPU0.PPRS})
+    Name(_PR0, Package(2){ \_SB.NPU0.PPRS, PRS2 })
+    Name(_PR3, Package(2){ \_SB.NPU0.PPRS, PRS2 })
   }
 }

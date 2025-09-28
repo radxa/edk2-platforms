@@ -213,13 +213,6 @@ MemoryPeim (
     EfiReservedMemoryType
     );
  #endif
- #if FixedPcdGetBool (PcdNpuEnable) == 1
-  BuildMemoryAllocationHob (
-    FixedPcdGet32 (PcdNpuReservedMemoryBase),
-    FixedPcdGet32 (PcdNpuReservedMemorySize),
-    EfiReservedMemoryType
-    );
- #endif
   // BuildMemoryAllocationHob (
   //   FixedPcdGet32 (PcdReservedLinuxBase),
   //   FixedPcdGet32 (PcdReservedLinuxSize),

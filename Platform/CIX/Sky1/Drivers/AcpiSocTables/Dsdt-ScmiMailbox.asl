@@ -30,6 +30,7 @@
       FLAG = 0x00                           \
 
 #define MAILBOX_SCMI_PROCESS                \
+    Name(RESP, Buffer(96) {})               \
     MSGP = BUFF                             \
     CFRE = 0                                \
     BEEL = 1                                \
@@ -71,6 +72,7 @@
       MSGA = CIX_SCMI_MESSAGE_ATTRIBUTES    \
 
 #define CIX_MAILBOX_SCMI_PROCESS            \
+    Name(RESP, Buffer(96) {})               \
     MSGP = BUFF                             \
     CFRE = 0                                \
     BEEL = 1                                \
@@ -189,7 +191,7 @@ Device(PMMX){
     TOKN, 10,
     ,4,
     Offset (0x1C),
-    MSGP, 256,
+    MSGP, 768,
     Offset (0x80),
     BEEL, 1,
   }
@@ -204,13 +206,11 @@ Device(PMMX){
     Return(0x03)
   }
 
-  Name(BUFF, Buffer(32) {})
+  Name(BUFF, Buffer(96) {})
   CreateDWordField(BUFF, 0x00, DAT0)
   CreateDWordField(BUFF, 0x04, DAT1)
   CreateDWordField(BUFF, 0x08, DAT2)
   CreateDWordField(BUFF, 0x0c, DAT3)
-
-  Name(RESP, Buffer(32) {})
 
   //Set power state,Arg0=power domain id, Arg1=Flag
   Method(PRSS,2,Serialized){
@@ -238,6 +238,21 @@ Device(PMMX){
     DAT0 = Arg0
     MSID = SCMI_PD_POWER_STATE_GET
     PRID = SCMI_PROTOCOL_ID_POWER_DOMAIN
+    //Process Requess
+    MAILBOX_SCMI_PROCESS
+    //Process response
+    Return(RESP)
+  }
+
+  //Get performance level,Arg0=domain id, Arg1=level index
+  Method(PEFG,2,Serialized){
+    MAILBOX_SCMI_BEGIN
+    //Message Payload
+    LENG = 0x0c
+    DAT0 = Arg0
+    DAT1 = Arg1
+    MSID = SCMI_PERF_DESCRIBE_LEVELS
+    PRID = SCMI_PROTOCOL_ID_PERF
     //Process Requess
     MAILBOX_SCMI_PROCESS
     //Process response

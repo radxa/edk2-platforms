@@ -19,7 +19,7 @@
   INF Platform/Radxa/Platforms/CIX/Sky1/Drivers/RadxaSetupVariableInitDxe/RadxaSetupVariableInitDxe.inf
   INF Platform/Radxa/Platforms/CIX/Sky1/Drivers/FirmwareConfigUpdateDxe/FirmwareConfigUpdateDxe.inf
 !endif
-
+  INF Platform/Radxa/Platforms/CIX/Sky1/Drivers/SeConfigUpdateDxe/SeConfigUpdateDxe.inf
   INF EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf
 
 !if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == TRUE

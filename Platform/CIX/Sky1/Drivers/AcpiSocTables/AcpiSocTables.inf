@@ -68,8 +68,6 @@
 
   gCixTokenSpaceGuid.PcdGpuReservedMemoryBase
   gCixTokenSpaceGuid.PcdGpuReservedMemorySize
-  gCixTokenSpaceGuid.PcdNpuReservedMemoryBase
-  gCixTokenSpaceGuid.PcdNpuReservedMemorySize
 
   gArmPlatformTokenSpaceGuid.PcdArmLcdDdrFrameBufferBase
   gArmPlatformTokenSpaceGuid.PcdArmLcdDdrFrameBufferSize

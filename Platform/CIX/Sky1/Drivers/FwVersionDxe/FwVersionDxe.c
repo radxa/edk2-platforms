@@ -15,12 +15,20 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiLib.h>
 #include <Library/ShMemLib.h>
+#include <Protocol/Smbios.h>
 #include <Protocol/FwVersionProtocol.h>
 #include <Protocol/EcPlatformProtocol.h>
 #include <Protocol/SocInfoProtocol.h>
 #include <Library/CacheMaintenanceLib.h>
 #include <Library/StmmInfoLib.h>
 #include "UefiMemRecords.h"
+
+VOID
+EFIAPI
+InstallType45Structure (
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
+  );
 
 // #ifdef DEBUG
 // #undef DEBUG
@@ -597,6 +605,7 @@ FwVersionDxeEntryPoint (
   EFI_STATUS  Status;
   EFI_EVENT   BoardInfoUpdateEvent;
   VOID        *Registration;
+  EFI_EVENT                                   Event;
 
   DEBUG ((DEBUG_INFO, "%a start.\n", __FUNCTION__));
 
@@ -604,6 +613,16 @@ FwVersionDxeEntryPoint (
   SetStmmVersion ();
   SetBoardInfo ();
 
+  Status = EfiCreateEventReadyToBootEx (
+             TPL_CALLBACK,
+             InstallType45Structure,
+             &CixFwVerProtocol,
+             &Event
+             );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: Create ReadyToBoot Event failed with Status = %r\n", __FUNCTION__, Status));
+    return Status;
+  }
   Status = gBS->InstallProtocolInterface (
                   &ImageHandle,
                   &gCixFwVersionProtocolGuid,

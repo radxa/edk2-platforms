@@ -711,5 +711,53 @@ Device (MUX1) {
         {
             SKY1_IOMUXC_GPIO11,
         }
+    PinGroup ("pinctrl_pcie_x8_rc", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x04, 0x00, 0x24,
+        })
+        {
+            SKY1_IOMUXC_GPIO2,
+        }
+    PinGroup ("pinctrl_pcie_x4_rc", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x0c, 0x00, 0x24,
+        })
+        {
+            SKY1_IOMUXC_GPIO4,
+        }
+    PinGroup ("pinctrl_pcie_x2_rc", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x08, 0x00, 0x24,
+        })
+        {
+            SKY1_IOMUXC_GPIO3,
+        }
+    PinGroup ("pinctrl_pcie_x1_1_rc", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x14, 0x00, 0x24,
+        })
+        {
+            SKY1_IOMUXC_GPIO6,
+        }
+    PinGroup ("pinctrl_pcie_x1_0_rc", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x10, 0x00, 0x24,
+        })
+        {
+            SKY1_IOMUXC_GPIO5,
+        }
+    PinGroup ("wifi_vbat_gpio", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x30, 0x00, 0x44,
+        })
+        {
+            SKY1_IOMUXC_GPIO13,
+        }
   })
 }

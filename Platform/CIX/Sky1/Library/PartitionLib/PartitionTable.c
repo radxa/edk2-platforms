@@ -16,7 +16,7 @@
 
 /* Volume Label size 11 chars, round off to 16 */
 #define VOLUME_LABEL_SIZE  16
-
+#define SELECT_NVME_ID  L"Select NVME ID"
 /* List of all the filters that need device path protocol in the handle to
  * filter */
 #define FILTERS_NEEDING_DEVICEPATH                                             \
@@ -32,6 +32,10 @@
 struct StoragePartInfo  gPtable;
 EFI_PARTITION_ENTRY     gPtnEntries[MAX_NUM_PARTITIONS];
 STATIC UINT32           gPartitionCount;
+STATIC UINT8            gSelectNvmeId = NVME_ID_X4;
+#ifdef FASTBOOT_NVME
+STATIC CHAR8            gSelectNvmeIdStr[MAX_NVME_ID_ARRAY_SIZE][MAX_NVME_ID_STR_SIZE] = {"NVMEX8", "NVMEX4", "NVMEX2"};
+#endif
 
 #ifdef ANDROID_BOOT
 BackdoorInfo  gBackdoorPart[] = {
@@ -143,7 +147,8 @@ GetBlkIOHandles (
   IN UINT32             SelectionAttrib,
   IN PartiSelectFilter  *FilterData,
   OUT HandleInfo        *HandleInfoPtr,
-  IN OUT UINT32         *MaxBlkIopCnt
+  IN OUT UINT32         *MaxBlkIopCnt,
+  IN UINT8              SelectNvmeId
   )
 {
   EFI_BLOCK_IO_PROTOCOL             *BlkIo;
@@ -161,6 +166,7 @@ GetBlkIOHandles (
   EFI_PARTITION_INFO_PROTOCOL       *PartitionInfo;
   EFI_DEVICE_PATH_TO_TEXT_PROTOCOL  *DevTextPath;
   CHAR16                            *TextDevPath;
+  CHAR16                            SearchString[MAX_GET_VAR_NAME_SIZE];
 
   if ((MaxBlkIopCnt == NULL) || (HandleInfoPtr == NULL)) {
     return EFI_INVALID_PARAMETER;
@@ -267,25 +273,28 @@ GetBlkIOHandles (
       Partition      = (HARDDRIVE_DEVICE_PATH *)TempDevicePath;
       Status         = gBS->LocateProtocol (&gEfiDevicePathToTextProtocolGuid, NULL, (void **)&DevTextPath);
       TextDevPath    = DevTextPath->ConvertDevicePathToText (DevPathInst, TRUE, TRUE);
+
+      UnicodeSPrint(SearchString, sizeof(SearchString), L"PciRoot(0x%d)", SelectNvmeId);
       DEBUG ((
         EFI_D_INFO,
-        "Get Device Path = %s type = %d subtype = %d  ControllerNumber = %d\n",
+        "Get Device Path = %s type = %d subtype = %d  SearchString:%s  ControllerNumber = %d\n",
         TextDevPath,
         DevPathInst->Type,
         DevPathInst->SubType,
+        SearchString,
         RootDevicePath->ControllerNumber
         ));
  #ifdef FASTBOOT_USB
       if (StrStr (TextDevPath, L"USB") == NULL) {
+      {
         continue;
       }
-
  #else
       // For NVME
-      if (StrStr (TextDevPath, L"Pci") == NULL) {
+      if ((StrStr (TextDevPath, L"Pci") == NULL) || (StrStr(TextDevPath, SearchString) == NULL))
+      {
         continue;
       }
-
  #endif
       if ((SelectionAttrib & (BLK_IO_SEL_SELECT_ROOT_DEVICE_ONLY |
                               BLK_IO_SEL_MATCH_ROOT_DEVICE)) != 0)
@@ -477,6 +486,41 @@ ToLower (
     }
   }
 }
+#ifdef FASTBOOT_NVME
+UINT8
+GetNvmeId (
+  VOID
+  )
+{
+  return gSelectNvmeId;
+}
+
+VOID
+GetNvmeIdStr (
+  CHAR8  **SelectNvmeIdStr
+  )
+{
+  *SelectNvmeIdStr = gSelectNvmeIdStr[gSelectNvmeId];
+}
+
+EFI_STATUS
+SetNvmeId  (
+  UINT8   SelectNvmeId
+  )
+{
+  EFI_STATUS         Status = EFI_SUCCESS;
+
+  gSelectNvmeId = SelectNvmeId;
+  Status = gRT->SetVariable (
+                  SELECT_NVME_ID,
+                  &gCixGlobalVariableGuid,
+                  EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
+                  sizeof (gSelectNvmeId),
+                  &gSelectNvmeId
+                  );
+  return Status;
+}
+#endif
 
 EFI_STATUS
 EnumeratePartitions (
@@ -486,7 +530,28 @@ EnumeratePartitions (
   EFI_STATUS         Status;
   PartiSelectFilter  HandleFilter;
   UINT32             Attribs = 0;
+#ifdef FASTBOOT_NVME
+  UINTN              SelectNvmeIdSize = sizeof(gSelectNvmeId);
+#endif
 
+#ifdef FASTBOOT_NVME
+  Status = gRT->GetVariable (
+                SELECT_NVME_ID,
+                &gCixGlobalVariableGuid,
+                NULL,
+                &SelectNvmeIdSize,
+                &gSelectNvmeId
+                );
+  if(Status == EFI_NOT_FOUND) {
+      Status = gRT->SetVariable (
+                  SELECT_NVME_ID,
+                  &gCixGlobalVariableGuid,
+                  EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
+                  sizeof (gSelectNvmeId),
+                  &gSelectNvmeId
+                  );
+  }
+#endif
   if (IsPartitionBackDoor ()) {
     return EFI_SUCCESS;
   }
@@ -499,7 +564,7 @@ EnumeratePartitions (
   HandleFilter.VolumeName     = NULL;
   HandleFilter.RootDeviceType = NULL;
 
-  Status = GetBlkIOHandles (Attribs, &HandleFilter, &gPtable.HandleInfoList[0], &gPtable.MaxHandles);
+  Status = GetBlkIOHandles (Attribs, &HandleFilter, &gPtable.HandleInfoList[0], &gPtable.MaxHandles, gSelectNvmeId);
   if ((Status != EFI_SUCCESS) || (gPtable.MaxHandles == 0)) {
     DEBUG ((EFI_D_ERROR, "%s: GetBlkIOHandles failed: %u\n", __func__, Status));
     return Status;
@@ -675,7 +740,7 @@ GetStorageHandle (
   HandleFilter.PartitionType  = NULL;
   HandleFilter.VolumeName     = NULL;
   HandleFilter.RootDeviceType = NULL;
-  Status                      = GetBlkIOHandles (Attribs, &HandleFilter, BlockIoHandle, MaxHandles);
+  Status                      = GetBlkIOHandles (Attribs, &HandleFilter, BlockIoHandle, MaxHandles, gSelectNvmeId);
   if (EFI_ERROR (Status)) {
     DEBUG ((EFI_D_ERROR, "Error getting block IO handle for Emmc\n"));
     return Status;

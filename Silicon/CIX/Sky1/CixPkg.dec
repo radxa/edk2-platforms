@@ -119,15 +119,18 @@
   gCixTokenSpaceGuid.PcdUsb3Control0Enable|FALSE|BOOLEAN|0x0000030b
   gCixTokenSpaceGuid.PcdUsb3Control0MaxSpeed|5|UINT32|0x0000030c
   gCixTokenSpaceGuid.PcdUsb3Control0DataRole|FALSE|BOOLEAN|0x0000030d
+  gCixTokenSpaceGuid.PcdUsb3Control0VbusDetect|FALSE|BOOLEAN|0x00000325
 
   gCixTokenSpaceGuid.PcdUsb3Control1Enable|FALSE|BOOLEAN|0x0000030e
   gCixTokenSpaceGuid.PcdUsb3Control1MaxSpeed|5|UINT8|0x0000030f
   gCixTokenSpaceGuid.PcdUsb3Control1DataRole|FALSE|BOOLEAN|0x00000311
+  gCixTokenSpaceGuid.PcdUsb3Control1VbusDetect|FALSE|BOOLEAN|0x00000326
 
   #USB TypeC drd
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE|BOOLEAN|0x00000312
   gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|0|BOOLEAN|0x00000314
   gCixTokenSpaceGuid.PcdUsbCDrdControl0MaxSpeed|5|UINT8|0x00000313
+  gCixTokenSpaceGuid.PcdUsbCDrdControl0VbusDetect|FALSE|BOOLEAN|0x00000327
 
   #USB Typec Host
   gCixTokenSpaceGuid.PcdUsbCControl0Enable|FALSE|BOOLEAN|0x00000315
@@ -394,11 +397,6 @@
   gCixTokenSpaceGuid.PcdGpuReservedMemoryBase|0xBCE00000|UINT32|0x000004C2
   gCixTokenSpaceGuid.PcdGpuReservedMemorySize|0x1000000|UINT32|0x000004C3
 
-  # NPU
-  gCixTokenSpaceGuid.PcdNpuEnable|FALSE|BOOLEAN|0x00000481
-  gCixTokenSpaceGuid.PcdNpuReservedMemoryBase|0x90000000|UINT32|0x00000482
-  gCixTokenSpaceGuid.PcdNpuReservedMemorySize|0x2000000|UINT32|0x00000483
-
   #Memory config
   gCixTokenSpaceGuid.PcdMemBreakPoint|0xFF|UINT8|0x00005C1
   gCixTokenSpaceGuid.PcdMemEyeScan|0xFF|UINT8|0x00005C2
@@ -451,4 +449,5 @@
 
 [PcdsDynamic]
   gCixTokenSpaceGuid.PcdMailbox0Initialized|FALSE|BOOLEAN|0x00000161
+  gCixTokenSpaceGuid.PcdEdpDIGONDelay|120|UINT64|0x00000401
 

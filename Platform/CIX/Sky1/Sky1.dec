@@ -164,6 +164,8 @@
 
   gCixPlatformTokenSpaceGuid.PcdStmmFirmwareVersionString|L""|VOID*|0x00002006
 
+  gCixPlatformTokenSpaceGuid.PcdRegisterBootShellSupport|TRUE|BOOLEAN|0x00003002
+
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 
 [PcdsDynamic]

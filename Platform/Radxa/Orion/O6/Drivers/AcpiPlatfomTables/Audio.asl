@@ -8,16 +8,6 @@
 
 External (\_SB.HDA, DeviceObj)
 
-Device (HDAC) {
-    Name (_HID, "CIXH6030")
-    Name (_UID, 0x0)
-    Name (_STA, 0xF)
-
-    Name (DLKL, Package() {
-      Package() {\_SB.HDA, \_SB.HDAC, 0},
-    })
-}
-
 Device (SNDC) {
   Name (_HID, "CIXH6070")
   Name (_UID, 0x0)
@@ -48,7 +38,6 @@ Device (SNDC) {
 //        Package () { "pdb2-gpios"     , Package () { ^SNDC, 0, 2, 0 } },
 //        Package () { "pdb3-gpios"     , Package () { ^SNDC, 0, 3, 0 } },
 //        Package () { "hpmicdet-gpios" , Package () { ^SNDC, 1, 0, 0 } },
-        Package () { "sndcard-idx" , 3 },
       }
   })
 }

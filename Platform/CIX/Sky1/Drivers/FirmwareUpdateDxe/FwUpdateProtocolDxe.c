@@ -9,13 +9,15 @@
 
 // CIX_FWUP_PRIVATE_DATA    CixFwUpPrivateData;
 CIX_FWUP_PRIVATE_DATA      *pFwPrivateData       = NULL;
-FIRMWARE_PROGRAM_CALLBACK  FimwareUpdateCallBack = NULL;
+EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  FimwareUpdateCallBack = NULL;
 BOOLEAN                    IsOtaPackage          = FALSE;
 BOOLEAN                    NeedFullPackageUpdate = TRUE;
 EFI_DISK_IO_PROTOCOL       *NorFlashDiskIo       = NULL;
 UINT32                     MediaId;
 UINT32                     FlashBlockSize = SIZE_4KB;
 FIRMWARE_PROGRAM_STATUS    FwProgStatus;
+UINT16                     GlobalPercentage;
+EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  ProgressFunc = NULL;
 // CHAR8   *pFirmwareHeader;
 
 #define EFI_DEADLOOP()                  \
@@ -25,17 +27,17 @@ FIRMWARE_PROGRAM_STATUS    FwProgStatus;
       ;                                 \
   }
 
-void
-DoCallBack (
-  FIRMWARE_PROGRAM_STATUS  *pFwProgSts
-  )
-{
-  UINT32  Size = 0x2;
+// void
+// DoCallBack (
+//   FIRMWARE_PROGRAM_STATUS  *pFwProgSts
+//   )
+// {
+//   UINT32  Size = 0x2;
 
-  if ( FimwareUpdateCallBack != NULL) {
-    FimwareUpdateCallBack ((UINT8 *)pFwProgSts, Size);
-  }
-}
+//   if ( FimwareUpdateCallBack != NULL) {
+//     FimwareUpdateCallBack ((UINT8 *)pFwProgSts, Size);
+//   }
+// }
 
 UINT16
 CixFirmwareUpdateInitialize (
@@ -367,6 +369,92 @@ CixFirmwareEntryUpdateWrapper (
   return (ReturnCode | RetVal);
 }
 
+
+UINT8
+SplitAndWriteFirmware (
+  UINT8   *pNewFirmwareImage,
+  UINT32  ImageSize
+  )
+{
+  UINT32  dwflag;
+  UINT8   RetVal;
+
+  const UINT32  SECTION_SIZE = 128 * 1024; // 128KB
+
+
+  if ((pNewFirmwareImage == NULL) || (ImageSize == 0)) {
+    DebugPrint (-1, "Error: Invalid firmware data or size.\n");
+    return -1;
+  }
+
+
+  UINT32  numSections = (ImageSize + SECTION_SIZE - 1) / SECTION_SIZE;
+
+  // DebugPrint (-1, "Total sections to write: %u\n", numSections);
+  // DebugPrint (
+  //             -1,
+  //             "Total firmware size: %u bytes (%.2f MB)\n",
+  //             ImageSize,
+  //             (float)ImageSize / (1024 * 1024)
+  //             );
+
+
+  for (UINT32 i = 0; i < numSections; i++) {
+    UINT32  currentSectionSize = SECTION_SIZE;
+    UINT32  currentOffset      = i * SECTION_SIZE;
+
+    if (currentOffset + SECTION_SIZE > ImageSize) {
+      currentSectionSize = ImageSize - currentOffset;
+    }
+
+
+    // UINT8 *sectionbuf = malloc(currentSectionSize);
+    // if (!sectionbuf) {
+    //     DebugPrint(-1,"Memory allocation failed for section %u!\n", i+1);
+    //     return -1;
+    // }
+    // memcpy(sectionbuf, pNewFirmwareImage + currentOffset, currentSectionSize);
+
+
+    int  RetVal = CixFlashWriteWrapper (
+                                        FIRMWARE_TYPE_FULL_PROGRAM,
+                                        pNewFirmwareImage + currentOffset,
+                                        currentSectionSize,
+                                        dwflag,
+                                        currentOffset
+                                        );
+
+    // free(sectionbuf);
+
+    if (RetVal != FIRMWARE_RET_SUCCESS) {
+      DebugPrint (-1, "Error: Failed to write section %u at offset 0x%08X\n", i+1, currentOffset);
+      return RetVal;
+    }
+
+
+    float  progress       = (float)(i + 1) / numSections * 100.0f;
+    UINT8  ProgramPercent = (UINT8)(progress + 0.5f);
+
+    // DebugPrint (
+    //             -1,
+    //             "Written section %u/%u: size=%u bytes, offset=0x%08X, progress=%.2f%% (%u%%)\n",
+    //             i+1,
+    //             numSections,
+    //             currentSectionSize,
+    //             currentOffset,
+    //             progress,
+    //             ProgramPercent
+    //             );
+
+    GlobalPercentage = ProgramPercent;
+    if ( ProgressFunc != NULL) {
+      ProgressFunc(ProgramPercent);
+    }
+  }
+
+  return RetVal;
+}
+
 UINT16
 CixFirmwareFullUpdatewrapper (
   UINT8   *pNewFirmwareImage,
@@ -389,7 +477,8 @@ CixFirmwareFullUpdatewrapper (
   // OffsetAddress = pEntryUpdate->Base;
   // pFirmwareEntryImage = AllocateZeroPool (FirmwareEntryImageSize);
   // CopyMem(pFirmwareEntryImage,pNewFirmwareImage+pEntryUpdate->Base,FirmwareEntryImageSize);
-  RetVal = CixFlashWriteWrapper (FIRMWARE_TYPE_FULL_PROGRAM, pNewFirmwareImage, ImageSize, dwflag, 0);
+  RetVal = SplitAndWriteFirmware (pNewFirmwareImage, ImageSize);
+  // RetVal = CixFlashWriteWrapper (FIRMWARE_TYPE_FULL_PROGRAM, pNewFirmwareImage, ImageSize, dwflag, 0);
   // FreePool(pFirmwareEntryImage);
 
   /* //dump
@@ -415,7 +504,7 @@ UINT16
 CixFirmwarePackageProgram (
   UINT8                      *pNewFirmwareImage,
   UINT32                     ImageSize,
-  FIRMWARE_PROGRAM_CALLBACK  CallBackFunc
+  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  CallBackFunc
   // add force flag
   )
 {
@@ -423,7 +512,7 @@ CixFirmwarePackageProgram (
   UINT16                   ReturnCode;
   FIRMWARE_HEADER          *pCixNewImageFwHeader;
   FIRMWARE_HEADER          *pCixOnboardFwHeader;
-  FIRMWARE_ENTRY           *pEntryUpdate  = NULL;
+  FIRMWARE_ENTRY           *pEntryUpdate = NULL;
   FIRMWARE_ENTRY           *pEntryOnboard = NULL;
   UINT32                   ImageEntryIndex, OboardEntryIndex;
   UINT32                   dwflag;
@@ -436,6 +525,7 @@ CixFirmwarePackageProgram (
   }
 
   FimwareUpdateCallBack = CallBackFunc;
+  ProgressFunc = CallBackFunc;
   pFwProgSts            = &FwProgStatus;
 
   ReturnCode = CixFirmwareUpdateInitialize (pNewFirmwareImage, ImageSize, dwflag);
@@ -553,7 +643,7 @@ CixFlashReadWrapper (
   }
 
   Status = NorFlashDiskIo->ReadDisk (NorFlashDiskIo, MediaId, OffsetAddress, ImageBuffSize, pImageBuff);
-  DebugPrint (DEBUG_INFO, "[FwU] Read NorFlash status : %r\n", Status);
+  // DebugPrint (DEBUG_INFO, "[FwU] Read NorFlash status : %r\n", Status);
 
   /*
   {
@@ -676,7 +766,7 @@ CixFirmwareVerify (
     return FALSE;
   }
 
-  DebugPrint (DEBUG_ERROR, "[FwU] Verify success.\n");
+  // DebugPrint (DEBUG_ERROR, "[FwU] Verify success.\n");
   return TRUE;
 }
 
@@ -698,29 +788,29 @@ CixFlashWriteWrapper (
 
   FwProgStatus.firmware_type = Type;
   FwProgStatus.status_result = FIRMWARE_START;
-  DoCallBack (&FwProgStatus);
+  //DoCallBack (&FwProgStatus);
   DEBUG ((DEBUG_INFO, "[FwU] Program entry %d, address 0x%08x\n", Type, OffsetAddress));
   Status = NorFlashDiskIo->WriteDisk (NorFlashDiskIo, MediaId, OffsetAddress, ImageBuffSize, pImageBuff);
-  DebugPrint (DEBUG_INFO, "[FwU] Write NorFlash status : %r\n", Status);
+  // DebugPrint (DEBUG_INFO, "[FwU] Write NorFlash status : %r\n", Status);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: status %r\n", __FUNCTION__, Status));
     FwProgStatus.status_result = FIRMWARE_WRITE_FAILED;
-    DoCallBack (&FwProgStatus);
+    //DoCallBack (&FwProgStatus);
     return FIRMWARE_RET_ERR_PROG;
   }
 
   FwProgStatus.status_result = FIRMWARE_WRITE_SUCCESS;
-  DoCallBack (&FwProgStatus);
+  //DoCallBack (&FwProgStatus);
   // do verify
   bVerify = CixFirmwareVerify (pImageBuff, ImageBuffSize, OffsetAddress, &FwProgStatus);
   if (!bVerify) {
     FwProgStatus.status_result = FIRMWARE_VERIFY_FAILED;
-    DoCallBack (&FwProgStatus);
+    //DoCallBack (&FwProgStatus);
     return FIRMWARE_RET_ERR_VERIFY;
   }
 
   FwProgStatus.status_result = FIRMWARE_PROGRAM_SUCCESS;
-  DoCallBack (&FwProgStatus);
+  //DoCallBack (&FwProgStatus);
 
   return FIRMWARE_RET_SUCCESS;
 }
@@ -730,7 +820,7 @@ CixFirmwareSingleProgram (
   UINT8                      Type,
   UINT8                      *pNewFirmwareImage,
   UINT32                     ImageSize,
-  FIRMWARE_PROGRAM_CALLBACK  CallBackFunc
+  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  CallBackFunc
   )
 {
   // EFI_STATUS        Status = EFI_SUCCESS;
@@ -827,7 +917,7 @@ CixFirmwareSecureDebugUpdate (
   UINT8                      *pNewFirmwareImage,
   UINT32                     ImageSize,
   UINT8                      UpateState,
-  FIRMWARE_PROGRAM_CALLBACK  CallBackFunc
+  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  CallBackFunc
   )
 {
   EFI_STATUS  Status = EFI_SUCCESS;
@@ -872,7 +962,7 @@ CixFirmwareRawEntryUpdateNull (
   UINT8                      *pEntryImage,
   UINT32                     ImageSize,
   ENTRY_UPDATE_METHOD        UpateState,
-  FIRMWARE_PROGRAM_CALLBACK  CallBackFunc
+  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  CallBackFunc
   )
 {
   return FIRMWARE_RET_FUNC_NOT_FOUND;
@@ -887,7 +977,7 @@ CixFirmwareRawEntryUpdate (
   UINT8                      *pEntryImage,
   UINT32                     ImageSize,
   ENTRY_UPDATE_METHOD        UpateState,
-  FIRMWARE_PROGRAM_CALLBACK  CallBackFunc
+  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  CallBackFunc
   )
 {
   EFI_STATUS               Status = EFI_SUCCESS;
@@ -1031,7 +1121,7 @@ CixFirmwareGetVersion (
 {
   UINT16  ReturnCode;
 
-  if ((Bootloader1Ver == NULL) || (Bootloader2Ver == NULL) ||(Bootloader3Ver == NULL)|| (HeaderOffset == NULL)) {
+  if ((Bootloader1Ver == NULL) || (Bootloader2Ver == NULL) || (Bootloader3Ver == NULL) || (HeaderOffset == NULL)) {
     ReturnCode = FIRMWARE_RET_ERR_INPUT;
     return ReturnCode;
   }
@@ -1048,13 +1138,21 @@ CixFirmwareGetVersion (
   return FIRMWARE_RET_SUCCESS;
 }
 
+UINT16
+CixFirmwareGetPercentage (
+  )
+{
+  return GlobalPercentage;
+}
+
 CIX_FW_UPDATE_PROTOCOL  CixFwUpdateFuncList = {
   FW_UPDATE_PROTOCOL_VERSION,
   CixFirmwarePackageProgram,
   CixFirmwareSingleProgram,
   CixFirmwareReadNull,
   CixFirmwareRawEntryUpdate,
-  CixFirmwareGetVersion
+  CixFirmwareGetVersion,
+  CixFirmwareGetPercentage
 };
 
 EFI_STATUS
@@ -1069,8 +1167,8 @@ CixFirmwareUpdateDxeEntryPoint (
   DEBUG ((DEBUG_INFO, "[FwU]%a start.\n", __FUNCTION__));
 
  #ifdef DEBUG_MODE
-  CixFwUpdateFuncList.FirmwareRead           =  CixFirmwareRead;
-  //CixFwUpdateFuncList.FirmwareRawEntryUpdate = CixFirmwareRawEntryUpdate;
+  CixFwUpdateFuncList.FirmwareRead =  CixFirmwareRead;
+  // CixFwUpdateFuncList.FirmwareRawEntryUpdate = CixFirmwareRawEntryUpdate;
  #endif
 
   Status = gBS->InstallProtocolInterface (

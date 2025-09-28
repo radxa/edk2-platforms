@@ -115,6 +115,7 @@ Device (ADSS) {
         Local0 = MSK0
         Local0 = Local0 | PGFSM_REG_CTRL | TIME_CYCLE_CNT
         MSK0 = Local0
+        sleep(1)
         \_SB.DMRP(MEMORY_ENABLE, MEMR_GROUP_ID_AUDIO, AUDIO_RCSU_BASE_REG, GROUP_INDEX_NONE)
       }
       Method(_OFF, 0, Serialized)
@@ -122,6 +123,7 @@ Device (ADSS) {
         Local0 = MSK0
         Local0 = Local0 & ~PGFSM_REG_CTRL
         MSK0 = Local0
+        sleep(1)
       }
     }
 

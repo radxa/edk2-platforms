@@ -173,15 +173,18 @@
   gCixTokenSpaceGuid.PcdUsb3Control0Enable
   gCixTokenSpaceGuid.PcdUsb3Control0MaxSpeed
   gCixTokenSpaceGuid.PcdUsb3Control0DataRole
+  gCixTokenSpaceGuid.PcdUsb3Control0VbusDetect
 
   gCixTokenSpaceGuid.PcdUsb3Control1Enable
   gCixTokenSpaceGuid.PcdUsb3Control1MaxSpeed
   gCixTokenSpaceGuid.PcdUsb3Control1DataRole
+  gCixTokenSpaceGuid.PcdUsb3Control1VbusDetect
 
   #USB TypeC drd
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable
   gCixTokenSpaceGuid.PcdUsbCDrdControl0MaxSpeed
   gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole
+  gCixTokenSpaceGuid.PcdUsbCDrdControl0VbusDetect
 
   #USB Typec Host
   gCixTokenSpaceGuid.PcdUsbCControl0Enable

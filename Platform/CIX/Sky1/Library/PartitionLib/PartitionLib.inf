@@ -52,6 +52,7 @@
 [Guids]
 	gEfiPartitionTypeGuid
 	gEfiFileSystemInfoGuid
+	gCixGlobalVariableGuid
 
 [Protocols]
 	gEfiPartitionInfoProtocolGuid

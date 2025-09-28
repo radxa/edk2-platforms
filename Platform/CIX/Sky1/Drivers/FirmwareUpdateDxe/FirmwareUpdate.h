@@ -23,6 +23,7 @@
 #include <Library/PrintLib.h>
 #include <Library/NorFlashLib.h>
 #include <Protocol/CixFwUpdateProtocol.h>
+#include <Protocol/FirmwareManagement.h>
 #include <string.h>
 
 #pragma pack(push)
@@ -57,8 +58,8 @@ typedef struct {
   UINT32                     EntryCount;
   UINT32                     HeaderOffset;
   CIX_FIRMWARE_ENTRY_INFO    ImageFwEntryInfo[10];
-  FIRMWARE_HEADER        *pOnboardFwHeader;
-  FIRMWARE_HEADER        *pNewImageFwHeader;
+  FIRMWARE_HEADER            *pOnboardFwHeader;
+  FIRMWARE_HEADER            *pNewImageFwHeader;
 } CIX_FWUP_PRIVATE_DATA;
 
 typedef struct {
@@ -104,7 +105,7 @@ Bit4: set 1 to force update CSU_PM config
 #define FIRMWARE_HEADER_SIGNATURE   0x55AA55AA
 #define SECURE_DEBUG_SIZE           0x1000
 
-#define FW_UPDATE_PROTOCOL_VERSION  1
+#define FW_UPDATE_PROTOCOL_VERSION  2
 
 EFI_STATUS
 EFIAPI
@@ -139,4 +140,8 @@ CixFlashReadWrapper (
 EFI_STATUS
 EFIAPI
 CixFirmwareEcProgram (
+  );
+
+UINT16
+CixFirmwareGetPercentage (
   );

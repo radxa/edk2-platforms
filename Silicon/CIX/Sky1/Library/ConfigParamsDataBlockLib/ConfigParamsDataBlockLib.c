@@ -223,11 +223,13 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
       FixedPcdGetBool (PcdUsb3Control0Enable),
       FixedPcdGet8 (PcdUsb3Control0MaxSpeed),
       FixedPcdGetBool (PcdUsb3Control0DataRole),
+      FixedPcdGetBool (PcdUsb3Control0VbusDetect),
     },
     {
       FixedPcdGetBool (PcdUsb3Control1Enable),
       FixedPcdGet8 (PcdUsb3Control1MaxSpeed),
       FixedPcdGetBool (PcdUsb3Control1DataRole),
+      FixedPcdGetBool (PcdUsb3Control1VbusDetect),
     },
   },
   {
@@ -236,6 +238,7 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
       FixedPcdGetBool (PcdUsbCDrdControl0Enable),
       FixedPcdGet8 (PcdUsbCDrdControl0MaxSpeed),
       FixedPcdGetBool (PcdUsbCDrdControl0DataRole),
+      FixedPcdGetBool (PcdUsbCDrdControl0VbusDetect),
     },
   },
   {

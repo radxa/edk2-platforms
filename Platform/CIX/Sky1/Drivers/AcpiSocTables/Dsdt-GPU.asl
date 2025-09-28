@@ -21,6 +21,51 @@ Device (PMGM) {
   Name (_STA, 0x03)
 }
 
+// GPU power supply
+Device (GPUP) {
+  Name (_HID, "CIXH5001")
+  Name (_UID, 0x0)
+  Name (_STA, 0xB)
+
+  PowerResource(PPRS, 0, 0)
+  {
+    OperationRegion(OPR0,SystemMemory,GPU_RCSU_PD_REG, 0x04)
+    Field (OPR0, DWordAcc, NoLock, Preserve) {
+      MSK0, 32,
+    }
+    Method(_STA, 0, Serialized)
+    {
+        Local0 = MSK0
+        Local0 = Local0 & PGFSM_REG_CTRL2
+        If (Local0 > 0)
+        {
+          Return (1)
+        }
+        Else
+        {
+          Return (0)
+        }
+    }
+    Method(_ON, 0, Serialized)
+    {
+      Local0 = MSK0
+      Local0 = Local0 | PGFSM_REG_CTRL2 | TIME_CYCLE_CNT
+      MSK0 = Local0
+      Stall (5)
+      \_SB.DMRP(MEMORY_ENABLE, MEMR_GROUP_ID_GPU, GPU_RCSU_BASE_REG, BIT0)
+    }
+    Method(_OFF, 0, Serialized)
+    {
+      Local0 = MSK0
+      Local0 = Local0 & ~PGFSM_REG_CTRL2
+      MSK0 = Local0
+    }
+  }
+
+  Name(_PR0, Package(1){PPRS})
+  Name(_PR3, Package(1){PPRS})
+}
+
 Device (GPU) {
   Name (_HID, "CIXH5000")
   Name (_UID, 0x0)
@@ -50,10 +95,13 @@ Device (GPU) {
         Package () {"power-domains", Package () {\_SB.SCMI.DVFS, 0}},
         Package () {"power-domain-names", Package () {"perf"}},
         Package () {"gpu-microvolt", Package () {820000}},
+        Package () {"tzgt", \_SB.TZGT },
+        Package () {"power-supply", \_SB.GPUP },
     },
     ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
     Package () {
       Package () {"pbha", "IIOR"},
+      Package () {"power_model", "PWRM"},
     }
   })
 
@@ -64,42 +112,15 @@ Device (GPU) {
     }
   })
 
-  PowerResource(PPRS, 0, 0)
-  {
-    OperationRegion(OPR0,SystemMemory,GPU_RCSU_PD_REG, 0x04)
-    Field (OPR0, DWordAcc, NoLock, Preserve) {
-      MSK0, 32,
+  Name (PWRM, Package() {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+        Package () { "static-coefficient", "2427750" },
+        Package () { "dynamic-coefficient", "4687" },
+        Package () { "ts", Package() {"20000", "2000", "-20", "2" } },
+        Package () { "thermal-zone", "tzgt" },
     }
-    Method(_STA, 0, Serialized)
-    {
-        Local0 = MSK0
-        Local0 = Local0 & PGFSM_REG_CTRL2
-        If (Local0 > 0)
-        {
-          Return (1)
-        }
-        Else
-        {
-          Return (0)
-        }
-    }
-    Method(_ON, 0, Serialized)
-    {
-      Local0 = MSK0
-      Local0 = Local0 | PGFSM_REG_CTRL2 | TIME_CYCLE_CNT
-      MSK0 = Local0
-      \_SB.DMRP(MEMORY_ENABLE, MEMR_GROUP_ID_GPU, GPU_RCSU_BASE_REG, BIT0)
-    }
-    Method(_OFF, 0, Serialized)
-    {
-      Local0 = MSK0
-      Local0 = Local0 & ~PGFSM_REG_CTRL2
-      MSK0 = Local0
-    }
-  }
-
-  Name(_PR0, Package(1){PPRS})
-  Name(_PR3, Package(1){PPRS})
+  })
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_GPU_CLK_CORE, "gpu_clk_core", \_SB.GPU},

@@ -120,12 +120,14 @@ typedef struct _CONFIG_PARAMS_USB_32_DRD {
   BOOLEAN    Enable;
   UINT8      MaxSpeed;
   BOOLEAN    DataRole;
+  UINT8      VbusDetect;
 } CONFIG_PARAMS_USB_32_DRD;
 
 typedef struct _CONFIG_PARAMS_USB_TYPE_C_DRD {
   BOOLEAN    Enable;
   UINT8      MaxSpeed;
   BOOLEAN    DataRole;
+  UINT8      VbusDetect;
 } CONFIG_PARAMS_USB_TYPE_C_DRD;
 
 typedef struct _CONFIG_PARAMS_USB_TYPE_C {

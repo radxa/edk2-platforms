@@ -26,18 +26,19 @@ Device (HDA) {
       0x10000
       )
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_HDA_INTERRUPT_ID }
-    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
-                "\\_SB.GPI3", 0, ResourceConsumer) {
-        5,
-    }
     PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_hda", ResourceConsumer,)
+#ifdef HDA_EXT_CRS
+    HDA_EXT_CRS
+#endif
   })
 
   Name (_DSD, Package () {
     ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
-      Package () { "pdb-gpios", Package () { ^HDA, 0, 0, 0 } },
       Package () { "cru-ctrl", \_SB.ACRU },
+#ifdef HDA_EXT_DSD_PROPERTY
+      HDA_EXT_DSD_PROPERTY,
+#endif
     }
   })
 
@@ -45,7 +46,8 @@ Device (HDA) {
     Package() {\_SB.ADSS.ARST, AUDSS_HDA_SW_RST_N  ,\_SB.HDA, "hda"},
   })
   Name (DLKL, Package() {
-    Package() {\_SB.DMA1, \_SB.HDA, 0},
+    Package() {\_SB.ADSS.ACLK, \_SB.HDA, 0},
+    Package() {\_SB.ADSS.ARST, \_SB.HDA, 0},
   })
 }
 

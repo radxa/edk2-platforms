@@ -68,11 +68,13 @@
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultParity
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultStopBits
   gEfiMdePkgTokenSpaceGuid.PcdDefaultTerminalType
+  gCixPlatformTokenSpaceGuid.PcdRegisterBootShellSupport
 
 [Pcd]
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut
   gEfiMdeModulePkgTokenSpaceGuid.PcdBootDiscoveryPolicy
   gCixPlatformTokenSpaceGuid.PcdAndroidBoot
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPlatformRecoverySupport           ## CONSUMES
 
 [Guids]
   gBootDiscoveryPolicyMgrFormsetGuid

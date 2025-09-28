@@ -37,6 +37,13 @@
 
 #define MAX_GET_VAR_NAME_SIZE  32
 
+/* Select X2/X4/X8 NVME to BOOT */
+#define MAX_NVME_ID_ARRAY_SIZE  (3)
+#define MAX_NVME_ID_STR_SIZE    (10)
+#define NVME_ID_X8              0x00
+#define NVME_ID_X4              0x01
+#define NVME_ID_X2              0x02
+
 /* Selection attributes for selecting the BlkIo handles */
 #define BLK_IO_SEL_MEDIA_TYPE_REMOVABLE       0x0001
 #define BLK_IO_SEL_MEDIA_TYPE_NON_REMOVABLE   0x0002
@@ -123,7 +130,8 @@ GetBlkIOHandles (
   IN UINT32             SelectionAttrib,
   IN PartiSelectFilter  *FilterData,
   OUT HandleInfo        *HandleInfoPtr,
-  IN OUT UINT32         *MaxBlkIopCnt
+  IN OUT UINT32         *MaxBlkIopCnt,
+  IN UINT8              SelectNvmeId
   );
 
 EFI_STATUS
@@ -168,6 +176,16 @@ PartitionHasMultiSlot (
 VOID
 GetPartitionCount (
   UINT32  *Val
+  );
+
+VOID
+GetNvmeIdStr (
+  CHAR8  **SelectNvmeIdStr
+  );
+
+EFI_STATUS
+SetNvmeId (
+  UINT8  SelectNvmeId
   );
 
 EFI_STATUS
