@@ -20,6 +20,14 @@
 #string STR_ENABLED                     #language en-US "Enabled"
 #string STR_DISABLED                    #language en-US "Disabled"
 
+#string STR_ACPI_FEATURE_STRING         #language en-US "* Some features are disabled due to\n"
+                                                        "  current system configuration."
+#string STR_ACPI_FEATURE_HELP           #language en-US "Please turn on ACPI on O/S Hardware Description to reveal hidden options."
+
+#string STR_ADVANCED_FORM_SET_TITLE     #language en-US "Advanced Configuration"
+#string STR_ADVANCED_FORM_SET_TITLE_HELP #language en-US "Advanced Configuration, which may prevent system from booting."
+#string STR_ADVANCED_FORM_SET_RECOVERY  #language en-US "You should have hardware recovery tool ready before changing them."
+
 #string STR_NETWORK_STACK_PROMPT        #language en-US "Network Stack"
 #string STR_NETWORK_STACK_PROMPT_HELP   #language en-US "Enable/Disable the network stack"
 #string STR_IPV4_PXE_BOOT_PROMPT        #language en-US "Ipv4 Pxe Boot"
