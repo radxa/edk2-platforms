@@ -143,9 +143,7 @@
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6HttpSupport
   gCixTokenSpaceGuid.PcdStateAfterG3
   gCixTokenSpaceGuid.PcdSystemTableSelect
-  gCixTokenSpaceGuid.PcdPrimaryDisplay
   gCixTokenSpaceGuid.PcdDtbMenuEntry
-  gCixTokenSpaceGuid.PcdBiosReset
   gCixTokenSpaceGuid.PcdSocWatchdogTimer
   gCixTokenSpaceGuid.PcdVddSocVoltage
   gCixTokenSpaceGuid.PcdVddGpuVoltage
@@ -206,6 +204,8 @@
   gCixTokenSpaceGuid.PcdMemRPriorityP1
   gCixTokenSpaceGuid.PcdMemWPriorityP1
   gCixTokenSpaceGuid.PcdMemBdwOvflowP1
+  gCixTokenSpaceGuid.PcdMemWrDbi
+  gCixTokenSpaceGuid.PcdMemRdDbi
   gCixTokenSpaceGuid.PcdGmac0Enable
   gCixTokenSpaceGuid.PcdGmac1Enable
   gCixTokenSpaceGuid.PcdGmac0MacAddress
