@@ -14,6 +14,7 @@
 
 DefinitionBlock("SsdtTable.aml", "SSDT", 2, "RADXA", "ORIONO6N", 1) {
   Scope(_SB) {
+    include("Audio.asl")
     include("MipiCamera.asl")
     include("I2cPD.asl")
     include("Iomux.asl")
