@@ -53,7 +53,7 @@ MemConfigBinOutprint (
   fclose(pFile);
 }
 
-int
+void
 main (
   void
 )
@@ -91,7 +91,7 @@ main (
     // Initialize BIOS setup table with 0xFF
     if (CdcbBlockList[index].guid == GUID_INVALID) {
       printf("Error: Invalid GUID in entry %d\n", index);
-      return  1;
+      return;
     }
 
     // Cal checksum
@@ -131,5 +131,4 @@ main (
   }
   ((MEM_QUICK_CONFIG*)MemCfgBuf)->FeatHash = FeatHash;
   MemConfigBinOutprint(MemCfgBuf, MemCfgBinSize);
-  return 0;
 }

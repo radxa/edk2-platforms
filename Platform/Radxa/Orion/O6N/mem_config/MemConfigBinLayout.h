@@ -28,8 +28,8 @@ extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G_Hive;
 extern MEM_CONFIG_BUSCFG_LP5        MemLpddr5BusCfg_rs600_x8;
 extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_x8;
 
-extern MEM_CONFIG_BUSCFG_LP5        MemLpddr5BusCfg_rs600_rayson;
-extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_rayson;
+extern MEM_CONFIG_BUSCFG_LP5        MemLpddr5BusCfg_rs600_6G;
+extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_6G;
 
 extern MEM_CONFIG_BUSCFG_LP5        MemLpddr5BusCfg_rs600_12G;
 extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_12G;
@@ -58,8 +58,8 @@ extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_rs600_12G;
   CDCB_BLOCK(GlobalConfigBlock_16G_Hive), \
   CDCB_BLOCK(MemLpddr5BusCfg_rs600_x8), \
   CDCB_BLOCK(MemPhyPadCfg_rs600_x8), \
-  CDCB_BLOCK(MemLpddr5BusCfg_rs600_rayson), \
-  CDCB_BLOCK(MemPhyPadCfg_rs600_rayson), \
+  CDCB_BLOCK(MemLpddr5BusCfg_rs600_6G), \
+  CDCB_BLOCK(MemPhyPadCfg_rs600_6G), \
   CDCB_BLOCK(MemLpddr5BusCfg_rs600_12G), \
   CDCB_BLOCK(MemPhyPadCfg_rs600_12G), \
 

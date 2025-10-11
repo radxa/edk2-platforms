@@ -12,7 +12,7 @@
 #include "LinuxAcpiConfig.h"
 #endif
 
-DefinitionBlock("SsdtTable.aml", "SSDT", 2, "Radxa", "OrionO6N", 1) {
+DefinitionBlock("SsdtTable.aml", "SSDT", 2, "RADXA", "ORIONO6N", 1) {
   Scope(_SB) {
     include("MipiCamera.asl")
     include("I2cPD.asl")

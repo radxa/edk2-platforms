@@ -392,6 +392,9 @@ static int32_t check_fan_table(pm_config_fan_t* config, uint32_t num)
     pm_config_fan_t* ptr = NULL;
     for (i = 0; i < num; i++) {
         ptr = &config[i];
+        if (ptr->fan_valid.fields.valid == PM_CONFIG_INVALID) {
+            continue;
+        }
         if (ptr->fan_id.fields.valid == PM_CONFIG_VALID && ptr->fan_id.fields.raw_data >= MAX_FAN_NUM) {
             printf("fan_config[%d]: Too many fans.\n", i);
             return -1;
@@ -402,7 +405,7 @@ static int32_t check_fan_table(pm_config_fan_t* config, uint32_t num)
             }
 
             if (ptr->rpm_table_items[m] < 2 || ptr->rpm_table_items[m] > MAX_FAN_TABLE_ENTRIES) {
-                printf("fan_config[%d].rpm_table[%d]: Too RPM table entries.\n", i, m);
+                printf("fan_config[%d].rpm_table[%d]: Too many RPM table entries.\n", i, m);
                 return -1;
             }
 

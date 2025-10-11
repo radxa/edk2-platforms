@@ -1,5 +1,5 @@
 CC:=gcc
-CFLAGS:=-Wall
+CFLAGS:=-Wall -Wno-overflow
 
 all: clean csupm_bin_config
 

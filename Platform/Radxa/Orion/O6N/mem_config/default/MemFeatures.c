@@ -15,11 +15,7 @@ MEM_CONFIG_BLOCK_FEATURE MemFeatureBlock = {
     .AutoPrechargeEn  = 1,
     .PbrEn            = 1,
     .SelBankInQ       = 1,
-#ifndef MEM_CFG_PRIO
     .PortPriority     = PORT_PRIORITY_QOS,
-#else
-    .PortPriority     = MEM_CFG_PRIO,
-#endif
     .BdwP0            = 100,
     .BdwP1            = 100,
     .BdwOvflowP0      = 1,
@@ -39,5 +35,6 @@ MEM_CONFIG_BLOCK_FEATURE MemFeatureBlock = {
     .EyeScanEn        = 0,
     .TrainMode        = 0,
     .PeriodicTrain    = 0,
+    .SSC              = 0,
   }
 };

@@ -1,7 +1,8 @@
+#include "BoardConfig.h"
 #include "MemConfigBinTool.h"
 #include "MemConfigurationTable.h"
 
-#define ENTRY_COUNT 2
+#define ENTRY_COUNT 4
 
 MEM_CONFIG_BUSCFG_LP5 MemLpddr5BusCfg = {
   {
@@ -10,9 +11,10 @@ MEM_CONFIG_BUSCFG_LP5 MemLpddr5BusCfg = {
     .BoardMask      = BOARD_ID_MASK_DEFAULT
   },
   {
-    //                                                                                                     Dq   Ca
-    //MaxMemFreq        RankPerCh CA_ODT   CK_ODT   CS_ODT   DQ_ODT   WCK_ODT  SOC_ODT  NTDQ_ODT ODT_PDDS Vref Vref(% of VDDQ)
-    {DDR6400_FREQUENCY, RANK_SR,  RTT_120, RTT_120, RTT_80,  RTT_80,  RTT_80,  RTT_40,  RTT_OFF,  RTT_40,  340, 280},
-    {DDR6400_FREQUENCY, RANK_DR,  RTT_240, RTT_240, RTT_80,  RTT_120, RTT_120, RTT_40,  RTT_OFF,  RTT_40,  340, 280},
+    //MaxMemFreq        RankPerCh DevWidth CA_ODT   CK_ODT   CS_ODT   DQ_ODT   WCK_ODT  SOC_ODT  NTDQ_ODT ODT_PDDS
+    {DDR6400_FREQUENCY, RANK_SR,  DEV_x16, RTT_120, RTT_120, RTT_80,  RTT_80,  RTT_80,  RTT_40,  RTT_OFF,  RTT_40, VREF_AUTO, VREF_AUTO},
+    {DDR6400_FREQUENCY, RANK_DR,  DEV_x16, RTT_240, RTT_240, RTT_80,  RTT_120, RTT_120, RTT_40,  RTT_OFF,  RTT_40, VREF_AUTO, VREF_AUTO},
+    {DDR6400_FREQUENCY, RANK_SR,  DEV_x8,  RTT_240, RTT_120, RTT_240, RTT_80,  RTT_80,  RTT_40,  RTT_OFF,  RTT_40, VREF_AUTO, VREF_AUTO},
+    {DDR6400_FREQUENCY, RANK_DR,  DEV_x8,  0x10,    RTT_240, RTT_240, RTT_120, RTT_120, RTT_40,  RTT_OFF,  RTT_40, VREF_AUTO, VREF_AUTO},
   }
 };

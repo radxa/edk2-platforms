@@ -9,12 +9,7 @@ MEM_CONFIG_BIOS_SETUP MemBiosSetup = {
     .BlockSize      = sizeof(MEM_CONFIG_BIOS_SETUP),
     .BoardMask      = BOARD_ID_MASK_DEFAULT
   },
-#ifndef MEM_CFG_CHMASK
   .ChannelMask = AUTO,
-#else
-  .ChannelMask = MEM_CFG_CHMASK,
-#endif
-
   .MemFreq = AUTO,
   .WckAlwaysOn = AUTO,
   .DataMask = AUTO,

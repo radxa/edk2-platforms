@@ -105,9 +105,6 @@
 !if $(COMPILE_SYSTEM_LOADER) == android
   DEFINE CAPSULE_ENABLE             = TRUE
   DEFINE OPTEE_AVB_ENABLE           = FALSE
-  DEFINE REBOOT_REASON_ENABLE       = TRUE
-!else
-  DEFINE REBOOT_REASON_ENABLE       = FALSE
 !endif
 
 #
@@ -300,6 +297,16 @@
   gCixTokenSpaceGuid.PcdPcieRootPort2Enable|TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort3Enable|TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort4Enable|TRUE
+  gCixTokenSpaceGuid.PcdPcieRootPort0MaxSpeed|0x03
+  gCixTokenSpaceGuid.PcdPcieRootPort1MaxSpeed|0x03
+  gCixTokenSpaceGuid.PcdPcieRootPort2MaxSpeed|0x03
+  gCixTokenSpaceGuid.PcdPcieRootPort3MaxSpeed|0x03
+  gCixTokenSpaceGuid.PcdPcieRootPort4MaxSpeed|0x03
+  gCixTokenSpaceGuid.PcdPcieRootPort0LaneNum|0x03
+  gCixTokenSpaceGuid.PcdPcieRootPort1LaneNum|0x02
+  gCixTokenSpaceGuid.PcdPcieRootPort2LaneNum|0x01
+  gCixTokenSpaceGuid.PcdPcieRootPort3LaneNum|0x00
+  gCixTokenSpaceGuid.PcdPcieRootPort4LaneNum|0x00
   gCixTokenSpaceGuid.PcdPcieRootPort0AspmSupport|0
   gCixTokenSpaceGuid.PcdPcieRootPort1AspmSupport|3
   gCixTokenSpaceGuid.PcdPcieRootPort2AspmSupport|3
@@ -341,16 +348,12 @@
 
   gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses|{ 5, 0xFF, 0xFF, 0xFF }
   gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0x51, 0xFF, 0xFF, 0xFF }
-  gCixPlatformTokenSpaceGuid.PcdPdDevAlertPins|{ 44, 0xFF, 0xFF, 0xFF }
+  gCixPlatformTokenSpaceGuid.PcdPdDevAlertPins|{ 9, 0xFF, 0xFF, 0xFF }
   gCixPlatformTokenSpaceGuid.PcdTypecPortDefaultModes|{ 3, 4, 1, 4}
 
   # USBC0
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
-!if $(COMPILE_SYSTEM_LOADER) == android
   gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|TRUE
-!else
-  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|FALSE
-!endif
   # USBC1
   gCixTokenSpaceGuid.PcdUsbCControl0Enable|TRUE
   # USBC2
@@ -425,9 +428,4 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|600
 
   gCixPlatformTokenSpaceGuid.PcdDynamicUint64Test|0x11111111
-
-!if $(COMPILE_SYSTEM_LOADER) == android
-  gCixPlatformTokenSpaceGuid.AndroidFastboot|TRUE
-!endif
-
 [PcdsDynamicHii.common.DEFAULT]

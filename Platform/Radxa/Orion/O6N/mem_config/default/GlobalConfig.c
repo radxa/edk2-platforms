@@ -1,6 +1,5 @@
 #include "MemConfigBinTool.h"
 #include "MemConfigurationTable.h"
-#include "BoardConfig.h"
 
 MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock = {
   {
@@ -11,7 +10,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock = {
   .MaxFreq          = DDR5500_FREQUENCY,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
-  .DeviceDensity    = 6,
-  .DeviceWidth      = 16,
-  .RankNum          = 1,
+  .DeviceDensity    = 0xFF,
+  .DeviceWidth      = 0xFF,
+  .RankNum          = 0xFF,
 };

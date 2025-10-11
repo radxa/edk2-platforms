@@ -42,7 +42,6 @@
   GpioLib
   GpioTableLib
   CixSipLib
-  MailBoxLib
 
 [Guids]
   gCixI2cDevicePathGuid

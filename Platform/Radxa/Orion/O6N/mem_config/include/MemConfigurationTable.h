@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#define MEM_CONFIG_MAJOR_VER 0x1
-#define MEM_CONFIG_MINOR_VER 0x6
+#define MEM_CONFIG_MAJOR_VER 0x2
+#define MEM_CONFIG_MINOR_VER 0x0
 
 #define CDCB_MEM_QUICK_CONFIG_OFFSET 0
 #pragma pack(push, 1)
@@ -49,7 +49,10 @@ typedef struct {
   uint8_t  vol_sub_ver;
   uint8_t  Reserved_0;
   uint32_t FeatHash;
-  uint8_t  Reserved_1[16];
+  uint8_t  gpu_opp_patch;
+  uint8_t  BoardRevId;
+  uint8_t  BoardRevIdChanged;
+  uint8_t  Reserved_1[13];
 } MEM_QUICK_CONFIG;
 
 #define MEM_CONFIG_HEADER_SIGNATURE 0x42434443 // "CDCB"
@@ -80,7 +83,7 @@ typedef struct {
   uint32_t    Reserved0;
   uint16_t    BlockSize;
   uint8_t     BlockChecksum;
-  uint8_t     Reserved1;
+  uint8_t     CompBit;
   uint16_t    BoardMask;
   uint16_t    Reserved2;
 } MEM_CONFIG_BLOCK_HEADER;
@@ -109,6 +112,7 @@ typedef struct {
 #define DDR_TYPE_LPDDR4X 0
 #define DDR_TYPE_LPDDR5  1
   uint8_t                 DdrType;
+#define DRAM_PKG_AUTO 0xFF
   uint8_t                 DeviceDensity; // Gb
   uint8_t                 DeviceWidth;
   uint8_t                 RankNum;
@@ -147,6 +151,7 @@ typedef struct {
   uint8_t                 BdwOvflowP1;
 #define TRAIN_MODE_PI_INIT_LVL 0
 #define TRAIN_MODE_SW_TRAIN    1
+#define TRAIN_MODE_SKIP_TRAIN  2
   uint8_t                 TrainMode; // 0: PI_INIT_LVL 1: SW Train
   uint8_t                 IEcc;
   uint8_t                 PeriodicTrain; // BIT0: CALVL, BIT1: WRLVL, BIT2: GTLVL, BIT3: RDLVL, BIT4: WDQLVL, BIT7: DQS_OSC
@@ -171,6 +176,7 @@ typedef struct {
 typedef struct {
   uint16_t                MaxMemFreq;       ///< Bitmap of DDR rate
   uint8_t                 RankPerCh;        ///< Bitmap of rank type of Dimm0
+  uint8_t                 DevWidth;         ///< Device Width
   uint8_t                 CA_ODT;           ///< CA_ODT
   uint8_t                 CK_ODT;           ///< CK_ODT
   uint8_t                 CS_ODT;           ///< CS_ODT
@@ -178,8 +184,7 @@ typedef struct {
   uint8_t                 SOC_ODT;          ///< SOC_ODT
   uint8_t                 NTDQ_ODT;         ///< NTDQ_ODT
   uint8_t                 ODT_PDDS;         ///< PDDS
-  uint16_t                DqVref;
-  uint16_t                CaVref;
+  uint8_t                 Rsvd;
 } MEM_CONFIG_BUSCFG_LP4X_ENTRY;
 
 typedef struct {
@@ -192,6 +197,9 @@ typedef struct {
 typedef struct {
   uint16_t                MaxMemFreq;       ///< Bitmap of DDR rate
   uint8_t                 RankPerCh;        ///< Bitmap of rank type of Dimm0
+#define DEV_x16 16
+#define DEV_x8  8
+  uint8_t                 DevWidth;         ///< Device Width
   uint8_t                 CA_ODT;           ///< CA_ODT
   uint8_t                 CK_ODT;           ///< CK_ODT
   uint8_t                 CS_ODT;           ///< CS_ODT
@@ -200,7 +208,7 @@ typedef struct {
   uint8_t                 SOC_ODT;          ///< SOC_ODT
   uint8_t                 NTDQ_ODT;         ///< NTDQ_ODT
   uint8_t                 ODT_PDDS;         ///< PDDS
-  uint8_t                 rsvd;
+#define   VREF_AUTO  0
   uint16_t                DqVref;
   uint16_t                CaVref;
 } MEM_CONFIG_BUSCFG_LP5_ENTRY;
@@ -215,6 +223,7 @@ typedef struct {
 typedef struct {
   uint16_t  MaxMemFreq;    ///< Bitmap of DDR rate
   uint8_t   RankPerCh;     ///< Bitmap of rank type of Dimm0
+  uint8_t   DevWidth;      ///< Device Width
   uint8_t   DqDrv;
   uint8_t   DqOdt;
   uint8_t   DqsDrv;
@@ -229,7 +238,7 @@ typedef struct {
   uint8_t   FFE;           ///< Ck Cke Ca Cs Dq Dqs
   uint8_t   DFE;           ///< Dq
   uint8_t   CTLE;
-  uint8_t   Rsvd[3];
+  uint8_t   Rsvd[2];
 } MEM_CONFIG_PHYPADCFG_ENTRY;
 
 typedef struct {
@@ -309,8 +318,10 @@ typedef struct {
 #define MEM_CONFIG_BLOCK_BOARDID_MAP_SIGNAUTE  0x504D4442 // "BDMP"
 
 typedef struct {
-  uint8_t PcbId;
-  uint8_t BoardId;
+  uint16_t PcbId;
+  uint16_t Mask;
+  uint8_t  BoardId;
+  uint8_t  rsvd;
 } BOARD_ID_MAP_ENTRY;
 
 typedef struct {

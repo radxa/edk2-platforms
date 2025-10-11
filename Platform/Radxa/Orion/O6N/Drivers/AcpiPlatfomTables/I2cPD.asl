@@ -89,7 +89,7 @@ Scope (\_SB.I2C5)
   Device (PD10) {
     Name (_HID, "CIXH200D")
     Name (_UID, 0x0)
-    Name (_STA, 0xB)
+    Name (_STA, 0xF)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x51,
                       ControllerInitiated,
