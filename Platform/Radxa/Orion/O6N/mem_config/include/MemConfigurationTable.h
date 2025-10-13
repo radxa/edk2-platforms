@@ -28,7 +28,6 @@ typedef struct {
 #define VOL_Major_VER_V2          0x2     //v2.0
 #define VOL_Major_VER_V3          0x3     //v3.0
 #define VOL_Major_VER_V4          0x4     //v4.0
-#define VOL_Major_VER_V15         0xf     //v15.0
 #define VOL_Major_VER_AUTO        0xFF    //VF-Ver value is hardcode according to board id
                                           //phecda: 4
                                           //others: 1
@@ -43,6 +42,7 @@ typedef struct {
 #define VOL_Sub_VER_V1            0x1     //v1.0
 #define VOL_Sub_VER_V2            0x2     //v2.0
 #define VOL_Sub_VER_V3            0x3     //v3.0
+#define VOL_Major_VER_V15         0xf     //v15.0
 #define VOL_Sub_VER_AUTO          0xFF    //VF-Ver value is hardcode according to board id
                                           //phecda: 0
                                           //others: 0
