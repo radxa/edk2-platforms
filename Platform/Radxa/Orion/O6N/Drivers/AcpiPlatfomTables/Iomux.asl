@@ -154,14 +154,12 @@ Device (MUX1) {
         {
             IO_S5_SPI1_MISO,    0x00, 0x5c,
             IO_S5_SPI1_CS0,     0x00, 0x5c,
-            IO_S5_SPI1_CS1,     0x00, 0x5c,
             IO_S5_SPI1_MOSI,    0x00, 0x5c,
             IO_S5_SPI1_CLK,     0x00, 0x1c,
         })
         {
             SKY1_IOMUXC_SPI1_MISO,
             SKY1_IOMUXC_SPI1_CS0,
-            SKY1_IOMUXC_SPI1_CS1,
             SKY1_IOMUXC_SPI1_MOSI,
             SKY1_IOMUXC_SPI1_CLK,
         }
