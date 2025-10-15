@@ -53,3 +53,13 @@
 #string STR_EC_FAN_MODE_PROMPT_HELP     #language en-US "Select the default EC fan mode."
 #string STR_AUTO_MODE                   #language en-US "Auto Mode"
 #string STR_PERF_MODE                   #language en-US "Performance Mode"
+
+#string STR_UFS_POWER_MODE_PROMPT       #language en-US "UFS Power Mode"
+#string STR_UFS_POWER_MODE_PROMPT_HELP  #language en-US "Select the default UFS power mode.\n\n"
+                                                        "<Auto Mode> enable UFS power if module is detected during boot.\n\n"
+                                                        "<Always On> turns UFS bridge on all the time.\n"
+                                                        "If no UFS module is connected, it will be shown in the OS as a zero-sized block device.\n\n"
+                                                        "<Always Off> turns UFS bridge off all the time."
+#string STR_UFS_POWER_AUTO              #language en-US "Auto Mode"
+#string STR_UFS_POWER_ALWAYS_ON         #language en-US "Always On"
+#string STR_UFS_POWER_ALWAYS_OFF        #language en-US "Always Off"

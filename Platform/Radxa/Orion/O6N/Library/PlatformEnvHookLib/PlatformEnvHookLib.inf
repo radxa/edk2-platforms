@@ -47,6 +47,7 @@
   gCixI2cDevicePathGuid
   gEfiNetworkStackSetupGuid
   gPlatformSetupVariableGuid
+  gRadxaSetupVariableGuid
 
 [Protocols]
   gEfiI2cMasterProtocolGuid
@@ -64,6 +65,9 @@
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4HttpSupport
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6HttpSupport
+
+  gRadxaTokenSpaceGuid.PcdUFSPowerDetectGPIO
+  gRadxaTokenSpaceGuid.PcdUFSPowerControlGPIO
 
 [Pcd]
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit

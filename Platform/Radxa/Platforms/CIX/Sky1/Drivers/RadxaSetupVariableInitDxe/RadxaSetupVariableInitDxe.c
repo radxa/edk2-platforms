@@ -48,9 +48,21 @@ RadxaSetupVariableInitDxeEntry (
                     );
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_ERROR, "%a: EfiSetVariable failed - %r\n", __FUNCTION__, Status));
+      return Status;
     }
   } else {
     DEBUG ((DEBUG_ERROR, "%a: EfiGetVariable Success - %r\n", __FUNCTION__, Status));
+  }
+
+  Status = gBS->InstallMultipleProtocolInterfaces (
+                  &ImageHandle,
+                  &gRadxaSetupVariableGuid,
+                  NULL,
+                  NULL
+                  );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: InstallMultipleProtocolInterfaces failed - %r\n", __FUNCTION__, Status));
+    return Status;
   }
 
   return Status;

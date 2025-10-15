@@ -424,6 +424,10 @@
   gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable|FALSE
   gCixTokenSpaceGuid.PcdAcpiHdaEnable|FALSE     # N/A
 
+  gRadxaTokenSpaceGuid.PcdUFSPowerMode|0x00
+  gRadxaTokenSpaceGuid.PcdUFSPowerDetectGPIO|27
+  gRadxaTokenSpaceGuid.PcdUFSPowerControlGPIO|14
+
 [PcdsDynamicDefault.common]
 
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit|0x47fffffff

@@ -38,3 +38,12 @@
 
   #Cpu Max Frequency
   gRadxaTokenSpaceGuid.PcdCpuFMax|0x00|UINT8|0x00000005
+
+  # UFS Power Mode
+  # 0: Auto
+  # 1: Always On
+  # 2: Always Off
+  # 0xFF: Not available on this platform
+  gRadxaTokenSpaceGuid.PcdUFSPowerMode|0xFF|UINT8|0x00000006
+  gRadxaTokenSpaceGuid.PcdUFSPowerDetectGPIO|0x00|UINT8|0x00000007
+  gRadxaTokenSpaceGuid.PcdUFSPowerControlGPIO|0x00|UINT8|0x00000008

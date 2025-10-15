@@ -72,6 +72,7 @@
 [FixedPcd]
   gRadxaTokenSpaceGuid.PcdCpuFMax
   gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn
+  gRadxaTokenSpaceGuid.PcdUFSPowerMode
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
   gCixTokenSpaceGuid.PcdPcieRootPort0Enable

@@ -61,7 +61,12 @@
   Device (PVC7) {
     Name (_HID, "PRP0001")
     Name (_UID, 0x0A)
-    Name (_STA, 0x0B)
+    Method (_STA, 0x0, Serialized) {
+      If (LEqual (FixedPcdGet8 (PcdUFSPowerMode), 0xff)) {
+        Return (0x0B)
+      }
+      Return (0)
+    }
 
     Name (_CRS, ResourceTemplate () {
       PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "ufs_5v_en", ResourceConsumer,)

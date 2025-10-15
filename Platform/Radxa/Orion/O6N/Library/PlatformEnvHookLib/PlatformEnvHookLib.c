@@ -15,6 +15,7 @@
 #include <Library/CixSipLib.h>
 #include <Guid/NetworkStackSetup.h>
 #include <PlatformSetupVar.h>
+#include "../../../..//Platforms/CIX/Sky1/Include/RadxaSetupVar.h"
 
 // {3F7B73C7-FB70-4e91-86E7-34EAD76AC74D}
 EFI_GUID  gEfiFarmEnableFlagGuid = {
@@ -289,6 +290,91 @@ WakeupSourceInit (
   return Status;
 }
 
+VOID
+EFIAPI
+SetUFSPower (
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
+  )
+{
+  EFI_STATUS          Status = EFI_SUCCESS;
+  UINTN               VarSize;
+  RADXA_SETUP_DATA    RadxaSetupVar;
+  IO_INOUT_VALUE_SEL  PinVal = INOUT_VALUE_DEFAULT;
+  UINT8               DetectionPin, PowerPin;
+
+  VarSize = sizeof (RADXA_SETUP_DATA);
+  Status = gRT->GetVariable (
+                  RADXA_SETUP_VAR,
+                  &gRadxaSetupVariableGuid,
+                  NULL,
+                  &VarSize,
+                  &RadxaSetupVar
+                  );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: EfiGetVariable failed for gRadxaSetupVariableGuid - %r\n", __FUNCTION__, Status));
+    return;
+  }
+  DEBUG ((DEBUG_INFO, "%a: EfiGetVariable Success for gRadxaSetupVariableGuid - %r\n", __FUNCTION__, Status));
+
+  DetectionPin = FixedPcdGet8 (PcdUFSPowerDetectGPIO);
+  PowerPin     = FixedPcdGet8 (PcdUFSPowerControlGPIO);
+  if ((DetectionPin == 0) || (PowerPin == 0)) {
+    DEBUG ((DEBUG_ERROR, "%a: UFS Power GPIO not configured in DSC\n", __FUNCTION__));
+    if (Event != NULL) {
+      gBS->CloseEvent (Event);
+    }
+    return;
+  }
+  DEBUG ((DEBUG_INFO, "%a: DetectionPin = %u, PowerPin = %u\n", __FUNCTION__, DetectionPin, PowerPin));
+
+  switch (RadxaSetupVar.UFSPowerMode) {
+    case RADXA_SETUP_UFS_POWER_AUTO:
+      DEBUG ((DEBUG_INFO, "%a: UFS Auto Mode\n", __FUNCTION__));
+      Status = GpioGet(DetectionPin, &PinVal);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_ERROR, "%a: Failed to read UFS detection pin - %r\n", __FUNCTION__, Status));
+      } else {
+        switch (PinVal) {
+          case INOUT_LOW:
+            DEBUG ((DEBUG_INFO, "%a: UFS Detected\n", __FUNCTION__));
+            Status = GpioConfig (PowerPin, OUTPUT, INOUT_HIGH, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
+            break;
+          case INOUT_HIGH:
+          default:
+            DEBUG ((DEBUG_INFO, "%a: UFS Not Detected\n", __FUNCTION__));
+            Status = GpioConfig (PowerPin, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
+            break;
+        }
+        if (EFI_ERROR (Status)) {
+          DEBUG ((DEBUG_ERROR, "%a: Failed to configure UFS power pin - %r\n", __FUNCTION__, Status));
+        }
+      }
+      break;
+    case RADXA_SETUP_UFS_POWER_ON:
+      DEBUG ((DEBUG_INFO, "%a: UFS Always On\n", __FUNCTION__));
+      Status = GpioConfig (PowerPin, OUTPUT, INOUT_HIGH, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_ERROR, "%a: Failed to set UFS power pin - %r\n", __FUNCTION__, Status));
+      }
+      break;
+    case RADXA_SETUP_UFS_POWER_OFF:
+      DEBUG ((DEBUG_INFO, "%a: UFS Always Off\n", __FUNCTION__));
+      Status = GpioConfig (PowerPin, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_ERROR, "%a: Failed to set UFS power pin - %r\n", __FUNCTION__, Status));
+      }
+      break;
+    default:
+      DEBUG ((DEBUG_ERROR, "%a: Unknown UFSPowerMode\n", __FUNCTION__));
+      break;
+  }
+
+  if (Event != NULL) {
+    gBS->CloseEvent (Event);
+  }
+}
+
 EFI_STATUS
 EFIAPI
 OnboardDevicePowerOff (
@@ -407,6 +493,7 @@ STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 WakeupSourceInit        },
   { NULL,                        NULL,                 OnboardDevicePowerOff   },
   { NULL,                        NULL,                 RtcWakupEnable          },
+  { &gRadxaSetupVariableGuid,    SetUFSPower,          NULL                    },
   { &gEfiI2cMasterProtocolGuid,  InstallRtcProtocol,   NULL                    },
   // add platform initialization routines on ENV phase BEFORE this line, and they were invoked from top to down.
   { NULL,                        NULL,                 NULL                    }

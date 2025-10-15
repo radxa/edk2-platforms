@@ -103,6 +103,17 @@ endif;
       endoneof;
     endif;
 
+    suppressif FixedPcdGet8 (PcdUFSPowerMode) == 0xFF;
+      oneof varid   = RadxaSetupVar.UFSPowerMode,
+        prompt      = STRING_TOKEN(STR_UFS_POWER_MODE_PROMPT),
+        help        = STRING_TOKEN(STR_UFS_POWER_MODE_PROMPT_HELP),
+        default     = FixedPcdGet8 (PcdUFSPowerMode),
+        option text = STRING_TOKEN(STR_UFS_POWER_AUTO), value = 0, flags = DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_UFS_POWER_ALWAYS_ON), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_UFS_POWER_ALWAYS_OFF), value = 2, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
     oneof varid     = NetworkStackVar.Enable,
       prompt        = STRING_TOKEN(STR_NETWORK_STACK_PROMPT),
       help          = STRING_TOKEN(STR_NETWORK_STACK_PROMPT_HELP),
