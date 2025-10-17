@@ -45,10 +45,6 @@
 #string STR_S5_AFTER_G3_STRING          #language en-US "Power Off"
 #string STR_LASTSTATE_AFTER_G3_STRING   #language en-US "Last State"
 
-#string STR_ENABLE_SPCR_TABLE           #language en-US "ACPI SPCR Table"
-#string STR_ENABLE_SPCR_TABLE_HELP      #language en-US "Enable/Disable Serial Port Console Redirection (SPCR) Table.\n"
-                                                        "This table provide OS the information of the firmware console port."
-
 #string STR_EC_FAN_MODE_PROMPT          #language en-US "EC Fan Mode"
 #string STR_EC_FAN_MODE_PROMPT_HELP     #language en-US "Select the default EC fan mode."
 #string STR_AUTO_MODE                   #language en-US "Auto Mode"

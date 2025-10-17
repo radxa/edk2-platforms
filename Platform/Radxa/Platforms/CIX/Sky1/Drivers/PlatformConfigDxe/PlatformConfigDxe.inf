@@ -40,6 +40,8 @@
   CpuMenu/CpuConfig.uni
 #  GmacMenu/GmacConfig.hfr
 #  GmacMenu/GmacConfig.uni
+  ComplianceMenu/ComplianceConfig.hfr
+  ComplianceMenu/ComplianceConfig.uni
 
 [Packages]
   EmbeddedPkg/EmbeddedPkg.dec
@@ -63,6 +65,8 @@
 [Guids]
   gPlatformConfigFormSetGuid
   gRadxaTokenSpaceGuid
+  gPlatformSetupVariableGuid
+  gEfiNetworkStackSetupGuid
 
 [Protocols]
   gEfiHiiConfigAccessProtocolGuid               ## CONSUMES

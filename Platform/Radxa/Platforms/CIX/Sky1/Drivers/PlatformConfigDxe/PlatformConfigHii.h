@@ -38,6 +38,7 @@ extern EFI_GUID  gPlatformConfigFormSetGuid;
 #define I2C_CONFIG_FORM_ID          0x2013
 #define CPU_CONFIG_FORM_ID          0x2014
 #define GMAC_CONFIG_FORM_ID         0x2015
+#define COMPLIANCE_CONFIG_FORM_ID   0x2016
 
 #define PCIE_ROOT_PORT0_CONFIG_FORM_ID  0x2100
 #define PCIE_ROOT_PORT1_CONFIG_FORM_ID  0x2101
@@ -55,5 +56,8 @@ extern EFI_GUID  gPlatformConfigFormSetGuid;
 #define I2C7_CONFIG_FORM_ID  0x2307
 
 #define QUESTION_STATE_AFTER_G3_ID  0x1800
+#define KEY_ENABLE_NETWORK_STACK    0x1900
+#define KEY_DISABLE_ACPI_CPPC       0x1901
+#define KEY_DISABLE_SMALL_CORE      0x1902
 
 #endif

@@ -67,6 +67,10 @@ suppressif ideqval DtAcpiPref.Pref == DT_ACPI_SELECT_DT;
     goto ADVANCED_FORM_SET_ID,
       prompt = STRING_TOKEN(STR_ADVANCED_FORM_SET_TITLE),
       help = STRING_TOKEN(STR_ADVANCED_FORM_SET_TITLE_HELP);
+
+    goto COMPLIANCE_CONFIG_FORM_ID,
+      prompt = STRING_TOKEN(STR_COMPLIANCE_FORM_SET_TITLE),
+      help = STRING_TOKEN(STR_COMPLIANCE_FORM_SET_TITLE_HELP);
 endif;
 
     subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
@@ -80,16 +84,6 @@ endif;
         default       = FixedPcdGet8 (PcdStateAfterG3),
         option text   = STRING_TOKEN(STR_S5_AFTER_G3_STRING),        value = 0, flags = RESET_REQUIRED;
         option text   = STRING_TOKEN(STR_S0_AFTER_G3_STRING),        value = 1, flags = RESET_REQUIRED;
-      endoneof;
-    endif;
-
-    suppressif ideqval DtAcpiPref.Pref == DT_ACPI_SELECT_DT;
-      oneof varid   = PlatformSetupVar.SpcrEnable,
-        prompt      = STRING_TOKEN(STR_ENABLE_SPCR_TABLE),
-        help        = STRING_TOKEN(STR_ENABLE_SPCR_TABLE_HELP),
-        default     = FixedPcdGet8 (PcdAcpiSpcrEnable),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
       endoneof;
     endif;
 
@@ -108,7 +102,7 @@ endif;
         prompt      = STRING_TOKEN(STR_UFS_POWER_MODE_PROMPT),
         help        = STRING_TOKEN(STR_UFS_POWER_MODE_PROMPT_HELP),
         default     = FixedPcdGet8 (PcdUFSPowerMode),
-        option text = STRING_TOKEN(STR_UFS_POWER_AUTO), value = 0, flags = DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_UFS_POWER_AUTO), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_UFS_POWER_ALWAYS_ON), value = 1, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_UFS_POWER_ALWAYS_OFF), value = 2, flags = RESET_REQUIRED;
       endoneof;
@@ -195,5 +189,6 @@ endif;
 #include "I2cConfig.hfr"
 #include "CpuConfig.hfr"
 // #include "GmacConfig.hfr"
+#include "ComplianceConfig.hfr"
 
 endformset;

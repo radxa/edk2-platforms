@@ -84,6 +84,8 @@ PlatformConfigExtractConfig (
     return EFI_INVALID_PARAMETER;
   }
 
+  DEBUG ((DEBUG_INFO, "%a: Request = %s.\n", __FUNCTION__, Request));
+
   *Progress = Request;
   return EFI_NOT_FOUND;
 }
@@ -115,6 +117,8 @@ PlatformConfigRouteConfig (
     return EFI_INVALID_PARAMETER;
   }
 
+  DEBUG ((DEBUG_INFO, "%a: Configuration = %s.\n", __FUNCTION__, Configuration));
+
   *Progress = Configuration;
 
   return EFI_NOT_FOUND;
@@ -122,7 +126,7 @@ PlatformConfigRouteConfig (
 
 /**
   This function is invoked if user selected a interactive opcode from Device Manager's
-  Formset. If user set VBIOS, the new value is saved to EFI variable.
+  Formset.
 
   @param This            Points to the EFI_HII_CONFIG_ACCESS_PROTOCOL.
   @param Action          Specifies the type of action taken by the browser.
@@ -147,17 +151,78 @@ PlatformConfigCallback (
   OUT EFI_BROWSER_ACTION_REQUEST            *ActionRequest
   )
 {
-  // UINTN  CurIndex;
+  NETWORK_STACK       NetworkStackVar;
+  PLATFORM_SETUP_DATA PlatformSetupVar;
 
-  if ((Action != EFI_BROWSER_ACTION_CHANGING) && (Action != EFI_BROWSER_ACTION_SUBMITTED)) {
-    //
-    // Do nothing for other UEFI Action. Only do call back when data is changed.
-    //
-    return EFI_UNSUPPORTED;
-  }
+  switch (QuestionId) {
+    case KEY_ENABLE_NETWORK_STACK:
+      DEBUG ((DEBUG_INFO, "%a:  QuestionId = KEY_ENABLE_NETWORK_STACK\n", __FUNCTION__));
+      switch (Action) {
+        case EFI_BROWSER_ACTION_CHANGED:
+          if (Value->b) {
+            DEBUG ((DEBUG_INFO, "  Enable Network Stack\n"));
+            HiiGetBrowserData (&gEfiNetworkStackSetupGuid, NETWORK_STACK_VAR, sizeof (NetworkStackVar), (UINT8 *)&NetworkStackVar);
+            NetworkStackVar.Ipv4Pxe = 1;
+            NetworkStackVar.Ipv6Pxe = 1;
+            NetworkStackVar.Ipv4Http = 1;
+            NetworkStackVar.Ipv6Http = 1;
+            HiiSetBrowserData (&gEfiNetworkStackSetupGuid, NETWORK_STACK_VAR, sizeof (NetworkStackVar), (UINT8 *)&NetworkStackVar, NULL);
+          }
+          break;
+        default:
+          return EFI_UNSUPPORTED;
+          break;
+      }
+      break;
+    case KEY_DISABLE_ACPI_CPPC:
+      DEBUG ((DEBUG_INFO, "%a:  QuestionId = KEY_DISABLE_ACPI_CPPC\n", __FUNCTION__));
+      HiiGetBrowserData (&gPlatformSetupVariableGuid, PLATFORM_SETUP_VAR, sizeof (PlatformSetupVar), (UINT8 *)&PlatformSetupVar);
+      switch (Action) {
+        case EFI_BROWSER_ACTION_RETRIEVE:
+          Value->b = (PlatformSetupVar.CpuCppcType == 0);
+          break;
+        case EFI_BROWSER_ACTION_CHANGED:
+          DEBUG ((DEBUG_INFO, "  Adjust CpuCppcType\n"));
+          PlatformSetupVar.CpuCppcType = (UINT8)(Value->b ? 0 : 1);
+          HiiSetBrowserData (&gPlatformSetupVariableGuid, PLATFORM_SETUP_VAR, sizeof (PlatformSetupVar), (UINT8 *)&PlatformSetupVar, NULL);
+          break;
+        default:
+          return EFI_UNSUPPORTED;
+          break;
+      }
+      break;
+    case KEY_DISABLE_SMALL_CORE:
+      DEBUG ((DEBUG_INFO, "%a:  QuestionId = KEY_DISABLE_SMALL_CORE\n", __FUNCTION__));
+      HiiGetBrowserData (&gPlatformSetupVariableGuid, PLATFORM_SETUP_VAR, sizeof (PlatformSetupVar), (UINT8 *)&PlatformSetupVar);
+      switch (Action) {
+        case EFI_BROWSER_ACTION_RETRIEVE:
+          Value->b = (PlatformSetupVar.CpuCoreEnable[2] == 0) &&
+                     (PlatformSetupVar.CpuCoreEnable[3] == 0) &&
+                     (PlatformSetupVar.CpuCoreEnable[4] == 0) &&
+                     (PlatformSetupVar.CpuCoreEnable[5] == 0);
+          break;
+        case EFI_BROWSER_ACTION_CHANGED:
+          DEBUG ((DEBUG_INFO, "  Adjust CpuCoreEnable\n"));
+          PlatformSetupVar.CpuCoreEnable[2] = (Value->b ? 0 : 1);
+          PlatformSetupVar.CpuCoreEnable[3] = (Value->b ? 0 : 1);
+          PlatformSetupVar.CpuCoreEnable[4] = (Value->b ? 0 : 1);
+          PlatformSetupVar.CpuCoreEnable[5] = (Value->b ? 0 : 1);
+          HiiSetBrowserData (&gPlatformSetupVariableGuid, PLATFORM_SETUP_VAR, sizeof (PlatformSetupVar), (UINT8 *)&PlatformSetupVar, NULL);
+          break;
+        default:
+          return EFI_UNSUPPORTED;
+          break;
+      }
+      break;
+    default:
+      DEBUG ((DEBUG_INFO, "%a:  Unkown Action\n", __FUNCTION__));
+      DEBUG ((DEBUG_INFO, "    Action = %u.\n", Action));
+      DEBUG ((DEBUG_INFO, "    QuestionId = 0x%x.\n", QuestionId));
+      DEBUG ((DEBUG_INFO, "    Type = %u.\n", Type));
+      DEBUG ((DEBUG_INFO, "    Value = 0x%x.\n", *Value));
 
-  if ((Value == NULL) || (ActionRequest == NULL)) {
-    return EFI_INVALID_PARAMETER;
+      return EFI_UNSUPPORTED;
+      break;
   }
 
   return EFI_SUCCESS;
