@@ -41,24 +41,6 @@ Device (MUX0) {
             SKY1_IOMUXC_I2C2_SDA,
         }
 
-    PinGroup ("pinctrl_fch_spi1", ResourceProducer, ,
-        RawDataBuffer ()
-        {
-            0x01, 0xe8, 0x01, 0x5c,
-            0x01, 0xec, 0x01, 0x5c,
-            0x01, 0xf0, 0x01, 0x5c,
-            0x01, 0xf4, 0x01, 0x5c,
-            0x01, 0xf8, 0x01, 0x1c
-
-        })
-        {
-            SKY1_IOMUXC_GMAC1_TXD0,
-            SKY1_IOMUXC_GMAC1_TXD1,
-            SKY1_IOMUXC_GMAC1_TXD2,
-            SKY1_IOMUXC_GMAC1_TXD3,
-            SKY1_IOMUXC_GMAC1_TX_CLK
-        }
-
     PinGroup ("pinctrl_fch_uart2", ResourceProducer, ,
         RawDataBuffer ()
         {
@@ -68,6 +50,17 @@ Device (MUX0) {
         {
             SKY1_IOMUXC_UART2_TXD,
             SKY1_IOMUXC_UART2_RXD,
+        }
+
+    PinGroup ("pinctrl_fch_uart3_gpio", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            IO_S0_UART3_TXD, 0x00, 0xA7,
+            IO_S0_UART3_RXD, 0x00, 0xA7,
+        })
+        {
+            SKY1_IOMUXC_UART3_TXD,
+            SKY1_IOMUXC_UART3_RXD,
         }
 
     PinGroup ("pinctrl_substrate_i2s1", ResourceProducer, ,
