@@ -637,6 +637,7 @@ InitializeSystemAcpiRam (
     pSystemGpnvArea[ARV_USB3_TYPEA_DRD1_ROLE_OFFSET]    = ConfigData->Usb32Drd[1].DataRole;
     pSystemGpnvArea[ARV_GMAC0_ENABLE_OFFSET]            = ConfigData->Gmac[0].Enable;
     pSystemGpnvArea[ARV_GMAC1_ENABLE_OFFSET]            = ConfigData->Gmac[1].Enable;
+    pSystemGpnvArea[ARV_UART2_LIST_FIRST_OFFSET]        = ConfigData->Misc.Uart2ListFirst;
     if (PcdGetBool (PcdEcAcpiI2cEn)) {
       pSystemGpnvArea[ARV_FCH_I2C_0_ENABLE_OFFSET+FixedPcdGet8 (PcdEcI2cBus)] = 0;
     }

@@ -21,6 +21,37 @@ Device(UCRU) {
   })
 }
 
+Device (COMX) {
+  Name (_HID, "ARMH0011")
+  Name (_UID, 0x3)
+
+  Method (_STA)
+  {
+    If(FixedPcdGetBool(PcdAcpiUart2Enable) && \_SB.GETV(ARV_UART2_LIST_FIRST_OFFSET)){
+      Return (0xF)
+    } else {
+      Return (0x0)
+    }
+  }
+
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, UART2_BASE, UART2_SIZE)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { FCH_INTR_UART2_INTERRUPT_ID }
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_fch_uart2", ResourceConsumer,)
+  })
+
+  Name (_DSD, Package () {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+          Package () { "uartclk", UCLK },
+        }
+  })
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_FCH_UART2_APB, "apb_pclk", \_SB.COM2},
+    Package() {CLK_TREE_FCH_UART2_FUNC, "uartclk", \_SB.COM2},
+  })
+}
+
 Device (COM0) {
   Name (_HID, "ARMH0011")
   Name (_UID, 0x1)
@@ -99,7 +130,7 @@ Device (COM2) {
 
   Method (_STA)
   {
-    If(FixedPcdGetBool(PcdAcpiUart2Enable)){
+    If(FixedPcdGetBool(PcdAcpiUart2Enable) && !\_SB.GETV(ARV_UART2_LIST_FIRST_OFFSET)){
       Return (0xF)
     } else {
       Return (0x0)

@@ -53,6 +53,7 @@
 #define ARV_ISP_SUPPORT_OFFSET              0X29
 #define ARV_GMAC0_ENABLE_OFFSET             0x2A
 #define ARV_GMAC1_ENABLE_OFFSET             0x2B
+#define ARV_UART2_LIST_FIRST_OFFSET         0x2C
 //
-#define ARV_VARIABLE_TABLE_TOTAL_SIZE  0x2C
+#define ARV_VARIABLE_TABLE_TOTAL_SIZE  0x2D
 #endif
