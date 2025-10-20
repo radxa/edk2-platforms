@@ -319,10 +319,10 @@
   gCixTokenSpaceGuid.PcdPcieRootPort4PeResetPin|6
 
   gCixTokenSpaceGuid.PcdI2c0En|TRUE             # CAM 0
-  gCixTokenSpaceGuid.PcdI2c0Runtime|TRUE
+  gCixTokenSpaceGuid.PcdI2c0Runtime|FALSE
   gCixTokenSpaceGuid.PcdI2c0BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c1En|TRUE             # CAM 1
-  gCixTokenSpaceGuid.PcdI2c1Runtime|TRUE
+  gCixTokenSpaceGuid.PcdI2c1Runtime|FALSE
   gCixTokenSpaceGuid.PcdI2c1BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c2En|FALSE            # 40-pin
   gCixTokenSpaceGuid.PcdI2c2Runtime|FALSE
@@ -334,13 +334,13 @@
   gCixTokenSpaceGuid.PcdI2c4Runtime|FALSE
   gCixTokenSpaceGuid.PcdI2c4BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c5En|TRUE             # PD Charge
-  gCixTokenSpaceGuid.PcdI2c5Runtime|TRUE
+  gCixTokenSpaceGuid.PcdI2c5Runtime|FALSE
   gCixTokenSpaceGuid.PcdI2c5BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c6En|FALSE            # Board ID
-  gCixTokenSpaceGuid.PcdI2c6Runtime|FALSE
-  gCixTokenSpaceGuid.PcdI2c6BusFreq|50000
+  gCixTokenSpaceGuid.PcdI2c6Runtime|TRUE
+  gCixTokenSpaceGuid.PcdI2c6BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c7En|FALSE            # NC
-  gCixTokenSpaceGuid.PcdI2c7Runtime|FALSE
+  gCixTokenSpaceGuid.PcdI2c7Runtime|TRUE
   gCixTokenSpaceGuid.PcdI2c7BusFreq|100000
 
   # RTC I2C canot be controlled in setup
@@ -353,7 +353,7 @@
 
   # USBC0
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|TRUE
+  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|FALSE
   # USBC1
   gCixTokenSpaceGuid.PcdUsbCControl0Enable|TRUE
   # USBC2
@@ -363,7 +363,9 @@
 
   # USB3_A
   gCixTokenSpaceGuid.PcdUsb3Control0Enable|TRUE
+  gCixTokenSpaceGuid.PcdUsb3Control0DataRole|FALSE
   gCixTokenSpaceGuid.PcdUsb3Control1Enable|TRUE
+  gCixTokenSpaceGuid.PcdUsb3Control0DataRole|FALSE
 
   # USB2
   gCixTokenSpaceGuid.PcdUsb2Control0Enable|TRUE
@@ -417,8 +419,11 @@
   #     2 | N/A
   #     3 | N/A
   #     4 | DisplayPort
+  gCixTokenSpaceGuid.PcdDP0Enable|TRUE
+  gCixTokenSpaceGuid.PcdDP1Enable|TRUE
   gCixTokenSpaceGuid.PcdDP2Enable|FALSE
   gCixTokenSpaceGuid.PcdDP3Enable|FALSE
+  gCixTokenSpaceGuid.PcdDP5Enable|TRUE
   gCixTokenSpaceGuid.PcdDPPriority0|0
   gCixTokenSpaceGuid.PcdDPPriority1|4
   gCixTokenSpaceGuid.PcdDPPriority2|1

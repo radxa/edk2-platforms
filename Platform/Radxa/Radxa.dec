@@ -47,3 +47,7 @@
   gRadxaTokenSpaceGuid.PcdUFSPowerMode|0xFF|UINT8|0x00000006
   gRadxaTokenSpaceGuid.PcdUFSPowerDetectGPIO|0x00|UINT8|0x00000007
   gRadxaTokenSpaceGuid.PcdUFSPowerControlGPIO|0x00|UINT8|0x00000008
+
+  # Make BIOS fitting all available space
+  gEfiMdeModulePkgTokenSpaceGuid.PcdConOutRow|0
+  gEfiMdeModulePkgTokenSpaceGuid.PcdConOutColumn|0
