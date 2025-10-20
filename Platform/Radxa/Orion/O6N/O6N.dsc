@@ -45,7 +45,7 @@
   DEFINE DTB_UPDATE_ENABLE          = FALSE
   DEFINE SMBIOS_ENABLE              = FALSE
   DEFINE ACPI_ENABLE                = FALSE
-  DEFINE TOKEN_CONSOLE_PREF_SUPPORT = FALSE
+  DEFINE TOKEN_CONSOLE_PREF_SUPPORT = TRUE
   DEFINE FW_VERSION_ENABLE          = TRUE
   DEFINE SOC_PWR_CLK_RST_ENABLE     = TRUE
   DEFINE WATCH_DOG_ENABLE           = FALSE
@@ -423,7 +423,7 @@
   gCixTokenSpaceGuid.PcdDP1Enable|TRUE
   gCixTokenSpaceGuid.PcdDP2Enable|FALSE
   gCixTokenSpaceGuid.PcdDP3Enable|FALSE
-  gCixTokenSpaceGuid.PcdDP5Enable|TRUE
+  gCixTokenSpaceGuid.PcdDP4Enable|TRUE
   gCixTokenSpaceGuid.PcdDPPriority0|0
   gCixTokenSpaceGuid.PcdDPPriority1|4
   gCixTokenSpaceGuid.PcdDPPriority2|1

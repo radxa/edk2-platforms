@@ -13,7 +13,16 @@
 
 #include <Guid/HiiPlatformSetupFormset.h>
 #include <Guid/NetworkStackSetup.h>
+#include <Guid/ConsolePrefFormSet.h>
 #include <PlatformSetupVar.h>
+
+#define CONSOLE_PREF_GRAPHICAL  0x0
+#define CONSOLE_PREF_SERIAL     0x1
+
+typedef struct {
+  UINT8    Console;
+  UINT8    Reserved[3];
+} CONSOLE_PREF_VARSTORE_DATA;
 
 #define PLATFORM_CONFIG_FORMSET_GUID  \
   { 0x7dbfcdc4, 0xfb50, 0x452a, { 0xae, 0xd6, 0xfe, 0x21, 0x63, 0x70, 0x24, 0x61 } }

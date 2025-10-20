@@ -17,7 +17,7 @@ form formid = COMPLIANCE_CONFIG_FORM_ID,
     help   = STRING_TOKEN(STR_COMPLIANCE_NETWORK_STACK_HELP),
     flags  = INTERACTIVE | RESET_REQUIRED,
   endcheckbox;
-  checkbox varid = PlatformSetupVar.SpcrEnable,
+  checkbox varid = ConsolePref.Console,
     prompt = STRING_TOKEN(STR_COMPLIANCE_ACPI_SPCR),
     help   = STRING_TOKEN(STR_COMPLIANCE_ACPI_SPCR_HELP),
     flags  = RESET_REQUIRED,

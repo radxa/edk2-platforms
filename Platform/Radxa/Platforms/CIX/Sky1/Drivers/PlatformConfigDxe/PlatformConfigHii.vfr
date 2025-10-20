@@ -39,6 +39,11 @@ formset
     name  = RadxaSetupVar,
     guid  = RADXA_SETUP_VARIABLE_GUID;
 
+  efivarstore CONSOLE_PREF_VARSTORE_DATA,
+    attribute = EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_NON_VOLATILE,
+    name  = ConsolePref,
+    guid  = CONSOLE_PREF_FORMSET_GUID;
+
   form formid = PLATFORM_CONFIG_FORM_ID,
     title  = STRING_TOKEN(STR_MAIN_FORM_TITLE);
     subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
