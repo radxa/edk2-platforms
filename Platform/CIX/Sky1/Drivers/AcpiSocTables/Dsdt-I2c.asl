@@ -15,7 +15,7 @@ Device (I2C0) {
     If(\_SB.GETV(ARV_FCH_I2C_0_ENABLE_OFFSET)){
         Return (0xF)
     } else {
-        Return (0x0)
+        Return (0xF)
     }
   }
   Name (MXID, FixedPcdGet8 (PcdI2c0MutexId))
@@ -82,7 +82,7 @@ Device (I2C1) {
     If(\_SB.GETV(ARV_FCH_I2C_1_ENABLE_OFFSET)){
         Return (0xF)
     } else {
-        Return (0x0)
+        Return (0xF)
     }
   }
   Name (MXID, FixedPcdGet8 (PcdI2c1MutexId))
