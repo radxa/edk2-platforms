@@ -18,7 +18,7 @@ External (\_SB.ISP0, DeviceObj)
 //Camera power enable 4
 Device (CPE4) {
   Name (_HID, "PRP0001")
-  Name (_UID, 0x0B)
+  Name (_UID, 0x04)
   Name (_STA, 0x0B)
 
   Name (_CRS, ResourceTemplate () {
@@ -110,7 +110,7 @@ Scope (\_SB.I2C1)
   Device (IIS1) {
     Name (_HID, "CIXH3024")
     Name (_UID, 0x01)
-    Name (_STA, 0x00)
+    Name (_STA, 0xF)
     Name (_CCA, 0)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x36,

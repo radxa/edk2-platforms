@@ -142,6 +142,28 @@ Device (MUX1) {
 
 // Platform defined pinctrl
 
+    PinGroup ("i2c0_grp", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            IO_S5_SFI_I2C0_SCL, 0x00, 0x5c,
+            IO_S5_SFI_I2C0_SDA, 0x00, 0x5c
+        })
+        {
+            SKY1_IOMUXC_SFI_I2C0_SCL,
+            SKY1_IOMUXC_SFI_I2C0_SDA
+        }
+
+    PinGroup ("i2c1_grp", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            IO_S5_SFI_I2C1_SCL, 0x00, 0x57,
+            IO_S5_SFI_I2C1_SDA, 0x00, 0x57
+        })
+        {
+            SKY1_IOMUXC_SFI_I2C1_SCL,
+            SKY1_IOMUXC_SFI_I2C1_SDA
+        }
+
     PinGroup ("pinctrl_fch_spi0", ResourceProducer, ,
         RawDataBuffer ()
         {
