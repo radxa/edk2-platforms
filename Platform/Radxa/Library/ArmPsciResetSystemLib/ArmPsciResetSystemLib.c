@@ -47,15 +47,20 @@ LibResetSystem (
 {
   ARM_SMC_ARGS              ArmSmcArgs;
   EC_PARAMS_FORCE_EC_RESET  Params;
+  CHAR16 *                  SystemProductName;
+
+  SystemProductName = (CHAR16 *)FixedPcdGetPtr (PcdSystemProductName);
 
   switch (ResetType) {
     case EfiResetPlatformSpecific:
       // Map the platform specific reset as reboot
-      Params.Reserved = 0;
-      ForceEcReset (&Params);
+      if (!StrCmp (L"Radxa Orion O6", SystemProductName)) {
+        Params.Reserved = 0;
+        ForceEcReset (&Params);
 
-      DEBUG ((DEBUG_INFO, "%a: force EC reset\n", __FUNCTION__));
-      CpuDeadLoop ();
+        DEBUG ((DEBUG_INFO, "%a: force EC reset\n", __FUNCTION__));
+        CpuDeadLoop ();
+      }
     case EfiResetWarm:
     // Map a warm reset into a cold reset
     case EfiResetCold:
@@ -69,8 +74,12 @@ LibResetSystem (
       GpioConfig (FixedPcdGet8 (PcdPcieRootPort3PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
       GpioConfig (FixedPcdGet8 (PcdPcieRootPort4PeResetPin), OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);
 
-      GpioConfig (12, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of M2_SSD_PWREN
-      GpioConfig (17, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of VGFX_PWREN
+      DEBUG ((DEBUG_INFO, "%a: disable additional GPIOs for %a\n", __FUNCTION__, SystemProductName));
+      if (!StrCmp (L"Radxa Orion O6", SystemProductName)) {
+        GpioConfig (12, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of M2_SSD_PWREN
+        GpioConfig (17, OUTPUT, INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of VGFX_PWREN
+      }
+
       // Send a PSCI 0.2 SYSTEM_OFF command
       ArmSmcArgs.Arg0 = ARM_SMC_ID_PSCI_SYSTEM_OFF;
       break;
