@@ -315,7 +315,7 @@ SortEnabledAlertPin (
   *EnabledCnt = 0;
 
   for (i = 0; i < PdDevCount; i++) {
-    if (!PdDevList[i].Enabled) {
+    if (!PdDevList[i].Enabled || PdDevList[i].AlertPin == 0xFF) {
       continue;
     }
 
