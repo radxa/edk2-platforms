@@ -36,8 +36,8 @@
   Platform/CIX/Sky1/Drivers/SetupManagerDxe/I2cMenu/I2cConfig.uni
 #  PlatformMenu/Platform.hfr
 #  PlatformMenu/Platform.uni
-  CpuMenu/CpuConfig.hfr
-  CpuMenu/CpuConfig.uni
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/CpuMenu/CpuConfig.hfr
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/CpuMenu/CpuConfig.uni
 #  GmacMenu/GmacConfig.hfr
 #  GmacMenu/GmacConfig.uni
   ComplianceMenu/ComplianceConfig.hfr

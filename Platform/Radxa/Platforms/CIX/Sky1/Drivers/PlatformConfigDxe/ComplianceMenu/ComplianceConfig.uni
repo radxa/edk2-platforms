@@ -24,8 +24,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_COMPLIANCE_ACPI_CPPC_HELP           #language en-US "Disable ACPI CPPC(Collaborative Processor Performance Control) Interface."
 
 #string STR_COMPLIANCE_LINUX                    #language en-US "Linux"
-#string STR_COMPLIANCE_UART2_LIST_FIRST         #language en-US "List UART2 First"
-#string STR_COMPLIANCE_UART2_LIST_FIRST_HELP    #language en-US "AP logs are currently routed to COM2, but some ARM-based Linux systems expect the first serial device to be ttyAMA0 by default."
 
 #string STR_COMPLIANCE_WINDOWS_11_24H2          #language en-US "Windows 11 24H2"
 #string STR_COMPLIANCE_DISABLE_SMALL_CORE       #language en-US "Disable Small Cores"

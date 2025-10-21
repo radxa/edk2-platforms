@@ -32,11 +32,6 @@ form formid = COMPLIANCE_CONFIG_FORM_ID,
   subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
 
   subtitle text = STRING_TOKEN(STR_COMPLIANCE_LINUX);
-  checkbox varid = PlatformSetupVar.Uart2ListFirst,
-    prompt = STRING_TOKEN(STR_COMPLIANCE_UART2_LIST_FIRST),
-    help   = STRING_TOKEN(STR_COMPLIANCE_UART2_LIST_FIRST_HELP),
-    flags  = RESET_REQUIRED,
-  endcheckbox;
 
   subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
 
