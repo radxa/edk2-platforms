@@ -1,0 +1,58 @@
+/**
+  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+  Copyright 2025 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
+
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+
+**/
+
+form formid = COMPLIANCE_CONFIG_FORM_ID,
+  title  = STRING_TOKEN(STR_COMPLIANCE_FORM_SET_TITLE);
+  subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+  subtitle text = STRING_TOKEN(STR_COMPLIANCE_GENERAL);
+
+  checkbox varid = NetworkStackVar.Enable,
+    questionid = KEY_ENABLE_NETWORK_STACK,
+    prompt = STRING_TOKEN(STR_COMPLIANCE_NETWORK_STACK),
+    help   = STRING_TOKEN(STR_COMPLIANCE_NETWORK_STACK_HELP),
+    flags  = INTERACTIVE | RESET_REQUIRED,
+  endcheckbox;
+
+  checkbox varid = DtAcpiPref.Pref,
+    prompt = STRING_TOKEN(STR_COMPLIANCE_ACPI),
+    help   = STRING_TOKEN(STR_COMPLIANCE_ACPI_HELP),
+    flags  = RESET_REQUIRED,
+  endcheckbox;
+
+suppressif ideqval DtAcpiPref.Pref == DT_ACPI_SELECT_DT;
+  checkbox varid = ConsolePref.Console,
+    prompt = STRING_TOKEN(STR_COMPLIANCE_ACPI_SPCR),
+    help   = STRING_TOKEN(STR_COMPLIANCE_ACPI_SPCR_HELP),
+    flags  = RESET_REQUIRED,
+  endcheckbox;
+
+  checkbox varid = ComplianceVar.DisableCPPC,
+    questionid = KEY_DISABLE_ACPI_CPPC,
+    prompt = STRING_TOKEN(STR_COMPLIANCE_ACPI_CPPC),
+    help   = STRING_TOKEN(STR_COMPLIANCE_ACPI_CPPC_HELP),
+    flags  = INTERACTIVE | RESET_REQUIRED,
+  endcheckbox;
+
+  checkbox varid = ComplianceVar.DisableSmallCores,
+    questionid = KEY_DISABLE_SMALL_CORE,
+    prompt = STRING_TOKEN(STR_COMPLIANCE_DISABLE_SMALL_CORE),
+    help   = STRING_TOKEN(STR_COMPLIANCE_DISABLE_SMALL_CORE_HELP),
+    flags  = INTERACTIVE | RESET_REQUIRED,
+  endcheckbox;
+endif;
+suppressif ideqval DtAcpiPref.Pref == DT_ACPI_SELECT_ACPI;
+    text
+      help  = STRING_TOKEN(STR_ACPI_FEATURE_HELP),
+      text  = STRING_TOKEN(STR_ACPI_FEATURE_STRING);
+endif;
+
+  subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+  subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+  subtitle text = STRING_TOKEN(STR_EXIT_STRING);
+endform;

@@ -39,13 +39,48 @@ formset
     name  = RadxaSetupVar,
     guid  = RADXA_SETUP_VARIABLE_GUID;
 
+  efivarstore CONSOLE_PREF_VARSTORE_DATA,
+    attribute = EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_NON_VOLATILE,
+    name  = ConsolePref,
+    guid  = CONSOLE_PREF_FORMSET_GUID;
+
+  varstore COMPLIANCE_VARSTORE_DATA,
+    name = ComplianceVar,
+    guid = PLATFORM_CONFIG_FORMSET_GUID;
+
   form formid = PLATFORM_CONFIG_FORM_ID,
     title  = STRING_TOKEN(STR_MAIN_FORM_TITLE);
     subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
 
+suppressif ideqval DtAcpiPref.Pref == DT_ACPI_SELECT_DT;
     goto CPU_CONFIG_FORM_ID,
       prompt = STRING_TOKEN(STR_CPU_FORM_SET_TITLE),
       help = STRING_TOKEN(STR_CPU_FORM_SET_TITLE_HELP);
+
+    goto PCIE_CONFIG_FORM_ID,
+      prompt = STRING_TOKEN(STR_PCIE_FORM_SET_TITLE),
+      help = STRING_TOKEN(STR_PCIE_FORM_SET_TITLE_HELP);
+
+    goto USB_CONFIG_FORM_ID,
+      prompt = STRING_TOKEN(STR_USB_FORM_SET_TITLE),
+      help = STRING_TOKEN(STR_USB_FORM_SET_TITLE_HELP);
+
+    goto I2C_CONFIG_FORM_ID,
+      prompt = STRING_TOKEN(STR_I2C_FORM_SET_TITLE),
+      help   = STRING_TOKEN(STR_I2C_FORM_SET_TITLE_HELP);
+
+//    goto GMAC_CONFIG_FORM_ID,
+//      prompt = STRING_TOKEN(STR_GMAC_FORM_SET_TITLE),
+//      help   = STRING_TOKEN(STR_GMAC_FORM_SET_TITLE_HELP);
+
+    goto ADVANCED_FORM_SET_ID,
+      prompt = STRING_TOKEN(STR_ADVANCED_FORM_SET_TITLE),
+      help = STRING_TOKEN(STR_ADVANCED_FORM_SET_TITLE_HELP);
+endif;
+
+    goto COMPLIANCE_CONFIG_FORM_ID,
+      prompt = STRING_TOKEN(STR_COMPLIANCE_FORM_SET_TITLE),
+      help = STRING_TOKEN(STR_COMPLIANCE_FORM_SET_TITLE_HELP);
 
     subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
 
@@ -61,16 +96,6 @@ formset
       endoneof;
     endif;
 
-    suppressif ideqval DtAcpiPref.Pref == DT_ACPI_SELECT_DT;
-      oneof varid   = PlatformSetupVar.SpcrEnable,
-        prompt      = STRING_TOKEN(STR_ENABLE_SPCR_TABLE),
-        help        = STRING_TOKEN(STR_ENABLE_SPCR_TABLE_HELP),
-        default     = FixedPcdGet8 (PcdAcpiSpcrEnable),
-        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
-      endoneof;
-    endif;
-
     suppressif FixedPcdGetBool (PcdEcAcpiI2cEn) == 0;
       oneof varid   = PlatformSetupVar.EcFanMode,
         prompt      = STRING_TOKEN(STR_EC_FAN_MODE_PROMPT),
@@ -78,6 +103,17 @@ formset
         default     = FixedPcdGet8 (PcdEcDefaultFanMode),
         option text = STRING_TOKEN(STR_AUTO_MODE), value = 0, flags = RESET_REQUIRED;
         option text = STRING_TOKEN(STR_PERF_MODE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif FixedPcdGet8 (PcdUFSPowerMode) == 0xFF;
+      oneof varid   = RadxaSetupVar.UFSPowerMode,
+        prompt      = STRING_TOKEN(STR_UFS_POWER_MODE_PROMPT),
+        help        = STRING_TOKEN(STR_UFS_POWER_MODE_PROMPT_HELP),
+        default     = FixedPcdGet8 (PcdUFSPowerMode),
+        option text = STRING_TOKEN(STR_UFS_POWER_AUTO), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_UFS_POWER_ALWAYS_ON), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_UFS_POWER_ALWAYS_OFF), value = 2, flags = RESET_REQUIRED;
       endoneof;
     endif;
 
@@ -123,10 +159,70 @@ formset
     endif;
 
     subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+suppressif ideqval DtAcpiPref.Pref == DT_ACPI_SELECT_ACPI;
+    text
+      help  = STRING_TOKEN(STR_ACPI_FEATURE_HELP),
+      text  = STRING_TOKEN(STR_ACPI_FEATURE_STRING);
+
+    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+endif;
+
     subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
     subtitle text = STRING_TOKEN(STR_EXIT_STRING);
   endform;
 
+  form formid = ADVANCED_FORM_SET_ID,
+    title  = STRING_TOKEN(STR_ADVANCED_FORM_SET_TITLE);
+    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+    text
+      help  = STRING_TOKEN(STR_ADVANCED_FORM_SET_RECOVERY),
+      text  = STRING_TOKEN(STR_ADVANCED_FORM_SET_TITLE_HELP);
+
+    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+#if (FW_CONFIG_UPDATE_SUPPORT == 1)
+
+    oneof varid   = RadxaSetupVar.CpuFMax,
+      prompt      = STRING_TOKEN(STR_CPU_FREQ_MAX_PROMPT),
+      help        = STRING_TOKEN(STR_CPU_FREQ_MAX_PROMPT_HELP),
+      default     = FixedPcdGet8 (PcdCpuFMax),
+      option text = STRING_TOKEN(STR_CPU_FREQ_2_5), value = 1, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_CPU_FREQ_2_6), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_CPU_FREQ_MAX), value = 2, flags = RESET_REQUIRED;
+    endoneof;
+
+    suppressif NOT ideqval RadxaSetupVar.CpuFMax == 0x02;
+      oneof varid   = RadxaSetupVar.CpuBoostTrigger,
+        prompt      = STRING_TOKEN(STR_CPU_BOOST_TRIGGER_PROMPT),
+        help        = STRING_TOKEN(STR_CPU_BOOST_TRIGGER_PROMPT_HELP),
+        default     = 0,
+        option text = STRING_TOKEN(STR_CPU_BOOST_NOTSET), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CPU_BOOST_TRIGGER), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+#endif // FW_CONFIG_UPDATE_SUPPORT == 1
+
+    goto MEMORY_CONFIG_FORM_ID,
+      prompt = STRING_TOKEN(STR_MEMORY_FORM_SET_TITLE),
+      help = STRING_TOKEN(STR_MEMORY_FORM_SET_TITLE_HELP);
+
+    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+    subtitle text = STRING_TOKEN(STR_EXIT_STRING);
+  endform;
+
+// #include "Platform.hfr"
+#include "MemoryConfig.hfr"
+#include "PcieConfig.hfr"
+#include "UsbConfig.hfr"
+#include "I2cConfig.hfr"
 #include "CpuConfig.hfr"
+// #include "GmacConfig.hfr"
+#include "ComplianceConfig.hfr"
 
 endformset;

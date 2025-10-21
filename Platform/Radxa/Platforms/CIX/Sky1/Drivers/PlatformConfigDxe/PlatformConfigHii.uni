@@ -20,6 +20,25 @@
 #string STR_ENABLED                     #language en-US "Enabled"
 #string STR_DISABLED                    #language en-US "Disabled"
 
+#string STR_ACPI_FEATURE_STRING         #language en-US "* Some features are disabled due to\n"
+                                                        "  current system configuration."
+#string STR_ACPI_FEATURE_HELP           #language en-US "Please turn on ACPI on O/S Hardware Description to reveal hidden options."
+
+#string STR_ADVANCED_FORM_SET_TITLE     #language en-US "Advanced Configuration"
+#string STR_ADVANCED_FORM_SET_TITLE_HELP #language en-US "Advanced Configuration, which may prevent system from booting."
+#string STR_ADVANCED_FORM_SET_RECOVERY  #language en-US "You should have hardware recovery tool ready before changing them."
+
+#string STR_CPU_FREQ_MAX_PROMPT                 #language en-US "CPU Max Frequency"
+#string STR_CPU_FREQ_MAX_PROMPT_HELP            #language en-US "Select Max Frequency of CPU"
+#string STR_CPU_FREQ_2_5                        #language en-US "2.5G"
+#string STR_CPU_FREQ_2_6                        #language en-US "2.6G"
+#string STR_CPU_FREQ_MAX                        #language en-US "Max Freq"
+
+#string STR_CPU_BOOST_TRIGGER_PROMPT            #language en-US "Trigger Boost Freq Once"
+#string STR_CPU_BOOST_TRIGGER_PROMPT_HELP       #language en-US "Trigger cpu run as boost freq at next startup once"
+#string STR_CPU_BOOST_NOTSET                    #language en-US "Not Set"
+#string STR_CPU_BOOST_TRIGGER                   #language en-US "Trigger"
+
 #string STR_NETWORK_STACK_PROMPT        #language en-US "Network Stack"
 #string STR_NETWORK_STACK_PROMPT_HELP   #language en-US "Enable/Disable the network stack"
 #string STR_IPV4_PXE_BOOT_PROMPT        #language en-US "Ipv4 Pxe Boot"
@@ -37,11 +56,17 @@
 #string STR_S5_AFTER_G3_STRING          #language en-US "Power Off"
 #string STR_LASTSTATE_AFTER_G3_STRING   #language en-US "Last State"
 
-#string STR_ENABLE_SPCR_TABLE           #language en-US "ACPI SPCR Table"
-#string STR_ENABLE_SPCR_TABLE_HELP      #language en-US "Enable/Disable Serial Port Console Redirection (SPCR) Table.\n"
-                                                        "This table provide OS the information of the firmware console port."
-
 #string STR_EC_FAN_MODE_PROMPT          #language en-US "EC Fan Mode"
 #string STR_EC_FAN_MODE_PROMPT_HELP     #language en-US "Select the default EC fan mode."
 #string STR_AUTO_MODE                   #language en-US "Auto Mode"
 #string STR_PERF_MODE                   #language en-US "Performance Mode"
+
+#string STR_UFS_POWER_MODE_PROMPT       #language en-US "UFS Power Mode"
+#string STR_UFS_POWER_MODE_PROMPT_HELP  #language en-US "Select the default UFS power mode.\n\n"
+                                                        "<Auto Mode> enable UFS power if module is detected during boot.\n\n"
+                                                        "<Always On> turns UFS bridge on all the time.\n"
+                                                        "If no UFS module is connected, it will be shown in the OS as a zero-sized block device.\n\n"
+                                                        "<Always Off> turns UFS bridge off all the time."
+#string STR_UFS_POWER_AUTO              #language en-US "Auto Mode"
+#string STR_UFS_POWER_ALWAYS_ON         #language en-US "Always On"
+#string STR_UFS_POWER_ALWAYS_OFF        #language en-US "Always Off"

@@ -1,0 +1,30 @@
+/**
+Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+Copyright 2025 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
+
+SPDX-License-Identifier: BSD-2-Clause-Patent
+
+**/
+
+#langdef en-US  "English"
+/*
+* Compliance settings
+*/
+#string STR_COMPLIANCE_FORM_SET_TITLE           #language en-US "Compliance Configuration"
+#string STR_COMPLIANCE_FORM_SET_TITLE_HELP      #language en-US "Additional platform quirks for running compliance tests."
+
+#string STR_COMPLIANCE_GENERAL                  #language en-US "General"
+#string STR_COMPLIANCE_LINUX                    #language en-US "Linux"
+#string STR_COMPLIANCE_WINDOWS_11_24H2          #language en-US "Windows 11 24H2"
+
+#string STR_COMPLIANCE_NETWORK_STACK            #language en-US "Enable Network Stack"
+#string STR_COMPLIANCE_NETWORK_STACK_HELP       #language en-US "Enable Network Stack."
+#string STR_COMPLIANCE_ACPI                     #language en-US "Enable ACPI"
+#string STR_COMPLIANCE_ACPI_HELP                #language en-US "Enable system to boot with ACPI."
+#string STR_COMPLIANCE_ACPI_SPCR                #language en-US "Enable ACPI SPCR Table"
+#string STR_COMPLIANCE_ACPI_SPCR_HELP           #language en-US "Enable Serial Port Console Redirection (SPCR) Table.\n"
+                                                                "This table provide OS the information of the firmware console port."
+#string STR_COMPLIANCE_ACPI_CPPC                #language en-US "Disable ACPI CPPC"
+#string STR_COMPLIANCE_ACPI_CPPC_HELP           #language en-US "Disable ACPI CPPC(Collaborative Processor Performance Control) Interface."
+#string STR_COMPLIANCE_DISABLE_SMALL_CORE       #language en-US "Disable Small Cores"
+#string STR_COMPLIANCE_DISABLE_SMALL_CORE_HELP  #language en-US "Windows 11 24H2 contains a regression, that will prevent booting when small cores are enabled."
