@@ -26,18 +26,18 @@
   PlatformConfigDxe.c
   PlatformConfigHii.vfr
   PlatformConfigHii.uni
-  MemMenu/MemoryConfig.hfr
-  MemMenu/MemoryConfig.uni
-  PcieMenu/PcieConfig.hfr
-  PcieMenu/PcieConfig.uni
-  UsbMenu/UsbConfig.hfr
-  UsbMenu/UsbConfig.uni
-  I2cMenu/I2cConfig.hfr
-  I2cMenu/I2cConfig.uni
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/MemMenu/MemoryConfig.hfr
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/MemMenu/MemoryConfig.uni
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/PcieMenu/PcieConfig.hfr
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/PcieMenu/PcieConfig.uni
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/UsbMenu/UsbConfig.hfr
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/UsbMenu/UsbConfig.uni
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/I2cMenu/I2cConfig.hfr
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/I2cMenu/I2cConfig.uni
 #  PlatformMenu/Platform.hfr
 #  PlatformMenu/Platform.uni
-  CpuMenu/CpuConfig.hfr
-  CpuMenu/CpuConfig.uni
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/CpuMenu/CpuConfig.hfr
+  Platform/CIX/Sky1/Drivers/SetupManagerDxe/CpuMenu/CpuConfig.uni
 #  GmacMenu/GmacConfig.hfr
 #  GmacMenu/GmacConfig.uni
   ComplianceMenu/ComplianceConfig.hfr
