@@ -357,6 +357,11 @@
   gCixTokenSpaceGuid.PcdUsb2Control2Enable|TRUE
   gCixTokenSpaceGuid.PcdUsb2Control3Enable|TRUE
 
+  gCixTokenSpaceGuid.PcdAcpiUart0Enable|FALSE
+  gCixTokenSpaceGuid.PcdAcpiUart1Enable|FALSE
+  gCixTokenSpaceGuid.PcdAcpiUart2Enable|TRUE
+  gCixTokenSpaceGuid.PcdAcpiUart3Enable|FALSE
+
   gCixTokenSpaceGuid.PcdAcpiI2s5Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s6Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s7Enable|TRUE
