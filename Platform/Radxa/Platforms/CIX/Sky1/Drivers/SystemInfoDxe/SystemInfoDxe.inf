@@ -45,6 +45,7 @@
   UefiDriverEntryPoint
   UefiRuntimeServicesTableLib
   GpioLib
+  PdEcLib
 
 [Guids]
   gSystemInfoFormSetGuid

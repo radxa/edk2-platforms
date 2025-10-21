@@ -1,7 +1,8 @@
 [LibraryClasses.common]
 
-PerformanceLib|MdePkg/Library/BasePerformanceLibNull/BasePerformanceLibNull.inf
-ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
+  PerformanceLib|MdePkg/Library/BasePerformanceLibNull/BasePerformanceLibNull.inf
+  ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
+  PdEcLib|Platform/Radxa/Library/PdEcLibNull/PdEcLibNull.inf
 
 [PcdsFixedAtBuild.common]
 

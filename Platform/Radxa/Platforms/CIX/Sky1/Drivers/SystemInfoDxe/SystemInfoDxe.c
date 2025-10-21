@@ -17,6 +17,7 @@
 #include <Library/UefiDriverEntryPoint.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/GpioLib.h>
+#include <Library/Cs32g051EcLib.h>
 
 #include "SystemInfoDxe.h"
 
@@ -268,9 +269,33 @@ InitializeHardwareInfoWithGPIO (
   EFI_STATUS          Status;
   CHAR16 *            SystemProductName;
   UINT32              MemType;
-  
+  CHAR8               AsciiBuf[128]   = { 0 };
+  CHAR16              UnicodeBuf[128] = { 0 };
+  // FIXME: This is not the type defined in PdEcLib.h`
+  CS32G051_RESULT_CMD_GET_IC_STATUS IcStatus;
+
   SystemProductName = (CHAR16 *)FixedPcdGetPtr (PcdSystemProductName);
   HiiSetString (HiiHandle, STRING_TOKEN (STR_PCB_SKU_VALUE), SystemProductName, NULL);
+
+  // FIXME: We might have more than 1 PD devices
+  Status = PdGetIcStatus(0, &IcStatus);
+  if (!EFI_ERROR (Status)) {
+    AsciiSPrint (
+      (CHAR8 *)AsciiBuf,
+      sizeof (AsciiBuf),
+      "Boot: v%d.%d.%d\nApp: v%d.%d.%d",
+      IcStatus.BootVersionMajor,
+      IcStatus.BootVersionMinor,
+      IcStatus.BootVersionPatch,
+      IcStatus.AppVersionMajor,
+      IcStatus.AppVersionMinor,
+      IcStatus.AppVersionPatch
+      );
+    AsciiToUnicode (AsciiBuf, UnicodeBuf);
+    HiiSetString (HiiHandle, STRING_TOKEN (STR_PD_VER_VALUE), UnicodeBuf, NULL);
+  } else {
+    HiiSetString (HiiHandle, STRING_TOKEN (STR_PD_VER_VALUE), L"Undefined", NULL);
+  }
 
   if (!StrCmp (L"Radxa Orion O6T", SystemProductName)) {
     Status = GpioGetMultiple ((UINT32[]){49, 50}, 2, &MemType);
