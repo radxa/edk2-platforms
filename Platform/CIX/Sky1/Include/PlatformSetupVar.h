@@ -127,7 +127,6 @@ typedef struct {
   UINT8     CpuFMax;
   UINT8     EcFanMode;
   UINT8     CpuCppcType;
-  UINT8     Uart2ListFirst;
   UINT8     DebugMode;
   UINT8     TPMDeviceSelect;
 } PLATFORM_SETUP_DATA;

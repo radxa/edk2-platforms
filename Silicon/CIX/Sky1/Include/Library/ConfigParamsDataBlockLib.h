@@ -232,7 +232,6 @@ typedef struct _CONFIG_PARAMS_PM {
 
 typedef struct _CONFIG_PARAMS_MISC {
   UINT8    CpuCppcType;
-  BOOLEAN  Uart2ListFirst;
 } CONFIG_PARAMS_MISC;
 
 typedef struct _CONFIG_PARAMS_SPI {
@@ -548,7 +547,6 @@ typedef struct _CONFIG_PARAMS_DATA_OPTIONS {
 #define  PARAMS_DATA_VPU_CLK_GATING_ID              (PARAMS_DATA_PM_ID_GROUP | 0x0016)
 
 #define  PARAMS_DATA_CPU_CPPC_TYPE_ID  (PARAMS_DATA_MISC_ID_GROUP | 0x0001)
-#define  PARAMS_DATA_UART2_LIST_FIRST  (PARAMS_DATA_MISC_ID_GROUP | 0x0002)
 
 extern CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock;
 extern CONFIG_PARAMS_DATA_ENTRY  mConfigDataEntryTable[];

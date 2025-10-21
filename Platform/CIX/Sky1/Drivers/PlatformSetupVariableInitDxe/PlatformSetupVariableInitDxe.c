@@ -235,7 +235,6 @@ UpdateConfigParams (
     ConfigData->Pm.Dpu4ClkGating         = PlatformSetupVar.Dpu4ClkGating;
     ConfigData->Pm.VpuClkGating          = PlatformSetupVar.VpuClkGating;
     ConfigData->Misc.CpuCppcType         = PlatformSetupVar.CpuCppcType;
-    ConfigData->Misc.Uart2ListFirst      = PlatformSetupVar.Uart2ListFirst;
     ConfigData->Spi.TPMDeviceSelect      = PlatformSetupVar.TPMDeviceSelect;
   }
 }
@@ -535,7 +534,6 @@ ConstructSetupVariable (
   PlatformSetupVar->CpuShareInfo            = CpuShareInfo;
   PlatformSetupVar->CpuLpiState             = FixedPcdGet8 (PcdAcpiCpuLpiState);
   PlatformSetupVar->CpuCppcType             = FixedPcdGet8 (PcdAcpiCppcType);
-  PlatformSetupVar->Uart2ListFirst          = 0;
   PlatformSetupVar->TPMDeviceSelect         = FixedPcdGet8 (PcdDefaultTpmDeviceSelect);
 }
 

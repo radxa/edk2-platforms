@@ -601,7 +601,6 @@ CONFIG_PARAMS_DATA_ENTRY  mConfigDataEntryTable[] = {
   { PARAMS_DATA_DPU4_CLK_GATING_ID,            PARAMS_DATA_OFFSET_SIZE (Pm.Dpu4ClkGating),            PARAMS_DATA_MULTI_OPTION_TYPE, L"DPU4 Clock Gating",            L"0:Disable, 1:Enable"                                                                                                                                    },
   { PARAMS_DATA_VPU_CLK_GATING_ID,             PARAMS_DATA_OFFSET_SIZE (Pm.VpuClkGating),             PARAMS_DATA_MULTI_OPTION_TYPE, L"VPU Clock Gating",             L"0:Disable, 1:Enable"                                                                                                                                    },
   { PARAMS_DATA_CPU_CPPC_TYPE_ID,              PARAMS_DATA_OFFSET_SIZE (Misc.CpuCppcType),            PARAMS_DATA_MULTI_OPTION_TYPE, L"CPPC Interface Type",          L"0:Disable, 1:Fast Channel, 2:Pcc"                                                                                                                       },
-  { PARAMS_DATA_UART2_LIST_FIRST,              PARAMS_DATA_OFFSET_SIZE (Misc.Uart2ListFirst),         PARAMS_DATA_MULTI_OPTION_TYPE, L"List UART2 as ttyAMA0",        L"0:Disable, 1:Enable"                                                                                                                                    },
 };
 
 UINT32  mConfigDataEntryNum = sizeof (mConfigDataEntryTable) / sizeof (CONFIG_PARAMS_DATA_ENTRY);
