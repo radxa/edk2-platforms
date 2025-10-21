@@ -400,15 +400,15 @@ Device (GPI6) {
     Package() {CLK_TREE_FCH_GPIO_APB, "", \_SB.GPI6},
   })
   Name (GPIO, Package () {
-    "GPI6_0",
-    "GPI6_1",
-    "GPI6_2",
-    "GPI6_3",
-    "GPI6_4",
-    "GPI6_5",
-    "GPI6_6",
-    "GPI6_7",
-    "GPI6_8",
-    "GPI6_9"
+    "SFI_GPIO0",
+    "SFI_GPIO1",
+    "SFI_GPIO2",
+    "SFI_GPIO3",
+    "SFI_GPIO4",
+    "SFI_GPIO5",
+    "SFI_GPIO6",
+    "SFI_GPIO7",
+    "SFI_GPIO8",
+    "SFI_GPIO9"
   })
 }
