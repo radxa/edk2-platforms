@@ -180,7 +180,7 @@ StmmInfoGetVersion (
 
   if (Status == EFI_SUCCESS) {
     CopyMem (*Version, MmStmmInfoGetVersion->Data, DataSize);
-    *Size = DataSize;
+    *Size = StrLen (*Version);
   }
 
 Done:

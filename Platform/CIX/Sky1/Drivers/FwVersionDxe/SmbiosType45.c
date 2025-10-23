@@ -26,7 +26,7 @@ STATIC FW_VERTYPE_NAME gFwTypeNameMapTable[] = {
   {FwVerPM,    "PBL   Firmware\0"},
   {FwVerATF,   "ATF   Firmware\0"},
   {FwVerTEE,   "TEE   Firmware\0"},
-  {FwVerEC,    "EC   Firmware\0"},
+  {FwVerEC,    "EC    Firmware\0"},
   {FwVerSTMM,  "STMM  Firmware\0"},
   {FwVerUEFI,  "UEFI  Firmware\0"}
 };
@@ -87,32 +87,43 @@ InstallType45Structure (
     return ;
   }
   for(UINTN i = 0; i < ARRAY_SIZE(gFwTypeNameMapTable); i++) {
+    // Reinitialize variables
+    // so we don't depend on the last run's result
+    Type45Size = 0;
+    FwVerBuff = NULL;
+    AsciiFwVerBuff[0] = '\0';
     FwVerSize = 0;
+    SmbiosType45 = NULL;
+
     Status = CixFwVerProtocol->GetFwVersion (
       gFwTypeNameMapTable[i].FwVerType,
       (CHAR16 **)&FwVerBuff,
       &FwVerSize
       );
     if (EFI_ERROR (Status)) {
-      SmbiosType45->State = FirmwareInventoryStateUnknown;
       DEBUG ((DEBUG_ERROR, "GetFwVersion failed for type %d: %r\n", i, Status));
     } else{
-      FwVerSize+=1; // Add 1 for the null terminator
+      FwVerSize += 1; // Add 1 for the null terminator
+      DEBUG((DEBUG_INFO, "GetFwVersion for type %d[%d]: %s\n", i, FwVerSize, FwVerBuff));
     }
     DEBUG ((DEBUG_INFO, "%a %d Sta:%r \n", __FUNCTION__, __LINE__, Status));
 
-    DEBUG((DEBUG_INFO, "GetFwVersion for type %d: %s\n", i, FwVerBuff));
     Type45Size = sizeof (SMBIOS_TABLE_TYPE45) +
                  AsciiStrSize (StrNull) +
                  AsciiStrSize (gFwTypeNameMapTable[i].FwVerName) +
                  (FwVerSize == 0 ? AsciiStrSize (StrNull) : (FwVerSize)) +
                  AsciiStrSize (Manufacturer) + 1 ;
+    DEBUG ((DEBUG_INFO, "%a: Type45Size = 0x%x\n", __FUNCTION__, Type45Size));
+
     SmbiosType45 = AllocateZeroPool (Type45Size);
     if (SmbiosType45 == NULL) {
       DEBUG ((DEBUG_ERROR, "Failed to allocate memory for SMBIOS Type 45\n"));
       return ;
     }
-    DEBUG ((DEBUG_INFO, "%a %d Sta:%r \n", __FUNCTION__, __LINE__, Status));
+    if (EFI_ERROR (Status)) {
+      // Update state since CixFwVerProtocol->GetFwVersion failed
+      SmbiosType45->State = FirmwareInventoryStateUnknown;
+    }
 
     CopyMem (SmbiosType45, &SmbiosType45Temple, sizeof (SMBIOS_TABLE_TYPE45));
     StrPtr = (CHAR8 *)((UINT8 *)SmbiosType45 + sizeof (SMBIOS_TABLE_TYPE45));
@@ -130,20 +141,22 @@ InstallType45Structure (
     StrPtr += AsciiStrSize (gFwTypeNameMapTable[i].FwVerName);
     // Firmware Version
     if (FwVerSize == 0) {
-      SmbiosType45->FirmwareVersion = 0x01; // Use NULL for FirmwareVersion
+      // Copy NULL for FirmwareVersion, so string index does not change
+      FwVerSize = AsciiStrSize (StrNull);
+      AsciiStrCpyS (StrPtr, FwVerSize, StrNull);
     } else {
       UnicodeStrToAsciiStrS(
         FwVerBuff,
         AsciiFwVerBuff,
         sizeof (AsciiFwVerBuff)
         );
-      AsciiStrCpyS (StrPtr, FwVerSize + 1, (CHAR8 *)AsciiFwVerBuff);
+      // FwVerSize was already added by 1
+      AsciiStrCpyS (StrPtr, FwVerSize, (CHAR8 *)AsciiFwVerBuff);
     }
     DEBUG ((DEBUG_INFO, "%p %a \n", StrPtr, StrPtr));
     StrPtr += FwVerSize;
     // Manufacturer
     AsciiStrCpyS (StrPtr, AsciiStrSize (Manufacturer), Manufacturer);
-    StrPtr += AsciiStrSize (Manufacturer); // Null terminator for Manufacturer
     DEBUG ((DEBUG_INFO, "%p %a \n", StrPtr, StrPtr));
 
     SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
