@@ -101,7 +101,6 @@ InstallType45Structure (
                                  &FwVerSize
                                  );
     if (EFI_ERROR (Status)) {
-      SmbiosType45->State = FirmwareInventoryStateUnknown;
       DEBUG ((DEBUG_ERROR, "GetFwVersion failed for type %d: %r\n", i, Status));
       FwVerSize = 0;
     } else {
@@ -146,21 +145,23 @@ InstallType45Structure (
     StrPtr += AsciiStrSize (gFwTypeNameMapTable[i].FwVerName);
     // Firmware Version
     if (FwVerSize == 0) {
-      SmbiosType45->FirmwareVersion = 0x01; // Use NULL for FirmwareVersion
+      // Copy NULL for FirmwareVersion, so string index does not change
+      FwVerSize = AsciiStrSize (StrNull);
+      AsciiStrCpyS (StrPtr, FwVerSize, StrNull);
     } else {
       UnicodeStrToAsciiStrS (
         FwVerBuff,
         AsciiFwVerBuff,
         sizeof (AsciiFwVerBuff)
         );
-      AsciiStrCpyS (StrPtr, FwVerSize + 1, (CHAR8 *)AsciiFwVerBuff);
+      // FwVerSize was already added by 1
+      AsciiStrCpyS (StrPtr, FwVerSize, (CHAR8 *)AsciiFwVerBuff);
     }
 
     DEBUG ((DEBUG_INFO, "%p %a \n", StrPtr, StrPtr));
     StrPtr += FwVerSize;
     // Manufacturer
     AsciiStrCpyS (StrPtr, AsciiStrSize (Manufacturer), Manufacturer);
-    StrPtr += AsciiStrSize (Manufacturer); // Null terminator for Manufacturer
     DEBUG ((DEBUG_INFO, "%p %a \n", StrPtr, StrPtr));
 
     SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
