@@ -223,9 +223,9 @@ FmpSetImage (
   *AbortReason     = NULL;
   ProgressFunc = Progress;
 
-  // if ((ImageIndex == 0) || (ImageIndex > SystemFmpPrivate->DescriptorCount)) {
-  //   return EFI_INVALID_PARAMETER;
-  // }
+  if ((ImageIndex == 0) || (ImageIndex > SystemFmpPrivate->DescriptorCount)) {
+    return EFI_INVALID_PARAMETER;
+  }
 
   //
   // Process FV
@@ -233,7 +233,7 @@ FmpSetImage (
   Status = DispatchSystemFmpImages ((VOID *)Image, ImageSize, &SystemFmpPrivate->LastAttempt.LastAttemptVersion, &SystemFmpPrivate->LastAttempt.LastAttemptStatus);
   DEBUG ((DEBUG_INFO, "ImageIndex 0x%x\n", ImageIndex));
 
-  return EFI_SUCCESS;
+  return Status;
 }
 
 /**
