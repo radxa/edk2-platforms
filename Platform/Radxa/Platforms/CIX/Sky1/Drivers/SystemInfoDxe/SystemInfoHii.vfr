@@ -90,6 +90,11 @@ formset
       text   = STRING_TOKEN(STR_UEFI_VER_NAME),
       text   = STRING_TOKEN(STR_UEFI_VER_VALUE);
 
+    text
+      help   = STRING_TOKEN(STR_EMPTY_STRING),
+      text   = STRING_TOKEN(STR_STMM_VER_NAME),
+      text   = STRING_TOKEN(STR_STMM_VER_VALUE);
+
     suppressif FixedPcdGetBool (PcdEcAcpiI2cEn) == 0;
       text
         help   = STRING_TOKEN(STR_EMPTY_STRING),

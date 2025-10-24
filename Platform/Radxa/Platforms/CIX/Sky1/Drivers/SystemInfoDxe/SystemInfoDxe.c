@@ -382,6 +382,13 @@ GetFirmwareSystemInfo (
     HiiSetString (HiiHandle, STRING_TOKEN (STR_UEFI_VER_VALUE), L"N/A", NULL);
   }
 
+  Status = pFwVerProtocol->GetFwVersion (FwVerSTMM, &pFwVerBuff, &FwVerSize);
+  if (!EFI_ERROR (Status)) {
+    HiiSetString (HiiHandle, STRING_TOKEN (STR_STMM_VER_VALUE), pFwVerBuff, NULL);
+  } else {
+    HiiSetString (HiiHandle, STRING_TOKEN (STR_STMM_VER_VALUE), L"N/A", NULL);
+  }
+
   Status = pFwVerProtocol->GetFwVersion (FwVerEC, &pFwVerBuff, &FwVerSize);
   if (!EFI_ERROR (Status)) {
     HiiSetString (HiiHandle, STRING_TOKEN (STR_EC_VER_VALUE), pFwVerBuff, NULL);
