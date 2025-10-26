@@ -35,5 +35,8 @@
 
 [Guids]
 
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdTestKeyUsed
+
 [Depex]
   TRUE

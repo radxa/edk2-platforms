@@ -4,6 +4,11 @@
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
   PdEcLib|Platform/Radxa/Library/PdEcLibNull/PdEcLibNull.inf
 
+!if $(CAPSULE_ENABLE) == FALSE
+  EdkiiSystemCapsuleLib|SignedCapsulePkg/Library/EdkiiSystemCapsuleLib/EdkiiSystemCapsuleLib.inf
+  FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibPkcs7/FmpAuthenticationLibPkcs7.inf
+!endif
+
 [PcdsFixedAtBuild.common]
 
 !if $(DEBUG_ON_UART3) == FALSE
@@ -27,6 +32,12 @@
   gEfiMdePkgTokenSpaceGuid.PcdPerformanceLibraryPropertyMask|1
   gEfiMdePkgTokenSpaceGuid.PcdReportStatusCodePropertyMask|0x07
   gEfiMdeModulePkgTokenSpaceGuid.PcdExtFpdtBootRecordPadSize|0x300000
+
+!if $(CAPSULE_ENABLE)
+  # Must match SYSTEM_FMP_ESRT_GUID
+  # gEfiMdeModulePkgTokenSpaceGuid.PcdSystemFmpCapsuleImageTypeIdGuid is defined in Platform/CIX/Sky1/Sky1Common.dsc.inc
+  gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageTypeIdGuid|{GUID("351c9808-4b53-4363-9314-d339386e5685")}
+!endif
 
 [Components.common]
 
@@ -85,3 +96,37 @@
     <LibraryClasses>
       LockBoxLib|MdeModulePkg/Library/LockBoxNullLib/LockBoxNullLib.inf
   }
+
+!if $(CAPSULE_ENABLE)
+  MdeModulePkg/Universal/EsrtFmpDxe/EsrtFmpDxe.inf
+  FmpDevicePkg/FmpDxe/FmpDxe.inf {
+    <Defines>
+      #
+      # FILE_GUID is used as ESRT GUID
+      #
+      FILE_GUID = $(SYSTEM_FMP_ESRT_GUID)
+    <PcdsFixedAtBuild>
+      gFmpDevicePkgTokenSpaceGuid.PcdFmpDeviceImageIdName|L"Radxa System Firmware Device"
+      !include BaseTools/Source/Python/Pkcs7Sign/TestRoot.cer.gFmpDevicePkgTokenSpaceGuid.PcdFmpDevicePkcs7CertBufferXdr.inc
+    <LibraryClasses>
+      #
+      # Generic libraries that are used "as is" by all FMP modules
+      #
+      FmpPayloadHeaderLib|FmpDevicePkg/Library/FmpPayloadHeaderLibV1/FmpPayloadHeaderLibV1.inf
+      FmpAuthenticationLib|SecurityPkg/Library/FmpAuthenticationLibPkcs7/FmpAuthenticationLibPkcs7.inf
+      FmpDependencyLib|FmpDevicePkg/Library/FmpDependencyLib/FmpDependencyLib.inf
+      FmpDependencyCheckLib|FmpDevicePkg/Library/FmpDependencyCheckLibNull/FmpDependencyCheckLibNull.inf
+      FmpDependencyDeviceLib|FmpDevicePkg/Library/FmpDependencyDeviceLibNull/FmpDependencyDeviceLibNull.inf
+      #
+      # Platform specific capsule policy library
+      #
+      CapsuleUpdatePolicyLib|FmpDevicePkg/Library/CapsuleUpdatePolicyLibNull/CapsuleUpdatePolicyLibNull.inf
+      #
+      # Device specific library that processes a capsule and updates the FW storage device
+      #
+      FmpDeviceLib|FmpDevicePkg/Library/FmpDeviceLibNull/FmpDeviceLibNull.inf
+  }
+!else
+  MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
+  Platform/CIX/Sky1/Drivers/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf
+!endif

@@ -25,7 +25,10 @@ AcpiPlatformDxeEntryPoint (
   DEBUG ((DEBUG_INFO, "Acpi Platform Dxe Entry\n"));
 
   Status = LocateAndInstallAcpiFromFv (&pAcpiPlatformTableStorageGuid);
-  DEBUG ((DEBUG_INFO, "Install Acpi table status:%r\n", Status));
+  DEBUG ((DEBUG_INFO, "Install Acpi table status: %r\n", Status));
+
+  DEBUG ((DEBUG_INFO, "HACK: disable PcdTestKeyUsed FrontPage warning\n"));
+  PcdSetBoolS (PcdTestKeyUsed, FALSE);
 
   DEBUG ((DEBUG_INFO, "Acpi Platform Dxe Exit\n"));
 
