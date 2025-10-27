@@ -783,5 +783,14 @@ Device (MUX1) {
         {
             SKY1_IOMUXC_GPIO11,
         }
+
+    PinGroup ("vcc_ssd_pwren", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x2c, 0x00, 0x44,
+        })
+        {
+            SKY1_IOMUXC_GPIO12,
+        }
   })
 }
