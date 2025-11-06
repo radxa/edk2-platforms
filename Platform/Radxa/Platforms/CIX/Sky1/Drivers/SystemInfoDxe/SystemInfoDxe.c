@@ -103,10 +103,16 @@ Decode4BitMemType (
       pFmtStr = "16 GiB (Hynix)";
       break;
     case 11:
-      pFmtStr = "8 GiB";
+      pFmtStr = "8 GiB (Samsung)";
       break;
     case 12:
       pFmtStr = "16 GiB (Rayson)";
+      break;
+    case 13:
+      pFmtStr = "4 GiB (Hive)";
+      break;
+    case 14:
+      pFmtStr = "8 GiB (Hynix)";
       break;
     case 15:
       pFmtStr = "Development Sample";

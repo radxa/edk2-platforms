@@ -50,7 +50,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_24G_HS = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS600_24G_HS_MASK
   },
-  .MaxFreq          = DDR4800_FREQUENCY,
+  .MaxFreq          = DDR5500_FREQUENCY,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 12,
@@ -92,11 +92,25 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_32G_x8_HS = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS600_32G_x8_HS_MASK
   },
-  .MaxFreq          = DDR4800_FREQUENCY,
+  .MaxFreq          = DDR5500_FREQUENCY,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 8,
   .DeviceWidth      = 8,
+  .RankNum          = 2,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_32G_Hynix = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = RS600_32G_HYNIX_MASK
+  },
+  .MaxFreq          = DDR6000_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 16,
+  .DeviceWidth      = 16,
   .RankNum          = 2,
 };
 
@@ -106,7 +120,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_48G_HS = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS600_48G_HS_MASK
   },
-  .MaxFreq          = DDR4800_FREQUENCY,
+  .MaxFreq          = DDR5500_FREQUENCY,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 12,
