@@ -10,9 +10,11 @@ extern MEM_CONFIG_BUSCFG_LP5        MemLpddr5BusCfg_Hive_Semi_48G;
 extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg;
 extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_Hive_Semi;
 extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_Hive_Semi_48G;
+extern MEM_CONFIG_PHYPADCFG         MemPhyPadCfg_Hynix;
 extern MEM_CONFIG_BIOS_SETUP        MemBiosSetup;
 extern MEM_CONFIG_DQ_SWAP           DqDmMapBlock;
 extern MEM_CONFIG_TRAIN_OPTIMIZE    MemTrainOptimize;
+extern MEM_CONFIG_TRAIN_OPTIMIZE    MemTrainOptimize_Hynix;
 extern MEM_CONFIG_TRACE_LEN_DIFF    MemTraceLenDiffCfg;
 extern MEM_CONFIG_BDID_GET_METHOD   BoardIdGetMethod;
 
@@ -27,6 +29,7 @@ extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_24G_HS;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_32G_x8_HS;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_48G_HS;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G_HS;
+extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_32G_Hynix;
 
 #define CDCB_BLOCK_LIST \
   /* default */ \
@@ -39,7 +42,9 @@ extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G_HS;
   CDCB_BLOCK(MemPhyPadCfg), \
   CDCB_BLOCK(MemPhyPadCfg_Hive_Semi), \
   CDCB_BLOCK(MemPhyPadCfg_Hive_Semi_48G), \
+  CDCB_BLOCK(MemPhyPadCfg_Hynix), \
   CDCB_BLOCK(DqDmMapBlock), \
+  CDCB_BLOCK(MemTrainOptimize_Hynix), \
   CDCB_BLOCK(MemTrainOptimize), \
   CDCB_BLOCK(MemTraceLenDiffCfg), \
   CDCB_BLOCK(GlobalConfigBlock_8G), \
@@ -53,5 +58,6 @@ extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G_HS;
   CDCB_BLOCK(GlobalConfigBlock_32G_x8_HS), \
   CDCB_BLOCK(GlobalConfigBlock_48G_HS), \
   CDCB_BLOCK(GlobalConfigBlock_16G_HS), \
+  CDCB_BLOCK(GlobalConfigBlock_32G_Hynix), \
 
 #endif
