@@ -24,6 +24,10 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupConOutColumn|0
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupConOutRow|0
 
+[PcdsFeatureFlag.common]
+  # Support VariableInfo.efi
+  gEfiMdeModulePkgTokenSpaceGuid.PcdVariableCollectStatistics|TRUE
+
 [PcdsFixedAtBuild.common]
   # Version string
 !if $(TARGET) == RELEASE
