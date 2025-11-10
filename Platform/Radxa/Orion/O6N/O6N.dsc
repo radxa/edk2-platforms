@@ -391,8 +391,8 @@
 
   gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000
   gEfiNetworkPkgTokenSpaceGuid.PcdNetworkStackSupport|FALSE
-  gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|FALSE
-  gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|FALSE
+  gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|TRUE
+  gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|TRUE
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4HttpSupport|TRUE
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6HttpSupport|TRUE
 

@@ -101,7 +101,6 @@ Scope (\_SB.I2C5)
                       ,
                       Exclusive
                       ,)
-      // GpioInt(Level, ActiveLow, Exclusive, PullUp, , "\\_SB.GPI0") { 1 }    // GPIO044
       GpioInt(Level, ActiveLow, Exclusive, PullUp, , "\\_SB.GPI4") { 8 }    // GPIO009
     })
     Name (_DSD, Package () {
