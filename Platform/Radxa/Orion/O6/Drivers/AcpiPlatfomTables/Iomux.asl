@@ -792,5 +792,14 @@ Device (MUX1) {
         {
             SKY1_IOMUXC_GPIO12,
         }
+
+    PinGroup ("gpio_leds", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            IO_S5_SFI_GPIO0, 0x00, 0x57,
+        })
+        {
+            SKY1_IOMUXC_SFI_GPIO0,
+        }
   })
 }

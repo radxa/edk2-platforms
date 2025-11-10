@@ -20,6 +20,7 @@ DefinitionBlock("SsdtTable.aml", "SSDT", 2, "CIXTEK", "SKY1EDK2", 1) {
     include("I2cPD.asl")
     include("Iomux.asl")
     include("GpioInt.asl")
+    include("GpioLeds.asl")
     include("EfiRtc.asl")
     include("CdnsPciePwr.asl")
     include("HardwareMonitor.asl")
