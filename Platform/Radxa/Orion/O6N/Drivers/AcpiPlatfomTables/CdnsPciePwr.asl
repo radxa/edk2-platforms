@@ -105,7 +105,7 @@ External (\_SB.PRC4, DeviceObj)
     Name (_CRS, ResourceTemplate () {
       PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "lom_pwren", ResourceConsumer,)
       GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
-      "\\_SB.GPI0", 0, ResourceConsumer) { 9 }  // GPIO010
+      "\\_SB.GPI4", 0, ResourceConsumer) { 9 }  // GPIO010
     })
 
     Name (_DSD, Package () {

@@ -357,7 +357,7 @@
 
   # USBC0
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|TRUE
+  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|FALSE
   # USBC1
   gCixTokenSpaceGuid.PcdUsbCControl0Enable|TRUE
   # USBC2
