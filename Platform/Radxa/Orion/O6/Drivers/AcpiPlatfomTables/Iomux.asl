@@ -750,14 +750,6 @@ Device (MUX1) {
         {
             SKY1_IOMUXC_SFI_GPIO2,
         }
-    PinGroup ("wifi_vbat_gpio", ResourceProducer, ,
-        RawDataBuffer ()
-        {
-            0x00, 0x2c, 0x00, 0x44,
-        })
-        {
-            SKY1_IOMUXC_GPIO12,
-        }
     PinGroup ("gbe1_poweren_gpio", ResourceProducer, ,
         RawDataBuffer ()
         {
@@ -791,6 +783,15 @@ Device (MUX1) {
         })
         {
             SKY1_IOMUXC_GPIO12,
+        }
+
+    PinGroup ("gpio_leds", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x80, 0x00, 0x57,
+        })
+        {
+            SKY1_IOMUXC_SFI_GPIO0,
         }
   })
 }

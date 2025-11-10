@@ -344,7 +344,7 @@
 
   # USBC0
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
-  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|TRUE
+  gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|FALSE
   # USBC1
   gCixTokenSpaceGuid.PcdUsbCControl0Enable|TRUE
   # USBC2
@@ -370,8 +370,8 @@
 
   gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000
   gEfiNetworkPkgTokenSpaceGuid.PcdNetworkStackSupport|FALSE
-  gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|FALSE
-  gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|FALSE
+  gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|TRUE
+  gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|TRUE
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4HttpSupport|TRUE
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6HttpSupport|TRUE
 
