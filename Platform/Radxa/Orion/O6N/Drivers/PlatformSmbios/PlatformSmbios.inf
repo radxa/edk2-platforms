@@ -22,15 +22,19 @@
   SmbiosType2.c
   SmbiosType3.c
   SmbiosType32.c
+  SmbiosType45.c
 
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   Platform/CIX/Sky1/Sky1.dec
+  Platform/Radxa/Radxa.dec
 
 [LibraryClasses]
   BaseLib
   DebugLib
+  GpioLib
+  PdEcLib
   UefiLib
   UefiDriverEntryPoint
   UefiBootServicesTableLib

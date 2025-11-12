@@ -9,12 +9,13 @@
 
 #include <PiDxe.h>
 #include <Library/DebugLib.h>
+#include <Library/PrintLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Protocol/Smbios.h>
 #include <IndustryStandard/SmBios.h>
 
-#define PLATFORM_SMBIOS_TABLE_HOOK  AddSmbiosType0,AddSmbiosType1,AddSmbiosType2,AddSmbiosType3,AddSmbiosType32
-#define PLATFORM_SMBIOS_TABLE_NAME  "AddSmbiosType0","AddSmbiosType1","AddSmbiosType2","AddSmbiosType3","AddSmbiosType32"
+#define PLATFORM_SMBIOS_TABLE_HOOK  AddSmbiosType0,AddSmbiosType1,AddSmbiosType2,AddSmbiosType3,AddSmbiosType32,AddSmbiosType45
+#define PLATFORM_SMBIOS_TABLE_NAME  "AddSmbiosType0","AddSmbiosType1","AddSmbiosType2","AddSmbiosType3","AddSmbiosType32","AddSmbiosType45"
 
 typedef EFI_STATUS (ADD_PLATFORM_SMBIOS_TABLE)(
   IN EFI_SMBIOS_PROTOCOL  *Smbios
@@ -51,6 +52,11 @@ AddSmbiosType3 (
 
 EFI_STATUS
 AddSmbiosType32 (
+  IN EFI_SMBIOS_PROTOCOL  *Smbios
+  );
+
+EFI_STATUS
+AddSmbiosType45 (
   IN EFI_SMBIOS_PROTOCOL  *Smbios
   );
 #endif
