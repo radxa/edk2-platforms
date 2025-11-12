@@ -139,7 +139,7 @@ PDWriteData (
       DEBUG ((DEBUG_ERROR, "%a: FIXME: wait and retry PING_STATUS\n", __FUNCTION__));
       return EFI_NOT_READY;
     case Complete:
-      DEBUG ((DEBUG_ERROR, "%a: operation completed\n", __FUNCTION__));
+      DEBUG ((DEBUG_ERROR, "%a: operation completed, DATA_LEN = %d\n", __FUNCTION__, PingStatus.Bits.DATA_LEN));
       if (ReadLength != NULL) {
         *ReadLength = PingStatus.Bits.DATA_LEN;
       }
@@ -149,7 +149,7 @@ PDWriteData (
       return EFI_NOT_READY;
     case Error:
     default:
-      DEBUG ((DEBUG_ERROR, "%a: PD has internal error\n", __FUNCTION__));
+      DEBUG ((DEBUG_ERROR, "%a: PD has internal error: 0x%x\n", __FUNCTION__, PingStatus.Uint8));
       return EFI_DEVICE_ERROR;
   }
 }
@@ -206,7 +206,8 @@ IsPdDeviceValid (
 
   DEBUG ((
     DEBUG_INFO,
-    "Pd Device %d get device config, I2C bus: %x, Slave Address:%x\n",
+    "%a: Pd Device %d get device config, I2C bus: %x, Slave Address:%x\n",
+    __FUNCTION__,
     PdDevIdx,
     I2cBus,
     SlaveAddress
@@ -237,7 +238,8 @@ GetI2cDeviceHandle (
   if (EFI_ERROR (Status)) {
     DEBUG ((
       DEBUG_ERROR,
-      "I2c Bus %d Locate Handle Buffer %g fail, status %r\n",
+      "%a: I2c Bus %d Locate Handle Buffer %g fail, status %r\n",
+      __FUNCTION__,
       I2cBus,
       &gEfiI2cMasterProtocolGuid,
       Status
@@ -308,7 +310,8 @@ PdGetIcStatus (
 
   DEBUG ((
     DEBUG_INFO,
-    "Pd Device %d I2C Bus %d, Slave Address %x, read data status\n",
+    "%a: Pd Device %d I2C Bus %d, Slave Address %x, read data status\n",
+    __FUNCTION__,
     PdDevIdx,
     I2cBus,
     SlaveAddress
@@ -318,7 +321,8 @@ PdGetIcStatus (
   if (EFI_ERROR (Status)) {
     DEBUG ((
       DEBUG_ERROR,
-      "Pd Device %d get I2c Bus %d device handle %r\n",
+      "%a: Pd Device %d get I2c Bus %d device handle %r\n",
+      __FUNCTION__,
       I2cBus,
       Status
       ));
@@ -329,7 +333,8 @@ PdGetIcStatus (
   if (EFI_ERROR (Status)) {
     DEBUG ((
       DEBUG_ERROR,
-      "Pd Device %d Handle Protocol %g status %r\n",
+      "%a: Pd Device %d Handle Protocol %g status %r\n",
+      __FUNCTION__,
       PdDevIdx,
       &gEfiI2cMasterProtocolGuid,
       Status
@@ -344,7 +349,8 @@ PdGetIcStatus (
   if (EFI_ERROR (Status)) {
     DEBUG ((
       DEBUG_ERROR,
-      "Pd Device %d PDWriteData status %r\n",
+      "%a: Pd Device %d PDWriteData status %r\n",
+      __FUNCTION__,
       PdDevIdx,
       Status
       ));
@@ -354,7 +360,8 @@ PdGetIcStatus (
   if (ReadLength != sizeof(CS32G051_RESULT_CMD_GET_IC_STATUS)) {
     DEBUG ((
       DEBUG_ERROR,
-      "Pd Device %d read length %d mismatch expected %d\n",
+      "%a: Pd Device %d read length %d mismatch expected %d\n",
+      __FUNCTION__,
       PdDevIdx,
       ReadLength,
       sizeof(CS32G051_RESULT_CMD_GET_IC_STATUS)
@@ -366,10 +373,22 @@ PdGetIcStatus (
   if (EFI_ERROR (Status)) {
     DEBUG ((
       DEBUG_ERROR,
-      "Pd Device %d PDReadData status %r\n",
+      "%a: Pd Device %d PDReadData status %r\n",
+      __FUNCTION__,
       PdDevIdx,
       Status
       ));
+  }
+
+  if (((CS32G051_RESULT_CMD_GET_IC_STATUS*)IcStatus)->ByteCount != ReadLength) {
+    DEBUG ((
+      DEBUG_ERROR,
+      "%a: PD has returned %d bytes instead of expected %d\n",
+      __FUNCTION__,
+      ((CS32G051_RESULT_CMD_GET_IC_STATUS*)IcStatus)->ByteCount,
+      ReadLength
+      ));
+    return EFI_DEVICE_ERROR;
   }
 
   return Status;

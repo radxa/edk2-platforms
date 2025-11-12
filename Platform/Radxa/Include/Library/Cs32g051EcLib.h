@@ -32,16 +32,16 @@ typedef enum {
 
 typedef union {
   struct {
-    CS32G051_PING_STATUS_CMD_STS  CMD_STS  : 2;
-    UINT8                         DATA_LEN : 6;
+    UINT8 DATA_LEN : 6;
+    UINT8 CMD_STS  : 2;
   } Bits;
   UINT8    Uint8;
 } CS32G051_PING_STATUS;
 
 typedef struct {
-  CS32G051_CMD          CMD;
-  CS32G051_WR_DATA_LEN  WR_DATA_LEN;
-  CS32G051_SUB_CMD      SUB_CMD;
+  UINT8 CMD;
+  UINT8 WR_DATA_LEN;
+  UINT8 SUB_CMD;
 } CS32G051_REQUEST_HEADER;
 
 typedef struct {
