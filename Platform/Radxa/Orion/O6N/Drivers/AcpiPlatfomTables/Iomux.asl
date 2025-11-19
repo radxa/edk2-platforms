@@ -85,7 +85,7 @@ Device (MUX0) {
     PinGroup ("3v3_bkey", ResourceProducer, ,
         RawDataBuffer ()
         {
-            IO_S0_I2S2_TSCK,    0x00, 0x44,
+            IO_S0_I2S2_TSCK,    0x00, 0xCC,
         })
         {
             SKY1_IOMUXC_I2S2_TSCK,
@@ -94,10 +94,28 @@ Device (MUX0) {
     PinGroup ("bkey_reset", ResourceProducer, ,
         RawDataBuffer ()
         {
-            IO_S0_I2S2_TWS,     0x00, 0x44,
+            IO_S0_I2S2_TWS,     0x00, 0xAC,
         })
         {
             SKY1_IOMUXC_I2S2_TWS,
+        }
+
+    PinGroup ("cam_5v_pwren", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            IO_S0_I2S2_DATA_IN0, 0x00, 0xAC,
+        })
+        {
+            SKY1_IOMUXC_I2S2_DATA_IN0,
+        }
+
+    PinGroup ("cam_pwren", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            IO_S0_I2S3_MCLK, 0x00, 0xAC,
+        })
+        {
+            SKY1_IOMUXC_I2S3_MCLK,
         }
 
     PinGroup ("pinctrl_cam0_hw", ResourceProducer, ,
@@ -176,6 +194,15 @@ Device (MUX1) {
             SKY1_IOMUXC_SE_QSPI_DATA3,
         }
 
+    PinGroup ("usb_drive_vbus0", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            IO_S5_USB_DRIVE_VBUS0, 0x00, 0x24,
+        })
+        {
+            SKY1_IOMUXC_DRIVE_VBUS0,
+        }
+
     PinGroup ("pinctrl_usb4", ResourceProducer, ,
         RawDataBuffer ()
         {
@@ -236,6 +263,15 @@ Device (MUX1) {
         })
         {
             SKY1_IOMUXC_GPIO3,
+        }
+
+    PinGroup ("pd_reset", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            IO_S5_GPIO007, 0x00, 0x24,
+        })
+        {
+            SKY1_IOMUXC_GPIO7,
         }
 
 // Device defined pinctrl
@@ -333,6 +369,24 @@ Device (MUX1) {
         {
             SKY1_IOMUXC_SFI_GPIO0,
             SKY1_IOMUXC_SFI_GPIO6,
+        }
+
+    PinGroup ("wl_radio_disable_l", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            IO_S5_SFI_GPIO4, 0x00, 0xD7,
+        })
+        {
+            SKY1_IOMUXC_SFI_GPIO4,
+        }
+
+    PinGroup ("bt_radio_disable_l", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            IO_S5_SFI_GPIO5, 0x00, 0xD7,
+        })
+        {
+            SKY1_IOMUXC_SFI_GPIO5,
         }
   })
 }

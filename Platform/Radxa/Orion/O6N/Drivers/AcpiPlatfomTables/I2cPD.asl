@@ -7,6 +7,8 @@
 
 **/
 
+#include "Gpio.h"
+
 #define DP_USBC_CON_DSD(Name) \
         ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),\
         Package () { \
@@ -83,6 +85,32 @@
 External (\_SB.I2C5, DeviceObj)
 External (\_SB.SUB0.CUB0, DeviceObj)
 External (\_SB.UCP0, DeviceObj)
+
+Device (PDR0) {
+  Name (_HID, "PRP0001")
+  Name (_UID, 0x30)
+  Name (_STA, 0x0B)
+
+  Name (_CRS, ResourceTemplate () {
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "pd_reset", ResourceConsumer,)
+    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+    "\\_SB.GPI4", 0, ResourceConsumer) { 6 }  // GPIO007
+  })
+
+  Name (_DSD, Package () {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "compatible", "regulator-fixed" },
+      Package () { "regulator-name", "vdd_pd_reset" },
+      Package () { "regulator-min-microvolt", 3300000 },
+      Package () { "regulator-max-microvolt", 3300000 },
+      Package () { "gpio", Package () { ^PDR0, 0, 0, GPIO_ACTIVE_LOW } },
+      Package () { "regulator-always-on", 1 },
+      Package () { "regulator-pull-down", 1 },
+      Package () { "off-on-delay-us", 15000 },
+    },
+  })
+}
 
 Scope (\_SB.I2C5)
 {

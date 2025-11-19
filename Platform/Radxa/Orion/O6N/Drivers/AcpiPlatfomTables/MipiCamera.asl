@@ -6,6 +6,8 @@
 
 **/
 
+#include "Gpio.h"
+
 #define CLK_TREE_CAMERA_MCLK0     72
 #define CLK_TREE_CAMERA_MCLK1     73
 #define CLK_TREE_CAMERA_MCLK2     74
@@ -22,6 +24,7 @@ Device (CPE4) {
   Name (_STA, 0x0B)
 
   Name (_CRS, ResourceTemplate () {
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "cam_pwren", ResourceConsumer,)
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
     "\\_SB.GPI1", 0, ResourceConsumer) { 6 }  // GPIO081
   })
@@ -34,6 +37,7 @@ Device (CPE4) {
       Package () { "regulator-min-microvolt", 3300000 },
       Package () { "regulator-max-microvolt", 3300000 },
       Package () { "gpio", Package () { ^CPE4, 0, 0, 0 } },
+      Package () { "regulator-always-on", 1 },
     }
   })
 }
@@ -45,6 +49,7 @@ Device (CPE5) {
   Name (_STA, 0x0B)
 
   Name (_CRS, ResourceTemplate () {
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "cam_5v_pwren", ResourceConsumer,)
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
     "\\_SB.GPI1", 0, ResourceConsumer) { 0 }  // GPIO075
   })
@@ -57,6 +62,7 @@ Device (CPE5) {
       Package () { "regulator-min-microvolt", 5000000 },
       Package () { "regulator-max-microvolt", 5000000 },
       Package () { "gpio", Package () { ^CPE5, 0, 0, 0 } },
+      Package () { "regulator-always-on", 1 },
     }
   })
 }
