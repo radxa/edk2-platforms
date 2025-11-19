@@ -403,11 +403,8 @@
   gCixTokenSpaceGuid.PcdIspCamera2Power|0x00
   gCixTokenSpaceGuid.PcdIspCamera3Power|0x00
 
-  gCixPlatformTokenSpaceGuid.PcdAcpiGpio0IoMask|0xC0000000 # BKEY_PWR_EN & BKEY_RESET
-  gCixPlatformTokenSpaceGuid.PcdAcpiGpio1IoMask|0x00000041 # CAM_PWREN & CAM_5V_PWREN
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio3IoMask|0x00018000 # DP2_DIGON & DP2_BLON
-  gCixPlatformTokenSpaceGuid.PcdAcpiGpio4IoMask|0x20003441 # GPIO001_MKEY_EN & PD_RESET & LOM_PWREN & WLAN_PWREN & UFS_5V_EN & USB_DRIVE_VBUS0
-  gCixPlatformTokenSpaceGuid.PcdAcpiGpio5IoMask|0x000001B0 # WL_RADIO_DISABLE_L & BT_RADIO_DISABLE_L & PHY2_PWR_EN & TPM_PWR_EN
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio4IoMask|0x00002000 # UFS_5V_EN
 
 # Platform specific defaults
   # Set SMBIOS product name
