@@ -23,7 +23,7 @@ MEM_CONFIG_BUSCFG_LP5 MemLpddr5BusCfg_Hive_Semi_48G = {
   {
     .Signature      = MEM_CONFIG_BLOCK_BUSCFG_LP5_SIGNATURE,
     .BlockSize      = sizeof(MEM_CONFIG_BUSCFG_LP5) + sizeof(MEM_CONFIG_BUSCFG_LP5_ENTRY) * ENTRY_COUNT,
-    .BoardMask      = RS600_48G_HS_MASK
+    .BoardMask      = RS602_48G_HS_MASK
   },
   {
     //MaxMemFreq        RankPerCh DevWidth CA_ODT   CK_ODT   CS_ODT   DQ_ODT   WCK_ODT  SOC_ODT  NTDQ_ODT ODT_PDDS
