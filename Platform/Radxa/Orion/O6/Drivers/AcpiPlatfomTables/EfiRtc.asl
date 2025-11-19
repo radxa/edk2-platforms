@@ -357,4 +357,3 @@ Device (ERTC) {
     Return(0)
   }
 }
-
