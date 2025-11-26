@@ -404,7 +404,7 @@
   gCixTokenSpaceGuid.PcdIspCamera3Power|0x00
 
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio3IoMask|0x00018000 # DP2_DIGON & DP2_BLON
-  gCixPlatformTokenSpaceGuid.PcdAcpiGpio4IoMask|0x00002000 # UFS_5V_EN
+  gCixPlatformTokenSpaceGuid.PcdAcpiGpio4IoMask|0x00002040 # UFS_5V_EN & PD_RESET
 
 # Platform specific defaults
   # Set SMBIOS product name
