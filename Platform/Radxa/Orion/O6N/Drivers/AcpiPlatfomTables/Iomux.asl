@@ -206,7 +206,7 @@ Device (MUX1) {
     PinGroup ("pinctrl_usb4", ResourceProducer, ,
         RawDataBuffer ()
         {
-            IO_S5_USB_DRIVE_VBUS4, 0x00, 0xa4,
+            IO_S5_USB_DRIVE_VBUS4, 0x00, 0x24,
         })
         {
             SKY1_IOMUXC_DRIVE_VBUS4,
@@ -215,7 +215,7 @@ Device (MUX1) {
     PinGroup ("pinctrl_usb5", ResourceProducer, ,
         RawDataBuffer ()
         {
-            IO_S5_USB_DRIVE_VBUS5, 0x00, 0xa4,
+            IO_S5_USB_DRIVE_VBUS5, 0x00, 0x24,
         })
         {
             SKY1_IOMUXC_DRIVE_VBUS5,
