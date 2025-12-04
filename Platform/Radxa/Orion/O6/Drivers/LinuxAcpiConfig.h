@@ -69,6 +69,13 @@
 #define PCIE_X1_0_VCC_SUPPLY 1
 #define PCIE_X1_0_VCC_REGULATOR \_SB.PVC4
 
+#define GPI0_LINE_NAMES \_SB.GPI0.GPIN
+#define GPI1_LINE_NAMES \_SB.GPI1.GPIN
+#define GPI2_LINE_NAMES \_SB.GPI2.GPIN
+#define GPI3_LINE_NAMES \_SB.GPI3.GPIN
+#define GPI4_LINE_NAMES \_SB.GPI4.GPIN
+#define GPI5_LINE_NAMES \_SB.GPI5.GPIN
+
 /* HDA */
 #define HDA_EXT_CRS \
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly, "\\_SB.GPI3", 0, ResourceConsumer) { 5 }
