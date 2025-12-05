@@ -28,7 +28,7 @@
 #define EC2OS_ACPI_EVENT_IC_ERROR_CHANGE        BIT13
 #define EC2OS_ACPI_EVENT_BAT_FULL_CHARGE        BIT14
 
-#define EC_THERMAL_SUPPORT 0
+#define EC_THERMAL_SUPPORT 1
 #define EC_PWRB_SUPPORT    1
 
 External (\_SB.AMTX, MethodObj)
@@ -385,6 +385,56 @@ Device(EC0){
        Notify(\_SB.PWRB, 0x80)
     }
 #endif
+
+    if(Arg0 & EC2OS_ACPI_EVENT_WIFI_STATE_CHANGE){
+    }
+
+    if(Arg0 & EC2OS_ACPI_EVENT_DOCK_STATE_CHANGE){
+    }
+
+    if(Arg0 & EC2OS_ACPI_EVENT_WWAN_STATE_CHANGE){
+    }
+  }
+
+  //
+  // Name: WRGP [EC GPIO Write]
+  // Description: Function to write into EC GPIO
+  // Input: Arg0 -> GPIO number
+  //        Arg1 -> GPIO value
+  // Return: Nothing
+  //
+  Method(WRGP, 2, Serialized){
+    Name(BUF0, Buffer(11){0xDA,0x03,0x00,0x00,0x92,0x00,0x00,0x00,0x02,0x00,0x00})
+    CreateByteField (BUF0, 0x02, CSUM)
+    CreateByteField (BUF0, 0x09, GNUM)
+    CreateByteField (BUF0, 0x0A, GVAL)
+    GNUM=Arg0
+    GVAL=Arg1
+    Mid(BUF0,1,Sizeof(BUF0)-1,Local0)
+    CSUM=CKSB(Local0)&0xFF
+    Name(BUF1, Buffer(11){})
+    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+  }
+
+  //
+  // Name: RDGP [EC GPIO Read]
+  // Description: Function to write into EC GPIO
+  // Input: Arg0 -> GPIO number
+  // Return: GPIO Value
+  //
+  Method(RDGP, 1, Serialized){
+    Name(BUF0, Buffer(10){0xDA,0x03,0x00,0x00,0x93,0x00,0x00,0x00,0x01,0x00})
+    CreateByteField (BUF0, 0x02, CSUM)
+    CreateByteField (BUF0, 0x09, GNUM)
+    GNUM=Arg0
+    Mid(BUF0,1,Sizeof(BUF0)-1,Local0)
+    CSUM=CKSB(Local0)&0xFF
+    Name(BUF1, Buffer(11){})
+    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+    Sleep(20)   // Wait for EC get gpio state then we query gpio state again. this is current EC limitation, to be fix later.
+    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+    CreateByteField (BUF1, 0x0A, GVAL)
+    Return(GVAL)
   }
 
   //
@@ -423,7 +473,6 @@ Device(EC0){
     TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
   }
 }
-
 
 #if EC_THERMAL_SUPPORT
 PowerResource(ECFN, 0, 0)
