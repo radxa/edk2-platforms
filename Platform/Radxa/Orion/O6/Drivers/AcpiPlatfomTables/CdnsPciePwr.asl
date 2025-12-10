@@ -6,6 +6,8 @@
 
 **/
 
+#include "Gpio.h"
+
 External (\_SB.PRC0, DeviceObj)
 External (\_SB.PRC1, DeviceObj)
 External (\_SB.PRC2, DeviceObj)
@@ -31,9 +33,9 @@ External (\_SB.PRC4, DeviceObj)
         Package () { "regulator-name", "vgfx_power" },
         Package () { "regulator-min-microvolt", 3300000 },
         Package () { "regulator-max-microvolt", 3300000 },
-        Package () { "gpio", Package () { ^PVC0, 0, 0, 0 } },
+        Package () { "gpio", Package () { ^PVC0, 0, 0, GPIO_ACTIVE_HIGH } },
         Package () { "regulator-pull-down", 1 },
-        Package () { "enable-active_high", 1 },
+        Package () { "enable-active-high", 1 },
         Package () { "off-on-delay-us", 15000 },
       }
     })
@@ -59,9 +61,9 @@ External (\_SB.PRC4, DeviceObj)
         Package () { "regulator-name", "vcc_ssd_pwren" },
         Package () { "regulator-min-microvolt", 3300000 },
         Package () { "regulator-max-microvolt", 3300000 },
-        Package () { "gpio", Package () { ^PVC1, 0, 0, 0 } },
+        Package () { "gpio", Package () { ^PVC1, 0, 0, GPIO_ACTIVE_HIGH } },
         Package () { "regulator-pull-down", 1 },
-        Package () { "enable-active_high", 1 },
+        Package () { "enable-active-high", 1 },
         Package () { "off-on-delay-us", 15000 },
       }
     })
@@ -87,10 +89,10 @@ External (\_SB.PRC4, DeviceObj)
         Package () { "regulator-name", "vdd_3v3_pcie" },
         Package () { "regulator-min-microvolt", 3300000 },
         Package () { "regulator-max-microvolt", 3300000 },
-        Package () { "gpio", Package () { ^PVC2, 0, 0, 0 } },
+        Package () { "gpio", Package () { ^PVC2, 0, 0, GPIO_ACTIVE_HIGH } },
         Package () { "regulator-pull-down", 1 },
         Package () { "regulator-always-on", 1 },
-        Package () { "enable-active_high", 1 },
+        Package () { "enable-active-high", 1 },
         Package () { "off-on-delay-us", 15000 },
       }
     })
@@ -116,9 +118,9 @@ External (\_SB.PRC4, DeviceObj)
         Package () { "regulator-name", "gbe1_power_3v3" },
         Package () { "regulator-min-microvolt", 3300000 },
         Package () { "regulator-max-microvolt", 3300000 },
-        Package () { "gpio", Package () { ^PVC3, 0, 0, 0 } },
+        Package () { "gpio", Package () { ^PVC3, 0, 0, GPIO_ACTIVE_HIGH } },
         Package () { "regulator-pull-down", 1 },
-        Package () { "enable-active_high", 1 },
+        Package () { "enable-active-high", 1 },
         Package () { "off-on-delay-us", 15000 },
       }
     })
@@ -144,9 +146,9 @@ External (\_SB.PRC4, DeviceObj)
         Package () { "regulator-name", "gbe2_power_3v3" },
         Package () { "regulator-min-microvolt", 3300000 },
         Package () { "regulator-max-microvolt", 3300000 },
-        Package () { "gpio", Package () { ^PVC4, 0, 0, 0 } },
+        Package () { "gpio", Package () { ^PVC4, 0, 0, GPIO_ACTIVE_HIGH } },
         Package () { "regulator-pull-down", 1 },
-        Package () { "enable-active_high", 1 },
+        Package () { "enable-active-high", 1 },
         Package () { "off-on-delay-us", 15000 },
       }
     })
