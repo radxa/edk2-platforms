@@ -77,7 +77,7 @@ External (\_SB.PRC4, DeviceObj)
     Name (_CRS, ResourceTemplate () {
       PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "wifi_vbat_gpio", ResourceConsumer,)
       GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
-      "\\_SB.GPI4", 0, ResourceConsumer) { 12 }
+      "\\_SB.GPI4", 0, ResourceConsumer) { 12 } // GPIO013
     })
 
     Name (_DSD, Package () {
@@ -89,6 +89,7 @@ External (\_SB.PRC4, DeviceObj)
         Package () { "regulator-max-microvolt", 3300000 },
         Package () { "gpio", Package () { ^PVC2, 0, 0, 0 } },
         Package () { "regulator-pull-down", 1 },
+        Package () { "regulator-always-on", 1 },
         Package () { "enable-active_high", 1 },
         Package () { "off-on-delay-us", 15000 },
       }
