@@ -76,8 +76,16 @@ LibResetSystem (
 
       DEBUG ((DEBUG_INFO, "%a: disable additional GPIOs for %a\n", __FUNCTION__, SystemProductName));
       if (!StrCmp (L"Radxa Orion O6", SystemProductName)) {
+        GpioConfig (10, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of LOM_PWREN
         GpioConfig (12, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of M2_SSD_PWREN
+        GpioConfig (13, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of WLAN_PWREN
         GpioConfig (17, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of VGFX_PWREN
+        GpioConfig (21, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of USB02F_DRIVE_VBUS
+        GpioConfig (22, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of 5GPHY2_PWR_EN
+        GpioConfig (40, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of USB2_DRIVE_VBUS
+        GpioConfig (41, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of USB_DRIVE_VBUS4
+        GpioConfig (42, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of USB_DRIVE_VBUS5
+        GpioConfig (81, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of CAM_PWREN
       } else if (!StrCmp (L"Radxa Orion O6N", SystemProductName)) {
         GpioConfig ( 1, OUTPUT,  INOUT_LOW, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output low of GPIO001_MKEY_EN
         GpioConfig ( 7, OUTPUT, INOUT_HIGH, INTERRUPT_DISABLE, INTERRUPT_TYPE_DEFAULT);  //  output high of PD_RESET
