@@ -26,5 +26,6 @@ DefinitionBlock("SsdtTable.aml", "SSDT", 2, "RADXA", "ORIONO6", 1) {
     include("CdnsPciePwr.asl")
     include("HardwareMonitor.asl")
     include("Wireless.asl")
+    include("UsbPwr.asl")
   }
 }
