@@ -19,6 +19,8 @@ extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_64G_Rayson;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_24G_HS;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_32G_x8_HS;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_32G_Hynix;
+extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G_Hynix;
+extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_48G_Hynix;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_48G_HS;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G_HS;
 
@@ -39,6 +41,8 @@ extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G_HS;
   CDCB_BLOCK(GlobalConfigBlock_24G_HS), \
   CDCB_BLOCK(GlobalConfigBlock_32G_x8_HS), \
   CDCB_BLOCK(GlobalConfigBlock_32G_Hynix), \
+  CDCB_BLOCK(GlobalConfigBlock_16G_Hynix), \
+  CDCB_BLOCK(GlobalConfigBlock_48G_Hynix), \
   CDCB_BLOCK(GlobalConfigBlock_48G_HS), \
   CDCB_BLOCK(GlobalConfigBlock_16G_HS), \
 
