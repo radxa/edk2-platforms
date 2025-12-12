@@ -793,5 +793,23 @@ Device (MUX1) {
         {
             SKY1_IOMUXC_SFI_GPIO0,
         }
+
+    PinGroup ("wl_radio_disable_l", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x90, 0x00, 0xD4,
+        })
+        {
+            SKY1_IOMUXC_SFI_GPIO4,
+        }
+
+    PinGroup ("bt_radio_disable_l", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x94, 0x00, 0xD4,
+        })
+        {
+            SKY1_IOMUXC_SFI_GPIO5,
+        }
   })
 }
