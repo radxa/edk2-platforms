@@ -22,7 +22,8 @@ form formid = COMPLIANCE_CONFIG_FORM_ID,
   checkbox varid = DtAcpiPref.Pref,
     prompt = STRING_TOKEN(STR_COMPLIANCE_ACPI),
     help   = STRING_TOKEN(STR_COMPLIANCE_ACPI_HELP),
-    flags  = RESET_REQUIRED,
+    flags  = CHECKBOX_DEFAULT | RESET_REQUIRED,
+    default = TRUE,
   endcheckbox;
 
 suppressif ideqval DtAcpiPref.Pref == DT_ACPI_SELECT_DT;
