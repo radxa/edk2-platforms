@@ -472,6 +472,30 @@ Device(EC0){
     Name(BUF1, Buffer(10){})
     TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
   }
+
+  //
+  // Name: SFFD [Set EC Fan PWM to Full Duty]
+  // Description: Function to set ec fan pwm to full duty
+  // Input: None
+  // Output: None
+  //
+  Method(SFFD, 0, Serialized){
+    Name(BUF0, Buffer(13){0xDA,0x03,0x70,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x64,0x00,0x00})
+    Name(BUF1, Buffer(10){})
+    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+  }
+
+  //
+  // Name: SFZD [Set EC Fan PWM to Zero Duty]
+  // Description: Function to set ec fan pwm to zero duty
+  // Input: None
+  // Output: None
+  //
+  Method(SFZD, 0, Serialized){
+    Name(BUF0, Buffer(13){0xDA,0x03,0xD4,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x00,0x00,0x00})
+    Name(BUF1, Buffer(10){})
+    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+  }
 }
 
 #if EC_THERMAL_SUPPORT
@@ -493,21 +517,11 @@ PowerResource(ECFN, 0, 0)
 
   Method(_ON, 0, Serialized)
   {
-    Name(BUF0, Buffer(13){0xDA,0x03,0x70,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x64,0x00,0x00})
-    Name(BUF1, Buffer(10){})
-
-    if(\_SB.EC0.TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1)) != I2C_SUCCESS){
-      printf ("CIX Debug: FN00 on fail")
-    }
+    \_SB.EC0.SFAT()
   }
   Method(_OFF, 0, Serialized)
   {
-    Name(BUF0, Buffer(13){0xDA,0x03,0xD4,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x00,0x00,0x00})
-    Name(BUF1, Buffer(10){})
-
-    if(\_SB.EC0.TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1)) != I2C_SUCCESS){
-      printf ("CIX Debug: FN00 off fail")
-    }
+    \_SB.EC0.SFZD()
   }
 }
 
