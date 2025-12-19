@@ -60,6 +60,7 @@
 #string STR_EC_FAN_MODE_PROMPT_HELP     #language en-US "Select the default EC fan mode."
 #string STR_AUTO_MODE                   #language en-US "Auto Mode"
 #string STR_PERF_MODE                   #language en-US "Performance Mode"
+#string STR_MUTE_MODE                   #language en-US "Slient Mode"
 
 #string STR_UFS_POWER_MODE_PROMPT       #language en-US "UFS Power Mode"
 #string STR_UFS_POWER_MODE_PROMPT_HELP  #language en-US "Select the default UFS power mode.\n\n"
