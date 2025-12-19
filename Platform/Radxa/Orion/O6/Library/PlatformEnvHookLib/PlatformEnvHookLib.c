@@ -744,6 +744,9 @@ InitEcDefaultSetting (
     case 1: // performance mode
       Params.ThermalAutoFanCtl.FanAutoFlg = EC_FAN_MODE_PERF;
       break;
+    case 2: // mute mode
+      Params.ThermalAutoFanCtl.FanAutoFlg = EC_FAN_MODE_MUTE;
+      break;
     default:
       DEBUG ((DEBUG_INFO, "Undefined EC fan mode! mode=%d \n", ConfigData->PlatConfig->EcFanMode));
       return;
