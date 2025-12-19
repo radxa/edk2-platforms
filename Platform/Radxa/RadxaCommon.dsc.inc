@@ -8,6 +8,10 @@
 ##
 
 [Components.common]
+  Silicon/Intel/IntelSiliconPkg/Library/DxeAslUpdateLib/DxeAslUpdateLib.inf
+
+[LibraryClasses.common]
+  AslUpdateLib|Silicon/Intel/IntelSiliconPkg/Library/DxeAslUpdateLib/DxeAslUpdateLib.inf
 
 [BuildOptions]
   GCC:*_*_*_CC_FLAGS              = -DCOMPILE_BUILD_DATE=$(COMPILE_BUILD_DATE)
