@@ -31,6 +31,12 @@
 #define EC_THERMAL_SUPPORT 1
 #define EC_PWRB_SUPPORT    1
 
+#define EC_FAN_MODE        FixedPcdGet8(PcdEcDefaultFanMode)
+// This is the PCD value, not EC value
+#define PCD_FAN_MODE_AUTO  0x00
+#define PCD_FAN_MODE_PERF  0x01
+#define PCD_FAN_MODE_MUTE  0x02
+
 External (\_SB.AMTX, MethodObj)
 External (\_SB.RMTX, MethodObj)
 External (\_SB.I2C6.MXID, IntObj)
@@ -493,6 +499,8 @@ Device(EC0){
 }
 
 #if EC_THERMAL_SUPPORT
+Name (ECFM, EC_FAN_MODE)  // Default EC fan mode
+
 PowerResource(ECFN, 0, 0)
 {
   Method(_STA, 0, Serialized)
@@ -511,10 +519,25 @@ PowerResource(ECFN, 0, 0)
 
   Method(_ON, 0, Serialized)
   {
-    \_SB.EC0.SFAT()
+    switch (\_SB.ECFM)
+    {
+      case (PCD_FAN_MODE_AUTO) {
+        \_SB.EC0.SFAT()
+      }
+      case (PCD_FAN_MODE_PERF) {
+        \_SB.EC0.SFPF()
+      }
+      case (PCD_FAN_MODE_MUTE) {
+        \_SB.EC0.SFMT()
+      }
+      Default {
+        \_SB.EC0.SFAT()
+      }
+    }
   }
   Method(_OFF, 0, Serialized)
   {
+    \_SB.EC0.SFMT()
     \_SB.EC0.SFZD()
   }
 }
