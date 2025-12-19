@@ -480,9 +480,7 @@ Device(EC0){
   // Output: None
   //
   Method(SFFD, 0, Serialized){
-    Local0 = Buffer(13){0xDA,0x03,0x70,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x64,0x00,0x00}
-    Local1 = Buffer(10){}
-    TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1))
+    SFPW(100)
   }
 
   //
@@ -492,8 +490,42 @@ Device(EC0){
   // Output: None
   //
   Method(SFZD, 0, Serialized){
-    Local0 = Buffer(13){0xDA,0x03,0xD4,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x00,0x00,0x00}
+    SFPW(0)
+  }
+
+  //
+  // Name: GFPW [Get Fan PWM]
+  // Description: Function to get fan pwm
+  // Input: None
+  // Output: Fan PWM
+  //
+  Method(GFPW, 0, Serialized){
+    Local0 = Buffer(11){0xDA,0x03,0xD5,0x00,0x26,0x00,0x00,0x00,0x02,0x00,0x00}
+    Local1 = Buffer(12){}
+    if(TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1)) == I2C_SUCCESS) {
+      CreateByteField (Local1, 11, DUTY)
+      Return(DUTY)
+    }
+    Return(0xFF)
+  }
+
+  //
+  // Name: SFPW [Set Fan PWM]
+  // Description: Function to set fan pwm
+  // Input: Arg0 -> Fan PWM
+  // Output: None
+  //
+  Method(SFPW, 1, Serialized){
+    if (Arg0 > 100) {
+      Return(One)
+    }
+    SFAT()
+    Local0 = Buffer(13){0xDA,0x03,0xFF,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0xFF,0x00,0x00}
     Local1 = Buffer(10){}
+    CreateByteField(Local0,  2, CSUM)
+    CreateByteField(Local0, 10, DUTY)
+    CSUM = 0xD4 - Arg0
+    DUTY = Arg0
     TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1))
   }
 }
@@ -505,14 +537,9 @@ PowerResource(ECFN, 0, 0)
 {
   Method(_STA, 0, Serialized)
   {
-    Local0 = Buffer(11){0xDA,0x03,0xD5,0x00,0x26,0x00,0x00,0x00,0x02,0x00,0x00}
-    Local1 = Buffer(12){}
-
-    if(\_SB.EC0.TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1)) == I2C_SUCCESS){
-      CreateWordField (Local1, 0x0A, DUTY)
-      if(DUTY != 0){
-        Return(One)
-      }
+    Local0 = \_SB.EC0.GFPW()
+    if(Local0 != 0xFF && Local0 != 0){
+      Return(One)
     }
     Return(Zero)
   }

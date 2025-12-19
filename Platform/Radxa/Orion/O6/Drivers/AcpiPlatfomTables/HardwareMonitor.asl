@@ -47,4 +47,33 @@ Device(HWMN){
         // Set the fan performance mode through EC
         \_SB.EC0.SFPF()
     }
+
+    //
+    // Name: GFPW [Get Fan PWM]
+    // Description: Function to get fan pwm
+    // Input: Arg0 -> Type
+    //        Arg1 -> Index
+    // Output: Fan PWM
+    //
+    Method(GFPW, 2, Serialized){
+      // We have a single fan. Ignore type and index.
+      Local0 = Arg0
+      Local0 = Arg1
+      Return(\_SB.EC0.GFPW())
+    }
+
+    //
+    // Name: SFPW [Set Fan PWM]
+    // Description: Function to set fan pwm
+    // Input: Arg0 -> Duty
+    //        Arg1 -> Type
+    //        Arg2 -> Index
+    // Output: None
+    //
+    Method(SFPW, 3, Serialized){
+      // We have a single fan. Ignore type and index.
+      Local0 = Arg1
+      Local0 = Arg2
+      \_SB.EC0.SFPW(Arg0)
+    }
 }
