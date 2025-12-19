@@ -32,3 +32,4 @@
   gCixTokenSpaceGuid.PcdEcI2cBaseAddress
   gCixPlatformTokenSpaceGuid.PcdEcI2cSlaveAddress
   gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cDeviceInstanceId
+  gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode

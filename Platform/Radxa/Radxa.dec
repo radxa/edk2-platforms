@@ -15,6 +15,7 @@
 
 [Includes]
   Include
+  IntelSiliconPkg/Include
 
 [LibraryClasses]
   PdEcLib|Include/Library/PdEcLib.h
