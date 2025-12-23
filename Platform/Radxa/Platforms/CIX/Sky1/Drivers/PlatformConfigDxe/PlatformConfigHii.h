@@ -27,6 +27,7 @@ typedef struct {
 typedef struct {
   BOOLEAN    DisableCPPC;
   BOOLEAN    DisableSmallCores;
+  BOOLEAN    EnableLPI0;
 } COMPLIANCE_VARSTORE_DATA;
 
 #define COMPLIANCE_VAR  L"ComplianceVar"
@@ -75,5 +76,6 @@ extern EFI_GUID  gPlatformConfigFormSetGuid;
 #define KEY_ENABLE_NETWORK_STACK    0x1900
 #define KEY_DISABLE_ACPI_CPPC       0x1901
 #define KEY_DISABLE_SMALL_CORE      0x1902
+#define KEY_ENABLE_ACPI_LPI0        0x1903
 
 #endif

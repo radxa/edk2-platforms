@@ -236,6 +236,28 @@ PlatformConfigCallback (
           break;
       }
       break;
+    case KEY_ENABLE_ACPI_LPI0:
+      DEBUG ((DEBUG_INFO, "%a:  QuestionId = KEY_ENABLE_ACPI_LPI0\n", __FUNCTION__));
+      HiiGetBrowserData (&gPlatformSetupVariableGuid, PLATFORM_SETUP_VAR, sizeof (PlatformSetupVar), (UINT8 *)&PlatformSetupVar);
+      switch (Action) {
+        case EFI_BROWSER_ACTION_RETRIEVE:
+          Value->b = (PlatformSetupVar.CpuLpiState == 1);
+          HiiGetBrowserData (&gPlatformConfigFormSetGuid, COMPLIANCE_VAR, sizeof (ComplianceVar), (UINT8 *)&ComplianceVar);
+          ComplianceVar.EnableLPI0 = Value->b;
+          HiiSetBrowserData (&gPlatformConfigFormSetGuid, COMPLIANCE_VAR, sizeof (ComplianceVar), (UINT8 *)&ComplianceVar, NULL);
+          break;
+        case EFI_BROWSER_ACTION_CHANGED:
+          DEBUG ((DEBUG_INFO, "  Adjust CpuLpiState\n"));
+          PlatformSetupVar.CpuLpiState = (UINT8)(Value->b ? 1 : FixedPcdGet8 (PcdAcpiCpuLpiState));
+          HiiSetBrowserData (&gPlatformSetupVariableGuid, PLATFORM_SETUP_VAR, sizeof (PlatformSetupVar), (UINT8 *)&PlatformSetupVar, NULL);
+          break;
+        default:
+          DEBUG ((DEBUG_INFO, "%a:  Unkown Action\n", __FUNCTION__));
+          DEBUG ((DEBUG_INFO, "    Action = %u.\n", Action));
+          return EFI_UNSUPPORTED;
+          break;
+      }
+      break;
     default:
       DEBUG ((DEBUG_INFO, "%a:  Unkown Action\n", __FUNCTION__));
       DEBUG ((DEBUG_INFO, "    Action = %u.\n", Action));
