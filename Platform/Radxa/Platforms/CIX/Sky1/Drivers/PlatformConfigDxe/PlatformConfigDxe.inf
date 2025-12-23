@@ -74,7 +74,6 @@
 [Pcd]
 
 [FixedPcd]
-  gRadxaTokenSpaceGuid.PcdCpuFMax
   gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn
   gRadxaTokenSpaceGuid.PcdUFSPowerMode
 
