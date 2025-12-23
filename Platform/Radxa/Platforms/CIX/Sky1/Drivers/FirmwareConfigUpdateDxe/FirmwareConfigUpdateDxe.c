@@ -58,10 +58,10 @@ CheckPlatformVarUpdate (
   *Update = FALSE;
 
   // guarantee cpu trigger flag clear, since trigger once
-  if (pRadxaSetupVar->CpuBoostTrigger) {
-    pRadxaSetupVar->CpuBoostTrigger = 0;
-    *Update = TRUE;
-  }
+  // if (pRadxaSetupVar->CpuBoostTrigger) {
+  //   pRadxaSetupVar->CpuBoostTrigger = 0;
+  //   *Update = TRUE;
+  // }
 
   Status = gBS->LocateHandleBuffer (
                                     ByProtocol,
@@ -145,10 +145,10 @@ CheckPlatformVarUpdate (
 
   MemQuickHeader = (MEM_QUICK_CONFIG *)pImageBuff;
 
-  if (pRadxaSetupVar->CpuFMax != MemQuickHeader->cpufmax) {
-     pRadxaSetupVar->CpuFMax = MemQuickHeader->cpufmax;
-     *Update = TRUE;
-  }
+  // if (pRadxaSetupVar->CpuFMax != MemQuickHeader->cpufmax) {
+  //    pRadxaSetupVar->CpuFMax = MemQuickHeader->cpufmax;
+  //    *Update = TRUE;
+  // }
 
 Done:
   if (pImageBuff) {
@@ -203,40 +203,6 @@ UpdatePlatformVarFromMemCfg (
   }
 
   return Status;
-}
-
-EFI_STATUS
-GetMemConfigAndUpdate (
-  RADXA_SETUP_DATA    *pRadxaSetupData,
-  UINT8                *pImage,
-  BOOLEAN              *Update
-  )
-{
-  MEM_QUICK_CONFIG  *MemQuickCfg = (MEM_QUICK_CONFIG*)pImage;
-
-  *Update = FALSE;
-
-  if(MemQuickCfg->cpufmax != pRadxaSetupData->CpuFMax) {
-    DEBUG ((DEBUG_INFO, "Update CpuFMax %x\n", pRadxaSetupData->CpuFMax));
-    MemQuickCfg->cpufmax = pRadxaSetupData->CpuFMax;
-    *Update = TRUE;
-  }
-
-  return EFI_SUCCESS;
-}
-
-VOID
-SetCpuBoostTriggerFlag (
-  UINT8 Flag
-)
-{
-  #define CIX_SIP_CPU_BOOST_TRIGGER 0xc2000011
-  ARM_SMC_ARGS  SmcArgs;
-
-  ZeroMem (&SmcArgs, sizeof (ARM_SMC_ARGS));
-  SmcArgs.Arg0 = CIX_SIP_CPU_BOOST_TRIGGER;
-  SmcArgs.Arg1 = Flag;
-  ArmCallSmc (&SmcArgs);
 }
 
 VOID
@@ -301,11 +267,6 @@ FwConfigUpdateCallback (
   DEBUG ((DEBUG_INFO, "Debug-------------------------------------------------------[%a][%d]\n", __FUNCTION__, __LINE__));
   DEBUG ((DEBUG_INFO, "[%a][%d]: FirmwareRawEntryUpdate Read success\n", __FUNCTION__, __LINE__));
   DEBUG ((DEBUG_INFO, "Debug-------------------------------------------------------[%a][%d]\n", __FUNCTION__, __LINE__));
-  Status = GetMemConfigAndUpdate (pRadxaSetupVar, pImage, &Update);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_INFO, "GetMemConfigBiosBlockAndUpdate Status:%r\n", Status));
-    goto Done;
-  }
 
   DEBUG ((DEBUG_INFO, "Debug-------------------------------------------------------[%a][%d]\n", __FUNCTION__, __LINE__));
   if (Update) {
@@ -318,8 +279,6 @@ FwConfigUpdateCallback (
 
   DEBUG ((DEBUG_INFO, "Debug-------------------------------------------------------[%a][%d]\n", __FUNCTION__, __LINE__));
 
-  // set cpu boost trigger flag
-  SetCpuBoostTriggerFlag(pRadxaSetupVar->CpuBoostTrigger);
 Done:
   if (pImage != NULL) {
     FreePool (pImage);
@@ -340,10 +299,13 @@ FirmwareConfigUpdateDxeEntryPoint (
   )
 {
   EFI_STATUS  Status = EFI_SUCCESS;
-  EFI_EVENT   Event;
+  // EFI_EVENT   Event;
 
-  UpdatePlatformVarFromMemCfg();
+  // We no longer need to update variable on boot
+  // UpdatePlatformVarFromMemCfg();
 
+  // We also don't need to do post validation or config
+  /*
   Status = gBS->CreateEventEx (
                   EVT_NOTIFY_SIGNAL,
                   TPL_CALLBACK,
@@ -356,6 +318,7 @@ FirmwareConfigUpdateDxeEntryPoint (
     DEBUG ((DEBUG_ERROR, "FirmwareConfigUpdateDxeEntryPoint: CreateEvent failed: %r\n", Status));
     return Status;
   }
+  */
 
   return Status;
 }

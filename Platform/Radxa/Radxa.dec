@@ -43,9 +43,6 @@
   gRadxaTokenSpaceGuid.PcdEdk2NonOSICommitHash|L""|VOID*|0x00000003
   gRadxaTokenSpaceGuid.PcdEdk2PlatformsCommitHash|L""|VOID*|0x00000004
 
-  #Cpu Max Frequency
-  gRadxaTokenSpaceGuid.PcdCpuFMax|0x00|UINT8|0x00000005
-
   # UFS Power Mode
   # 0: Auto
   # 1: Always On

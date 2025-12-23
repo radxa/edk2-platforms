@@ -46,7 +46,6 @@
 [Protocols]
 
 [FixedPcd]
-  gRadxaTokenSpaceGuid.PcdCpuFMax
 
 [Depex]
   TRUE
