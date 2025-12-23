@@ -101,6 +101,7 @@ Device (MUX0) {
             CIX_PAD_GPIO093,
         }
 
+/*
     PinGroup ("gmac0", ResourceProducer, ,
         RawDataBuffer ()  // Vendor Data
         {
@@ -147,6 +148,7 @@ Device (MUX0) {
             CIX_PAD_GPIO134,
             CIX_PAD_GPIO135,
         }
+*/
 
     PinGroup ("pinctrl_fch_i2c0", ResourceProducer, ,
         RawDataBuffer ()
@@ -180,7 +182,6 @@ Device (MUX0) {
             CIX_PAD_I2C2_SCL,
             CIX_PAD_I2C2_SDA
         }
-*/
 
     PinGroup ("pinctrl_fch_spi1", ResourceProducer, ,
         RawDataBuffer ()
@@ -199,6 +200,7 @@ Device (MUX0) {
             CIX_PAD_GPIO141,
             CIX_PAD_GPIO142,
         }
+*/
 
     PinGroup ("pinctrl_fch_uart0", ResourceProducer, ,
         RawDataBuffer ()
