@@ -134,53 +134,6 @@ Device (MUX0) {
             SKY1_IOMUXC_I2S4_DATA_IN_LB,
         }
 
-    PinGroup ("gmac0", ResourceProducer, ,
-        RawDataBuffer ()  // Vendor Data
-        {   // mux reg offset, config value
-            0x01, 0xa4, 0x00, 0x9c,
-            0x01, 0xa8, 0x00, 0x9c,
-            0x01, 0xac, 0x00, 0x9c,
-            0x01, 0xb0, 0x00, 0x9c,
-            0x01, 0xb4, 0x00, 0x9c,
-            0x01, 0xb8, 0x00, 0x9c,
-            0x01, 0xbc, 0x00, 0x94,
-            0x01, 0xc0, 0x00, 0x94,
-            0x01, 0xc4, 0x00, 0x94,
-            0x01, 0xc8, 0x00, 0x94,
-            0x01, 0xcc, 0x00, 0x94,
-            0x01, 0xd0, 0x00, 0x94,
-            0x01, 0xd4, 0x00, 0x94,
-            0x01, 0xd8, 0x00, 0x9c,
-            0x01, 0xdc, 0x00, 0x9c
-        })
-        {   // Pin list
-            SKY1_IOMUXC_GMAC0_REFCLK_25M,
-            SKY1_IOMUXC_GMAC0_TX_CTL,
-            SKY1_IOMUXC_GMAC0_TXD0,
-            SKY1_IOMUXC_GMAC0_TXD1,
-            SKY1_IOMUXC_GMAC0_TXD2,
-            SKY1_IOMUXC_GMAC0_TXD3,
-            SKY1_IOMUXC_GMAC0_TX_CLK,
-            SKY1_IOMUXC_GMAC0_RX_CTL,
-            SKY1_IOMUXC_GMAC0_RXD0,
-            SKY1_IOMUXC_GMAC0_RXD1,
-            SKY1_IOMUXC_GMAC0_RXD2,
-            SKY1_IOMUXC_GMAC0_RXD3,
-            SKY1_IOMUXC_GMAC0_RX_CLK,
-            SKY1_IOMUXC_GMAC0_MDC,
-            SKY1_IOMUXC_GMAC0_MDIO
-        }
-    PinGroup ("gmac0-init", ResourceProducer, ,
-        RawDataBuffer ()  // Vendor Data
-        {   // mux reg offset, config value
-            0x01, 0xd8, 0x00, 0x9c,
-            0x01, 0xdc, 0x00, 0x9c
-        })
-        {   // Pin list
-            SKY1_IOMUXC_GMAC0_MDC,
-            SKY1_IOMUXC_GMAC0_MDIO
-        }
-
     PinGroup ("pinctrl_fch_i2c0", ResourceProducer, ,
         RawDataBuffer ()
         {
@@ -214,24 +167,6 @@ Device (MUX0) {
             SKY1_IOMUXC_I2C2_SDA
         }
 */
-
-    PinGroup ("pinctrl_fch_spi1", ResourceProducer, ,
-        RawDataBuffer ()
-        {
-            0x01, 0xe8, 0x01, 0x5c,
-            0x01, 0xec, 0x01, 0x5c,
-            0x01, 0xf0, 0x01, 0x5c,
-            0x01, 0xf4, 0x01, 0x5c,
-            0x01, 0xf8, 0x01, 0x1c
-
-        })
-        {
-            SKY1_IOMUXC_GMAC1_TXD0,
-            SKY1_IOMUXC_GMAC1_TXD1,
-            SKY1_IOMUXC_GMAC1_TXD2,
-            SKY1_IOMUXC_GMAC1_TXD3,
-            SKY1_IOMUXC_GMAC1_TX_CLK
-        }
 
     PinGroup ("pinctrl_fch_uart0", ResourceProducer, ,
         RawDataBuffer ()
