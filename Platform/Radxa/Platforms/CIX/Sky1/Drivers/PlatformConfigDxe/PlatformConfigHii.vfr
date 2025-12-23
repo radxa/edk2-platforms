@@ -107,6 +107,7 @@ endif;
       endoneof;
     endif;
 
+#if (FW_CONFIG_UPDATE_SUPPORT == 1)
     suppressif FixedPcdGet8 (PcdUFSPowerMode) == 0xFF;
       oneof varid   = RadxaSetupVar.UFSPowerMode,
         prompt      = STRING_TOKEN(STR_UFS_POWER_MODE_PROMPT),
@@ -117,6 +118,7 @@ endif;
         option text = STRING_TOKEN(STR_UFS_POWER_ALWAYS_OFF), value = 2, flags = RESET_REQUIRED;
       endoneof;
     endif;
+#endif // FW_CONFIG_UPDATE_SUPPORT == 1
 
     oneof varid     = NetworkStackVar.Enable,
       prompt        = STRING_TOKEN(STR_NETWORK_STACK_PROMPT),
@@ -182,31 +184,6 @@ endif;
       text  = STRING_TOKEN(STR_ADVANCED_FORM_SET_TITLE_HELP);
 
     subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
-
-#if (FW_CONFIG_UPDATE_SUPPORT == 1)
-
-    oneof varid   = RadxaSetupVar.CpuFMax,
-      prompt      = STRING_TOKEN(STR_CPU_FREQ_MAX_PROMPT),
-      help        = STRING_TOKEN(STR_CPU_FREQ_MAX_PROMPT_HELP),
-      default     = FixedPcdGet8 (PcdCpuFMax),
-      option text = STRING_TOKEN(STR_CPU_FREQ_2_5), value = 1, flags = RESET_REQUIRED;
-      option text = STRING_TOKEN(STR_CPU_FREQ_2_6), value = 0, flags = RESET_REQUIRED;
-      option text = STRING_TOKEN(STR_CPU_FREQ_MAX), value = 2, flags = RESET_REQUIRED;
-    endoneof;
-
-    suppressif NOT ideqval RadxaSetupVar.CpuFMax == 0x02;
-      oneof varid   = RadxaSetupVar.CpuBoostTrigger,
-        prompt      = STRING_TOKEN(STR_CPU_BOOST_TRIGGER_PROMPT),
-        help        = STRING_TOKEN(STR_CPU_BOOST_TRIGGER_PROMPT_HELP),
-        default     = 0,
-        option text = STRING_TOKEN(STR_CPU_BOOST_NOTSET), value = 0, flags = RESET_REQUIRED;
-        option text = STRING_TOKEN(STR_CPU_BOOST_TRIGGER), value = 1, flags = RESET_REQUIRED;
-      endoneof;
-    endif;
-
-    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
-
-#endif // FW_CONFIG_UPDATE_SUPPORT == 1
 
     goto MEMORY_CONFIG_FORM_ID,
       prompt = STRING_TOKEN(STR_MEMORY_FORM_SET_TITLE),

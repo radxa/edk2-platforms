@@ -38,7 +38,6 @@ RadxaSetupVariableInitDxeEntry (
     //
     // Variable does not exist yet - create it
     //
-    RadxaSetupVar.CpuFMax = FixedPcdGet8 (PcdCpuFMax);
     Status = gRT->SetVariable (
                     RADXA_SETUP_VAR,
                     &gRadxaSetupVariableGuid,
