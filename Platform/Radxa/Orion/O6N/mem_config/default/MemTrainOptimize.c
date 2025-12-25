@@ -16,3 +16,4 @@ MEM_CONFIG_TRAIN_OPTIMIZE MemTrainOptimize = {
     {DDR6400_FREQUENCY, RANK_ALL,  0xF,    1,    104,   0},
   }
 };
+
