@@ -16,3 +16,18 @@ MEM_CONFIG_TRACE_LEN_DIFF MemTraceLenDiffCfg = {
     {{500, 500, 500, 500}, {74, 38,  62,  76 }}, // CH3
   }
 };
+
+MEM_CONFIG_TRACE_LEN_DIFF MemTraceLenDiffCfg_Hive_Semi_48G = {
+  {
+    .Signature      = MEM_CONFIG_TRACE_LEN_DIFF_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_TRACE_LEN_DIFF),
+    .BoardMask      = RS602_48G_HS_MASK
+  },
+  {
+    // Avg Flight Time      Trace Length Diff
+    {{500, 500, 500, 500}, {77,  102, 139, 77 }}, // CH0
+    {{500, 500, 500, 500}, {106, 139, 146, 62 }}, // CH1
+    {{500, 500, 500, 500}, {102, 175, 128, 80 }}, // CH2
+    {{500, 500, 500, 500}, {139, 88,  131, 117}}, // CH3
+  }
+};
