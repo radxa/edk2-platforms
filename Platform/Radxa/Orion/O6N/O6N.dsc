@@ -309,11 +309,11 @@
   gCixTokenSpaceGuid.PcdPcieRootPort2LaneNum|0x01
   gCixTokenSpaceGuid.PcdPcieRootPort3LaneNum|0x00
   gCixTokenSpaceGuid.PcdPcieRootPort4LaneNum|0x00
-  gCixTokenSpaceGuid.PcdPcieRootPort0AspmSupport|0
+  gCixTokenSpaceGuid.PcdPcieRootPort0AspmSupport|3
   gCixTokenSpaceGuid.PcdPcieRootPort1AspmSupport|3
   gCixTokenSpaceGuid.PcdPcieRootPort2AspmSupport|3
-  gCixTokenSpaceGuid.PcdPcieRootPort3AspmSupport|0
-  gCixTokenSpaceGuid.PcdPcieRootPort4AspmSupport|0
+  gCixTokenSpaceGuid.PcdPcieRootPort3AspmSupport|3
+  gCixTokenSpaceGuid.PcdPcieRootPort4AspmSupport|3
   gCixTokenSpaceGuid.PcdPcieRootPort0PeResetPin|2
   gCixTokenSpaceGuid.PcdPcieRootPort1PeResetPin|4
   gCixTokenSpaceGuid.PcdPcieRootPort2PeResetPin|5
