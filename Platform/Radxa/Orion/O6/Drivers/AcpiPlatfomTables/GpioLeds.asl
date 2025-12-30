@@ -52,7 +52,7 @@ Device (LEDS)
         Package () {
             Package () {"label", "green:power"},
             Package () {"linux,default-trigger", "default-on"},
-            Package () {"gpios", Package () {^LEDS, 1, 0, GPIO_ACTIVE_HIGH}},
+            Package () {"gpios", Package () {^LEDS, 1, 0, GPIO_ACTIVE_LOW}},
         }
     })
 }
