@@ -349,6 +349,11 @@ InitializeHardwareInfo (
   AsciiToUnicode (DateBuf, NewString);
   HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_SIZE_VALUE), NewString, NULL);
 
+  // Double Data Rate so we x2 the frequency
+  AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%d MT/s", pCixSocInfoProtocol->MemInfo->MaxFreq * 2);
+  AsciiToUnicode (DateBuf, NewString);
+  HiiSetString (HiiHandle, STRING_TOKEN (STR_MEMORY_FREQ_VALUE), NewString, NULL);
+
   if (FixedPcdGetBool (PcdEcAcpiI2cEn)) {
     InitializeHardwareInfoWithEC (HiiHandle);
   } else {
