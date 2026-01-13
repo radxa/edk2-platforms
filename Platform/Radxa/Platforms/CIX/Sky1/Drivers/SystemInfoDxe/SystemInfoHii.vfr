@@ -30,6 +30,11 @@ formset
 
     text
       help   = STRING_TOKEN(STR_EMPTY_STRING),
+      text   = STRING_TOKEN(STR_MEMORY_FREQ_NAME),
+      text   = STRING_TOKEN(STR_MEMORY_FREQ_VALUE);
+
+    text
+      help   = STRING_TOKEN(STR_EMPTY_STRING),
       text   = STRING_TOKEN(STR_PCB_SKU_NAME),
       text   = STRING_TOKEN(STR_PCB_SKU_VALUE);
 
