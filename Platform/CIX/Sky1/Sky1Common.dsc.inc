@@ -237,11 +237,9 @@
 #  PlatformFlashAccessLib|Platform/RaspberryPi/Library/PlatformFlashAccessLib/PlatformFlashAccessLib.inf
   DisplayUpdateProgressLib|MdeModulePkg/Library/DisplayUpdateProgressLibGraphics/DisplayUpdateProgressLibGraphics.inf
 !endif
-!if $(REBOOT_REASON_ENABLE)
-  #RebootReasonLib|Silicon/CIX/Sky1/Library/RebootReasonLib/RebootReasonLib.inf
-!else
-  #RebootReasonLib|Silicon/CIX/Sky1/Library/RebootReasonLib/RebootReasonLibNull.inf
-!endif
+
+  RebootReasonLib|Silicon/CIX/Sky1/Library/RebootReasonLib/RebootReasonLib.inf
+
   CsuPmIpcLib|Silicon/CIX/Sky1/Library/CsuPmIpcLib/CsuPmIpcLib.inf
 
   ShMemLib|Silicon/CIX/Sky1/Library/ShMemLib/ShMemLib.inf
@@ -598,7 +596,7 @@
 [PcdsPatchableInModule]
   gEfiMdeModulePkgTokenSpaceGuid.PcdSerialClockRate|500000000
 !if $(TARGET) == RELEASE
-  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x21
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x25
 !else
   gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0x2f
 !endif
@@ -723,7 +721,9 @@
       DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   }
 !endif
-
+!if $(EFUSE_OEM_KEY_ENABLE) == TRUE
+  Platform/CIX/Sky1/Drivers/EfuseOemKeyDxe/EfuseOemKeyDxe.inf
+!endif
 !if $(PCIE_HOST_ENABLE) == TRUE
   Silicon/CIX/Sky1/Drivers/PcieInitDxe/PcieInitDxe.inf
 !endif
@@ -855,7 +855,8 @@
   !if $(PLATFORM_PD_ENABLE) == TRUE
   Platform/CIX/Sky1/Drivers/PdDxe/PdDxe.inf {
     <LibraryClasses>
-    PdLib|Platform/CIX/Sky1/Library/Rts5453hPdLib/Rts5453hPdLib.inf
+      PdLib|Platform/CIX/Sky1/Library/Rts5453hPdLib/Rts5453hPdLib.inf
+      RedriverLib|Platform/CIX/Sky1/Library/PI3DPX1207RedriverLib/PI3DPX1207RedriverLib.inf
   }
   !endif
 !endif
@@ -973,7 +974,7 @@
       PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
   }
 #  Platform/CIX/Sky1/Drivers/SystemFirmwareDescriptor/SystemFirmwareDescriptor.inf
-
+  Platform/CIX/Sky1/Drivers/CapsuleUpdateDxe/CapsuleUpdateDxe.inf
 !endif
   MdeModulePkg/Application/HelloWorld/HelloWorld.inf
 !if $(FW_UPDATE_ENABLE) == TRUE

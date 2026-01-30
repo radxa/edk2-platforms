@@ -26,7 +26,7 @@
   Platform/CIX/Sky1/Sky1.dec
   Silicon/CIX/Sky1/CixPkg.dec
   Platform/Radxa/Radxa.dec
-  Platform/Radxa/Orion/O6/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.dec
+  Platform/Radxa/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.dec
 
 [LibraryClasses]
   BaseMemoryLib

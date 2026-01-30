@@ -13,6 +13,6 @@ Device (PEP0)
   Name (_UID, 0x0)
 
   Method (_STA) {
-    Return (0xf)
+    Return (0xF)
   }
 }

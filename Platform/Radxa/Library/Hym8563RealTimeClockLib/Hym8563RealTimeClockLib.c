@@ -18,6 +18,9 @@
 #include <Protocol/I2cMaster.h>
 #include <Library/BaseMemoryLib.h>
 
+#define IS_VALID_BCD(Value) \
+  (((Value) < 0xA0) && (((Value) & 0x0F) < 0x0A))
+
 #define SLAVE_ADDRESS  (FixedPcdGet8 (PcdI2cSlaveAddress))
 
 #define HYM8563_CONTROL1_REG_OFFSET         0x0
@@ -324,11 +327,19 @@ LibGetWakeupTime (
     return Status;
   }
 
-  /* The alarm only has a minute accuracy */
-  Time->Second = 0;
-  Time->Minute = (Buffer[0] & HYM8563_ALM_BIT_DISABLE) ? -1 : BcdToDecimal8 (Buffer[0] & HYM8563_MINUTES_MASK);
-  Time->Hour   = (Buffer[1] & HYM8563_ALM_BIT_DISABLE) ? -1 : BcdToDecimal8 (Buffer[1] & HYM8563_HOURS_MASK);
-  Time->Day    = (Buffer[2] & HYM8563_ALM_BIT_DISABLE) ? -1 : BcdToDecimal8 (Buffer[2] & HYM8563_DAYS_MASK);
+  if (IS_VALID_BCD(Buffer[0] & HYM8563_MINUTES_MASK) && IS_VALID_BCD(Buffer[1] & HYM8563_HOURS_MASK) 
+        && IS_VALID_BCD(Buffer[2] & HYM8563_DAYS_MASK)){
+    /* The alarm only has a minute accuracy */
+    Time->Second = 0;
+    Time->Minute = (Buffer[0] & HYM8563_ALM_BIT_DISABLE) ? -1 : BcdToDecimal8 (Buffer[0] & HYM8563_MINUTES_MASK);
+    Time->Hour   = (Buffer[1] & HYM8563_ALM_BIT_DISABLE) ? -1 : BcdToDecimal8 (Buffer[1] & HYM8563_HOURS_MASK);
+    Time->Day    = (Buffer[2] & HYM8563_ALM_BIT_DISABLE) ? -1 : BcdToDecimal8 (Buffer[2] & HYM8563_DAYS_MASK);
+  }else{
+    Time->Second = 0;
+    Time->Minute = 0;
+    Time->Hour   = 0;
+    Time->Day    = 1;
+  }
 
   // Patch
   if(!IsTimeValid(Time)){

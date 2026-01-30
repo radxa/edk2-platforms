@@ -13,7 +13,23 @@
 
 #include <Guid/HiiPlatformSetupFormset.h>
 #include <Guid/NetworkStackSetup.h>
+#include <Guid/ConsolePrefFormSet.h>
 #include <PlatformSetupVar.h>
+
+#define CONSOLE_PREF_GRAPHICAL  0x0
+#define CONSOLE_PREF_SERIAL     0x1
+
+typedef struct {
+  UINT8    Console;
+  UINT8    Reserved[3];
+} CONSOLE_PREF_VARSTORE_DATA;
+
+typedef struct {
+  BOOLEAN    DisableCPPC;
+  BOOLEAN    DisableSmallCores;
+} COMPLIANCE_VARSTORE_DATA;
+
+#define COMPLIANCE_VAR  L"ComplianceVar"
 
 #define PLATFORM_CONFIG_FORMSET_GUID  \
   { 0x7dbfcdc4, 0xfb50, 0x452a, { 0xae, 0xd6, 0xfe, 0x21, 0x63, 0x70, 0x24, 0x61 } }
@@ -26,6 +42,38 @@
 extern EFI_GUID  gPlatformConfigFormSetGuid;
 
 #define PLATFORM_CONFIG_FORM_ID     0x2001
-#define QUESTION_STATE_AFTER_G3_ID  0x2002
+
+// #define SYSTEM_SETUP_FORM_SET_ID    0x2001
+#define SOC_FORM_SET_ID             0x2002
+#define ADVANCED_FORM_SET_ID        0x2003
+#define HARDWARE_INFO_FORM_SET_ID   0x2004
+#define PLATFORM_FORM_SET_ID        0x2005
+#define MEMORY_CONFIG_FORM_ID       0x2010
+#define PCIE_CONFIG_FORM_ID         0x2011
+#define USB_CONFIG_FORM_ID          0x2012
+#define I2C_CONFIG_FORM_ID          0x2013
+#define CPU_CONFIG_FORM_ID          0x2014
+#define GMAC_CONFIG_FORM_ID         0x2015
+#define COMPLIANCE_CONFIG_FORM_ID   0x2016
+
+#define PCIE_ROOT_PORT0_CONFIG_FORM_ID  0x2100
+#define PCIE_ROOT_PORT1_CONFIG_FORM_ID  0x2101
+#define PCIE_ROOT_PORT2_CONFIG_FORM_ID  0x2102
+#define PCIE_ROOT_PORT3_CONFIG_FORM_ID  0x2103
+#define PCIE_ROOT_PORT4_CONFIG_FORM_ID  0x2104
+
+#define I2C0_CONFIG_FORM_ID  0x2300
+#define I2C1_CONFIG_FORM_ID  0x2301
+#define I2C2_CONFIG_FORM_ID  0x2302
+#define I2C3_CONFIG_FORM_ID  0x2303
+#define I2C4_CONFIG_FORM_ID  0x2304
+#define I2C5_CONFIG_FORM_ID  0x2305
+#define I2C6_CONFIG_FORM_ID  0x2306
+#define I2C7_CONFIG_FORM_ID  0x2307
+
+#define QUESTION_STATE_AFTER_G3_ID  0x1800
+#define KEY_ENABLE_NETWORK_STACK    0x1900
+#define KEY_DISABLE_ACPI_CPPC       0x1901
+#define KEY_DISABLE_SMALL_CORE      0x1902
 
 #endif

@@ -26,6 +26,10 @@
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Platform/CIX/Sky1/$(PLATFORM_NAME)/$(PLATFORM_NAME).fdf
   PCD_DYNAMIC_AS_DYNAMICEX       = TRUE
+  BUILD_NUMBER                   = 0x00000005
+  ACPI_IOMUX_INPUT               = Platform/CIX/Sky1/Edge/ACPI/AcpiPlatfomTables/Sky1MerakIomux.asl
+  ACPI_IOMUX_OUTPUT              = $(OUTPUT_DIRECTORY)/Iomux.asl
+  PREBUILD                       = python Platform/CIX/Sky1/Drivers/AcpiSocTables/tool/python3/ParseIomuxTemplate.py $(ACPI_IOMUX_INPUT) $(ACPI_IOMUX_OUTPUT)
 
 !include  Platform/CIX/Sky1/Sky1Define.dsc.inc
 
@@ -39,57 +43,64 @@
 ##################################################
 # Define override here for evb
 ##################################################
-DEFINE DTB_UPDATE_ENABLE          = FALSE
-DEFINE SMBIOS_ENABLE              = FALSE
-DEFINE ACPI_ENABLE                = FALSE
-DEFINE TOKEN_CONSOLE_PREF_SUPPORT = FALSE
-DEFINE FW_VERSION_ENABLE          = TRUE
-DEFINE SOC_PWR_CLK_RST_ENABLE     = TRUE
-DEFINE WATCH_DOG_ENABLE           = FALSE
-DEFINE NO_GIC_NO_TIMER            = FALSE
-DEFINE SOC_I2C_ENABLE             = TRUE
-DEFINE SOC_XSPI_ENABLE            = TRUE
-# DEFINE I2C_EC_ENABLE              = TRUE
-# DEFINE I2C_HID_ENABLE             = TRUE
-DEFINE FW_UPDATE_ENABLE           = TRUE
-DEFINE PCIE_HOST_ENABLE           = TRUE
-DEFINE SOC_CDNSP_HOST_ENABLE      = TRUE
-DEFINE PLATFORM_PD_ENABLE         = TRUE
-# DEFINE SOC_GMAC_ENABLE            = TRUE
-# DEFINE TOKEN_SETUP_SUPPORT        = TRUE
-DEFINE NTFS_DRIVER_SUPPORT        = FALSE
-DEFINE EXT4_DRIVER_SUPPORT        = FALSE
-# DEFINE AMD_GOP_DRIVER_SUPPORT     = TRUE
-DEFINE TOKEN_RAM_DISK_SUPPORT     = FALSE
-DEFINE VARIABLE_SUPPORT           = $(COMPILE_VARIABLE_TYPE)
-DEFINE STMM_SUPPORT               = $(COMPILE_STMM_SUPPORT)
-# DEFINE REALTEK_LAN_DRIVER_SUPPORT = TRUE
-DEFINE PM_CONFIG_UPDATE_SUPPORT   = FALSE
-DEFINE DYNAMIC_ACPI_CPU_ENABLE    = TRUE
-DEFINE SOC_SPI_ENABLE             = TRUE
-# DEFINE SOC_GPIO_INTR_ENABLE       = TRUE
-DEFINE FV_SIMPLE_FILE_SUPPORT     = FALSE
-DEFINE SOC_GOP_ENABLE             = TRUE
-DEFINE DYNAMIC_GET_MEM_SIZE       = TRUE
-DEFINE SECURE_BOOT_ENABLE         = TRUE
-DEFINE DEFAULT_KEYS               = TRUE
-DEFINE UEFI_FW_STAGE              = Beta2
-DEFINE BOOT_LOGO_ENABLE           = TRUE
-DEFINE GLOBAL_WATCHDOG_ENABLE     = TRUE
-DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
+  DEFINE DTB_UPDATE_ENABLE          = FALSE
+  DEFINE PLATFORM_DTB_UPDATE_ENABLE = TRUE
+  DEFINE SMBIOS_ENABLE              = FALSE
+  DEFINE ACPI_ENABLE                = FALSE
+  DEFINE TOKEN_CONSOLE_PREF_SUPPORT = FALSE
+  DEFINE FW_VERSION_ENABLE          = TRUE
+  DEFINE SOC_PWR_CLK_RST_ENABLE     = TRUE
+  DEFINE WATCH_DOG_ENABLE           = FALSE
+  DEFINE NO_GIC_NO_TIMER            = FALSE
+  DEFINE SOC_I2C_ENABLE             = TRUE
+  DEFINE SOC_XSPI_ENABLE            = TRUE
+  DEFINE I2C_EC_ENABLE              = FALSE
+  DEFINE I2C_HID_ENABLE             = FALSE
+  DEFINE FW_UPDATE_ENABLE           = TRUE
+  DEFINE PCIE_HOST_ENABLE           = TRUE
+  DEFINE SOC_CDNSP_HOST_ENABLE      = TRUE
+  DEFINE PLATFORM_PD_ENABLE         = TRUE
+  DEFINE SOC_GMAC_ENABLE            = TRUE
+  DEFINE TOKEN_SETUP_SUPPORT        = TRUE
+  DEFINE NTFS_DRIVER_SUPPORT        = FALSE
+  DEFINE EXT4_DRIVER_SUPPORT        = FALSE
+  DEFINE AMD_GOP_DRIVER_SUPPORT     = FALSE
+  DEFINE TOKEN_RAM_DISK_SUPPORT     = FALSE
+  DEFINE VARIABLE_SUPPORT           = $(COMPILE_VARIABLE_TYPE)
+  DEFINE STMM_SUPPORT               = $(COMPILE_STMM_SUPPORT)
+  DEFINE REALTEK_LAN_DRIVER_SUPPORT = TRUE
+  DEFINE PM_CONFIG_UPDATE_SUPPORT   = FALSE
+  DEFINE SE_CONFIG_UPDATE_SUPPORT   = FALSE
+  DEFINE DYNAMIC_ACPI_CPU_ENABLE    = TRUE
+  DEFINE SOC_SPI_ENABLE             = TRUE
+  # DEFINE SOC_GPIO_INTR_ENABLE       = TRUE
+  DEFINE FV_SIMPLE_FILE_SUPPORT     = FALSE
+  DEFINE SOC_GOP_ENABLE             = TRUE
+  DEFINE DYNAMIC_GET_MEM_SIZE       = TRUE
+  DEFINE SECURE_BOOT_ENABLE         = TRUE
+  DEFINE DEFAULT_KEYS               = TRUE
+  DEFINE UEFI_FW_STAGE              = Beta2
+  DEFINE BOOT_LOGO_ENABLE           = TRUE
+  DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
+  DEFINE POWER_BUTTON_ENABLE        = FALSE
+  DEFINE DEBUG_MODE_SUPPORT         = FALSE
+  DEFINE CIX_GPNV_ENABLE            = TRUE
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
   DEFINE PCIE_HOST_ENABLE           = TRUE
+  DEFINE SOC_XSPI_ENABLE            = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE SOC_USB_DEVICE_ENABLE      = TRUE
   DEFINE SOC_CDNSP_ENABLE           = TRUE
 !elseif $(COMPILE_FASTBOOT_LOAD) == ddr
   DEFINE PCIE_HOST_ENABLE           = FALSE
+  DEFINE SOC_XSPI_ENABLE            = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE SOC_USB_DEVICE_ENABLE      = TRUE
   DEFINE SOC_CDNSP_ENABLE           = TRUE
 !elseif $(COMPILE_FASTBOOT_LOAD) == usb
   DEFINE SOC_CDNSP_HOST_ENABLE      = TRUE
+  DEFINE SOC_XSPI_ENABLE            = TRUE
   DEFINE FW_UPDATE_ENABLE           = TRUE
   DEFINE SOC_USB_DEVICE_ENABLE      = TRUE
   DEFINE SOC_CDNSP_ENABLE           = TRUE
@@ -103,7 +114,7 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
 #
 # Network definition
 #
-  DEFINE NETWORK_ENABLE                 = FALSE
+  DEFINE NETWORK_ENABLE                 = TRUE
 !if $(NETWORK_ENABLE) == TRUE
   DEFINE NETWORK_IP4_ENABLE             = TRUE
   DEFINE NETWORK_SNP_ENABLE             = TRUE
@@ -116,12 +127,16 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
 !endif
 
 #ACPI Boot
-  # DEFINE ACPI_ENABLE                = TRUE
+  DEFINE ACPI_ENABLE                = TRUE
   DEFINE SMBIOS_ENABLE              = TRUE
 
 
   DEFINE SPI_VARIABLE_BASE          = 0x00380000
   DEFINE SPI_VARIABLE_SIZE          = 0x28000
+
+  DEFINE DTPM_SUPPORT               = FALSE
+  DEFINE FTPM_SUPPORT               = FALSE
+  DEFINE I2S_MC_SUPPORT             = TRUE
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
 !include NetworkPkg/NetworkDefines.dsc.inc
@@ -147,7 +162,6 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
   TrngLib|Silicon/CIX/Sky1/Library/TrngLib/TrngLib.inf
   RngLib|Silicon/CIX/Sky1/Library/RngLib/RngLib.inf
   DtbUpdateLibSi|Platform/CIX/Sky1/Library/DtbUpdateLibSi/DtbUpdateLib.inf
-
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   EfiResetSystemLib|Platform/CIX/Sky1/Edge/Library/ArmPsciResetSystemLib/ArmPsciResetSystemLib.inf
   EcLib|Platform/CIX/Library/EcLibNull/EcLibNull.inf
@@ -161,6 +175,13 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
 [Components.common]
 # Network stack
   !include NetworkPkg/Network.dsc.inc
+# This modification is to fix a PXE bug.
+# If the Code Base is upgraded, this modification will cause a compilation error and should be deleted.
+  NetworkPkg/UefiPxeBcDxe/UefiPxeBcDxe.inf {
+    <PcdsFixedAtBuild>
+      gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|TRUE
+      gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|TRUE
+  }
 
   Platform/CIX/Sky1/PrePi/PeiUniCore.inf
 !if $(SHELL_EMBEDDED_ENABLE) == TRUE
@@ -186,6 +207,13 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
   }
 !endif
   Platform/CIX/Sky1/Drivers/DtbUpdateDxeSi/DtbUpdateDxe.inf
+!if $(ACPI_ENABLE) == TRUE
+  Platform/CIX/Sky1/Edge/ACPI/AcpiPlatfomTables/AcpiPlatfomTables.inf {
+    <BuildOptions>
+      *_*_*_ASLCC_FLAGS = -I$(WORKSPACE)/$(OUTPUT_DIRECTORY)
+  }
+  Platform/CIX/Sky1/Edge/ACPI/AcpiPlatformDxe/AcpiPlatformDxe.inf
+!endif
 !if $(SMBIOS_ENABLE) == TRUE
   Platform/CIX/Sky1/Edge/PlatformSmbios/PlatformSmbios.inf
 !endif
@@ -198,7 +226,14 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
 ###################################################################################################
 [BuildOptions]
   GCC:DEBUG_*_*_CC_FLAGS          = -DDEBUG_MODE
+!if $(DEBUG_MODE_SUPPORT) == TRUE
+  GCC:RELEASE_*_*_CC_FLAGS        = -DDEBUG_MODE
+  GCC:*_*_*_CC_FLAGS              = -DDEBUG_MODE_SUPPORT
+  GCC:*_*_*_VFRPP_FLAGS           = -DDEBUG_MODE_SUPPORT
+!else
   GCC:RELEASE_*_*_CC_FLAGS        = -DMDEPKG_NDEBUG -DNDEBUG
+!endif
+
 !if $(TARGET) == RELEASE
   GCC:*_*_*_CC_FLAGS              = -DUEFI_FW_VERSION=$(UEFI_FW_STAGE)"-W"$(COMPILE_BUILD_DATE)
 !else
@@ -212,8 +247,6 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
 !endif
 !elseif $(COMPILE_FASTBOOT_LOAD) == ddr
   GCC:*_*_*_CC_FLAGS          = -DFASTBOOT_DDR
-!elseif $(COMPILE_FASTBOOT_LOAD) == usb
-  GCC:*_*_*_CC_FLAGS          = -DFASTBOOT_USB
 !endif
 
 !if $(COMPILE_SMP_ENABLE) == 1
@@ -263,6 +296,10 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
   GCC:*_*_*_CC_FLAGS              = -DSTMM_SUPPORT
 !endif
 
+!if $(USERDATA_RESIZE) == enable
+  GCC:*_*_*_CC_FLAGS              = -DUSERDATA_RESIZE_SUPPORT
+!endif
+
 ################################################################################
 #
 # Pcd Section - list of all EDK II PCD Entries defined by this Platform
@@ -278,8 +315,11 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
   gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"SKY1-EVB.DTB"
   gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateEnable|TRUE
 
+  gCixTokenSpaceGuid.PcdPcieRootPort0Enable|TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort1Enable|TRUE
+  gCixTokenSpaceGuid.PcdPcieRootPort2Enable|TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort3Enable|TRUE
+  gCixTokenSpaceGuid.PcdPcieRootPort4Enable|TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort0MaxSpeed|0x03
   gCixTokenSpaceGuid.PcdPcieRootPort1MaxSpeed|0x03
   gCixTokenSpaceGuid.PcdPcieRootPort2MaxSpeed|0x03
@@ -290,49 +330,61 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort2LaneNum|0x01
   gCixTokenSpaceGuid.PcdPcieRootPort3LaneNum|0x00
   gCixTokenSpaceGuid.PcdPcieRootPort4LaneNum|0x00
+  gCixTokenSpaceGuid.PcdPcieRootPort0PeResetPin|2
   gCixTokenSpaceGuid.PcdPcieRootPort1PeResetPin|4
+  gCixTokenSpaceGuid.PcdPcieRootPort2PeResetPin|3
   gCixTokenSpaceGuid.PcdPcieRootPort3PeResetPin|6
+  gCixTokenSpaceGuid.PcdPcieRootPort4PeResetPin|5
 
-  gCixTokenSpaceGuid.PcdI2c0En|FALSE
+  gCixTokenSpaceGuid.PcdI2c0En|TRUE
   gCixTokenSpaceGuid.PcdI2c0BusFreq|400000
-  gCixTokenSpaceGuid.PcdI2c2En|FALSE
+  gCixTokenSpaceGuid.PcdI2c2En|TRUE
   gCixTokenSpaceGuid.PcdI2c2BusFreq|100000
-  gCixTokenSpaceGuid.PcdI2c3En|FALSE
+  gCixTokenSpaceGuid.PcdI2c3En|TRUE
   gCixTokenSpaceGuid.PcdI2c3BusFreq|100000
-  gCixTokenSpaceGuid.PcdI2c4En|FALSE
+  gCixTokenSpaceGuid.PcdI2c4En|TRUE
   gCixTokenSpaceGuid.PcdI2c4BusFreq|100000
-  gCixTokenSpaceGuid.PcdI2c5En|FALSE
+  gCixTokenSpaceGuid.PcdI2c5En|TRUE
   gCixTokenSpaceGuid.PcdI2c5BusFreq|100000
-  gCixTokenSpaceGuid.PcdI2c6En|FALSE
+  gCixTokenSpaceGuid.PcdI2c6En|TRUE
   gCixTokenSpaceGuid.PcdI2c6BusFreq|50000
+  gCixTokenSpaceGuid.PcdI2c6Runtime|TRUE          # For platform specifc ec reset in runtime service
+  gCixTokenSpaceGuid.PcdI2c6MutexId|0x48          # For mutex between ACPI EC and runtime ec reset
 
   # RTC I2C canot be controlled in setup
   gCixTokenSpaceGuid.PcdI2cCtrlEn|0xF7
 
   # PD
-  gCixTokenSpaceGuid.PcdI2c1En|FALSE
+  gCixTokenSpaceGuid.PcdI2c1En|TRUE
   gCixTokenSpaceGuid.PcdI2c1BusFreq|100000
-  gCixTokenSpaceGuid.PcdI2c7En|FALSE
+  gCixTokenSpaceGuid.PcdI2c7En|TRUE
   gCixTokenSpaceGuid.PcdI2c7BusFreq|100000
 
   # USB3_A
-  gCixTokenSpaceGuid.PcdUsb3Control0Enable|FALSE
-  gCixTokenSpaceGuid.PcdUsb3Control1Enable|FALSE
+  gCixTokenSpaceGuid.PcdUsb3Control0Enable|TRUE
+  gCixTokenSpaceGuid.PcdUsb3Control0DataRole|FALSE
+  gCixTokenSpaceGuid.PcdUsb3Control1Enable|TRUE
 
   # USBC0
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable|TRUE
   gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole|TRUE
   # USBC1
-  gCixTokenSpaceGuid.PcdUsbCControl0Enable|FALSE
+  gCixTokenSpaceGuid.PcdUsbCControl0Enable|TRUE
   # USBC2
-  gCixTokenSpaceGuid.PcdUsbCControl1Enable|FALSE
+  gCixTokenSpaceGuid.PcdUsbCControl1Enable|TRUE
   # USBC3
-  gCixTokenSpaceGuid.PcdUsbCControl2Enable|FALSE
+  gCixTokenSpaceGuid.PcdUsbCControl2Enable|TRUE
 
-  gCixTokenSpaceGuid.PcdUsb2Control0Enable|FALSE
-  gCixTokenSpaceGuid.PcdUsb2Control1Enable|FALSE
-  gCixTokenSpaceGuid.PcdUsb2Control2Enable|FALSE
-  gCixTokenSpaceGuid.PcdUsb2Control3Enable|FALSE
+  gCixTokenSpaceGuid.PcdUsb2Control0Enable|TRUE
+  gCixTokenSpaceGuid.PcdUsb2Control1Enable|TRUE
+  gCixTokenSpaceGuid.PcdUsb2Control2Enable|TRUE
+  gCixTokenSpaceGuid.PcdUsb2Control3Enable|TRUE
+
+  gCixTokenSpaceGuid.PcdAcpiI2s5Enable|TRUE
+  gCixTokenSpaceGuid.PcdAcpiI2s6Enable|TRUE
+  gCixTokenSpaceGuid.PcdAcpiI2s7Enable|TRUE
+  gCixTokenSpaceGuid.PcdAcpiI2s8Enable|TRUE
+  gCixTokenSpaceGuid.PcdAcpiI2s9Enable|TRUE
 
   gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000
 
@@ -353,10 +405,20 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio3IoMask|0x00018000 # pwm/edp en pin output
 
   gCixTokenSpaceGuid.PcdSocWatchdogTimer|0x01
-  gCixPlatformTokenSpaceGuid.PcdPdDevI2cBuses|{ 0xFF, 0xFF, 0xFF, 0xFF }|VOID*|0x00000140 # 0xFF: not actual pd device
-  gCixPlatformTokenSpaceGuid.PcdPdDevI2cSlaveAddresses|{ 0xFF, 0xFF, 0xFF, 0xFF }|VOID*|0x00000141  # 0xFF: not actual pd device
 
-  gArmTokenSpaceGuid.PcdProcessorVersion|L"CIX P1 CS8180"
+  gCixTokenSpaceGuid.PcdGmac0Enable|TRUE
+  gCixTokenSpaceGuid.PcdGmac1Enable|FALSE
+
+  gCixTokenSpaceGuid.PcdCixProcessorVersion|L"CIX P1 CS8180"
+  # Platform Flash Region for Save Vendor Defined Variable
+  gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionBase|0x7F0000   # SIZE_8MB-64KB
+  gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionSize|0x10000    # SIZE_64KB
+
+  gCixPlatformTokenSpaceGuid.PcdDTPMSupport|$(DTPM_SUPPORT)
+  gCixPlatformTokenSpaceGuid.PcdFTPMSupport|$(FTPM_SUPPORT)
+  gCixPlatformTokenSpaceGuid.PcdDTPMSpiBus|0x0          # 0:SPI1=0x04090000  1:SPI2=0x040A0000
+  gCixPlatformTokenSpaceGuid.PcdDTPMSpiChipSelect|0x1   # 1:Slave Select 0   2:Slave Select 1
+
 [PcdsDynamicDefault.common]
 
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit|0x47fffffff
@@ -367,4 +429,10 @@ DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|600
 
   gCixPlatformTokenSpaceGuid.PcdDynamicUint64Test|0x11111111
+!if $(COMPILE_SYSTEM_LOADER) == android
+  gCixPlatformTokenSpaceGuid.AndroidFastboot|TRUE
+!endif
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid|{0x5a, 0xf2, 0x6b, 0x28, 0xc3, 0xc2, 0x8c, 0x40, 0xb3, 0xb4, 0x25, 0xe6, 0x75, 0x8b, 0x73, 0x17}
+  gEfiSecurityPkgTokenSpaceGuid.PcdActiveTpmInterfaceType|0x01
+
 [PcdsDynamicHii.common.DEFAULT]

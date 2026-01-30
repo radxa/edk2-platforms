@@ -32,8 +32,8 @@ formset
       oneof varid     = SeConfigSetupVar.MemTagExtension,
           prompt      = STRING_TOKEN(STR_MEM_TAG_EXT_PROMPT),
           help        = STRING_TOKEN(STR_MEM_TAG_EXT_HELP),
-          option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0;
-          option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT;
+          option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0;
       endoneof;
 
     endform;

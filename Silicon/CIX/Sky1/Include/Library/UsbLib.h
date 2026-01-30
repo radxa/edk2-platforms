@@ -25,6 +25,9 @@
 
 #define BIT(nr)  (1UL << (nr))
 
+#define CFG_APB_TIMEOUT_PSLVERR_EN              BIT(22)
+#define CFG_APB_PSLVERR_EN                      BIT(23)
+#define XEC_USBSSP_CHICKEN_BITS_3      0xA230
 #define XEC_AXI_CAP_ADDR    0xA174
 #define XEC_AXI_CTRL0_ADDR  0xA17c
 #define XEC_AXI_CAP         BIT(31)

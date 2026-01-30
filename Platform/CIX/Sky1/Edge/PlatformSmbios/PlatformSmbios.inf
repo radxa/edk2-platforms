@@ -21,11 +21,13 @@
   SmbiosType1.c
   SmbiosType2.c
   SmbiosType3.c
+  SmbiosType32.c
 
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
 
 [LibraryClasses]
   BaseLib
@@ -33,12 +35,17 @@
   UefiLib
   UefiDriverEntryPoint
   UefiBootServicesTableLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  PrintLib
 
 [Guids]
+  gCixGPNVGuid
 
 [Protocols]
   gEfiSmbiosProtocolGuid
   gCixFwVersionProtocolGuid
+  gCixSocInfoProtocolGuid
 
 [FixedPcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision

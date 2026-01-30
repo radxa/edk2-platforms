@@ -17,6 +17,7 @@
 #include <Protocol/EcPlatformProtocol.h>
 #include <Protocol/SocInfoProtocol.h>
 #include <Library/PrintLib.h>
+#include <Library/CsuPmIpcLib.h>
 
 #include "SystemInfoHii.h"
 

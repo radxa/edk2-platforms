@@ -35,6 +35,7 @@
   UefiBootServicesTableLib
   DxeServicesTableLib
   PdLib
+  RedriverLib
   TimerLib
   GpioLib
   PostCodeLib

@@ -32,6 +32,7 @@
 
 #define OPTEE_SUCCESS               0x00000000
 #define OPTEE_ORIGIN_COMMUNICATION  0x00000002
+#define OPTEE_ERROR_BUSY            0xFFFF000D
 #define OPTEE_ERROR_COMMUNICATION   0xFFFF000E
 
 typedef struct {

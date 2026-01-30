@@ -65,6 +65,18 @@
 
   gCixTokenSpaceGuid.PcdAudioHdaEn
 
+  # I2s
+  gCixTokenSpaceGuid.PcdAcpiI2s0Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s1Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s2Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s3Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s4Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s5Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s6Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s7Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s8Enable
+  gCixTokenSpaceGuid.PcdAcpiI2s9Enable
+
   gCixTokenSpaceGuid.PcdI2c0En
   gCixTokenSpaceGuid.PcdI2c1En
   gCixTokenSpaceGuid.PcdI2c2En
@@ -159,6 +171,11 @@
   gCixTokenSpaceGuid.PcdPcieRootPort2DtiEnable
   gCixTokenSpaceGuid.PcdPcieRootPort3DtiEnable
   gCixTokenSpaceGuid.PcdPcieRootPort4DtiEnable
+  gCixTokenSpaceGuid.PcdPcieRootPort0LinkUpTimeout
+  gCixTokenSpaceGuid.PcdPcieRootPort1LinkUpTimeout
+  gCixTokenSpaceGuid.PcdPcieRootPort2LinkUpTimeout
+  gCixTokenSpaceGuid.PcdPcieRootPort3LinkUpTimeout
+  gCixTokenSpaceGuid.PcdPcieRootPort4LinkUpTimeout
   #USB2.0 Control
   gCixTokenSpaceGuid.PcdUsb2Control0Enable
   gCixTokenSpaceGuid.PcdUsb2Control0MaxSpeed

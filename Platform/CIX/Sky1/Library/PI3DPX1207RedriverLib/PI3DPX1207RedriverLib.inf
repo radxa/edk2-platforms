@@ -1,0 +1,45 @@
+#/**
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x0001001A
+  BASE_NAME                      = PI3DPX1207RedriverLib
+  FILE_GUID                      = cf5956e8-e34f-4d5a-b742-6611541a061f
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = RedriverLib|DXE_DRIVER  DXE_RUNTIME_DRIVER DXE_SMM_DRIVER UEFI_APPLICATION UEFI_DRIVER SMM_CORE
+
+[Sources.common]
+  PI3DPX1207RedriverLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  MemoryAllocationLib
+  UefiLib
+  UefiBootServicesTableLib
+
+[Guids]
+  gCixI2cDevicePathGuid
+
+[Protocols]
+  gEfiI2cMasterProtocolGuid
+  gEfiDevicePathProtocolGuid
+
+[FixedPcd]
+  gCixPlatformTokenSpaceGuid.PcdRedriverDevI2cBuses
+  gCixPlatformTokenSpaceGuid.PcdRedriverDevI2cSlaveAddresses
+  gCixPlatformTokenSpaceGuid.PcdRedriverNeedAuxFlip
+  gCixPlatformTokenSpaceGuid.PcdRedriverForceHpd

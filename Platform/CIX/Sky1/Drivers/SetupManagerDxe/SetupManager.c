@@ -441,6 +441,8 @@ InitializeHardwareInfo (
   EC_RESPONSE            EcResponse;
   CHAR8                  DateBuf[11]   = { 0 };
   CHAR16                 NewString[11] = { 0 };
+  PMIC_VERSION_INFO      PmicVerInfo;
+  UINT8                  Index;
 
   Status = gBS->LocateProtocol (&gCixSocInfoProtocolGuid, NULL, (VOID **)&pCixSocInfoProtocol);
   if (EFI_ERROR (Status)) {
@@ -556,13 +558,16 @@ InitializeHardwareInfo (
     HiiSetString (HiiHandle, STRING_TOKEN (STR_PD_VER_VALUE), NewString, NULL);
   }
 
-  Status = pEcPlatformProtocol->Transfer (pEcPlatformProtocol, EC_COMMAND_GET_PMIC_VERSION, NULL, &EcResponse);
-  if (!EFI_ERROR (Status)) {
-    ZeroMem (DateBuf, sizeof (DateBuf));
+  Status = CsuPmMsgGetPmicVersion (&PmicVerInfo);
+  if (Status == EFI_SUCCESS) {
     ZeroMem (NewString, sizeof (NewString));
-    AsciiSPrint ((CHAR8 *)DateBuf, sizeof (DateBuf), "%d %d %d", EcResponse.PmicVer.Pmic3Ver, EcResponse.PmicVer.Pmic2Ver, EcResponse.PmicVer.Pmic1Ver);
-    AsciiToUnicode (DateBuf, NewString);
+    for (Index = 0; Index < PmicVerInfo.Count; Index++) {
+      UnicodeSPrint ((CHAR16 *)NewString, sizeof (NewString), L"%s%x.%x ", NewString, (PmicVerInfo.Version[Index] >> 8) & 0xFF, PmicVerInfo.Version[Index] & 0xFF);
+    }
+
     HiiSetString (HiiHandle, STRING_TOKEN (STR_PMIC_VER_VALUE), NewString, NULL);
+  } else {
+    HiiSetString (HiiHandle, STRING_TOKEN (STR_PMIC_VER_VALUE), L"Undefined", NULL);
   }
 }
 

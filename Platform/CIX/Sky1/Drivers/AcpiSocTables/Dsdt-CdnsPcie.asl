@@ -34,6 +34,78 @@ Device (PRC0) { /* PCIE0 X8 */
   Name (_BBN, 0xC0)
   Name (_CCA, 1)
 
+  Name (MLKS, 4)
+  Name (NUML, 8)
+  Name (MPAL, 512)
+  Name (MAPM, 3)
+  Name (ASPM, 0)
+
+  Method(_INI, 0) {
+    // init pcie bandwitdh
+    Local0 = GETV(ARV_PCIE_RP_00_BANDWITCH_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=1
+      }
+      case (1) {
+        Local1=2
+      }
+      case (2) {
+        Local1=4
+      }
+      case (3) {
+        Local1=8
+      }
+    }
+    if(Local1 != 0){
+      NUML = Local1
+    }
+    // init pcie max speed
+    Local0 = GETV(ARV_PCIE_RP_00_MAX_SPEED_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=1
+      }
+      case (1) {
+        Local1=2
+      }
+      case (2) {
+        Local1=3
+      }
+      case (3) {
+        Local1=4
+      }
+    }
+    if(Local1 != 0){
+      MLKS = Local1
+    }
+    // init pcie max payload
+    Local0 = GETV(ARV_PCIE_RP_00_MAX_PAYLOAD_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=128
+      }
+      case (1) {
+        Local1=256
+      }
+      case (2) {
+        Local1=512
+      }
+    }
+    if(Local1 != 0){
+      MPAL = Local1
+    }
+    // init pcie max aspm support
+    Local0 = GETV(ARV_PCIE_RP_00_MAX_ASPM_OFFSET)
+    MAPM = Local0
+    // init pcie aspm
+    Local0 = GETV(ARV_PCIE_RP_00_ASPM_OFFSET)
+    ASPM= Local0
+  }
+
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
     // Check if link is already up
@@ -113,13 +185,15 @@ Device (PRC0) { /* PCIE0 X8 */
           Package () { "vendor-id", 0x1f6c },
           Package () { "device-id", 0x0001 },
           Package () { "bus-range", Package () { 0xc0, 0xff } },
-          Package () { "max-link-speed", 4 },
-          Package () { "num-lanes", 8 },
+          Package () { "max-link-speed", MLKS },
+          Package () { "num-lanes", NUML },
           Package () { "cdns,no-inbound-bar", 0 },
           Package () { "sky1,pcie-ctrl-id", 0x0 },
           Package () { "sky1,aer-uncor-panic", 0 },
           Package () { "cdns,pcie-phy", \_SB.PCP0.PX8P },
-          Package () { "max-payload", 512 },
+          Package () { "max-payload", MPAL },
+          Package () { "max-aspm-support", MAPM },
+          Package () { "aspm", ASPM },
 #if PCIE_X8_PERST
           Package () { "reset-gpios", Package () { ^PRC0, 0, 0, PERST_GPIO_ACTIVE_LEVEL } },
 #endif
@@ -215,11 +289,36 @@ Device (PCP0) //PCIE PHY1
   Device(PX8P)
   {
     Name (_ADR, 0x00)
+
+    Name (NUML, 8)
+
+    Method(_INI, 0) {
+      // init pcie bandwitdh
+      Local0 = GETV(ARV_PCIE_RP_00_BANDWITCH_OFFSET)
+      Local1 = 0
+      Switch(Local0) {
+        case (0) {
+          Local1=1
+        }
+        case (1) {
+          Local1=2
+        }
+        case (2) {
+          Local1=4
+        }
+        case (3) {
+          Local1=8
+        }
+      }
+      if(Local1 != 0){
+        NUML = Local1
+      }
+    }
     Name (_DSD, Package () {
       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
             Package () { "reg", 0 },
-            Package () { "num-lanes", 8 },
+            Package () { "num-lanes", NUML },
       },
     })
   }
@@ -232,6 +331,75 @@ Device (PRC1) { /* PCIE2 X4 */
   Name (_SEG, 0)
   Name (_BBN, 0x90)
   Name (_CCA, 1)
+
+  Name (MLKS, 4)
+  Name (NUML, 4)
+  Name (MPAL, 512)
+  Name (MAPM, 3)
+  Name (ASPM, 0)
+
+  Method(_INI, 0) {
+    // init pcie bandwitdh
+    Local0 = GETV(ARV_PCIE_RP_01_BANDWITCH_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=1
+      }
+      case (1) {
+        Local1=2
+      }
+      case (2) {
+        Local1=4
+      }
+    }
+    if(Local1 != 0){
+      NUML = Local1
+    }
+    // init pcie max speed
+    Local0 = GETV(ARV_PCIE_RP_01_MAX_SPEED_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=1
+      }
+      case (1) {
+        Local1=2
+      }
+      case (2) {
+        Local1=3
+      }
+      case (3) {
+        Local1=4
+      }
+    }
+    if(Local1 != 0){
+      MLKS = Local1
+    }
+    // init pcie max payload
+    Local0 = GETV(ARV_PCIE_RP_01_MAX_PAYLOAD_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=128
+      }
+      case (1) {
+        Local1=256
+      }
+      case (2) {
+        Local1=512
+      }
+    }
+    if(Local1 != 0){
+      MPAL = Local1
+    }
+    // init pcie max aspm support
+    Local0 = GETV(ARV_PCIE_RP_01_MAX_ASPM_OFFSET)
+    MAPM = Local0
+    // init pcie aspm
+    Local0 = GETV(ARV_PCIE_RP_01_ASPM_OFFSET)
+    ASPM= Local0
+  }
 
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
@@ -311,13 +479,15 @@ Device (PRC1) { /* PCIE2 X4 */
           Package () { "vendor-id", 0x1f6c },
           Package () { "device-id", 0x0001 },
           Package () { "bus-range", Package () { 0x90, 0xbf } },
-          Package () { "max-link-speed", 4 },
-          Package () { "num-lanes", 4 },
+          Package () { "max-link-speed", MLKS },
+          Package () { "num-lanes", NUML },
           Package () { "cdns,no-inbound-bar", 0 },
           Package () { "sky1,pcie-ctrl-id", 0x1 },
           Package () { "sky1,aer-uncor-panic", 0 },
           Package () { "cdns,pcie-phy", \_SB.PCP1.PX4P },
-          Package () { "max-payload", 512 },
+          Package () { "max-payload", MPAL },
+          Package () { "max-aspm-support", MAPM },
+          Package () { "aspm", ASPM },
 #if PCIE_X4_PERST
           Package () { "reset-gpios", Package () { ^PRC1, 0, 0, PERST_GPIO_ACTIVE_LEVEL } },
 #endif
@@ -401,11 +571,34 @@ Device (PCP1) //PCIE PHY1
   Device(PX4P)
   {
     Name (_ADR, 0x00)
+
+    Name (NUML, 4)
+
+    Method(_INI, 0) {
+      // init pcie bandwitdh
+      Local0 = GETV(ARV_PCIE_RP_01_BANDWITCH_OFFSET)
+      Local1 = 0
+      Switch(Local0) {
+        case (0) {
+          Local1=1
+        }
+        case (1) {
+          Local1=2
+        }
+        case (2) {
+          Local1=4
+        }
+      }
+      if(Local1 != 0){
+        NUML = Local1
+      }
+    }
+
     Name (_DSD, Package () {
       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
             Package () { "reg", 0 },
-            Package () { "num-lanes", 4 },
+            Package () { "num-lanes", NUML },
       },
     })
   }
@@ -418,6 +611,72 @@ Device (PRC2) { /* PCIE3 X2 */
   Name (_SEG, 0)
   Name (_BBN, 0x60)
   Name (_CCA, 1)
+
+  Name (MLKS, 4)
+  Name (NUML, 2)
+  Name (MPAL, 512)
+  Name (MAPM, 3)
+  Name (ASPM, 0)
+
+  Method(_INI, 0) {
+    // init pcie bandwitdh
+    Local0 = GETV(ARV_PCIE_RP_02_BANDWITCH_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=1
+      }
+      case (1) {
+        Local1=2
+      }
+    }
+    if(Local1 != 0){
+      NUML = Local1
+    }
+    // init pcie max speed
+    Local0 = GETV(ARV_PCIE_RP_02_MAX_SPEED_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=1
+      }
+      case (1) {
+        Local1=2
+      }
+      case (2) {
+        Local1=3
+      }
+      case (3) {
+        Local1=4
+      }
+    }
+    if(Local1 != 0){
+      MLKS = Local1
+    }
+    // init pcie max payload
+    Local0 = GETV(ARV_PCIE_RP_02_MAX_PAYLOAD_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=128
+      }
+      case (1) {
+        Local1=256
+      }
+      case (2) {
+        Local1=512
+      }
+    }
+    if(Local1 != 0){
+      MPAL = Local1
+    }
+    // init pcie max aspm support
+    Local0 = GETV(ARV_PCIE_RP_02_MAX_ASPM_OFFSET)
+    MAPM = Local0
+    // init pcie aspm
+    Local0 = GETV(ARV_PCIE_RP_02_ASPM_OFFSET)
+    ASPM= Local0
+  }
 
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
@@ -497,13 +756,15 @@ Device (PRC2) { /* PCIE3 X2 */
           Package () { "vendor-id", 0x1f6c },
           Package () { "device-id", 0x0001 },
           Package () { "bus-range", Package () { 0x60, 0x8f } },
-          Package () { "max-link-speed", 4 },
-          Package () { "num-lanes", 2 },
+          Package () { "max-link-speed", MLKS },
+          Package () { "num-lanes", NUML },
           Package () { "cdns,no-inbound-bar", 0 },
           Package () { "sky1,pcie-ctrl-id", 0x2 },
           Package () { "sky1,aer-uncor-panic", 0 },
           Package () { "cdns,pcie-phy", \_SB.PCP2.PX2P },
-          Package () { "max-payload", 512 },
+          Package () { "max-payload", MPAL },
+          Package () { "max-aspm-support", MAPM },
+          Package () { "aspm", ASPM },
 #if PCIE_X2_PERST
           Package () { "reset-gpios", Package () { ^PRC2, 0, 0, PERST_GPIO_ACTIVE_LEVEL } },
 #endif
@@ -567,6 +828,58 @@ Device (PRC3) { /* PCIE4 X1_1 */
   Name (_SEG, 0)
   Name (_BBN, 0x30)
   Name (_CCA, 1)
+
+  Name (MLKS, 4)
+  Name (NUML, 1)
+  Name (MPAL, 512)
+  Name (MAPM, 3)
+  Name (ASPM, 0)
+
+  Method(_INI, 0) {
+    // init pcie max speed
+    Local0 = GETV(ARV_PCIE_RP_03_MAX_SPEED_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=1
+      }
+      case (1) {
+        Local1=2
+      }
+      case (2) {
+        Local1=3
+      }
+      case (3) {
+        Local1=4
+      }
+    }
+    if(Local1 != 0){
+      MLKS = Local1
+    }
+    // init pcie max payload
+    Local0 = GETV(ARV_PCIE_RP_03_MAX_PAYLOAD_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=128
+      }
+      case (1) {
+        Local1=256
+      }
+      case (2) {
+        Local1=512
+      }
+    }
+    if(Local1 != 0){
+      MPAL = Local1
+    }
+    // init pcie max aspm support
+    Local0 = GETV(ARV_PCIE_RP_03_MAX_ASPM_OFFSET)
+    MAPM = Local0
+    // init pcie aspm
+    Local0 = GETV(ARV_PCIE_RP_03_ASPM_OFFSET)
+    ASPM= Local0
+  }
 
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
@@ -638,6 +951,10 @@ Device (PRC3) { /* PCIE4 X1_1 */
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
                 PCIE_X1_1_PERST_GPIO_CTR, 0, ResourceConsumer) { PCIE_X1_1_PERST_GPIO }
 #endif
+#if PCIE_X1_1_PEWAKE
+    GpioInt (Level, ActiveLow, ExclusiveAndWake, PullUp, 0,
+                PCIE_X1_1_PEWAKE_GPIO_CTR) {PCIE_X1_1_PEWAKE_GPIO}
+#endif
   })
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
@@ -646,13 +963,15 @@ Device (PRC3) { /* PCIE4 X1_1 */
           Package () { "vendor-id", 0x1f6c },
           Package () { "device-id", 0x0001 },
           Package () { "bus-range", Package () { 0x30, 0x5f } },
-          Package () { "max-link-speed", 4 },
-          Package () { "num-lanes", 1 },
+          Package () { "max-link-speed", MLKS },
+          Package () { "num-lanes", NUML },
           Package () { "cdns,no-inbound-bar", 0 },
           Package () { "sky1,pcie-ctrl-id", 0x3 },
           Package () { "sky1,aer-uncor-panic", 0 },
           Package () { "cdns,pcie-phy", \_SB.PCP2.PX11 },
-          Package () { "max-payload", 512 },
+          Package () { "max-payload", MPAL },
+          Package () { "max-aspm-support", MAPM },
+          Package () { "aspm", ASPM },
 #if PCIE_X1_1_PERST
           Package () { "reset-gpios", Package () { ^PRC3, 0, 0, PERST_GPIO_ACTIVE_LEVEL } },
 #endif
@@ -661,6 +980,9 @@ Device (PRC3) { /* PCIE4 X1_1 */
 #endif
 #if PCIE_X1_1_STR_PWRON
           Package () { "sky1,str-pwron", 1 },
+#endif
+#if PCIE_X1_1_PEWAKE
+          Package () { "wake-gpios", Package () { ^PRC3, 1, 0, PEWAKE_GPIO_ACTIVE_LEVEL } },
 #endif
 #if PCIE_X1_1_STD_PWRON
           Package () { "sky1,std-pwron", 1 },
@@ -716,6 +1038,58 @@ Device (PRC4) { /* PCIE3 X1_0 */
   Name (_SEG, 0)
   Name (_BBN, 0x00)
   Name (_CCA, 1)
+
+  Name (MLKS, 4)
+  Name (NUML, 1)
+  Name (MPAL, 512)
+  Name (MAPM, 3)
+  Name (ASPM, 0)
+
+  Method(_INI, 0) {
+    // init pcie max speed
+    Local0 = GETV(ARV_PCIE_RP_04_MAX_SPEED_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=1
+      }
+      case (1) {
+        Local1=2
+      }
+      case (2) {
+        Local1=3
+      }
+      case (3) {
+        Local1=4
+      }
+    }
+    if(Local1 != 0){
+      MLKS = Local1
+    }
+    // init pcie max payload
+    Local0 = GETV(ARV_PCIE_RP_04_MAX_PAYLOAD_OFFSET)
+    Local1 = 0
+    Switch(Local0) {
+      case (0) {
+        Local1=128
+      }
+      case (1) {
+        Local1=256
+      }
+      case (2) {
+        Local1=512
+      }
+    }
+    if(Local1 != 0){
+      MPAL = Local1
+    }
+    // init pcie max aspm support
+    Local0 = GETV(ARV_PCIE_RP_04_MAX_ASPM_OFFSET)
+    MAPM = Local0
+    // init pcie aspm
+    Local0 = GETV(ARV_PCIE_RP_04_ASPM_OFFSET)
+    ASPM= Local0
+  }
 
   // PCIe is only available if PCIe link is up
   Method (_STA, 0x0, Serialized) {
@@ -787,6 +1161,10 @@ Device (PRC4) { /* PCIE3 X1_0 */
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
                 PCIE_X1_0_PERST_GPIO_CTR, 0, ResourceConsumer) { PCIE_X1_0_PERST_GPIO }
 #endif
+#if PCIE_X1_0_PEWAKE
+    GpioInt (Level, ActiveLow, ExclusiveAndWake, PullUp, 0,
+                PCIE_X1_0_PEWAKE_GPIO_CTR) {PCIE_X1_0_PEWAKE_GPIO}
+#endif
   })
   Name (_DSD, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
@@ -795,13 +1173,15 @@ Device (PRC4) { /* PCIE3 X1_0 */
           Package () { "vendor-id", 0x1f6c },
           Package () { "device-id", 0x0001 },
           Package () { "bus-range", Package () { 0x00, 0x2f } },
-          Package () { "max-link-speed", 4 },
-          Package () { "num-lanes", 1 },
+          Package () { "max-link-speed", MLKS },
+          Package () { "num-lanes", NUML },
           Package () { "cdns,no-inbound-bar", 0 },
           Package () { "sky1,pcie-ctrl-id", 0x4 },
           Package () { "sky1,aer-uncor-panic", 0 },
           Package () { "cdns,pcie-phy", \_SB.PCP2.PX10 },
-          Package () { "max-payload", 512 },
+          Package () { "max-payload", MPAL },
+          Package () { "max-aspm-support", MAPM },
+          Package () { "aspm", ASPM },
 #if PCIE_X1_0_PERST
           Package () { "reset-gpios", Package () { ^PRC4, 0, 0, PERST_GPIO_ACTIVE_LEVEL } },
 #endif
@@ -810,6 +1190,9 @@ Device (PRC4) { /* PCIE3 X1_0 */
 #endif
 #if PCIE_X1_0_STR_PWRON
           Package () { "sky1,str-pwron", 1 },
+#endif
+#if PCIE_X1_0_PEWAKE
+          Package () { "wake-gpios", Package () { ^PRC4, 1, 0, PEWAKE_GPIO_ACTIVE_LEVEL } },
 #endif
 #if PCIE_X1_0_STD_PWRON
           Package () { "sky1,std-pwron", 1 },
@@ -923,12 +1306,32 @@ Device (PCP2) //PCIE PHY1
     Method (_STA, 0x0, Serialized) {
       Return (0xF)
     }
+
+    Name (NUML, 2)
+
+    Method(_INI, 0) {
+      // init pcie bandwitdh
+      Local0 = GETV(ARV_PCIE_RP_02_BANDWITCH_OFFSET)
+      Local1 = 0
+      Switch(Local0) {
+        case (0) {
+          Local1=1
+        }
+        case (1) {
+          Local1=2
+        }
+      }
+      if(Local1 != 0){
+        NUML = Local1
+      }
+    }
+
     Name (_ADR, 0x02)
     Name (_DSD, Package () {
       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
             Package () { "reg", 2 },
-            Package () { "num-lanes", 2 },
+            Package () { "num-lanes", NUML },
       },
     })
   }

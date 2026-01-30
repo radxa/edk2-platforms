@@ -44,18 +44,23 @@
   MailBoxLib
   CixFwBootPerfLib
   PostCodeLib
+  CixGPNVLib
+  IoLib
 
 [Guids]
   gCixI2cDevicePathGuid
   gEfiNetworkStackSetupGuid
   gPlatformSetupVariableGuid
   gEfiEventReadyToBootGuid
+  gCixGPNVGuid
+  gCixFarmEnableFlagGuid
 
 [Protocols]
   gEfiI2cMasterProtocolGuid
   gEfiDevicePathProtocolGuid
   gRa8900ceRealTimeClockLibI2cMasterProtocolGuid
   gCixEcPlatformProtocolGuid
+  gCixFastbootInfoProtocolGuid
 
 [FixedPcd]
   gCixPlatformTokenSpaceGuid.PcdRa8900ceI2cBus
@@ -71,3 +76,6 @@
 
 [Pcd]
   gEmbeddedTokenSpaceGuid.PcdDmaDeviceLimit
+  gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionBase
+  gCixPlatformTokenSpaceGuid.PcdNorFlashVarSyncRegionSize
+  gCixPlatformTokenSpaceGuid.PcdDebugModeFlagAddress

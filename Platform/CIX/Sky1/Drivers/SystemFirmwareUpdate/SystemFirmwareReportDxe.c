@@ -20,6 +20,35 @@
 // SystemFmp driver private data
 //
 SYSTEM_FMP_PRIVATE_DATA  *mSystemFmpPrivate = NULL;
+CIX_FW_UPDATE_PROTOCOL  *FlashUpdateProtocol = NULL;
+EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  ProgressFunc;
+
+EFI_STATUS
+SystemFirmwareUpdateWithProgress (
+  IN UINT8  *pImage,
+  UINTN     Length,
+  EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  Progress
+  )
+{
+  EFI_STATUS  Status;
+
+  Status = gBS->LocateProtocol (&gCixFirmwareUpdateProtocolGuid, NULL, (VOID **)&FlashUpdateProtocol);
+  if (EFI_ERROR (Status)) {
+    Print (L"Firmware update protocol is not installed.\n");
+    return Status;
+  }
+
+  // CheckAndDisplayImageInfo(pImage);
+  //  Status = FlashUpdateProtocol->FirmwarePackageProgram (pImage, Length, (FIRMWARE_PROGRAM_CALLBACK)ProgressCallback);
+  Status = FlashUpdateProtocol->FirmwarePackageProgram (pImage, Length, Progress);
+
+  Status &= 0xFF;
+  if (EFI_ERROR (Status)) {
+    Print (L"\nFlash fail status:%x\n", Status);
+  }
+
+  return Status;
+}
 
 EFI_STATUS
 PlatformFlashSystemFirmware  (
@@ -54,7 +83,7 @@ PlatformFlashSystemFirmware  (
   //   }
   // }
 
-  Status = SystemFirmwareUpdate (SystemFirmware, SystemFirmwareSize);
+  Status = SystemFirmwareUpdateWithProgress (SystemFirmware, SystemFirmwareSize, ProgressFunc);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_INFO, "BIOS update failed\n"));
   } else {
@@ -192,6 +221,7 @@ FmpSetImage (
 
   SystemFmpPrivate = SYSTEM_FMP_PRIVATE_DATA_FROM_FMP (This);
   *AbortReason     = NULL;
+  ProgressFunc = Progress;
 
   // if ((ImageIndex == 0) || (ImageIndex > SystemFmpPrivate->DescriptorCount)) {
   //   return EFI_INVALID_PARAMETER;

@@ -137,6 +137,7 @@ UpdateConfigParams (
       ConfigData->Pcie.PcieMaxReadRequest[i]  = PlatformSetupVar.PcieMaxReadRequest[i];
       ConfigData->Pcie.PcieL1Substates[i]     = PlatformSetupVar.PcieL1Substates[i];
       ConfigData->Pcie.PcieDtiEnable[i]       = PlatformSetupVar.PcieDtiEnable[i];
+      ConfigData->Pcie.PcieLinkTimeout[i]     = PlatformSetupVar.PcieLinkTimeout[i];
     }
 
     for (UINT8 i = 0; i < MAX_I2C_CTRL_NUM; i++) {
@@ -371,6 +372,7 @@ ConstructSetupVariable (
   PlatformSetupVar->PcieMaxPayload[0]      = FixedPcdGet8 (PcdPcieRootPort0MaxPayload);
   PlatformSetupVar->PcieMaxReadRequest[0]  = FixedPcdGet8 (PcdPcieRootPort0MaxReadRequest);
   PlatformSetupVar->PcieDtiEnable[0]       = FixedPcdGet8 (PcdPcieRootPort0DtiEnable);
+  PlatformSetupVar->PcieLinkTimeout[0]     = FixedPcdGet16 (PcdPcieRootPort0LinkUpTimeout);
 
   PlatformSetupVar->PcieRpEnable[1]        = FixedPcdGetBool (PcdPcieRootPort1Enable);
   PlatformSetupVar->PcieWidth[1]           = FixedPcdGet8 (PcdPcieRootPort1LaneNum);
@@ -381,6 +383,7 @@ ConstructSetupVariable (
   PlatformSetupVar->PcieMaxPayload[1]      = FixedPcdGet8 (PcdPcieRootPort1MaxPayload);
   PlatformSetupVar->PcieMaxReadRequest[1]  = FixedPcdGet8 (PcdPcieRootPort1MaxReadRequest);
   PlatformSetupVar->PcieDtiEnable[1]       = FixedPcdGet8 (PcdPcieRootPort1DtiEnable);
+  PlatformSetupVar->PcieLinkTimeout[1]     = FixedPcdGet16 (PcdPcieRootPort1LinkUpTimeout);
 
   PlatformSetupVar->PcieRpEnable[2]        = FixedPcdGetBool (PcdPcieRootPort2Enable);
   PlatformSetupVar->PcieWidth[2]           = FixedPcdGet8 (PcdPcieRootPort2LaneNum);
@@ -391,6 +394,7 @@ ConstructSetupVariable (
   PlatformSetupVar->PcieMaxPayload[2]      = FixedPcdGet8 (PcdPcieRootPort2MaxPayload);
   PlatformSetupVar->PcieMaxReadRequest[2]  = FixedPcdGet8 (PcdPcieRootPort2MaxReadRequest);
   PlatformSetupVar->PcieDtiEnable[2]       = FixedPcdGet8 (PcdPcieRootPort2DtiEnable);
+  PlatformSetupVar->PcieLinkTimeout[2]     = FixedPcdGet16 (PcdPcieRootPort2LinkUpTimeout);
 
   PlatformSetupVar->PcieRpEnable[3]        = FixedPcdGetBool (PcdPcieRootPort3Enable);
   PlatformSetupVar->PcieWidth[3]           = FixedPcdGet8 (PcdPcieRootPort3LaneNum);
@@ -401,6 +405,7 @@ ConstructSetupVariable (
   PlatformSetupVar->PcieMaxPayload[3]      = FixedPcdGet8 (PcdPcieRootPort3MaxPayload);
   PlatformSetupVar->PcieMaxReadRequest[3]  = FixedPcdGet8 (PcdPcieRootPort3MaxReadRequest);
   PlatformSetupVar->PcieDtiEnable[3]       = FixedPcdGet8 (PcdPcieRootPort3DtiEnable);
+  PlatformSetupVar->PcieLinkTimeout[3]     = FixedPcdGet16 (PcdPcieRootPort3LinkUpTimeout);
 
   PlatformSetupVar->PcieRpEnable[4]        = FixedPcdGetBool (PcdPcieRootPort4Enable);
   PlatformSetupVar->PcieWidth[4]           = FixedPcdGet8 (PcdPcieRootPort4LaneNum);
@@ -411,6 +416,7 @@ ConstructSetupVariable (
   PlatformSetupVar->PcieMaxPayload[4]      = FixedPcdGet8 (PcdPcieRootPort4MaxPayload);
   PlatformSetupVar->PcieMaxReadRequest[4]  = FixedPcdGet8 (PcdPcieRootPort4MaxReadRequest);
   PlatformSetupVar->PcieDtiEnable[4]       = FixedPcdGet8 (PcdPcieRootPort4DtiEnable);
+  PlatformSetupVar->PcieLinkTimeout[4]     = FixedPcdGet16 (PcdPcieRootPort4LinkUpTimeout);
 
   PlatformSetupVar->I2cEnable[0]  = FixedPcdGetBool (PcdI2c0En);
   PlatformSetupVar->I2cEnable[1]  = FixedPcdGetBool (PcdI2c1En);

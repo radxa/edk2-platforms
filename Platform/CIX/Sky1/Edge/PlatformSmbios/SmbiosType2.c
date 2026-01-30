@@ -12,8 +12,8 @@
   "Cix Technology Group Co., Ltd.\0"   /* Manufacturer */                                \
   "CIX Board\0"                        /* Product Name */                                \
   "1.0\0"                              /* Version */                                     \
-  "Base Board Serial Number\0"         /* Serial */                                      \
-  "Base Board Asset Tag\0"             /* Assert Tag */                                  \
+  "Cix Base Board Serial Number\0"     /* Serial */                                      \
+  "Cix Base Board Asset Tag\0"         /* Assert Tag */                                  \
   "Part Component\0"                   /* board location */                              \
   "CIX Merak Board\0"                  /* Product Name 0*/                               \
   "CIX Phecda Board\0"                 /* Product Name 1*/
@@ -64,12 +64,14 @@ AddSmbiosType2 (
   UINT32                   FwVerSize;
   EC_RESPONSE_BOARD_ID     *pBoardId;
   UINT16                   Sku;
+  UINTN                    StringNumber, BoardSnSize;
+  CHAR8                    *BoardSnPtr;
 
   Status = gBS->LocateProtocol (
-                  &gCixFwVersionProtocolGuid,
-                  NULL,
-                  (VOID **)&pFwVerProtocol
-                  );
+                                &gCixFwVersionProtocolGuid,
+                                NULL,
+                                (VOID **)&pFwVerProtocol
+                                );
 
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: fw ver protocol not found\n", __FUNCTION__));
@@ -103,22 +105,39 @@ AddSmbiosType2 (
 
   SmbiosHandle = SMBIOS_HANDLE_MOTHERBOARD;
   Status       = Smbios->Add (
-                           Smbios,
-                           NULL,
-                           &SmbiosHandle,
-                           (EFI_SMBIOS_TABLE_HEADER *)&mPlatformDefaultType2
-                           );
+                              Smbios,
+                              NULL,
+                              &SmbiosHandle,
+                              (EFI_SMBIOS_TABLE_HEADER *)&mPlatformDefaultType2
+                              );
 
   if (EFI_ERROR (Status)) {
     DEBUG (
-      (
-       DEBUG_ERROR,
-       "[%a]:[%dL] Smbios Type2 Table Log Failed! %r \n",
-       __FUNCTION__,
-       DEBUG_LINE_NUMBER,
-       Status
-      )
-      );
+           (
+            DEBUG_ERROR,
+            "[%a]:[%dL] Smbios Type2 Table Log Failed! %r \n",
+            __FUNCTION__,
+            DEBUG_LINE_NUMBER,
+            Status
+           )
+           );
+  }
+
+  // update serial number
+  Status = GetVariable2 (
+                         L"BaseBoardSN",
+                         &gCixGPNVGuid,
+                         (VOID **)&BoardSnPtr,
+                         &BoardSnSize
+                         );
+  if (!EFI_ERROR (Status)) {
+    StringNumber = 4;
+    Status = Smbios->UpdateString (Smbios, &SmbiosHandle, &StringNumber, BoardSnPtr);
+    if (EFI_ERROR (Status)) {
+      DebugPrint (DEBUG_ERROR, "Fail to update serial number.\n");
+    }
+
+    FreePool (BoardSnPtr);
   }
 
   return EFI_SUCCESS;

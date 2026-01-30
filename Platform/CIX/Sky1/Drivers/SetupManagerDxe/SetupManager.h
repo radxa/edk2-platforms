@@ -26,6 +26,7 @@
 #include <Library/DevicePathLib.h>
 #include <Library/UefiBootManagerLib.h>
 #include <Library/UefiHiiServicesLib.h>
+#include <Library/CsuPmIpcLib.h>
 #include <SetupManagerFormId.h>
 
 //

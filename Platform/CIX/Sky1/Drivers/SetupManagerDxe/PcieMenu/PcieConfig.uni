@@ -67,10 +67,12 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_PCIE_ASPM_PROMPT3                   #language en-US "ASPM"
 #string STR_PCIE_ASPM_PROMPT4                   #language en-US "ASPM"
 #string STR_PCIE_ASPM_HELP                      #language en-US "PCI Express Active State Power Management settings."
-#string STR_PCIE_ASPM_DISABLE                   #language en-US "Disable"
+#string STR_PCIE_ASPM_DISABLE                   #language en-US "ASPM Disable"
 #string STR_PCIE_ASPM_L0S_STRING                #language en-US "L0s"
-#string STR_PCIE_ASPM_L1_STRING                 #language en-US "L1"
+#string STR_PCIE_ASPM_L1_STRING                 #language en-US "ASPM Enable"
 #string STR_PCIE_ASPM_L0SL1_STRING              #language en-US "L0sL1"
+#string STR_PCIE_ASPM_CONFIG_PROMPT             #language en-US "ASPM configuration"
+#string STR_PCIE_ASPM_CONFIG_HELP               #language en-US "Disable Or Enable ASPM"
 
 #string STR_PCIE_MAX_PAYLOAD_PROMPT             #language en-US "Max Payload Support"
 #string STR_PCIE_MAX_PAYLOAD_HELP               #language en-US "Set Max Payload Supported of PCI Express Device"
@@ -103,3 +105,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 #string STR_PCIE_DTI_PROMPT                     #language en-US "DTI Support"
 #string STR_PCIE_DTI_HELP                       #language en-US "DTI Enable/Disable"
+
+#string STR_PCIE_LINK_TIMEOUT_PROMPT            #language en-US "LinkUp Timeout(ms)"
+#string STR_PCIE_LINK_TIMEOUT_HELP              #language en-US "Config Pcie Linkup Timeout(ms) for special device"

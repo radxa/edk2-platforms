@@ -178,11 +178,11 @@
   gCixTokenSpaceGuid.PcdPcieRootPort3MaxSpeed|0x03|UINT8|0x00000213
   gCixTokenSpaceGuid.PcdPcieRootPort4MaxSpeed|0x03|UINT8|0x00000214
 #PCIe Max ASPM Support
-  gCixTokenSpaceGuid.PcdPcieRootPort0MaxAspmSupport|0x03|UINT8|0x00000215
-  gCixTokenSpaceGuid.PcdPcieRootPort1MaxAspmSupport|0x03|UINT8|0x00000216
-  gCixTokenSpaceGuid.PcdPcieRootPort2MaxAspmSupport|0x03|UINT8|0x00000217
-  gCixTokenSpaceGuid.PcdPcieRootPort3MaxAspmSupport|0x03|UINT8|0x00000218
-  gCixTokenSpaceGuid.PcdPcieRootPort4MaxAspmSupport|0x03|UINT8|0x00000219
+  gCixTokenSpaceGuid.PcdPcieRootPort0MaxAspmSupport|0x02|UINT8|0x00000215
+  gCixTokenSpaceGuid.PcdPcieRootPort1MaxAspmSupport|0x02|UINT8|0x00000216
+  gCixTokenSpaceGuid.PcdPcieRootPort2MaxAspmSupport|0x02|UINT8|0x00000217
+  gCixTokenSpaceGuid.PcdPcieRootPort3MaxAspmSupport|0x02|UINT8|0x00000218
+  gCixTokenSpaceGuid.PcdPcieRootPort4MaxAspmSupport|0x02|UINT8|0x00000219
 #PCIe ASPM Support
   gCixTokenSpaceGuid.PcdPcieRootPort0AspmSupport|0x00|UINT8|0x0000021A
   gCixTokenSpaceGuid.PcdPcieRootPort1AspmSupport|0x00|UINT8|0x0000021B
@@ -236,6 +236,12 @@
   gCixTokenSpaceGuid.PcdPcieRootPort2BusLimit|0x7F|UINT8|0x00000244
   gCixTokenSpaceGuid.PcdPcieRootPort3BusLimit|0x4F|UINT8|0x00000245
   gCixTokenSpaceGuid.PcdPcieRootPort4BusLimit|0x1F|UINT8|0x00000246
+#PCIe LinkUp Timeout
+  gCixTokenSpaceGuid.PcdPcieRootPort0LinkUpTimeout|300|UINT16|0x00000247
+  gCixTokenSpaceGuid.PcdPcieRootPort1LinkUpTimeout|300|UINT16|0x00000248
+  gCixTokenSpaceGuid.PcdPcieRootPort2LinkUpTimeout|300|UINT16|0x00000249
+  gCixTokenSpaceGuid.PcdPcieRootPort3LinkUpTimeout|300|UINT16|0x0000024A
+  gCixTokenSpaceGuid.PcdPcieRootPort4LinkUpTimeout|300|UINT16|0x0000024B
 
   gCixTokenSpaceGuid.PcdGmacApbClockMHz|200|UINT32|0x00000281
   gCixTokenSpaceGuid.PcdGmac0ClockMHz|100|UINT32|0x00000282

@@ -7,12 +7,14 @@
 #include "PlatformSmbios.h"
 #include <Protocol/FwVersionProtocol.h>
 #include <Protocol/EcPlatformProtocol.h>
+#include <Protocol/SocInfoProtocol.h>
+#include <Library/PrintLib.h>
 
 #define TYPE1_STRINGS                                                                    \
   "Cix Technology Group Co., Ltd.\0"   /* Manufacturer */                                \
   "CIX Board\0"                        /* Product Name */                                \
   "1.0\0"                              /* Version */                                     \
-  "System Serial Number\0"             /* Serial number */                               \
+  "Cix System Serial Numbe\0"          /* Serial number */                               \
   "Default\0"                          /* SKUNumber */                                   \
   "Default\0"                          /* System Family */                               \
   "CIX Merak Board\0"                  /* Product Name 0*/                               \
@@ -52,6 +54,40 @@ STATIC PLATFORM_SMBIOS_TYPE1  mPlatformDefaultType1 = {
 };
 
 EFI_STATUS
+GetSerialNumStr (
+  IN OUT CHAR16  **StrSerialNum
+  )
+{
+  EFI_STATUS             Status;
+  CIX_SOC_INFO_PROTOCOL  *pSocInfoProtocol;
+  UINT32                 *pSocInfo;
+  UINT32                 SocInfoSize;
+  UINTN                  BufferSize;
+
+  Status = gBS->LocateProtocol (
+                  &gCixSocInfoProtocolGuid,
+                  NULL,
+                  (VOID **)&pSocInfoProtocol
+                  );
+
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: soc info protocol not found\n", __FUNCTION__));
+    return EFI_NOT_FOUND;
+  }
+
+  Status = pSocInfoProtocol->GetSocInfo (SerialNum, &pSocInfo, &SocInfoSize);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: GetSerialNum failed\n", __FUNCTION__));
+    return EFI_NOT_FOUND;
+  }
+
+  BufferSize    = (SocInfoSize*2+1)*sizeof (CHAR16);
+  *StrSerialNum = AllocateZeroPool (BufferSize);
+  UnicodeSPrint (*StrSerialNum, BufferSize, L"%08x%08x", pSocInfo[0], pSocInfo[1]);
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
 AddSmbiosType1 (
   IN EFI_SMBIOS_PROTOCOL  *Smbios
   )
@@ -63,6 +99,9 @@ AddSmbiosType1 (
   UINT32                   FwVerSize;
   EC_RESPONSE_BOARD_ID     *pBoardId;
   UINT16                   Sku;
+  UINTN                    StringNumber, SysSnSize, SysUuidSize;
+  CHAR16                   *SysSnPtr = NULL;
+  CHAR8                    *SysSnBuf, *SysUuidPtr;
 
   Status = gBS->LocateProtocol (
                   &gCixFwVersionProtocolGuid,
@@ -92,6 +131,17 @@ AddSmbiosType1 (
     }
   }
 
+  // Update UUID
+  Status = GetVariable2 (
+             L"SystemUUID",
+             &gCixGPNVGuid,
+             (VOID **)&SysUuidPtr,
+             &SysUuidSize
+             );
+  if (!EFI_ERROR (Status)) {
+    CopyMem ((CHAR8 *)&(mPlatformDefaultType1.Base.Uuid), SysUuidPtr, 16);
+  }
+
   SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
   Status       = Smbios->Add (
                            Smbios,
@@ -110,6 +160,40 @@ AddSmbiosType1 (
        Status
       )
       );
+  }
+
+  // update serial number
+  Status = GetSerialNumStr (&SysSnPtr);
+  if (!EFI_ERROR (Status)) {
+    SysSnSize = StrLen (SysSnPtr);
+    SysSnBuf  = AllocateZeroPool (SysSnSize+1);
+    UnicodeToAscii (SysSnPtr, SysSnSize, SysSnBuf);
+    SysSnBuf[SysSnSize] = 0;
+    StringNumber        = 4;
+    Status              = Smbios->UpdateString (Smbios, &SmbiosHandle, &StringNumber, SysSnBuf);
+    if (EFI_ERROR (Status)) {
+      DebugPrint (DEBUG_ERROR, "Fail to update serial number.\n");
+    }
+
+    FreePool (SysSnBuf);
+    FreePool (SysSnPtr);
+  }
+
+  // override SystemSN with variable
+  Status = GetVariable2 (
+             L"SystemSN",
+             &gCixGPNVGuid,
+             (VOID **)&SysSnBuf,
+             &SysSnSize
+             );
+  if (!EFI_ERROR (Status)) {
+    StringNumber = 4;
+    Status = Smbios->UpdateString (Smbios, &SmbiosHandle, &StringNumber, SysSnBuf);
+    if (EFI_ERROR (Status)) {
+      DebugPrint (DEBUG_ERROR, "Fail to update serial number.\n");
+    }
+
+    FreePool (SysSnBuf);
   }
 
   return EFI_SUCCESS;

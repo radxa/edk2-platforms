@@ -1,0 +1,37 @@
+#/** @file
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#
+#**/
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = EfuseOemKeyDxe
+  FILE_GUID                      = F7DAF472-7AAD-4c0a-9A52-D8204B8C94BA
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = EfuseOemKeyDxeEntry
+
+[Sources.common]
+  EfuseOemKeyDxe.h
+  EfuseOemKeyDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  UefiLib
+  UefiDriverEntryPoint
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  DxeServicesLib
+  EfusePublicKeyLib
+
+[Pcd]
+  gCixPlatformTokenSpaceGuid.PcdOemPublicKeyFileGuid
+
+[Depex]
+  TRUE

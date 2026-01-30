@@ -65,8 +65,7 @@ AddSmbiosType2 (
   EC_RESPONSE_BOARD_ID     *pBoardId;
   UINT16                   Sku;
   UINTN                    StringNumber, BoardSnSize;
-  CHAR16                   *BoardSnPtr;
-  CHAR8                    *BoardSnBuf;
+  CHAR8                    *BoardSnPtr;
 
   Status = gBS->LocateProtocol (
                                 &gCixFwVersionProtocolGuid,
@@ -132,18 +131,12 @@ AddSmbiosType2 (
                          &BoardSnSize
                          );
   if (!EFI_ERROR (Status)) {
-    BoardSnBuf = AllocateZeroPool (BoardSnSize+1);
-    // DebugPrint (DEBUG_ERROR, "SN:%s\n",BoardSnPtr);
-    UnicodeToAscii (BoardSnPtr, BoardSnSize, BoardSnBuf);
-    BoardSnBuf[BoardSnSize] = 0;
-    StringNumber            = 4;
-    // DebugPrint (DEBUG_ERROR, "SN:%a\n",BoardSnBuf);
-    Status = Smbios->UpdateString (Smbios, &SmbiosHandle, &StringNumber, BoardSnBuf);
+    StringNumber = 4;
+    Status = Smbios->UpdateString (Smbios, &SmbiosHandle, &StringNumber, BoardSnPtr);
     if (EFI_ERROR (Status)) {
       DebugPrint (DEBUG_ERROR, "Fail to update serial number.\n");
     }
 
-    FreePool (BoardSnBuf);
     FreePool (BoardSnPtr);
   }
 

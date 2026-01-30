@@ -27,6 +27,9 @@
   FLASH_DEFINITION               = Platform/CIX/Sky1/$(PLATFORM_NAME)/$(PLATFORM_NAME).fdf
   PCD_DYNAMIC_AS_DYNAMICEX       = TRUE
   BUILD_NUMBER                   = 0x00000005
+  ACPI_IOMUX_INPUT               = Platform/CIX/Sky1/Merak/ACPI/AcpiPlatfomTables/Sky1MerakIomux.asl
+  ACPI_IOMUX_OUTPUT              = $(OUTPUT_DIRECTORY)/Iomux.asl
+  PREBUILD                       = python Platform/CIX/Sky1/Drivers/AcpiSocTables/tool/python3/ParseIomuxTemplate.py $(ACPI_IOMUX_INPUT) $(ACPI_IOMUX_OUTPUT)
 
 !include  Platform/CIX/Sky1/Sky1Define.dsc.inc
 
@@ -67,7 +70,7 @@
   DEFINE STMM_SUPPORT               = $(COMPILE_STMM_SUPPORT)
   DEFINE REALTEK_LAN_DRIVER_SUPPORT = TRUE
   DEFINE PM_CONFIG_UPDATE_SUPPORT   = FALSE
-  DEFINE SE_CONFIG_UPDATE_SUPPORT   = FALSE
+  DEFINE SE_CONFIG_UPDATE_SUPPORT   = TRUE
   DEFINE DYNAMIC_ACPI_CPU_ENABLE    = TRUE
   DEFINE SOC_SPI_ENABLE             = TRUE
   # DEFINE SOC_GPIO_INTR_ENABLE       = TRUE
@@ -81,6 +84,7 @@
   DEFINE FUNC_BOOT_PERF_ENABLE      = TRUE
   DEFINE POWER_BUTTON_ENABLE        = TRUE
   DEFINE DEBUG_MODE_SUPPORT         = TRUE
+  DEFINE CIX_GPNV_ENABLE            = TRUE
 
 !if $(COMPILE_FASTBOOT_LOAD) == nvme
   DEFINE PCIE_HOST_ENABLE           = TRUE
@@ -132,6 +136,7 @@
 
   DEFINE DTPM_SUPPORT               = FALSE
   DEFINE FTPM_SUPPORT               = FALSE
+  DEFINE I2S_MC_SUPPORT             = TRUE
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
 !include NetworkPkg/NetworkDefines.dsc.inc
@@ -172,6 +177,13 @@
 [Components.common]
 # Network stack
   !include NetworkPkg/Network.dsc.inc
+# This modification is to fix a PXE bug.
+# If the Code Base is upgraded, this modification will cause a compilation error and should be deleted.
+  NetworkPkg/UefiPxeBcDxe/UefiPxeBcDxe.inf {
+    <PcdsFixedAtBuild>
+      gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|TRUE
+      gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|TRUE
+  }
 
   Platform/CIX/Sky1/PrePi/PeiUniCore.inf
 !if $(SHELL_EMBEDDED_ENABLE) == TRUE
@@ -198,7 +210,10 @@
 !endif
   Platform/CIX/Sky1/Drivers/DtbUpdateDxeSi/DtbUpdateDxe.inf
 !if $(ACPI_ENABLE) == TRUE
-  Platform/CIX/Sky1/Merak/ACPI/AcpiPlatfomTables/AcpiPlatfomTables.inf
+  Platform/CIX/Sky1/Merak/ACPI/AcpiPlatfomTables/AcpiPlatfomTables.inf {
+    <BuildOptions>
+      *_*_*_ASLCC_FLAGS = -I$(WORKSPACE)/$(OUTPUT_DIRECTORY)
+  }
   Platform/CIX/Sky1/Merak/ACPI/AcpiPlatformDxe/AcpiPlatformDxe.inf
 !endif
 !if $(SMBIOS_ENABLE) == TRUE
@@ -234,8 +249,6 @@
 !endif
 !elseif $(COMPILE_FASTBOOT_LOAD) == ddr
   GCC:*_*_*_CC_FLAGS          = -DFASTBOOT_DDR
-!elseif $(COMPILE_FASTBOOT_LOAD) == usb
-  GCC:*_*_*_CC_FLAGS          = -DFASTBOOT_USB
 !endif
 
 !if $(COMPILE_SMP_ENABLE) == 1
@@ -283,6 +296,10 @@
 
 !if $(STMM_SUPPORT) == TRUE
   GCC:*_*_*_CC_FLAGS              = -DSTMM_SUPPORT
+!endif
+
+!if $(USERDATA_RESIZE) == enable
+  GCC:*_*_*_CC_FLAGS              = -DUSERDATA_RESIZE_SUPPORT
 !endif
 
 ################################################################################

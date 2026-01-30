@@ -17,6 +17,7 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/PdLib.h>
+#include <Library/RedriverLib.h>
 #include <Protocol/TypecPhy.h>
 #include <Protocol/PdProtocol.h>
 #include <Library/TimerLib.h>

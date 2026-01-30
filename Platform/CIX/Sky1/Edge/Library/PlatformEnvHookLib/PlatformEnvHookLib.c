@@ -14,18 +14,35 @@
 #include <Library/PlatformEnvHookLib.h>
 #include <Protocol/EcPlatformProtocol.h>
 #include <Protocol/I2cDevicePath.h>
+#include <Protocol/FastbootInfoProtocal.h>
 #include <Library/CixSipLib.h>
 #include <Library/EcLib.h>
 #include <Library/MailBoxLib.h>
 #include <Library/CixFwBootPerfLib.h>
 #include <Library/CixPostCodeLib.h>
+#include <Library/CixGPNVLib.h>
+#include <Library/IoLib.h>
 #include <Guid/NetworkStackSetup.h>
 #include <PlatformSetupVar.h>
 
-// {3F7B73C7-FB70-4e91-86E7-34EAD76AC74D}
-EFI_GUID  gEfiFarmEnableFlagGuid = {
-  0x3f7b73c7, 0xfb70, 0x4e91, { 0x86, 0xe7, 0x34, 0xea, 0xd7, 0x6a, 0xc7, 0x4d }
-};
+UINTN
+UnicodeToAscii (
+  IN CONST CHAR16  *UStr,
+  IN CONST UINTN   Length,
+  OUT CHAR8        *AStr
+  )
+{
+  UINTN  Index;
+
+  //
+  // just buffer copy, not character copy
+  //
+  for (Index = 0; Index < Length; Index++) {
+    *AStr++ = (CHAR8)*UStr++;
+  }
+
+  return Index;
+}
 
 EFI_STATUS
 EFIAPI
@@ -68,9 +85,12 @@ InitEcDefaultSetting (
   IN VOID       *Context
   )
 {
-  EFI_STATUS            Status = EFI_SUCCESS;
-  EC_PLATFORM_PROTOCOL  *Ec;
-  EC_PARAM              Params;
+  EFI_STATUS                  Status = EFI_SUCCESS;
+  EC_PLATFORM_PROTOCOL        *Ec;
+  EC_PARAM                    Params;
+  ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData;
+
+  ConfigData = (ENV_HOOK_PARAMS_DATA_BLOCK *)Context;
 
   Status = gBS->LocateProtocol (&gCixEcPlatformProtocolGuid, NULL, (VOID **)&Ec);
   if (EFI_ERROR (Status)) {
@@ -78,16 +98,20 @@ InitEcDefaultSetting (
     return;
   }
 
-  Params.ThermalAutoFanCtl.FanAutoFlg = 0; // manual mode
-  Status                              = Ec->Transfer (Ec, EC_COMMAND_SET_THERMAL_AUTO_FAN_CTL, &Params, NULL);
-  DEBUG ((DEBUG_INFO, "EC Set Fan control manual mode Status:%r\n", Status));
+  switch (ConfigData->PlatConfig->EcFanMode) {
+    case 0: // auto mode
+      Params.ThermalAutoFanCtl.FanAutoFlg = EC_FAN_MODE_AUTO;
+      break;
+    case 1: // performance mode
+      Params.ThermalAutoFanCtl.FanAutoFlg = EC_FAN_MODE_PERF;
+      break;
+    default:
+      DEBUG ((DEBUG_INFO, "Undefined EC fan mode! mode=%d \n", ConfigData->PlatConfig->EcFanMode));
+      return;
+  }
 
-  Params.PwmSetDuty.Duty    = 100;
-  Params.PwmSetDuty.Index   = 0;
-  Params.PwmSetDuty.PwmType = 0;
-  Status                    = Ec->Transfer (Ec, EC_COMMAND_SET_FAN_DUTY, &Params, NULL);
-
-  DEBUG ((DEBUG_INFO, "EC Set Pwm Duty %d Status:%r\n", Params.PwmSetDuty.Duty, Status));
+  Status = Ec->Transfer (Ec, EC_COMMAND_SET_THERMAL_AUTO_FAN_CTL, &Params, NULL);
+  DEBUG ((DEBUG_INFO, "EC Set Fan control mode Status:%r\n", Status));
 }
 
 VOID
@@ -190,9 +214,23 @@ WakeupSourceInit (
 {
   EFI_STATUS  Status = EFI_SUCCESS;
 
-  // wakeup enable/disable sample
-  // WakeupCfg(S5_GPIO_U0,FALSE);//disable GPIO wakeup
+  DEBUG ((DEBUG_INFO, "%a\n", __func__));
 
+  /*usb3 typec ports*/
+  WakeupCfg (USB_C_SSP_0_HOST_IRQ, FALSE);
+  WakeupCfg (USB_C_SSP_1_HOST_IRQ, FALSE);
+  WakeupCfg (USB_C_SSP_2_HOST_IRQ, FALSE);
+  WakeupCfg (USB_C_SSP_3_HOST_IRQ, FALSE);
+
+  /*usb3 typea ports*/
+  WakeupCfg (USB_SSP_0_HOST_IRQ, FALSE);
+  WakeupCfg (USB_SSP_1_HOST_IRQ, FALSE);
+
+  /*usb2 ports*/
+  WakeupCfg (USB2_0_HOST_IRQ, FALSE);
+  WakeupCfg (USB2_1_HOST_IRQ, FALSE);
+  WakeupCfg (USB2_2_HOST_IRQ, FALSE);
+  WakeupCfg (USB2_3_HOST_IRQ, FALSE);
   return Status;
 }
 
@@ -443,6 +481,42 @@ RtcWakupEnable (
 
 EFI_STATUS
 EFIAPI
+UpdateFastbootSN (
+  IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
+  )
+{
+  EFI_STATUS                  Status;
+  CHAR8                       *SysSnPtr;
+  CHAR16                      *SysSnPtr16;
+  UINTN                       SysSnSize;
+  CIX_FASTBOOT_INFO_PROTOCOL  *FastbootInfo;
+
+  Status = GetVariable2 (
+                         L"SystemSN",
+                         &gCixGPNVGuid,
+                         (VOID **)&SysSnPtr16,
+                         &SysSnSize
+                         );
+
+  if (!EFI_ERROR (Status)) {
+    Status = gBS->LocateProtocol (&gCixFastbootInfoProtocolGuid, NULL, (VOID **)&FastbootInfo);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "Can not locate fastboot info protocal!\n"));
+      return Status;
+    }
+    SysSnPtr            = AllocateZeroPool (SysSnSize+1);
+    UnicodeToAscii (SysSnPtr16, SysSnSize, SysSnPtr);
+    SysSnPtr[SysSnSize] = 0;
+    FastbootInfo->StrSerialNumber = SysSnPtr;
+
+    FreePool (SysSnPtr16);
+  }
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
 FarmFunctionControl (
   IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
   )
@@ -522,7 +596,7 @@ FarmFunctionControl (
     FarmEnableFlag                             = 1;
     Status                                     = gRT->SetVariable (
                                                         L"FarmEnableFlag",
-                                                        &gEfiFarmEnableFlagGuid,
+                                                        &gCixFarmEnableFlagGuid,
                                                         EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
                                                         sizeof (UINT8),
                                                         &FarmEnableFlag
@@ -536,7 +610,7 @@ FarmFunctionControl (
     VarSize =  sizeof (UINT8);
     Status  = gRT->GetVariable (
                      L"FarmEnableFlag",
-                     &gEfiFarmEnableFlagGuid,
+                     &gCixFarmEnableFlagGuid,
                      NULL,
                      &VarSize,
                      &FarmEnableFlag
@@ -607,7 +681,7 @@ FarmFunctionControl (
       FarmEnableFlag                             = 0;
       Status                                     = gRT->SetVariable (
                                                           L"FarmEnableFlag",
-                                                          &gEfiFarmEnableFlagGuid,
+                                                          &gCixFarmEnableFlagGuid,
                                                           EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
                                                           sizeof (UINT8),
                                                           &FarmEnableFlag
@@ -622,26 +696,53 @@ FarmFunctionControl (
   return Status;
 }
 
-#ifdef STMM_SUPPORT
 EFI_STATUS
 EFIAPI
-FenceFchXspiHost (
+BlueToothEnable (
   IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
   )
 {
-  EFI_STATUS                     Status;
-  MBOX_GASKET_FENCING_PARAMETER  Params;
-  MBOX_GASKET_FENCING_RESPONSE   Respon;
+  EFI_STATUS      Status = EFI_SUCCESS;
+  EC_PARAMS_GPIO  GpioInfo;
 
-  Params.Id = FCH_XSPI_RANGE_ID;
-  Status    = MboxEnableGasketFencing (&Params, &Respon);
-  DEBUG ((DEBUG_INFO, "[%a] enable FCH XSPI gasket fencing status %r, response error code %d\n", __FUNCTION__, Status, Respon.ErrCode));
+  DEBUG ((DEBUG_INFO, "[%a] EntryPoint\n", __FUNCTION__));
+
+  // EC GPIO209
+  DEBUG ((DEBUG_INFO, "EC GPIO209 Output High BT_RADIO_DISABLE_L\n"));
+  GpioInfo.GpioNum = 209;
+  GpioInfo.GpioVal = 1;
+  SetGpio (&GpioInfo);
 
   return Status;
 }
 
-#endif
+EFI_STATUS
+EFIAPI
+UpdateDebugLevelControl (
+  IN OUT ENV_HOOK_PARAMS_DATA_BLOCK  *ConfigData
+  )
+{
+  EFI_STATUS           Status = EFI_SUCCESS;
+  UINTN                VarSize;
+  PLATFORM_SETUP_DATA  PlatformSetupVar;
 
+  // UINT8 DebugLevel;
+  VarSize = sizeof (PLATFORM_SETUP_DATA);
+  Status  = gRT->GetVariable (
+                   PLATFORM_SETUP_VAR,
+                   &gPlatformSetupVariableGuid,
+                   NULL,
+                   &VarSize,
+                   &PlatformSetupVar
+                   );
+  if (EFI_ERROR (Status)) {
+    DebugPrint (DEBUG_ERROR, "[%a] [%d]Get Platform Setup Variable fail.\n", __FUNCTION__, __LINE__);
+    return Status;
+  }
+
+  MmioWrite32 (PcdGet32(PcdDebugModeFlagAddress), PlatformSetupVar.DebugMode);
+  return Status;
+}
 
 STATIC
 VOID
@@ -664,20 +765,22 @@ CixFwBootPerfInit (
   EFI_STATUS  Status = EFI_SUCCESS;
 
   Status = gBS->CreateEventEx (
-                               EVT_NOTIFY_SIGNAL,
-                               TPL_CALLBACK,
-                               CixFwBootPerfEndNotify,
-                               NULL,
-                               &gEfiEventReadyToBootGuid,
-                               &ReadyToBootEvent
-                               );
+                  EVT_NOTIFY_SIGNAL,
+                  TPL_CALLBACK,
+                  CixFwBootPerfEndNotify,
+                  NULL,
+                  &gEfiEventReadyToBootGuid,
+                  &ReadyToBootEvent
+                  );
   return Status;
-
 }
 
 STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 InitGpio                        },
   { NULL,                        NULL,                 InitPinmux                      },
+ #ifdef DEBUG_MODE_SUPPORT
+  { NULL,                        NULL,                 UpdateDebugLevelControl         },
+ #endif
   // { NULL,                        NULL,                 PciePowerOffWith4sPowerOverride },
   { NULL,                        NULL,                 UpdatePcdDmaDeviceLimit         },
   // { NULL,                        NULL,                 WakeupSourceInit                },
@@ -685,12 +788,11 @@ STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   // { NULL,                        NULL,                 SetStateAfterG3                 },
   // { NULL,                        NULL,                 RtcWakupEnable                  },
   // { NULL,                        NULL,                 FarmFunctionControl             },
+  { NULL,                        NULL,                 UpdateFastbootSN                },
+  // { NULL,                        NULL,                 BlueToothEnable                 },
   // { &gEfiI2cMasterProtocolGuid,  InstallRtcProtocol,   NULL                            },
   // { &gCixEcPlatformProtocolGuid, InitEcDefaultSetting, NULL                            },
- #ifdef STMM_SUPPORT
-  { NULL,                        NULL,                 FenceFchXspiHost                },
- #endif
-   { NULL,                        NULL,                 CixFwBootPerfInit              },
+  { NULL,                        NULL,                 CixFwBootPerfInit               },
   // add platform initialization routines on ENV phase BEFORE this line, and they were invoked from top to down.
   { NULL,                        NULL,                 NULL                            }
 };
@@ -706,6 +808,15 @@ PlatformEnvHook (
   EFI_STATUS  Status = EFI_SUCCESS;
   UINT32      Index  = 0;
   VOID        *Registration;
+
+ #ifdef CIX_GPNV_ENABLE
+  CixGPNVSync (
+    &gCixGPNVGuid,
+    FixedPcdGet32 (PcdNorFlashVarSyncRegionBase),
+    FixedPcdGet32 (PcdNorFlashVarSyncRegionSize),
+    SIZE_4KB
+    );
+ #endif
 
   if (ConfigData == NULL) {
     DEBUG ((DEBUG_ERROR, "%a: platform ENV hook routine failed to get config data\n", __FUNCTION__));

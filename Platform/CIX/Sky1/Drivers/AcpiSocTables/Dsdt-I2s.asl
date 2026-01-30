@@ -257,6 +257,7 @@ Device (I2S5) {
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 15 },
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
+      Package () { "dp_pair_id", 0 },
     }
   })
 
@@ -302,6 +303,7 @@ Device (I2S6) {
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 15 },
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
+      Package () { "dp_pair_id", 1 },
     }
   })
 
@@ -347,6 +349,7 @@ Device (I2S7) {
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 15 },
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
+      Package () { "dp_pair_id", 2 },
     }
   })
 
@@ -392,6 +395,7 @@ Device (I2S8) {
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 15 },
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
+      Package () { "dp_pair_id", 3 },
     }
   })
 
@@ -437,6 +441,7 @@ Device (I2S9) {
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 15 },
       Package () { "cdns,cru-ctrl", \_SB.ACRU },
+      Package () { "dp_pair_id", 4 },
     }
   })
 

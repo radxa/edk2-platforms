@@ -1,0 +1,28 @@
+#/**
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#  Copyright 2025 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x0001001A
+  BASE_NAME                      = PdEcLibNull
+  FILE_GUID                      = 22518171-bc8e-4dcb-98a6-b9616fe40ce0
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = PdEcLib|DXE_DRIVER  DXE_RUNTIME_DRIVER DXE_SMM_DRIVER UEFI_APPLICATION UEFI_DRIVER SMM_CORE
+
+[Sources.common]
+  PdEcLibNull.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  Platform/Radxa/Radxa.dec
+
+[LibraryClasses]
+  BaseLib

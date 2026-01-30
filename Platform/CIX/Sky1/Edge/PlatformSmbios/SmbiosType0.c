@@ -9,7 +9,7 @@
 #define TYPE0_STRINGS                                                                    \
   "Cix Technology Group Co., Ltd.\0" /* Vendor */                                        \
   "1.0\0"                            /* BiosVersion */                                   \
-  __DATE__ "\0"                      /* BiosReleaseDate */
+  RELEASE_DATE_TEMPLATE              /* BiosReleaseDate */
 
 #pragma pack(1)
 typedef struct {
@@ -57,6 +57,67 @@ STATIC PLATFORM_SMBIOS_TYPE0  mPlatformDefaultType0 = {
   TYPE0_STRINGS
 };
 
+typedef struct {
+  CHAR8    MonthNameStr[4]; // example "Jan", Compiler build date, month
+  CHAR8    DigitStr[3];     // example "01", Smbios date format, month
+} MonthStringDig;
+
+STATIC MonthStringDig  MonthMatch[12] = {
+  { "Jan", "01" },
+  { "Feb", "02" },
+  { "Mar", "03" },
+  { "Apr", "04" },
+  { "May", "05" },
+  { "Jun", "06" },
+  { "Jul", "07" },
+  { "Aug", "08" },
+  { "Sep", "09" },
+  { "Oct", "10" },
+  { "Nov", "11" },
+  { "Dec", "12" }
+};
+
+STATIC
+VOID
+ConstructBuildDate (
+  OUT CHAR8  *DateBuf
+  )
+{
+  UINTN  i;
+
+  // GCC __DATE__ format is "Feb  2 1996"
+  // If the day of the month is less than 10, it is padded with a space on the left
+  CHAR8  *BuildDate = __DATE__;
+
+  // SMBIOS spec date string: MM/DD/YYYY
+  CHAR8  SmbiosDateStr[sizeof (RELEASE_DATE_TEMPLATE)] = { 0 };
+
+  SmbiosDateStr[sizeof (RELEASE_DATE_TEMPLATE) - 1] = '\0';
+
+  SmbiosDateStr[2] = '/';
+  SmbiosDateStr[5] = '/';
+
+  // Month
+  for (i = 0; i < sizeof (MonthMatch) / sizeof (MonthMatch[0]); i++) {
+    if (AsciiStrnCmp (&BuildDate[0], MonthMatch[i].MonthNameStr, AsciiStrLen (MonthMatch[i].MonthNameStr)) == 0) {
+      CopyMem (&SmbiosDateStr[0], MonthMatch[i].DigitStr, AsciiStrLen (MonthMatch[i].DigitStr));
+      break;
+    }
+  }
+
+  // Day
+  CopyMem (&SmbiosDateStr[3], &BuildDate[4], 2);
+  if (BuildDate[4] == ' ') {
+    // day is less then 10, SAPCE filed by compiler, SMBIOS requires 0
+    SmbiosDateStr[3] = '0';
+  }
+
+  // Year
+  CopyMem (&SmbiosDateStr[6], &BuildDate[7], 4);
+
+  CopyMem (DateBuf, SmbiosDateStr, AsciiStrLen (RELEASE_DATE_TEMPLATE));
+}
+
 EFI_STATUS
 AddSmbiosType0 (
   IN EFI_SMBIOS_PROTOCOL  *Smbios
@@ -64,6 +125,8 @@ AddSmbiosType0 (
 {
   EFI_STATUS         Status;
   EFI_SMBIOS_HANDLE  SmbiosHandle;
+  UINTN              StrSize, StringNumber;
+  CHAR8              *ReleaseDateBuf = NULL;
 
   mPlatformDefaultType0.Base.SystemBiosMajorRelease =
     (PcdGet32 (PcdFirmwareRevision) >> 16) & 0xFF;
@@ -86,7 +149,23 @@ AddSmbiosType0 (
       DEBUG_LINE_NUMBER,
       Status
       ));
+
+    return Status;
   }
 
-  return EFI_SUCCESS;
+  StrSize        = AsciiStrSize (RELEASE_DATE_TEMPLATE);
+  ReleaseDateBuf = AllocateZeroPool (StrSize);
+  StringNumber   = 3;// BIOS release date
+
+  if (ReleaseDateBuf != NULL) {
+    ConstructBuildDate (ReleaseDateBuf);
+    Status = Smbios->UpdateString (Smbios, &SmbiosHandle, &StringNumber, ReleaseDateBuf);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "Fail to update BIOS release date."));
+    }
+
+    FreePool (ReleaseDateBuf);
+  }
+
+  return Status;
 }

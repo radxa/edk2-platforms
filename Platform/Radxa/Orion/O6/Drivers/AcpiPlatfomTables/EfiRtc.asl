@@ -25,30 +25,18 @@ Device (ERTC) {
   OperationRegion (I2CA, SystemMemory, 0x04040000, 0x100)
   Field (I2CA, DWordAcc, NoLock, Preserve)
   {
-      Offset(0x00), // Control Register
-      CR,32,
-      Offset(0x04), // Status Register
-      SR,32,
-      Offset(0x08), // Address Register
-      AR,32,
-      Offset(0x0C), // Data Register
-      DR,32,
-      Offset(0x10), // Interrupt Status Register
-      ISR,32,
-      Offset(0x14), // Transfer Size Register
-      TSR,32,
-      Offset(0x18), // Slave Monitor Pause Register
-      SMPR,32,
-      Offset(0x1C), // Time Out Register
-      TOR,32,
-      Offset(0x20), // Interrupt Mask Register
-      IMR,32,
-      Offset(0x24), // Interrupt Enable Register
-      IER,32,
-      Offset(0x28), // Interrupt Disable Register
-      IDR,32,
-      Offset(0x2C), // Glitch Filter Control Register
-      GFCR,32,
+      CR,32,    // Control Register
+      SR,32,    // Status Register
+      AR,32,    // Address Register
+      DR,32,    // Data Register
+      ISR,32,   // Interrupt Status Register
+      TSR,32,   // Transfer Size Register
+      SMPR,32,  // Slave Monitor Pause Register
+      TOR,32,   // Time Out Register
+      IMR,32,   // Interrupt Mask Register
+      IER,32,   // Interrupt Enable Register
+      IDR,32,   // Interrupt Disable Register
+      GFCR,32,  // Glitch Filter Control Register
   }
   Method (_INI, 0, NotSerialized)
   {
@@ -115,6 +103,8 @@ Device (ERTC) {
       TSR = Arg1
     }
 
+    // Remark 2146 Method Argument is never used ^  (Arg3)
+    Local0 = Arg3
     Local0 = CR
     Local0 = Local0 | BIT0
     CR = Local0
@@ -187,6 +177,8 @@ Device (ERTC) {
       Return(I2C_SUCCESS)
     }
 
+    // Remark 2146 Method Argument is never used ^  (Arg3)
+    Local0 = Arg3
     Local0 = IER
     Local0 = Local0 | BIT0
     IER = Local0
@@ -341,20 +333,19 @@ Device (ERTC) {
   // Output: Status(No zero may have some error in it)
   //
   Method(CAFG, 0, Serialized){
-    Name(BUF0, Buffer(1){HYM8563_CONTROL2_REG_OFFSET})
-    Name(BUF1, Buffer(1){})
-    Name(BUF2, Buffer(2){HYM8563_CONTROL2_REG_OFFSET})
-    if (TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1)) != I2C_SUCCESS){
+    Local0 = Buffer(1){HYM8563_CONTROL2_REG_OFFSET}
+    Local1 = Buffer(1){}
+    Local2 = Buffer(2){HYM8563_CONTROL2_REG_OFFSET}
+    if (TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1)) != I2C_SUCCESS){
       Return(One)
     }
-    CreateByteField (BUF1, 0x00, CTL2)
+    CreateByteField (Local1, 0x00, CTL2)
     CTL2 &= ~HYM8563_CTL2_AF
-    CreateByteField (BUF2, 0x01, DATA)
+    CreateByteField (Local2, 0x01, DATA)
     DATA = CTL2
-    if (WRIT(RTC_SLAVE_ADDRESS,Sizeof(BUF2),BUF2,1) != I2C_SUCCESS){
+    if (WRIT(RTC_SLAVE_ADDRESS,Sizeof(Local2),Local2,1) != I2C_SUCCESS){
       Return(One)
     }
     Return(0)
   }
 }
-

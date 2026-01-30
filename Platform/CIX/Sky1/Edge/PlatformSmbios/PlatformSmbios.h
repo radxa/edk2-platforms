@@ -9,12 +9,18 @@
 
 #include <PiDxe.h>
 #include <Library/DebugLib.h>
+#include <Library/BaseLib.h>
+#include <Library/BaseMemoryLib.h>
+#include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Protocol/Smbios.h>
 #include <IndustryStandard/SmBios.h>
+#include <Library/UefiLib.h>
 
-#define PLATFORM_SMBIOS_TABLE_HOOK  AddSmbiosType0,AddSmbiosType1,AddSmbiosType2,AddSmbiosType3
-#define PLATFORM_SMBIOS_TABLE_NAME  "AddSmbiosType0","AddSmbiosType1","AddSmbiosType2","AddSmbiosType3"
+#define PLATFORM_SMBIOS_TABLE_HOOK  AddSmbiosType0,AddSmbiosType1,AddSmbiosType2,AddSmbiosType3,AddSmbiosType32
+#define PLATFORM_SMBIOS_TABLE_NAME  "AddSmbiosType0","AddSmbiosType1","AddSmbiosType2","AddSmbiosType3","AddSmbiosType32"
+
+#define RELEASE_DATE_TEMPLATE  "MM/DD/YYYY\0"
 
 typedef EFI_STATUS (ADD_PLATFORM_SMBIOS_TABLE)(
   IN EFI_SMBIOS_PROTOCOL  *Smbios
@@ -49,4 +55,15 @@ AddSmbiosType3 (
   IN EFI_SMBIOS_PROTOCOL  *Smbios
   );
 
+EFI_STATUS
+AddSmbiosType32 (
+  IN EFI_SMBIOS_PROTOCOL  *Smbios
+  );
+
+UINTN
+UnicodeToAscii (
+  IN CONST CHAR16  *UStr,
+  IN CONST UINTN   Length,
+  OUT CHAR8        *AStr
+  );
 #endif

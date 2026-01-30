@@ -29,7 +29,7 @@ STATIC PLATFORM_SMBIOS_TYPE2  mPlatformDefaultType2 = {
       // SMBIOS_STRUCTURE Hdr
       EFI_SMBIOS_TYPE_BASEBOARD_INFORMATION,       // UINT8 Type
       sizeof (SMBIOS_TABLE_TYPE2),                 // UINT8 Length
-      SMBIOS_HANDLE_MOTHERBOARD,
+      SMBIOS_HANDLE_BASE_BOARD,
     },
     1,     // Manufacturer
     2,     // Product Name
@@ -43,7 +43,7 @@ STATIC PLATFORM_SMBIOS_TYPE2  mPlatformDefaultType2 = {
     SMBIOS_HANDLE_CHASSIS,
     BaseBoardTypeMotherBoard,
     1,
-    { SMBIOS_HANDLE_CLUSTER },   // ,SMBIOS_HANDLE_CLUSTER,SMBIOS_HANDLE_MEMORY},
+    { SMBIOS_HANDLE_CLUSTER1 },   // ,SMBIOS_HANDLE_CLUSTER,SMBIOS_HANDLE_MEMORY},
   },
   TYPE2_STRINGS
 };
@@ -66,7 +66,7 @@ AddSmbiosType2 (
     DEBUG ((DEBUG_ERROR, "Fail to locate the handle of Smbios Type4 entry!\n"));
   }
 
-  SmbiosHandle = SMBIOS_HANDLE_MOTHERBOARD;
+  SmbiosHandle = SMBIOS_HANDLE_BASE_BOARD;
   Status       = Smbios->Add (
                            Smbios,
                            NULL,

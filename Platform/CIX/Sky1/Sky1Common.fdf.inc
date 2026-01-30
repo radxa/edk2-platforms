@@ -99,6 +99,13 @@
 !else
   INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
 !endif
+!if $(EFUSE_OEM_KEY_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/EfuseOemKeyDxe/EfuseOemKeyDxe.inf
+  FILE FREEFORM = PCD(gCixPlatformTokenSpaceGuid.PcdOemPublicKeyFileGuid) {
+     SECTION RAW = Platform/CIX/Sky1/Drivers/EfuseOemKeyDxe/OemPublicKey.bin
+     SECTION UI = "OemPublicKey"
+  }
+!endif
 !if $(PCIE_HOST_ENABLE) == TRUE
   INF Silicon/CIX/Sky1/Drivers/PcieInitDxe/PcieInitDxe.inf
 !endif
@@ -298,6 +305,7 @@
 !else
   INF  Platform/CIX/Sky1/Drivers/SystemFirmwareUpdate/SystemFirmwareReportDxe.inf
 !endif
+  INF Platform/CIX/Sky1/Drivers/CapsuleUpdateDxe/CapsuleUpdateDxe.inf
   FILE FREEFORM = PCD(gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiPkcs7TestPublicKeyFileGuid) {
      SECTION RAW = BaseTools/Source/Python/Pkcs7Sign/TestRoot.cer
      SECTION UI = "Pkcs7TestRoot"

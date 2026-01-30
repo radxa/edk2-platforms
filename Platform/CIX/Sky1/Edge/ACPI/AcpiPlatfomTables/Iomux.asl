@@ -702,6 +702,15 @@ Device (MUX1) {
         {
             SKY1_IOMUXC_USB_OC3_L,
         }
+
+    PinGroup ("pinctrl_ra8900ce_irq", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            0x00, 0x28, 0x00, 0x44,
+        })
+        {
+            SKY1_IOMUXC_GPIO11,
+        }
     PinGroup ("pinctrl_pcie_x8_rc", ResourceProducer, ,
         RawDataBuffer ()
         {
@@ -721,20 +730,12 @@ Device (MUX1) {
     PinGroup ("pinctrl_pcie_x2_rc", ResourceProducer, ,
         RawDataBuffer ()
         {
-            0x00, 0x10, 0x00, 0x24,
-        })
-        {
-            SKY1_IOMUXC_GPIO5,
-        }
-    PinGroup ("pinctrl_pcie_x1_1_rc", ResourceProducer, ,
-        RawDataBuffer ()
-        {
             0x00, 0x08, 0x00, 0x24,
         })
         {
             SKY1_IOMUXC_GPIO3,
         }
-    PinGroup ("pinctrl_pcie_x1_0_rc", ResourceProducer, ,
+    PinGroup ("pinctrl_pcie_x1_1_rc", ResourceProducer, ,
         RawDataBuffer ()
         {
             0x00, 0x14, 0x00, 0x24,
@@ -742,55 +743,21 @@ Device (MUX1) {
         {
             SKY1_IOMUXC_GPIO6,
         }
-    PinGroup ("vgfx_poweren_gpio", ResourceProducer, ,
+    PinGroup ("pinctrl_pcie_x1_0_rc", ResourceProducer, ,
         RawDataBuffer ()
         {
-            0x00, 0x88, 0x00, 0x44,
+            0x00, 0x10, 0x00, 0x24,
         })
         {
-            SKY1_IOMUXC_SFI_GPIO2,
+            SKY1_IOMUXC_GPIO5,
         }
     PinGroup ("wifi_vbat_gpio", ResourceProducer, ,
         RawDataBuffer ()
         {
-            0x00, 0x2c, 0x00, 0x44,
+            0x00, 0x30, 0x00, 0x44,
         })
         {
-            SKY1_IOMUXC_GPIO12,
-        }
-    PinGroup ("gbe1_poweren_gpio", ResourceProducer, ,
-        RawDataBuffer ()
-        {
-            0x00, 0x9c, 0x01, 0x54,
-        })
-        {
-            SKY1_IOMUXC_SFI_GPIO7,
-        }
-    PinGroup ("gbe2_poweren_gpio", ResourceProducer, ,
-        RawDataBuffer ()
-        {
-            0x00, 0x24, 0x00, 0x44,
-        })
-        {
-            SKY1_IOMUXC_GPIO10,
-        }
-
-    PinGroup ("pinctrl_hym8563_irq", ResourceProducer, ,
-        RawDataBuffer ()
-        {
-            0x00, 0x28, 0x00, 0x44,
-        })
-        {
-            SKY1_IOMUXC_GPIO11,
-        }
-
-    PinGroup ("vcc_ssd_pwren", ResourceProducer, ,
-        RawDataBuffer ()
-        {
-            0x00, 0x2c, 0x00, 0x44,
-        })
-        {
-            SKY1_IOMUXC_GPIO12,
+            SKY1_IOMUXC_GPIO13,
         }
   })
 }

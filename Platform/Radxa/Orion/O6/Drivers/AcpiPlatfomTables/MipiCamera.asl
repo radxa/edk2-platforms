@@ -110,7 +110,7 @@ Scope (\_SB.I2C1)
   Device (IIS1) {
     Name (_HID, "CIXH3024")
     Name (_UID, 0x01)
-    Name (_STA, 0x00)
+    Name (_STA, 0x0F)
     Name (_CCA, 0)
     Name (_CRS, ResourceTemplate () {
       I2cSerialBusV2 (0x36,

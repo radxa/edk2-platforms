@@ -6,7 +6,7 @@
 [Defines]
   INF_VERSION                    = 0x00010005
   BASE_NAME                      = SeConfigUpdateDxe
-  FILE_GUID                      = D3BEA75B-165C-440f-830D-C972EFA4BED1
+  FILE_GUID                      = FF475495-E3F8-4441-AE64-7E0AF94857E6
   MODULE_TYPE                    = DXE_DRIVER
   VERSION_STRING                 = 1.0
   ENTRY_POINT                    = SeConfigUpdateDxeEntryPoint

@@ -11,7 +11,7 @@
 
 #define ALERT_PIN_POLL_INTERVAL             10
 #define ALERT_PIN_POLL_MAX_COUNT            1000 // max wait time 10ms (ALERT_PIN_POLL_INTERVAL * ALERT_PIN_POLL_MAX_COUNT)
-#define PHY_SWITCH_DELAY_AFTER_PD_UPDATE    1000 * 1000 * 1.5
+#define PHY_SWITCH_DELAY_AFTER_PD_UPDATE    1000 * 1000 * 1
 #define ALERT_TIMER_CALLBACK_INTERVAL       1000 * 100
 
 PD_DEV_INFO  *mPdDevList = NULL;
@@ -92,6 +92,17 @@ UpdateTypecPhy (
   EFI_HANDLE          *PhyHandleBuffer = NULL;
   UINTN               PhyIndex         = 0;
   TYPEC_PHY_PROTOCOL  *TypecPhy;
+
+  Status = RedriverSetConf(TypcPhyIdx, PortState.Mode, PortState.Orientation);
+  if (EFI_ERROR (Status) && Status != EFI_UNSUPPORTED) {
+    DebugPrint (
+      DEBUG_ERROR,
+      "Redriver Device %d update conf %r\n",
+      TypcPhyIdx,
+      Status
+      );
+    return Status;
+  }
 
   DEBUG ((
     DEBUG_INFO,
@@ -518,11 +529,13 @@ PdDxeEntryPoint (
     PdDev->TypecPhyReadyForIRQ = FALSE;    // wait for usb host to set this flag true after reset finish
 
     if (PdDev->Enabled) {
+      PdEnterAlertInterrupt (PdDevIdx);
       // get typec port state
       Status = PdGetPortState (
                  PdDevIdx,
                  &PdDev->TypecPortState
                  );
+      PdExitAlertInterrupt (PdDevIdx);
       if (EFI_ERROR (Status)) {
         DEBUG ((
           DEBUG_INFO,

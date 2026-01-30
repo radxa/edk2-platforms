@@ -12,7 +12,7 @@
 #include "LinuxAcpiConfig.h"
 #endif
 
-DefinitionBlock("SsdtTable.aml", "SSDT", 2, "CIXTEK", "SKY1EDK2", 1) {
+DefinitionBlock("SsdtTable.aml", "SSDT", 2, "RADXA", "ORIONO6", 1) {
   Scope(_SB) {
     include("Audio.asl")
     include("MipiCamera.asl")
@@ -20,8 +20,12 @@ DefinitionBlock("SsdtTable.aml", "SSDT", 2, "CIXTEK", "SKY1EDK2", 1) {
     include("I2cPD.asl")
     include("Iomux.asl")
     include("GpioInt.asl")
+    include("GpioLeds.asl")
+    include("GpioLines.asl")
     include("EfiRtc.asl")
     include("CdnsPciePwr.asl")
     include("HardwareMonitor.asl")
+    include("Wireless.asl")
+    include("UsbPwr.asl")
   }
 }

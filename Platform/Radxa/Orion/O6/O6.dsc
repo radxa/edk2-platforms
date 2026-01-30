@@ -27,6 +27,9 @@
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Platform/Radxa/Orion/$(PLATFORM_NAME)/$(PLATFORM_NAME).fdf
   PCD_DYNAMIC_AS_DYNAMICEX       = TRUE
+  ACPI_IOMUX_INPUT               = Platform/Radxa/Orion/$(PLATFORM_NAME)/Drivers/AcpiPlatfomTables/RadxaO6Iomux.asl
+  ACPI_IOMUX_OUTPUT              = $(OUTPUT_DIRECTORY)/Iomux.asl
+  PREBUILD                       = python Platform/CIX/Sky1/Drivers/AcpiSocTables/tool/python3/ParseIomuxTemplate.py $(ACPI_IOMUX_INPUT) $(ACPI_IOMUX_OUTPUT)
 
 !include  Platform/CIX/Sky1/Sky1Define.dsc.inc
 !include  Platform/Radxa/RadxaDefine.dsc.inc
@@ -45,7 +48,7 @@
   DEFINE DTB_UPDATE_ENABLE          = FALSE
   DEFINE SMBIOS_ENABLE              = FALSE
   DEFINE ACPI_ENABLE                = FALSE
-  DEFINE TOKEN_CONSOLE_PREF_SUPPORT = FALSE
+  DEFINE TOKEN_CONSOLE_PREF_SUPPORT = TRUE
   DEFINE FW_VERSION_ENABLE          = TRUE
   DEFINE SOC_PWR_CLK_RST_ENABLE     = TRUE
   DEFINE WATCH_DOG_ENABLE           = FALSE
@@ -147,7 +150,7 @@
 [LibraryClasses.common]
   PlatformConfigParamsHookLib|Platform/Radxa/Orion/O6/Library/PlatformConfigParamsHookLib/PlatformConfigParamsHookLib.inf
   PlatformEnvHookLib|Platform/Radxa/Orion/O6/Library/PlatformEnvHookLib/PlatformEnvHookLib.inf
-  RealTimeClockLib|Platform/Radxa/Orion/O6/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.inf
+  RealTimeClockLib|Platform/Radxa/Library/Hym8563RealTimeClockLib/Hym8563RealTimeClockLib.inf
 
   PlatformBootHookLib|Platform/CIX/Sky1/Merak/Library/PlatformBootHookLib/PlatformBootHookLib.inf
 
@@ -168,6 +171,13 @@
 [Components.common]
 # Network stack
   !include NetworkPkg/Network.dsc.inc
+# This modification is to fix a PXE bug.
+# If the Code Base is upgraded, this modification will cause a compilation error and should be deleted.
+  NetworkPkg/UefiPxeBcDxe/UefiPxeBcDxe.inf {
+    <PcdsFixedAtBuild>
+      gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|TRUE
+      gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|TRUE
+  }
 
   Platform/CIX/Sky1/PrePi/PeiUniCore.inf
 !if $(SHELL_EMBEDDED_ENABLE) == TRUE
@@ -194,8 +204,11 @@
 !endif
   Platform/CIX/Sky1/Drivers/DtbUpdateDxeSi/DtbUpdateDxe.inf
 !if $(ACPI_ENABLE) == TRUE
-  Platform/Radxa/Orion/O6/Drivers/AcpiPlatfomTables/AcpiPlatfomTables.inf
-  Platform/Radxa/Orion/O6//Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
+  Platform/Radxa/Orion/O6/Drivers/AcpiPlatfomTables/AcpiPlatfomTables.inf {
+    <BuildOptions>
+      *_*_*_ASLCC_FLAGS = -I$(WORKSPACE)/$(OUTPUT_DIRECTORY)
+  }
+  Platform/Radxa/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
 !endif
 !if $(SMBIOS_ENABLE) == TRUE
   Platform/Radxa/Orion/O6/Drivers/PlatformSmbios/PlatformSmbios.inf
@@ -365,8 +378,8 @@
 
   gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000
   gEfiNetworkPkgTokenSpaceGuid.PcdNetworkStackSupport|FALSE
-  gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|FALSE
-  gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|FALSE
+  gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|TRUE
+  gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|TRUE
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4HttpSupport|TRUE
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6HttpSupport|TRUE
 

@@ -8,11 +8,17 @@
 
 extern EFI_GUID  gRadxaSetupVariableGuid;
 
+#define RADXA_SETUP_UFS_POWER_AUTO          0
+#define RADXA_SETUP_UFS_POWER_ON            1
+#define RADXA_SETUP_UFS_POWER_OFF           2
+#define RADXA_SETUP_UFS_POWER_NOT_AVAILABLE 0xFF
+
 #pragma pack(1)
 
 typedef struct {
   UINT8     CpuFMax;
   UINT8     CpuBoostTrigger;
+  UINT8     UFSPowerMode;
 } RADXA_SETUP_DATA;
 
 #pragma pack()

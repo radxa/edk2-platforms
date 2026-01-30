@@ -11,6 +11,17 @@
 #include <Base.h>
 #include <Uefi.h>
 
+#define MAX_PMIC_NUM  3
+
+#pragma pack(1)
+
+typedef struct _PMIC_VERSION_INFO {
+  UINT32    Count;
+  UINT32    Version[MAX_PMIC_NUM];
+} PMIC_VERSION_INFO;
+
+#pragma pack()
+
 EFI_STATUS
 CsuPmMsgClockCountDecrase (
   IN UINT32  ClockId
@@ -26,6 +37,11 @@ CsuPmMsgRegisterS3ScritTable (
   IN UINT32  AddressH32,
   IN UINT32  CrcL32,
   IN UINT32  CrcH32
+  );
+
+EFI_STATUS
+CsuPmMsgGetPmicVersion (
+  IN OUT PMIC_VERSION_INFO  *Info
   );
 
 EFI_STATUS

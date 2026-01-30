@@ -41,3 +41,22 @@ PlatformSmbiosEntryPoint (
 
   return EFI_SUCCESS;
 }
+
+UINTN
+UnicodeToAscii (
+  IN CONST CHAR16  *UStr,
+  IN CONST UINTN   Length,
+  OUT CHAR8        *AStr
+  )
+{
+  UINTN  Index;
+
+  //
+  // just buffer copy, not character copy
+  //
+  for (Index = 0; Index < Length; Index++) {
+    *AStr++ = (CHAR8)*UStr++;
+  }
+
+  return Index;
+}

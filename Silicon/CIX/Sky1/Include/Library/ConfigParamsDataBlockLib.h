@@ -79,19 +79,20 @@ typedef struct _CONFIG_PARAMS_MEM {
 } CONFIG_PARAMS_MEM;
 
 typedef struct _CONFIG_PARAMS_PCIE {
-  UINT8    PcieRpEnable[5];
-  UINT8    PcieWidth[5];
-  UINT8    PcieMaxSpeed[5];
-  UINT8    PcieTargetLinkSpeed[5];
-  UINT8    PcieAspmMaxSupport[5];
-  UINT8    PcieAspm[5];
-  UINT8    PcieMaxPayload[5];
-  UINT8    PcieMaxReadRequest[5];
-  UINT8    PcieL1Substates[5];
-  UINT8    PcieLinkUpStatus[5];
-  UINT8    PcieDevicePower[5];
-  UINT8    PciePeResetPin[5];
-  UINT8    PcieDtiEnable[5];
+  UINT8     PcieRpEnable[5];
+  UINT8     PcieWidth[5];
+  UINT8     PcieMaxSpeed[5];
+  UINT8     PcieTargetLinkSpeed[5];
+  UINT8     PcieAspmMaxSupport[5];
+  UINT8     PcieAspm[5];
+  UINT8     PcieMaxPayload[5];
+  UINT8     PcieMaxReadRequest[5];
+  UINT8     PcieL1Substates[5];
+  UINT8     PcieLinkUpStatus[5];
+  UINT8     PcieDevicePower[5];
+  UINT8     PciePeResetPin[5];
+  UINT8     PcieDtiEnable[5];
+  UINT16    PcieLinkTimeout[5];
 } CONFIG_PARAMS_PCIE;
 
 typedef struct _CONFIG_PARAMS_DPU {
@@ -180,6 +181,7 @@ typedef struct _CONFIG_PARAMS_SENSOR_FUSION {
 
 typedef struct _CONFIG_PARAMS_AUDIO {
   BOOLEAN    HdaEn;
+  BOOLEAN    I2sEn[10];
 } CONFIG_PARAMS_AUDIO;
 
 typedef struct _CONFIG_PARAMS_LSIO_FCH_I2C {
@@ -376,7 +378,17 @@ typedef struct _CONFIG_PARAMS_DATA_OPTIONS {
 #define  PARAMS_DATA_GMAC1_INTEN_ID             (PARAMS_DATA_GMAC_ID_GROUP | 0x100E)
 #define  PARAMS_DATA_GMAC1_MACADDRESS_ID        (PARAMS_DATA_GMAC_ID_GROUP | 0x100F)
 
-#define  PARAMS_DATA_AUDIO_HDAEN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x0000)
+#define  PARAMS_DATA_AUDIO_HDAEN_ID   (PARAMS_DATA_AUDIO_ID_GROUP | 0x0000)
+#define  PARAMS_DATA_AUDIO_I2S0EN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x0001)
+#define  PARAMS_DATA_AUDIO_I2S1EN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x0002)
+#define  PARAMS_DATA_AUDIO_I2S2EN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x0003)
+#define  PARAMS_DATA_AUDIO_I2S3EN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x0004)
+#define  PARAMS_DATA_AUDIO_I2S4EN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x0005)
+#define  PARAMS_DATA_AUDIO_I2S5EN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x0006)
+#define  PARAMS_DATA_AUDIO_I2S6EN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x0007)
+#define  PARAMS_DATA_AUDIO_I2S7EN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x0008)
+#define  PARAMS_DATA_AUDIO_I2S8EN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x0009)
+#define  PARAMS_DATA_AUDIO_I2S9EN_ID  (PARAMS_DATA_AUDIO_ID_GROUP | 0x000A)
 
 #define  PARAMS_DATA_LSIO_FCH_I2C0_ENABLE_ID   (PARAMS_DATA_LSIO_FCH_ID_GROUP | 0x0000)
 #define  PARAMS_DATA_LSIO_FCH_I2C0_BUSFREQ_ID  (PARAMS_DATA_LSIO_FCH_ID_GROUP | 0x0001)

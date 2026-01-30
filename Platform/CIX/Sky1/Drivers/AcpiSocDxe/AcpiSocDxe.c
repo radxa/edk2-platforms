@@ -561,9 +561,7 @@ InitializeSystemAcpiRam (
   VOID
   )
 {
-  EFI_STATUS  Status;
-  // UINTN                              VarSize;
-  // PLATFORM_SETUP_DATA                PlatformSetupVar;
+  EFI_STATUS                         Status;
   UINT8                              *pSystemGpnvArea = NULL;
   UINT32                             NpuSupportStatus = 0;
   UINT32                             SupportInfoValue = 3;
@@ -575,24 +573,6 @@ InitializeSystemAcpiRam (
   }
 
   pSystemGpnvArea = (UINT8 *)pPlatformAcpiConfigProtocol->pAcpiRamAddress;
-
-  // VarSize = sizeof (PLATFORM_SETUP_DATA);
-  // Status  = gRT->GetVariable (
-  //                  PLATFORM_SETUP_VAR,
-  //                  &gPlatformSetupVariableGuid,
-  //                  NULL,
-  //                  &VarSize,
-  //                  &PlatformSetupVar
-  //                  );
-  // if (!EFI_ERROR (Status)) {
-  //   DEBUG ((DEBUG_INFO, "[%a]Get platform setup variable success\n", __FUNCTION__));
-
-  //   pSystemGpnvArea[ARV_PCIE_RP_00_ENABLE_OFFSET] = PlatformSetupVar.PcieRpEnable[0];
-  //   pSystemGpnvArea[ARV_PCIE_RP_01_ENABLE_OFFSET] = PlatformSetupVar.PcieRpEnable[1];
-  //   pSystemGpnvArea[ARV_PCIE_RP_02_ENABLE_OFFSET] = PlatformSetupVar.PcieRpEnable[2];
-  //   pSystemGpnvArea[ARV_PCIE_RP_03_ENABLE_OFFSET] = PlatformSetupVar.PcieRpEnable[3];
-  //   pSystemGpnvArea[ARV_PCIE_RP_04_ENABLE_OFFSET] = PlatformSetupVar.PcieRpEnable[4];
-  // }
 
   Status = gBS->LocateProtocol (
                   &gCixConfigParamsManageProtocolGuid,
@@ -612,6 +592,14 @@ InitializeSystemAcpiRam (
     pSystemGpnvArea[ARV_FCH_I2C_5_ENABLE_OFFSET]        = ConfigData->Fch.I2c[5].Enable;
     pSystemGpnvArea[ARV_FCH_I2C_6_ENABLE_OFFSET]        = ConfigData->Fch.I2c[6].Enable;
     pSystemGpnvArea[ARV_FCH_I2C_7_ENABLE_OFFSET]        = ConfigData->Fch.I2c[7].Enable;
+    pSystemGpnvArea[ARV_FCH_I2C_0_FREQ_OFFSET]          = ConfigData->Fch.I2c[0].BusFreq/ARV_I2C_FREQ_UNIT_HZ;
+    pSystemGpnvArea[ARV_FCH_I2C_1_FREQ_OFFSET]          = ConfigData->Fch.I2c[1].BusFreq/ARV_I2C_FREQ_UNIT_HZ;
+    pSystemGpnvArea[ARV_FCH_I2C_2_FREQ_OFFSET]          = ConfigData->Fch.I2c[2].BusFreq/ARV_I2C_FREQ_UNIT_HZ;
+    pSystemGpnvArea[ARV_FCH_I2C_3_FREQ_OFFSET]          = ConfigData->Fch.I2c[3].BusFreq/ARV_I2C_FREQ_UNIT_HZ;
+    pSystemGpnvArea[ARV_FCH_I2C_4_FREQ_OFFSET]          = ConfigData->Fch.I2c[4].BusFreq/ARV_I2C_FREQ_UNIT_HZ;
+    pSystemGpnvArea[ARV_FCH_I2C_5_FREQ_OFFSET]          = ConfigData->Fch.I2c[5].BusFreq/ARV_I2C_FREQ_UNIT_HZ;
+    pSystemGpnvArea[ARV_FCH_I2C_6_FREQ_OFFSET]          = ConfigData->Fch.I2c[6].BusFreq/ARV_I2C_FREQ_UNIT_HZ;
+    pSystemGpnvArea[ARV_FCH_I2C_7_FREQ_OFFSET]          = ConfigData->Fch.I2c[7].BusFreq/ARV_I2C_FREQ_UNIT_HZ;
     pSystemGpnvArea[ARV_PCIE_RP_00_ENABLE_OFFSET]       = ConfigData->Pcie.PcieRpEnable[0];
     pSystemGpnvArea[ARV_PCIE_RP_01_ENABLE_OFFSET]       = ConfigData->Pcie.PcieRpEnable[1];
     pSystemGpnvArea[ARV_PCIE_RP_02_ENABLE_OFFSET]       = ConfigData->Pcie.PcieRpEnable[2];
@@ -622,6 +610,31 @@ InitializeSystemAcpiRam (
     pSystemGpnvArea[ARV_PCIE_RP_02_LINK_STS_OFFSET]     = ConfigData->Pcie.PcieLinkUpStatus[2];
     pSystemGpnvArea[ARV_PCIE_RP_03_LINK_STS_OFFSET]     = ConfigData->Pcie.PcieLinkUpStatus[3];
     pSystemGpnvArea[ARV_PCIE_RP_04_LINK_STS_OFFSET]     = ConfigData->Pcie.PcieLinkUpStatus[4];
+    pSystemGpnvArea[ARV_PCIE_RP_00_BANDWITCH_OFFSET]    = ConfigData->Pcie.PcieWidth[0];
+    pSystemGpnvArea[ARV_PCIE_RP_01_BANDWITCH_OFFSET]    = ConfigData->Pcie.PcieWidth[1];
+    pSystemGpnvArea[ARV_PCIE_RP_02_BANDWITCH_OFFSET]    = ConfigData->Pcie.PcieWidth[2];
+    pSystemGpnvArea[ARV_PCIE_RP_03_BANDWITCH_OFFSET]    = ConfigData->Pcie.PcieWidth[3];
+    pSystemGpnvArea[ARV_PCIE_RP_04_BANDWITCH_OFFSET]    = ConfigData->Pcie.PcieWidth[4];
+    pSystemGpnvArea[ARV_PCIE_RP_00_MAX_SPEED_OFFSET]    = ConfigData->Pcie.PcieMaxSpeed[0];
+    pSystemGpnvArea[ARV_PCIE_RP_01_MAX_SPEED_OFFSET]    = ConfigData->Pcie.PcieMaxSpeed[1];
+    pSystemGpnvArea[ARV_PCIE_RP_02_MAX_SPEED_OFFSET]    = ConfigData->Pcie.PcieMaxSpeed[2];
+    pSystemGpnvArea[ARV_PCIE_RP_03_MAX_SPEED_OFFSET]    = ConfigData->Pcie.PcieMaxSpeed[3];
+    pSystemGpnvArea[ARV_PCIE_RP_04_MAX_SPEED_OFFSET]    = ConfigData->Pcie.PcieMaxSpeed[4];
+    pSystemGpnvArea[ARV_PCIE_RP_00_MAX_PAYLOAD_OFFSET]  = ConfigData->Pcie.PcieMaxPayload[0];
+    pSystemGpnvArea[ARV_PCIE_RP_01_MAX_PAYLOAD_OFFSET]  = ConfigData->Pcie.PcieMaxPayload[1];
+    pSystemGpnvArea[ARV_PCIE_RP_02_MAX_PAYLOAD_OFFSET]  = ConfigData->Pcie.PcieMaxPayload[2];
+    pSystemGpnvArea[ARV_PCIE_RP_03_MAX_PAYLOAD_OFFSET]  = ConfigData->Pcie.PcieMaxPayload[3];
+    pSystemGpnvArea[ARV_PCIE_RP_04_MAX_PAYLOAD_OFFSET]  = ConfigData->Pcie.PcieMaxPayload[4];
+    pSystemGpnvArea[ARV_PCIE_RP_00_MAX_ASPM_OFFSET]     = ConfigData->Pcie.PcieAspmMaxSupport[0];
+    pSystemGpnvArea[ARV_PCIE_RP_01_MAX_ASPM_OFFSET]     = ConfigData->Pcie.PcieAspmMaxSupport[1];
+    pSystemGpnvArea[ARV_PCIE_RP_02_MAX_ASPM_OFFSET]     = ConfigData->Pcie.PcieAspmMaxSupport[2];
+    pSystemGpnvArea[ARV_PCIE_RP_03_MAX_ASPM_OFFSET]     = ConfigData->Pcie.PcieAspmMaxSupport[3];
+    pSystemGpnvArea[ARV_PCIE_RP_04_MAX_ASPM_OFFSET]     = ConfigData->Pcie.PcieAspmMaxSupport[4];
+    pSystemGpnvArea[ARV_PCIE_RP_00_ASPM_OFFSET]         = ConfigData->Pcie.PcieAspm[0];
+    pSystemGpnvArea[ARV_PCIE_RP_01_ASPM_OFFSET]         = ConfigData->Pcie.PcieAspm[1];
+    pSystemGpnvArea[ARV_PCIE_RP_02_ASPM_OFFSET]         = ConfigData->Pcie.PcieAspm[2];
+    pSystemGpnvArea[ARV_PCIE_RP_03_ASPM_OFFSET]         = ConfigData->Pcie.PcieAspm[3];
+    pSystemGpnvArea[ARV_PCIE_RP_04_ASPM_OFFSET]         = ConfigData->Pcie.PcieAspm[4];
     pSystemGpnvArea[ARV_USB3_TYPEC_DRD_ENABLE_OFFSET]   = ConfigData->UsbCDrd[0].Enable;
     pSystemGpnvArea[ARV_USB3_TYPEC_HOST0_ENABLE_OFFSET] = ConfigData->UsbC[0].Enable;
     pSystemGpnvArea[ARV_USB3_TYPEC_HOST1_ENABLE_OFFSET] = ConfigData->UsbC[1].Enable;
@@ -710,12 +723,11 @@ InitializeSystemAcpiRam (
   }
 
   pSystemGpnvArea[ARV_NPU_SUPPORT_INFO_OFFSET] = SupportInfoValue;
-
-  pSystemGpnvArea[ARV_DPU_00_SUPPORT_OFFSET] = IsIpHarvested (DpuCore0) ? 0 : 1;
-  pSystemGpnvArea[ARV_DPU_01_SUPPORT_OFFSET] = IsIpHarvested (DpuCore1) ? 0 : 1;
-  pSystemGpnvArea[ARV_DPU_02_SUPPORT_OFFSET] = IsIpHarvested (DpuCore2) ? 0 : 1;
-  pSystemGpnvArea[ARV_DPU_03_SUPPORT_OFFSET] = IsIpHarvested (DpuCore3) ? 0 : 1;
-  pSystemGpnvArea[ARV_DPU_04_SUPPORT_OFFSET] = IsIpHarvested (DpuCore4) ? 0 : 1;
+  pSystemGpnvArea[ARV_DPU_00_SUPPORT_OFFSET] = !ConfigData->Dpu.DpEnable[0] || IsIpHarvested (DpuCore0) ? 0 : 1;
+  pSystemGpnvArea[ARV_DPU_01_SUPPORT_OFFSET] = !ConfigData->Dpu.DpEnable[1] || IsIpHarvested (DpuCore1) ? 0 : 1;
+  pSystemGpnvArea[ARV_DPU_02_SUPPORT_OFFSET] = !ConfigData->Dpu.DpEnable[2] || IsIpHarvested (DpuCore2) ? 0 : 1;
+  pSystemGpnvArea[ARV_DPU_03_SUPPORT_OFFSET] = !ConfigData->Dpu.DpEnable[3] || IsIpHarvested (DpuCore3) ? 0 : 1;
+  pSystemGpnvArea[ARV_DPU_04_SUPPORT_OFFSET] = !ConfigData->Dpu.DpEnable[4] || IsIpHarvested (DpuCore4) ? 0 : 1;
   pSystemGpnvArea[ARV_AUDIO_SUPPORT_OFFSET]  = IsIpHarvested (Audio) ? 0 : 1;
   pSystemGpnvArea[ARV_ISP_SUPPORT_OFFSET]    = IsIpHarvested (Isp) ? 0 : 1;
 

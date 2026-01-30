@@ -13,10 +13,12 @@
 #include <Uefi.h>
 #include <Uefi/UefiSpec.h>
 #include <VerifiedBoot.h>
+#include <avb/libavb_ab/ab_flow.h>
 
 /* Volume Label size 11 chars, round off to 16 */
 #define VOLUME_LABEL_SIZE  16
-#define SELECT_NVME_ID  L"Select NVME ID"
+#define SELECT_BOOT_ID     L"Select BOOT ID"
+
 /* List of all the filters that need device path protocol in the handle to
  * filter */
 #define FILTERS_NEEDING_DEVICEPATH                                             \
@@ -32,9 +34,9 @@
 struct StoragePartInfo  gPtable;
 EFI_PARTITION_ENTRY     gPtnEntries[MAX_NUM_PARTITIONS];
 STATIC UINT32           gPartitionCount;
-STATIC UINT8            gSelectNvmeId = NVME_ID_X4;
+STATIC UINT8            gSelectBootId = BOOT_ID_X4;
 #ifdef FASTBOOT_NVME
-STATIC CHAR8            gSelectNvmeIdStr[MAX_NVME_ID_ARRAY_SIZE][MAX_NVME_ID_STR_SIZE] = {"NVMEX8", "NVMEX4", "NVMEX2"};
+STATIC CHAR8  gSelectBootIdStr[MAX_BOOT_ID_ARRAY_SIZE][MAX_BOOT_ID_STR_SIZE] = { "NVMEX8", "NVMEX4", "NVMEX2", "UDISK" };
 #endif
 
 #ifdef ANDROID_BOOT
@@ -148,7 +150,7 @@ GetBlkIOHandles (
   IN PartiSelectFilter  *FilterData,
   OUT HandleInfo        *HandleInfoPtr,
   IN OUT UINT32         *MaxBlkIopCnt,
-  IN UINT8              SelectNvmeId
+  IN UINT8              SelectBootId
   )
 {
   EFI_BLOCK_IO_PROTOCOL             *BlkIo;
@@ -274,7 +276,7 @@ GetBlkIOHandles (
       Status         = gBS->LocateProtocol (&gEfiDevicePathToTextProtocolGuid, NULL, (void **)&DevTextPath);
       TextDevPath    = DevTextPath->ConvertDevicePathToText (DevPathInst, TRUE, TRUE);
 
-      UnicodeSPrint(SearchString, sizeof(SearchString), L"PciRoot(0x%d)", SelectNvmeId);
+      UnicodeSPrint (SearchString, sizeof (SearchString), L"PciRoot(0x%d)", SelectBootId);
       DEBUG ((
         EFI_D_INFO,
         "Get Device Path = %s type = %d subtype = %d  SearchString:%s  ControllerNumber = %d\n",
@@ -284,18 +286,18 @@ GetBlkIOHandles (
         SearchString,
         RootDevicePath->ControllerNumber
         ));
- #ifdef FASTBOOT_USB
-      if (StrStr (TextDevPath, L"USB") == NULL) {
-      {
-        continue;
+      if (SelectBootId == BOOT_ID_UDISK) {
+        // For Udisk
+        if (StrStr (TextDevPath, L"USB") == NULL) {
+          continue;
+        }
+      } else {
+        // For NVME
+        if ((StrStr (TextDevPath, L"Pci") == NULL) || (StrStr (TextDevPath, SearchString) == NULL)) {
+          continue;
+        }
       }
- #else
-      // For NVME
-      if ((StrStr (TextDevPath, L"Pci") == NULL) || (StrStr(TextDevPath, SearchString) == NULL))
-      {
-        continue;
-      }
- #endif
+
       if ((SelectionAttrib & (BLK_IO_SEL_SELECT_ROOT_DEVICE_ONLY |
                               BLK_IO_SEL_MATCH_ROOT_DEVICE)) != 0)
       {
@@ -317,19 +319,17 @@ GetBlkIOHandles (
       /* If we need the handle for root device only and if this is representing
        * a sub partition in the root device then ignore this handle */
       if (SelectionAttrib & BLK_IO_SEL_SELECT_ROOT_DEVICE_ONLY) {
- #ifdef FASTBOOT_USB
-        // For USB, DevicePathDepth of USB Root Device is 2
-        if ((DevicePathDepth != 2) && (DevicePathDepth != 1)) {
-          continue;
+        if (SelectBootId == BOOT_ID_UDISK) {
+          // For USB, DevicePathDepth of USB Root Device is 2
+          if ((DevicePathDepth != 2) && (DevicePathDepth != 1)) {
+            continue;
+          }
+        } else {
+          // For NVME, DevicePathDepth of NVME Root Device is 4
+          if ((DevicePathDepth != 4) && (DevicePathDepth != 1)) {
+            continue;
+          }
         }
-
- #else
-        // For NVME, DevicePathDepth of NVME Root Device is 4
-        if ((DevicePathDepth != 4) && (DevicePathDepth != 1)) {
-          continue;
-        }
-
- #endif
       }
 
       /* Check if the last node is Harddrive Device path that contains the
@@ -486,40 +486,54 @@ ToLower (
     }
   }
 }
+
 #ifdef FASTBOOT_NVME
 UINT8
-GetNvmeId (
+GetBootId (
   VOID
   )
 {
-  return gSelectNvmeId;
+  EFI_STATUS  Status           = EFI_SUCCESS;
+  UINTN       SelectBootIdSize = sizeof (gSelectBootId);
+
+  Status = gRT->GetVariable (
+                  SELECT_BOOT_ID,
+                  &gCixGlobalVariableGuid,
+                  NULL,
+                  &SelectBootIdSize,
+                  &gSelectBootId
+                  );
+
+  return gSelectBootId;
 }
 
 VOID
-GetNvmeIdStr (
-  CHAR8  **SelectNvmeIdStr
+GetBootIdStr (
+  CHAR8  **SelectBootIdStr
   )
 {
-  *SelectNvmeIdStr = gSelectNvmeIdStr[gSelectNvmeId];
+  *SelectBootIdStr = gSelectBootIdStr[gSelectBootId];
 }
 
 EFI_STATUS
-SetNvmeId  (
-  UINT8   SelectNvmeId
+SetBootId  (
+  UINT8  SelectBootId
   )
 {
-  EFI_STATUS         Status = EFI_SUCCESS;
+  EFI_STATUS  Status = EFI_SUCCESS;
 
-  gSelectNvmeId = SelectNvmeId;
-  Status = gRT->SetVariable (
-                  SELECT_NVME_ID,
-                  &gCixGlobalVariableGuid,
-                  EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
-                  sizeof (gSelectNvmeId),
-                  &gSelectNvmeId
-                  );
+  gSelectBootId = SelectBootId;
+  Status        = gRT->SetVariable (
+                         SELECT_BOOT_ID,
+                         &gCixGlobalVariableGuid,
+                         EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
+                         sizeof (gSelectBootId),
+                         &gSelectBootId
+                         );
+
   return Status;
 }
+
 #endif
 
 EFI_STATUS
@@ -529,29 +543,28 @@ EnumeratePartitions (
 {
   EFI_STATUS         Status;
   PartiSelectFilter  HandleFilter;
-  UINT32             Attribs = 0;
-#ifdef FASTBOOT_NVME
-  UINTN              SelectNvmeIdSize = sizeof(gSelectNvmeId);
-#endif
+  UINT32             Attribs          = 0;
+  UINTN              SelectBootIdSize = sizeof (gSelectBootId);
 
-#ifdef FASTBOOT_NVME
+ #ifdef FASTBOOT_NVME
   Status = gRT->GetVariable (
-                SELECT_NVME_ID,
-                &gCixGlobalVariableGuid,
-                NULL,
-                &SelectNvmeIdSize,
-                &gSelectNvmeId
-                );
-  if(Status == EFI_NOT_FOUND) {
-      Status = gRT->SetVariable (
-                  SELECT_NVME_ID,
+                  SELECT_BOOT_ID,
                   &gCixGlobalVariableGuid,
-                  EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
-                  sizeof (gSelectNvmeId),
-                  &gSelectNvmeId
+                  NULL,
+                  &SelectBootIdSize,
+                  &gSelectBootId
                   );
+  if (Status == EFI_NOT_FOUND) {
+    Status = gRT->SetVariable (
+                    SELECT_BOOT_ID,
+                    &gCixGlobalVariableGuid,
+                    EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
+                    sizeof (gSelectBootId),
+                    &gSelectBootId
+                    );
   }
-#endif
+
+ #endif
   if (IsPartitionBackDoor ()) {
     return EFI_SUCCESS;
   }
@@ -564,10 +577,14 @@ EnumeratePartitions (
   HandleFilter.VolumeName     = NULL;
   HandleFilter.RootDeviceType = NULL;
 
-  Status = GetBlkIOHandles (Attribs, &HandleFilter, &gPtable.HandleInfoList[0], &gPtable.MaxHandles, gSelectNvmeId);
-  if ((Status != EFI_SUCCESS) || (gPtable.MaxHandles == 0)) {
-    DEBUG ((EFI_D_ERROR, "%s: GetBlkIOHandles failed: %u\n", __func__, Status));
-    return Status;
+  Status = GetBlkIOHandles (Attribs, &HandleFilter, &gPtable.HandleInfoList[0], &gPtable.MaxHandles, gSelectBootId);
+
+  if (gPtable.MaxHandles == 0) {
+    Status = EFI_NO_MEDIA;
+  }
+
+  if (EFI_ERROR (Status)) {
+    DebugPrint (DEBUG_INFO, "%s: GetBlkIOHandles failed: %u Max Handles: %d Boot Id:%d\n", __func__, Status, gPtable.MaxHandles, gSelectBootId);
   }
 
   return Status;
@@ -612,6 +629,24 @@ UpdatePartitionEntries (
   }
 
   DEBUG ((EFI_D_ERROR, "UpdatePartitionEntries get gPartitionCount = %d\n", gPartitionCount));
+}
+
+EFI_STATUS
+GetPartitionEntrybyCount (
+  UINT32               PartitionCount,
+  EFI_PARTITION_ENTRY  *PtnEntry
+  )
+{
+  if (PtnEntry == NULL) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  if ((PartitionCount > 0) && (PartitionCount <= gPartitionCount)) {
+    gBS->CopyMem (PtnEntry, &gPtnEntries[PartitionCount], sizeof (EFI_PARTITION_ENTRY));
+    return EFI_SUCCESS;
+  }
+
+  return EFI_NOT_FOUND;
 }
 
 BOOLEAN
@@ -740,7 +775,7 @@ GetStorageHandle (
   HandleFilter.PartitionType  = NULL;
   HandleFilter.VolumeName     = NULL;
   HandleFilter.RootDeviceType = NULL;
-  Status                      = GetBlkIOHandles (Attribs, &HandleFilter, BlockIoHandle, MaxHandles, gSelectNvmeId);
+  Status                      = GetBlkIOHandles (Attribs, &HandleFilter, BlockIoHandle, MaxHandles, gSelectBootId);
   if (EFI_ERROR (Status)) {
     DEBUG ((EFI_D_ERROR, "Error getting block IO handle for Emmc\n"));
     return Status;
@@ -841,6 +876,225 @@ WriteGpt (
     "*************** New partition Table Dump End "
     "*******************\n"
     ));
+
+ #ifdef USERDATA_RESIZE_SUPPORT
+  ResizeGpt ();
+ #endif
+  return Status;
+}
+
+EFI_STATUS
+ResizePartitionEntry (
+  UINT8   *GptEntries,
+  UINT32  num_entries,
+  UINT32  entry_size,
+  UINT64  last_usable_lba,
+  CHAR16  *part_name
+  )
+{
+  EFI_PARTITION_ENTRY  *gpt_entry = (EFI_PARTITION_ENTRY *)GptEntries;
+  INT32                last_idx   = -1;
+
+  for (UINT32 i = 0; i < num_entries; ++i) {
+    BOOLEAN  is_empty = TRUE;
+    if ((UINT32)gpt_entry[i].PartitionTypeGUID.Data1 != 0) {
+      is_empty = FALSE;
+    }
+
+    if (!is_empty) {
+      last_idx = i;
+    }
+  }
+
+  if (last_idx < 0) {
+    DEBUG ((EFI_D_ERROR, "No valid partition found!\n"));
+    return EFI_NOT_FOUND;
+  }
+
+  CHAR16  *entry_name = (CHAR16 *)gpt_entry[last_idx].PartitionName;
+
+  if (StrCmp (entry_name, part_name) == 0) {
+    gpt_entry[last_idx].EndingLBA = last_usable_lba;
+    DEBUG ((EFI_D_INFO, "Expand userdata partition to last_usable_lba: %llu\n", last_usable_lba));
+  } else {
+    DEBUG ((EFI_D_ERROR, "Last partition is not userdata, skip expand.\n"));
+  }
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+ResizeGptHeader (
+  VOID
+  )
+{
+  EFI_STATUS                  Status;
+  EFI_BLOCK_IO_PROTOCOL       *BlockIo = NULL;
+  HandleInfo                  BlockIoHandle[MAX_HANDLEINF_LST_SIZE];
+  UINT32                      MaxHandles    = MAX_HANDLEINF_LST_SIZE;
+  EFI_HANDLE                  *Handle       = NULL;
+  UINT8                       *GptHeaderBuf = NULL;
+  EFI_PARTITION_TABLE_HEADER  *GptHeader;
+  UINT8                       *GptEntries;
+  UINT32                      BlockSize;
+  UINT32                      GptSize;
+
+  Status = GetStorageHandle (BlockIoHandle, &MaxHandles);
+  if (EFI_ERROR (Status) || (MaxHandles != 1)) {
+    DEBUG ((EFI_D_ERROR, "ResizeGptHeader: GetStorageHandle failed: %d, handles: %d\n", Status, MaxHandles));
+    return Status;
+  }
+
+  BlockIo      = BlockIoHandle[0].BlkIo;
+  BlockSize    = BlockIo->Media->BlockSize;
+  GptSize      = BlockSize + MAX_PARTITION_ENTRIES_SIZE;
+  GptHeaderBuf = AllocateZeroPool (GptSize);
+  if (GptHeaderBuf == NULL) {
+    DEBUG ((EFI_D_ERROR, "ResizeGptHeader: Failed to allocate memory for GPT header\n"));
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  Status = BlockIo->ReadBlocks (
+                      BlockIo,
+                      BlockIo->Media->MediaId,
+                      1,
+                      GptSize,
+                      GptHeaderBuf
+                      );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((EFI_D_ERROR, "ResizeGptHeader: ReadBlocks failed: %d\n", Status));
+    goto Exit;
+  }
+
+  GptHeader  = (EFI_PARTITION_TABLE_HEADER *)GptHeaderBuf;
+  GptEntries = GptHeaderBuf + BlockSize;
+
+  if (GptHeader->Header.Signature != EFI_PTAB_HEADER_ID) {
+    DEBUG ((EFI_D_ERROR, "Invalid GPT header signature: %.8a\n", GptHeader->Header.Signature));
+    Status = EFI_COMPROMISED_DATA;
+    goto Exit;
+  }
+
+  GptHeader->LastUsableLBA = BlockIo->Media->LastBlock - (MAX_PARTITION_ENTRIES_SIZE / BlockSize) - 1;
+  GptHeader->AlternateLBA  = BlockIo->Media->LastBlock;
+
+  Status = ResizePartitionEntry (GptEntries, GptHeader->NumberOfPartitionEntries, GptHeader->SizeOfPartitionEntry, GptHeader->LastUsableLBA, L"userdata");
+  if (EFI_ERROR (Status)) {
+    DEBUG ((EFI_D_ERROR, "ResizeGptHeader: ResizePartitionEntry failed: %d\n", Status));
+    goto Exit;
+  }
+
+  GptHeader->PartitionEntryArrayCRC32 = crc32 (
+                                          (const uint8_t *)GptEntries,
+                                          GptHeader->NumberOfPartitionEntries * GptHeader->SizeOfPartitionEntry
+                                          );
+  GptHeader->Header.CRC32 = 0;
+  GptHeader->Header.CRC32 = crc32 ((const uint8_t *)GptHeader, GptHeader->Header.HeaderSize);
+
+  Status = WriteToPartition (BlockIo, Handle, 512, GptSize, GptHeaderBuf);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((EFI_D_ERROR, "ResizeGptHeader: WriteBlocks failed: %d\n", Status));
+    goto Exit;
+  }
+
+  gBS->DisconnectController (BlockIoHandle[0].Handle, NULL, NULL);
+  gBS->ConnectController (BlockIoHandle[0].Handle, NULL, NULL, TRUE);
+  Status = EFI_SUCCESS;
+
+Exit:
+  FreePool (GptHeaderBuf);
+  GptHeaderBuf = NULL;
+  GptHeader    = NULL;
+  GptEntries   = NULL;
+  return Status;
+}
+
+BOOLEAN
+ResizeGptCheck (
+  VOID
+  )
+{
+  HandleInfo             BlockIoHandle[MAX_HANDLEINF_LST_SIZE];
+  UINT32                 MaxHandles    = MAX_HANDLEINF_LST_SIZE;
+  EFI_BLOCK_IO_PROTOCOL  *BlockIo      = NULL;
+  UINT32                 BlockSize     = 0;
+  UINT64                 LastBlock     = 0;
+  UINT64                 AltGPTSize    = 0;
+  UINT64                 LastUsableLBA = 0;
+  EFI_PARTITION_ENTRY    PtnEntry;
+  EFI_STATUS             Status;
+
+  Status = GetStorageHandle (BlockIoHandle, &MaxHandles);
+  if (EFI_ERROR (Status) || (MaxHandles != 1)) {
+    DEBUG ((EFI_D_ERROR, "GetStorageHandle failed: %d, handles: %d\n", Status, MaxHandles));
+    return Status;
+  }
+
+  BlockIo       = BlockIoHandle[0].BlkIo;
+  BlockSize     = BlockIo->Media->BlockSize;
+  LastBlock     = BlockIo->Media->LastBlock;
+  AltGPTSize    = (MAX_PARTITION_ENTRIES_SIZE / BlockSize + 1);
+  LastUsableLBA = LastBlock - AltGPTSize;
+
+  GetPartitionEntrybyCount (gPartitionCount, &PtnEntry);
+
+  if ((StrCmp (PtnEntry.PartitionName, L"userdata") == 0) && (PtnEntry.EndingLBA != LastUsableLBA)) {
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}
+
+EFI_STATUS
+ResizeGpt (
+  VOID
+  )
+{
+  EFI_STATUS  Status;
+
+  if (ResizeGptCheck () == FALSE) {
+    DEBUG ((EFI_D_INFO, "No need to resize GPT\n"));
+    return EFI_SUCCESS;
+  }
+
+  DEBUG ((
+    EFI_D_INFO,
+    "*************** Current partition Table Dump Start "
+    "*******************\n"
+    ));
+  PartitionDump ();
+  DEBUG ((
+    EFI_D_INFO,
+    "*************** Current partition Table Dump End "
+    "*******************\n"
+    ));
+
+  Status = ResizeGptHeader ();
+  if (EFI_ERROR (Status)) {
+    DEBUG ((EFI_D_ERROR, "ReadGptHeader failed\n"));
+    return Status;
+  }
+
+  Status = EnumeratePartitions ();
+  if (EFI_ERROR (Status)) {
+    DEBUG ((EFI_D_ERROR, "Enumeration of partitions failed\n"));
+    return Status;
+  }
+
+  UpdatePartitionEntries ();
+
+  DEBUG ((
+    EFI_D_INFO,
+    "*************** New partition Table Dump Start "
+    "*******************\n"
+    ));
+  PartitionDump ();
+  DEBUG ((
+    EFI_D_INFO,
+    "*************** New partition Table Dump End "
+    "*******************\n"
+    ));
+
   return Status;
 }
 

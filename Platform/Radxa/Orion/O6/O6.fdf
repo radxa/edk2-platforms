@@ -106,10 +106,12 @@ READ_LOCK_STATUS   = TRUE
 !if $(STMM_SUPPORT) == TRUE
     INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/ArmMmCommunication.inf
 !endif
+!if $(SOC_XSPI_ENABLE) == TRUE
 !if $(STMM_SUPPORT) == TRUE
     INF Silicon/CIX/Sky1/Drivers/NorFlashStmmRuntimeDxe/NorFlashStmmRuntimeDxe.inf
 !else
     INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashDxe.inf
+!endif
 !endif
 !if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == FALSE
     INF MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
@@ -141,7 +143,7 @@ READ_LOCK_STATUS   = TRUE
 
 !if $(ACPI_ENABLE) == TRUE
   INF RuleOverride = ACPITABLE2 Platform/Radxa/Orion/O6/Drivers/AcpiPlatfomTables/AcpiPlatfomTables.inf
-  INF Platform/Radxa/Orion/O6/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
+  INF Platform/Radxa/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
 !endif
 
   #

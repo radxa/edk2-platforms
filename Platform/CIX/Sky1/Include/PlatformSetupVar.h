@@ -32,6 +32,7 @@ typedef struct {
   UINT8     PcieMaxReadRequest[MAX_PCIE_PORT_NUM];
   UINT8     PcieL1Substates[MAX_PCIE_PORT_NUM];
   UINT8     PcieDtiEnable[MAX_PCIE_PORT_NUM];
+  UINT16    PcieLinkTimeout[MAX_PCIE_PORT_NUM];
   UINT8     I2cEnable[MAX_I2C_CTRL_NUM];
   UINT32    I2cBusFreq[MAX_I2C_CTRL_NUM];
   UINT8     GmacEnable[MAX_GMAC_PORT_NUM];

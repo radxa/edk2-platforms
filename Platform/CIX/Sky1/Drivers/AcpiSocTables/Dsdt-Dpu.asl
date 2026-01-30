@@ -433,7 +433,7 @@ Device (DPU0) {
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DPU0_CONTROLLER_BASE, DPU0_CONTROLLER_SIZE)
-    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { DPU_EXT_U_DPU0_IRQ0_INTERRUPT_ID }
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Shared) { DPU_EXT_U_DPU0_IRQ0_INTERRUPT_ID }
   })
 
   //DPU_PORT_INIT(\_SB.VDP0,"port@0","endpoint@0",\_SB.VDP1, "port@0", "endpoint@0")
@@ -505,7 +505,7 @@ Device (DPU1) {
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DPU1_CONTROLLER_BASE, DPU1_CONTROLLER_SIZE)
-    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { DPU_EXT_U_DPU1_IRQ0_INTERRUPT_ID }
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Shared) { DPU_EXT_U_DPU1_IRQ0_INTERRUPT_ID }
   })
 
   //DPU_PORT_INIT(\_SB.VDP2,"port@0","endpoint@0",\_SB.VDP3, "port@0", "endpoint@0")
@@ -577,7 +577,7 @@ Device (DPU2) {
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DPU2_CONTROLLER_BASE, DPU2_CONTROLLER_SIZE)
-    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { DPU_EXT_U_DPU2_IRQ0_INTERRUPT_ID }
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Shared) { DPU_EXT_U_DPU2_IRQ0_INTERRUPT_ID }
   })
 
   // DPU_PORT_INIT(\_SB.VDP4,"port@0","endpoint@0",\_SB.VDP5, "port@0", "endpoint@0")
@@ -655,7 +655,7 @@ Device (DPU3) {
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DPU3_CONTROLLER_BASE, DPU3_CONTROLLER_SIZE)
-    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { DPU_EXT_U_DPU3_IRQ0_INTERRUPT_ID }
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Shared) { DPU_EXT_U_DPU3_IRQ0_INTERRUPT_ID }
   })
 
   //DPU_PORT_INIT(\_SB.VDP6,"port@0","endpoint@0",\_SB.VDP7, "port@0", "endpoint@0")
@@ -727,7 +727,7 @@ Device (DPU4) {
   Name (_CCA, 0)
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, DPU4_CONTROLLER_BASE, DPU4_CONTROLLER_SIZE)
-    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { DPU_EXT_U_DPU4_IRQ0_INTERRUPT_ID }
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Shared) { DPU_EXT_U_DPU4_IRQ0_INTERRUPT_ID }
   })
 
   //DPU_PORT_INIT(\_SB.VDP8,"port@0","endpoint@0",\_SB.VDP9, "port@0", "endpoint@0")
@@ -970,5 +970,35 @@ Device (EDP0) {
 
   Name (DLKL, Package() {
     Package() {\_SB.DPBL, \_SB.EDP0, 0},
+  })
+}
+
+Device (CGFX) {
+  Name (_HID, "CIXH5050")
+  Name (_UID, 0x0)
+  Method (_STA, 0x0, Serialized) {
+    Return (0xF)
+  }
+  Name (_DEP, Package ()
+  {
+      \_SB.PEP0,
+      \_SB.DP00,
+      \_SB.DP01,
+      \_SB.DP02,
+      \_SB.DP03,
+      \_SB.DP04,
+  })
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, DPU0_CONTROLLER_BASE, DPU0_CONTROLLER_SIZE)
+    Memory32Fixed (ReadWrite, DPU1_CONTROLLER_BASE, DPU1_CONTROLLER_SIZE)
+    Memory32Fixed (ReadWrite, DPU2_CONTROLLER_BASE, DPU2_CONTROLLER_SIZE)
+    Memory32Fixed (ReadWrite, DPU3_CONTROLLER_BASE, DPU3_CONTROLLER_SIZE)
+    Memory32Fixed (ReadWrite, DPU4_CONTROLLER_BASE, DPU4_CONTROLLER_SIZE)
+
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Shared) { DPU_EXT_U_DPU0_IRQ0_INTERRUPT_ID }
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Shared) { DPU_EXT_U_DPU1_IRQ0_INTERRUPT_ID }
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Shared) { DPU_EXT_U_DPU2_IRQ0_INTERRUPT_ID }
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Shared) { DPU_EXT_U_DPU3_IRQ0_INTERRUPT_ID }
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Shared) { DPU_EXT_U_DPU4_IRQ0_INTERRUPT_ID }
   })
 }

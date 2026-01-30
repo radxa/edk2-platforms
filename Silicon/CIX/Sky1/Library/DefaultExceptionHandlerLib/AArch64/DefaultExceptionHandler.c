@@ -18,7 +18,7 @@
 #include <Library/ArmDisassemblerLib.h>
 #include <Library/SerialPortLib.h>
 #include <Library/UefiBootServicesTableLib.h>
-
+#include <Library/RebootReason.h>
 #include <Guid/DebugImageInfoTable.h>
 #include <Protocol/DebugSupport.h>
 #include <Protocol/LoadedImage.h>

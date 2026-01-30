@@ -1,0 +1,23 @@
+{
+  "Suites": [
+    {
+      "Suite": "FWTS",
+      "TestSuites": [
+        {
+          "TestCase": {
+            "SubTests": [
+              {
+                "sub_Test_Description": "Test UEFI RT service set wakeup time interface.",
+                "Reason": "A bug in Linux v6.10 causes false positive on getwakeuptime call.\nThis has been fixed in later versions of Linux: https://github.com/torvalds/linux/commit/3dcb524d785373fd43b129f01f32bd394fe167e0"
+              },
+              {
+                "sub_Test_Description": "MADT subtable tests.",
+                "Reason": "A bug in fwts V25.01.00 causes false positive on disabled cores.\nThis has been fixed in later versions of fwts: https://github.com/fwts/fwts/commit/4098744507f832ee1417476f2c5ee118b54828c2"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -45,6 +45,7 @@
   gCixFirmwareUpdateProtocolGuid
   gCixEcPlatformProtocolGuid
   gEfiDevicePathProtocolGuid
+  gCixSocInfoProtocolGuid
 
 [Guids]
   gPlatformSetupVariableGuid

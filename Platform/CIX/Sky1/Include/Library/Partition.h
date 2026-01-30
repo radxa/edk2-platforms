@@ -37,12 +37,13 @@
 
 #define MAX_GET_VAR_NAME_SIZE  32
 
-/* Select X2/X4/X8 NVME to BOOT */
-#define MAX_NVME_ID_ARRAY_SIZE  (3)
-#define MAX_NVME_ID_STR_SIZE    (10)
-#define NVME_ID_X8              0x00
-#define NVME_ID_X4              0x01
-#define NVME_ID_X2              0x02
+/* Select X2/X4/X8/UDISK to BOOT */
+#define MAX_BOOT_ID_ARRAY_SIZE  (4)
+#define MAX_BOOT_ID_STR_SIZE    (10)
+#define BOOT_ID_X8              0x00
+#define BOOT_ID_X4              0x01
+#define BOOT_ID_X2              0x02
+#define BOOT_ID_UDISK           0x03
 
 /* Selection attributes for selecting the BlkIo handles */
 #define BLK_IO_SEL_MEDIA_TYPE_REMOVABLE       0x0001
@@ -131,7 +132,7 @@ GetBlkIOHandles (
   IN PartiSelectFilter  *FilterData,
   OUT HandleInfo        *HandleInfoPtr,
   IN OUT UINT32         *MaxBlkIopCnt,
-  IN UINT8              SelectNvmeId
+  IN UINT8              SelectBootId
   );
 
 EFI_STATUS
@@ -140,7 +141,8 @@ GetStorageHandle (
   UINT32      *MaxHandles
   );
 
-#define MAX_NUM_PARTITIONS  128
+#define MAX_NUM_PARTITIONS          128
+#define MAX_PARTITION_ENTRIES_SIZE  (128 * 128)
 
 struct StoragePartInfo {
   HandleInfo    HandleInfoList[MAX_NUM_PARTITIONS];
@@ -178,14 +180,19 @@ GetPartitionCount (
   UINT32  *Val
   );
 
+UINT8
+GetBootId (
+  VOID
+  );
+
 VOID
-GetNvmeIdStr (
-  CHAR8  **SelectNvmeIdStr
+GetBootIdStr (
+  CHAR8  **SelectBootIdStr
   );
 
 EFI_STATUS
-SetNvmeId (
-  UINT8  SelectNvmeId
+SetBootId (
+  UINT8  SelectBootId
   );
 
 EFI_STATUS
@@ -272,6 +279,11 @@ SetPartitionBackDoor (
 EFI_STATUS
 GetBlockSize (
   UINT32  *Size
+  );
+
+EFI_STATUS
+ResizeGpt (
+  VOID
   );
 
 VOID

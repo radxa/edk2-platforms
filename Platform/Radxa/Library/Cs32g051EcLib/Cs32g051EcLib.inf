@@ -1,0 +1,44 @@
+#/**
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#  Copyright 2025 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x0001001A
+  BASE_NAME                      = Cs32g051EcLib
+  FILE_GUID                      = 4d504d41-fe94-4dd7-867f-be1274925f5d
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = PdEcLib|DXE_DRIVER  DXE_RUNTIME_DRIVER DXE_SMM_DRIVER UEFI_APPLICATION UEFI_DRIVER SMM_CORE
+
+[Sources.common]
+  Cs32g051EcLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
+  Platform/Radxa/Radxa.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  MemoryAllocationLib
+  UefiLib
+  UefiBootServicesTableLib
+
+[Guids]
+  gCixI2cDevicePathGuid
+
+[Protocols]
+  gEfiI2cMasterProtocolGuid
+
+[FixedPcd]
+  gRadxaTokenSpaceGuid.PcdPdDevEcI2cBuses
+  gRadxaTokenSpaceGuid.PcdPdDevEcI2cSlaveAddresses

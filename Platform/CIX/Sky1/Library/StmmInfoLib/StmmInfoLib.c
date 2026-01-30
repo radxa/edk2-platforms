@@ -179,7 +179,9 @@ StmmInfoGetVersion (
   Status = SendCommunicateBuffer (PayloadSize);
 
   if (Status == EFI_SUCCESS) {
-    CopyMem (*Version, MmStmmInfoGetVersion->Data, DataSize);
+    DataSize = StrLen ((CHAR16 *)MmStmmInfoGetVersion->Data) + 1;
+    // Unicode string copy without the null terminator
+    CopyMem (*Version, MmStmmInfoGetVersion->Data, 2 * DataSize);
     *Size = DataSize;
   }
 

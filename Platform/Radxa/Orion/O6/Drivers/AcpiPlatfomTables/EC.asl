@@ -28,7 +28,7 @@
 #define EC2OS_ACPI_EVENT_IC_ERROR_CHANGE        BIT13
 #define EC2OS_ACPI_EVENT_BAT_FULL_CHARGE        BIT14
 
-#define EC_THERMAL_SUPPORT 0
+#define EC_THERMAL_SUPPORT 1
 #define EC_PWRB_SUPPORT    1
 
 External (\_SB.AMTX, MethodObj)
@@ -46,30 +46,18 @@ Device(EC0){
   OperationRegion (I2CA, SystemMemory, FixedPcdGet32 (PcdEcI2cBaseAddress), 0x100)
   Field (I2CA, DWordAcc, NoLock, Preserve)
   {
-      Offset(0x00), // Control Register
-      CR,32,
-      Offset(0x04), // Status Register
-      SR,32,
-      Offset(0x08), // Address Register
-      AR,32,
-      Offset(0x0C), // Data Register
-      DR,32,
-      Offset(0x10), // Interrupt Status Register
-      ISR,32,
-      Offset(0x14), // Transfer Size Register
-      TSR,32,
-      Offset(0x18), // Slave Monitor Pause Register
-      SMPR,32,
-      Offset(0x1C), // Time Out Register
-      TOR,32,
-      Offset(0x20), // Interrupt Mask Register
-      IMR,32,
-      Offset(0x24), // Interrupt Enable Register
-      IER,32,
-      Offset(0x28), // Interrupt Disable Register
-      IDR,32,
-      Offset(0x2C), // Glitch Filter Control Register
-      GFCR,32,
+      CR,32,    // Control Register
+      SR,32,    // Status Register
+      AR,32,    // Address Register
+      DR,32,    // Data Register
+      ISR,32,   // Interrupt Status Register
+      TSR,32,   // Transfer Size Register
+      SMPR,32,  // Slave Monitor Pause Register
+      TOR,32,   // Time Out Register
+      IMR,32,   // Interrupt Mask Register
+      IER,32,   // Interrupt Enable Register
+      IDR,32,   // Interrupt Disable Register
+      GFCR,32,  // Glitch Filter Control Register
   }
   Method (_INI, 0, NotSerialized)
   {
@@ -136,6 +124,8 @@ Device(EC0){
       TSR = Arg1
     }
 
+    // Remark 2146 Method Argument is never used ^  (Arg3)
+    Local0 = Arg3
     Local0 = CR
     Local0 = Local0 | BIT0
     CR = Local0
@@ -208,6 +198,8 @@ Device(EC0){
       Return(I2C_SUCCESS)
     }
 
+    // Remark 2146 Method Argument is never used ^  (Arg3)
+    Local0 = Arg3
     Local0 = IER
     Local0 = Local0 | BIT0
     IER = Local0
@@ -367,11 +359,13 @@ Device(EC0){
   }
 
   Method(EVNT, 0, Serialized) {
-    Name(BUF0, Buffer(9){0xDA,0x03,0xA8,0x00,0x55,0x00,0x00,0x00,0x00})
-    Name(BUF1, Buffer(15){})
-    if(TRAS(BUF0,Sizeof(BUF0),BUF1,15) == I2C_SUCCESS){
-      CreateByteField  (BUF1, 0x0A, TYPE)
-      CreateDWordField  (BUF1, 0x0B, DATA)
+    Local1 = Buffer(9){0xDA,0x03,0xA8,0x00,0x55,0x00,0x00,0x00,0x00}
+    Local2 = Buffer(15){}
+    if(TRAS(Local1,Sizeof(Local1),Local2,15) == I2C_SUCCESS){
+      CreateByteField  (Local2, 0x0A, TYPE)
+      CreateDWordField  (Local2, 0x0B, DATA)
+      // Remark   2089 - Object is not referenced ^  (Name [TYPE] is within a method [EVNT])
+      Local0 = TYPE
       Local0 = DATA
       Local0 = ((Local0 &0x000000ff)<<24)| ((Local0&0x0000ff00)<<8) | ((Local0 &0x00ff0000)>>8) | ((Local0&0xff000000)>>24)
       NTII(Local0)
@@ -385,6 +379,56 @@ Device(EC0){
        Notify(\_SB.PWRB, 0x80)
     }
 #endif
+
+    if(Arg0 & EC2OS_ACPI_EVENT_WIFI_STATE_CHANGE){
+    }
+
+    if(Arg0 & EC2OS_ACPI_EVENT_DOCK_STATE_CHANGE){
+    }
+
+    if(Arg0 & EC2OS_ACPI_EVENT_WWAN_STATE_CHANGE){
+    }
+  }
+
+  //
+  // Name: WRGP [EC GPIO Write]
+  // Description: Function to write into EC GPIO
+  // Input: Arg0 -> GPIO number
+  //        Arg1 -> GPIO value
+  // Return: Nothing
+  //
+  Method(WRGP, 2, Serialized){
+    Local1 = Buffer(11){0xDA,0x03,0x00,0x00,0x92,0x00,0x00,0x00,0x02,0x00,0x00}
+    CreateByteField (Local1, 0x02, CSUM)
+    CreateByteField (Local1, 0x09, GNUM)
+    CreateByteField (Local1, 0x0A, GVAL)
+    GNUM=Arg0
+    GVAL=Arg1
+    Mid(Local1,1,Sizeof(Local1)-1,Local0)
+    CSUM=CKSB(Local0)&0xFF
+    Local2 = Buffer(11){}
+    TRAS(Local1,Sizeof(Local1),Local2,Sizeof(Local2))
+  }
+
+  //
+  // Name: RDGP [EC GPIO Read]
+  // Description: Function to write into EC GPIO
+  // Input: Arg0 -> GPIO number
+  // Return: GPIO Value
+  //
+  Method(RDGP, 1, Serialized){
+    Local1 = Buffer(10){0xDA,0x03,0x00,0x00,0x93,0x00,0x00,0x00,0x01,0x00}
+    CreateByteField (Local1, 0x02, CSUM)
+    CreateByteField (Local1, 0x09, GNUM)
+    GNUM=Arg0
+    Mid(Local1,1,Sizeof(Local1)-1,Local0)
+    CSUM=CKSB(Local0)&0xFF
+    Local2 = Buffer(11){}
+    TRAS(Local1,Sizeof(Local1),Local2,Sizeof(Local2))
+    Sleep(20)   // Wait for EC get gpio state then we query gpio state again. this is current EC limitation, to be fix later.
+    TRAS(Local1,Sizeof(Local1),Local2,Sizeof(Local2))
+    CreateByteField (Local2, 0x0A, GVAL)
+    Return(GVAL)
   }
 
   //
@@ -394,9 +438,9 @@ Device(EC0){
   // Output: None
   //
   Method(SFAT, 0, Serialized){
-    Name(BUF0, Buffer(10){0xDA,0x03,0xA9,0x00,0x52,0x00,0x00,0x00,0x01,0x01})
-    Name(BUF1, Buffer(10){})
-    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+    Local0 = Buffer(10){0xDA,0x03,0xA9,0x00,0x52,0x00,0x00,0x00,0x01,0x01}
+    Local1 = Buffer(10){}
+    TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1))
   }
 
   //
@@ -406,9 +450,9 @@ Device(EC0){
   // Output: None
   //
   Method(SFMT, 0, Serialized){
-    Name(BUF0, Buffer(10){0xDA,0x03,0xA8,0x00,0x52,0x00,0x00,0x00,0x01,0x02})
-    Name(BUF1, Buffer(10){})
-    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+    Local0 = Buffer(10){0xDA,0x03,0xA8,0x00,0x52,0x00,0x00,0x00,0x01,0x02}
+    Local1 = Buffer(10){}
+    TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1))
   }
 
   //
@@ -418,23 +462,46 @@ Device(EC0){
   // Output: None
   //
   Method(SFPF, 0, Serialized){
-    Name(BUF0, Buffer(10){0xDA,0x03,0xA6,0x00,0x52,0x00,0x00,0x00,0x01,0x04})
-    Name(BUF1, Buffer(10){})
-    TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1))
+    Local0 = Buffer(10){0xDA,0x03,0xA6,0x00,0x52,0x00,0x00,0x00,0x01,0x04}
+    Local1 = Buffer(10){}
+    TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1))
+  }
+
+  //
+  // Name: SFFD [Set EC Fan PWM to Full Duty]
+  // Description: Function to set ec fan pwm to full duty
+  // Input: None
+  // Output: None
+  //
+  Method(SFFD, 0, Serialized){
+    Local0 = Buffer(13){0xDA,0x03,0x70,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x64,0x00,0x00}
+    Local1 = Buffer(10){}
+    TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1))
+  }
+
+  //
+  // Name: SFZD [Set EC Fan PWM to Zero Duty]
+  // Description: Function to set ec fan pwm to zero duty
+  // Input: None
+  // Output: None
+  //
+  Method(SFZD, 0, Serialized){
+    Local0 = Buffer(13){0xDA,0x03,0xD4,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x00,0x00,0x00}
+    Local1 = Buffer(10){}
+    TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1))
   }
 }
-
 
 #if EC_THERMAL_SUPPORT
 PowerResource(ECFN, 0, 0)
 {
   Method(_STA, 0, Serialized)
   {
-    Name(BUF0, Buffer(11){0xDA,0x03,0xD5,0x00,0x26,0x00,0x00,0x00,0x02,0x00,0x00})
-    Name(BUF1, Buffer(12){})
+    Local0 = Buffer(11){0xDA,0x03,0xD5,0x00,0x26,0x00,0x00,0x00,0x02,0x00,0x00}
+    Local1 = Buffer(12){}
 
-    if(\_SB.EC0.TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1)) == I2C_SUCCESS){
-      CreateWordField (BUF1, 0x0A, DUTY)
+    if(\_SB.EC0.TRAS(Local0,Sizeof(Local0),Local1,Sizeof(Local1)) == I2C_SUCCESS){
+      CreateWordField (Local1, 0x0A, DUTY)
       if(DUTY != 0){
         Return(One)
       }
@@ -444,21 +511,11 @@ PowerResource(ECFN, 0, 0)
 
   Method(_ON, 0, Serialized)
   {
-    Name(BUF0, Buffer(13){0xDA,0x03,0x70,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x64,0x00,0x00})
-    Name(BUF1, Buffer(10){})
-
-    if(\_SB.EC0.TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1)) != I2C_SUCCESS){
-      printf ("CIX Debug: FN00 on fail")
-    }
+    \_SB.EC0.SFAT()
   }
   Method(_OFF, 0, Serialized)
   {
-    Name(BUF0, Buffer(13){0xDA,0x03,0xD4,0x00,0x25,0x00,0x00,0x00,0x04,0x00,0x00,0x00,0x00})
-    Name(BUF1, Buffer(10){})
-
-    if(\_SB.EC0.TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1)) != I2C_SUCCESS){
-      printf ("CIX Debug: FN00 off fail")
-    }
+    \_SB.EC0.SFZD()
   }
 }
 
@@ -473,12 +530,12 @@ ThermalZone(ECTZ) {
   Name (_TZD, Package () { \_SB} ) //Thermal Zone Devices
 
   Method(_TMP, 0, Serialized) {
-    Name(BUF0, Buffer(9){0xDA,0x03,0xB3,0x3E,0x0C,0x00,0x00,0x00,0x00})
-    Name(BUF1, Buffer(12){})
+    Local2 = Buffer(9){0xDA,0x03,0xB3,0x3E,0x0C,0x00,0x00,0x00,0x00}
+    Local3 = Buffer(12){}
 
-    if(\_SB.EC0.TRAS(BUF0,Sizeof(BUF0),BUF1,Sizeof(BUF1)) == I2C_SUCCESS){
-      CreateByteField (BUF1, 0x0A, TMPI)  //Integral part of temperature
-      CreateByteField (BUF1, 0x0B, TMPF)  //Temperature fractional part, accuracy 0.01
+    if(\_SB.EC0.TRAS(Local2,Sizeof(Local2),Local3,Sizeof(Local3)) == I2C_SUCCESS){
+      CreateByteField (Local3, 0x0A, TMPI)  //Integral part of temperature
+      CreateByteField (Local3, 0x0B, TMPF)  //Temperature fractional part, accuracy 0.01
       TMPI = ToInteger(TMPI)
       TMPF = ToInteger(TMPF)
       //To degrees Kelvin
@@ -506,4 +563,3 @@ Device(PWRB)
   }
 }
 #endif
-

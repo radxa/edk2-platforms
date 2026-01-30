@@ -106,10 +106,12 @@ READ_LOCK_STATUS   = TRUE
 !if $(STMM_SUPPORT) == TRUE
     INF Platform/CIX/Sky1/Drivers/MmCommunicationDxe/ArmMmCommunication.inf
 !endif
+!if $(SOC_XSPI_ENABLE) == TRUE
 !if $(STMM_SUPPORT) == TRUE
     INF Silicon/CIX/Sky1/Drivers/NorFlashStmmRuntimeDxe/NorFlashStmmRuntimeDxe.inf
 !else
     INF Silicon/CIX/Sky1/Drivers/NorFlashDxe/NorFlashDxe.inf
+!endif
 !endif
 !if $(VARIABLE_SUPPORT) == "SPI" && $(STMM_SUPPORT) == FALSE
     INF MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
@@ -123,12 +125,30 @@ READ_LOCK_STATUS   = TRUE
   INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
   INF Silicon/CIX/Sky1/Drivers/GenericWatchdogDxe/GenericWatchdogDxe.inf
+
+!if $(CFG_PARAM_MANAGE_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PlatformConfigParamsManageDxe/PlatformConfigParamsManageDxe.inf
+  INF Silicon/CIX/Sky1/Drivers/ConfigParamsManageDxe/ConfigParamsManageDxe.inf
+!endif
+!if $(TOKEN_SETUP_SUPPORT) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PlatformSetupVariableInitDxe/PlatformSetupVariableInitDxe.inf
+!endif
+  INF Platform/CIX/Sky1/Drivers/PlatformDxe/PlatformDxe.inf
+!if $(POWER_BUTTON_ENABLE) == TRUE
+  INF Platform/CIX/Sky1/Drivers/PowerButtonDxe/PowerButtonDxe.inf
+!endif
   }
 
 # inf file list has be move to Sky1Common.fdf.inc
 # please put xxx.inf to Sky1Common.fdf.inc
 !include Platform/CIX/Sky1/Sky1Common.fdf.inc
   INF Platform/CIX/Sky1/Drivers/DtbUpdateDxeSi/DtbUpdateDxe.inf
+
+!if $(ACPI_ENABLE) == TRUE
+  INF RuleOverride = ACPITABLE2 Platform/CIX/Sky1/Edge/ACPI/AcpiPlatfomTables/AcpiPlatfomTables.inf
+  INF Platform/CIX/Sky1/Edge/ACPI/AcpiPlatformDxe/AcpiPlatformDxe.inf
+!endif
+
   #
   # UEFI application (Shell Embedded Boot Loader)
   #

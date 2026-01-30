@@ -1,12 +1,8 @@
 /** @file
-
   Copyright 2024-2025 Cix Technology Group Co., Ltd. All Rights Reserved.
-
   SPDX-License-Identifier: BSD-2-Clause-Patent
-
 **/
 #include "CommonDefines.h"
-
 Device (DSTD) {
   Name (_HID, "PRP0001")
   Name (_UID, 0x0)
@@ -34,7 +30,6 @@ Device (DSTD) {
       Package () { "ramlog_size2", 0x00040000 },
     }
   })
-
   Device (EXTR) {
     Name (_HID, "PRP0001")
     Name (_UID, 0x1)
@@ -48,7 +43,6 @@ Device (DSTD) {
       }
     })
   }
-
     Device (APAD) {
     Name (_HID, "PRP0001")
     Name (_UID, 0x2)
@@ -78,13 +72,12 @@ Device (DSTD) {
         Package () { "ap_dump_mem_modu_smmu_size", 0x1000 },
         Package () { "ap_dump_mem_modu_tfa_size", 0x4000 },
         Package () { "ap_dump_mem_modu_gap_size", 256 },
-        Package () { "ap_log_console_size", 0xc000 },
-        Package () { "ap_log_dmesg_size", 0xc000 },
+        Package () { "ap_log_console_size", 0x20000 },
+        Package () { "ap_log_dmesg_size", 0x80000 },
       }
     })
   }
 }
-
 // For ramoops driver
 Device (RAOP) {
   Name (_HID, "PRP0001")
@@ -97,13 +90,80 @@ Device (RAOP) {
     ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
       Package () { "compatible", "ramoops" },
-      Package () { "record-size", 0x10000 },
-      Package () { "console-size", 0x10000 },
+      Package () { "record-size", 0x40000 },
+      Package () { "console-size", 0x40000 },
       Package () { "pmsg-size", 0x1000 },
     }
   })
 }
-
+Device (DCT0) {
+  Name (_HID, "PRP0001")
+  Name (_UID, 0x83)
+  Name (_STA, 0x3)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, 0x0C010000, 0x20000)
+    Memory32Fixed (ReadWrite, 0x83c00000, 0x1000)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { 239 }
+  })
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "compatible", "cadence,ddr_ctrl" },
+      Package () { "channel_id", 0x0 },
+    }
+  })
+}
+Device (DCT1) {
+  Name (_HID, "PRP0001")
+  Name (_UID, 0x84)
+  Name (_STA, 0x3)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, 0x0C030000, 0x20000)
+    Memory32Fixed (ReadWrite, 0x83c00000, 0x1000)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { 242 }
+  })
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "compatible", "cadence,ddr_ctrl" },
+      Package () { "channel_id", 0x1 },
+    }
+  })
+}
+Device (DCT2) {
+  Name (_HID, "PRP0001")
+  Name (_UID, 0x85)
+  Name (_STA, 0x3)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, 0x0C050000, 0x20000)
+    Memory32Fixed (ReadWrite, 0x83c00000, 0x1000)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { 245 }
+  })
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "compatible", "cadence,ddr_ctrl" },
+      Package () { "channel_id", 0x2 },
+    }
+  })
+}
+Device (DCT3) {
+  Name (_HID, "PRP0001")
+  Name (_UID, 0x86)
+  Name (_STA, 0x3)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, 0x0C070000, 0x20000)
+    Memory32Fixed (ReadWrite, 0x83c00000, 0x1000)
+    Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { 248 }
+  })
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "compatible", "cadence,ddr_ctrl" },
+      Package () { "channel_id", 0x3 },
+    }
+  })
+}
 // For se_pm_crash driver
 Device (SEPM) {
   Name (_HID, "PRP0001")
@@ -116,7 +176,6 @@ Device (SEPM) {
     }
   })
 }
-
 // For dst_mbox_client device
 Device (DSMC) {
   Name (_HID, "PRP0001")
