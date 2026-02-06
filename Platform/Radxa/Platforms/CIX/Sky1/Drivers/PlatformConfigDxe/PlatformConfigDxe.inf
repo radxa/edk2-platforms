@@ -123,6 +123,11 @@
   gCixTokenSpaceGuid.PcdPcieRootPort2DtiEnable
   gCixTokenSpaceGuid.PcdPcieRootPort3DtiEnable
   gCixTokenSpaceGuid.PcdPcieRootPort4DtiEnable
+  gCixTokenSpaceGuid.PcdPcieRootPort0LinkUpTimeout
+  gCixTokenSpaceGuid.PcdPcieRootPort1LinkUpTimeout
+  gCixTokenSpaceGuid.PcdPcieRootPort2LinkUpTimeout
+  gCixTokenSpaceGuid.PcdPcieRootPort3LinkUpTimeout
+  gCixTokenSpaceGuid.PcdPcieRootPort4LinkUpTimeout
   gCixTokenSpaceGuid.PcdI2c0En
   gCixTokenSpaceGuid.PcdI2c1En
   gCixTokenSpaceGuid.PcdI2c2En

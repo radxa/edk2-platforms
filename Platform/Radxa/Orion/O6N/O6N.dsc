@@ -204,7 +204,8 @@
 !if $(PLATFORM_PD_ENABLE) == FALSE
   Platform/CIX/Sky1/Drivers/PdDxe/PdDxe.inf {
     <LibraryClasses>
-    PdLib|Platform/Radxa/Library/Cs32g051PdLib/Cs32g051PdLib.inf
+      PdLib|Platform/Radxa/Library/Cs32g051PdLib/Cs32g051PdLib.inf
+      RedriverLib|Platform/CIX/Sky1/Library/PI3DPX1207RedriverLib/PI3DPX1207RedriverLib.inf
   }
 !endif
 ###################################################################################################
