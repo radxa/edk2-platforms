@@ -33,13 +33,13 @@ Device (VBP0) {
     },
     ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
     Package () {
-      Package () {"regulator-state-standby", "_RGS"},
-      Package () {"regulator-state-mem", "_RGS"},
-      Package () {"regulator-state-disk", "_RGS"},
+      Package () {"regulator-state-standby", "RGS0"},
+      Package () {"regulator-state-mem", "RGS0"},
+      Package () {"regulator-state-disk", "RGS0"},
     }
   })
 
-  Name (_RGS, Package () {
+  Name (RGS0, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
       Package () { "regulator-off-in-suspend", 1 },
@@ -71,13 +71,13 @@ Device (VBR0) {
     },
     ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
     Package () {
-      Package () {"regulator-state-standby", "_RGS"},
-      Package () {"regulator-state-mem", "_RGS"},
-      Package () {"regulator-state-disk", "_RGS"},
+      Package () {"regulator-state-standby", "RGS0"},
+      Package () {"regulator-state-mem", "RGS0"},
+      Package () {"regulator-state-disk", "RGS0"},
     }
   })
 
-  Name (_RGS, Package () {
+  Name (RGS0, Package () {
     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
       Package () { "regulator-off-in-suspend", 1 },

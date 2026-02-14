@@ -1,0 +1,392 @@
+/** @file
+
+  Copyright 2024-2026 Cix Technology Group Co., Ltd. All Rights Reserved.
+  Copyright 2025-2026 Radxa Computer (Shenzhen) Co., Ltd. All Rights Reserved.
+
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+
+**/
+
+include(pads-sky1.m4)
+
+// MUX0 For iomux S0 pins
+Device (MUX0) {
+  Name (_HID, "CIXHA016")
+  Name (_UID, 0x0)
+  Name (_STA, 0xF)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, 0x04170000, 0x1000)
+
+// Platform defined pinctrl
+
+    PinGroup ("pinctrl_fch_i2c0", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_I2C0_CLK_FUNC_I2C0_CLK(PULL_UP|DS_LEVEL7),
+            CIX_PAD_I2C0_SDA_FUNC_I2C0_SDA(PULL_UP|DS_LEVEL7),
+        })
+        {
+            CIX_PAD_I2C0_CLK,
+            CIX_PAD_I2C0_SDA,
+        }
+
+    PinGroup ("pinctrl_fch_i2c2", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_I2C2_SCL_FUNC_I2C2_SCL(PULL_UP|ST|DS_LEVEL12),
+            CIX_PAD_I2C2_SDA_FUNC_I2C2_SDA(PULL_UP|ST|DS_LEVEL12),
+        })
+        {
+            CIX_PAD_I2C2_SCL,
+            CIX_PAD_I2C2_SDA,
+        }
+
+    PinGroup ("pinctrl_fch_uart2", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_UART2_TXD_FUNC_UART2_TXD(PULL_DOWN|DS_LEVEL7),
+            CIX_PAD_UART2_RXD_FUNC_UART2_RXD(PULL_DOWN|DS_LEVEL7),
+        })
+        {
+            CIX_PAD_UART2_TXD,
+            CIX_PAD_UART2_RXD,
+        }
+
+    PinGroup ("pinctrl_fch_uart3_gpio", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_UART3_TXD_FUNC_GPIO105(PULL_DOWN|DS_LEVEL7),
+            CIX_PAD_UART3_RXD_FUNC_GPIO106(PULL_DOWN|DS_LEVEL7),
+        })
+        {
+            CIX_PAD_UART3_TXD,
+            CIX_PAD_UART3_RXD,
+        }
+
+    PinGroup ("pinctrl_substrate_i2s1", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_I2S1_MCLK_FUNC_I2S1_MCLK(PULL_DOWN|ST|DS_LEVEL12), /* I2S1_MCLK */
+            CIX_PAD_I2S1_SCK_FUNC_I2S1_SCK(PULL_DOWN|ST|DS_LEVEL12), /* I2S1_SCK */
+            CIX_PAD_I2S1_WS_FUNC_I2S1_WS(PULL_UP|ST|DS_LEVEL12), /* I2S1_WS */
+            CIX_PAD_I2S1_DATA_IN_FUNC_I2S1_DATA_IN(PULL_DOWN|ST|DS_LEVEL12), /* I2S1_DATA_IN */
+            CIX_PAD_I2S1_DATA_OUT_FUNC_I2S1_DATA_OUT(PULL_DOWN|ST|DS_LEVEL12), /* I2S1_DATA_OUT */
+        })
+        {
+            CIX_PAD_I2S1_MCLK,
+            CIX_PAD_I2S1_SCK,
+            CIX_PAD_I2S1_WS,
+            CIX_PAD_I2S1_DATA_IN,
+            CIX_PAD_I2S1_DATA_OUT,
+        }
+
+// Device defined pinctrl
+
+    PinGroup ("3v3_bkey", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_I2S2_TSCK_FUNC_GPIO073(PULL_DOWN|ST|DS_LEVEL12),
+        })
+        {
+            CIX_PAD_I2S2_TSCK,
+        }
+
+    PinGroup ("bkey_reset", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_I2S2_TWS_FUNC_GPIO074(PULL_DOWN|ST|DS_LEVEL12),
+        })
+        {
+            CIX_PAD_I2S2_TWS,
+        }
+
+    PinGroup ("cam_5v_pwren", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_I2S2_DATA_IN0_FUNC_GPIO075(PULL_DOWN|ST|DS_LEVEL12), /* i2s6_data_in0_dbg */
+        })
+        {
+            CIX_PAD_I2S2_DATA_IN0,
+        }
+
+    PinGroup ("cam_pwren", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_I2S3_MCLK_FUNC_GPIO081(PULL_DOWN|ST|DS_LEVEL12),
+        })
+        {
+            CIX_PAD_I2S3_MCLK,
+        }
+
+    PinGroup ("pinctrl_cam0_hw", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_CSI0_MCLK0_FUNC_GPIO117(PULL_DOWN|ST|DS_LEVEL12),
+            CIX_PAD_I2S3_DATA_IN1_FUNC_GPIO087(PULL_DOWN|ST|DS_LEVEL12),
+            CIX_PAD_GPIO090_FUNC_GPIO090(PULL_DOWN|ST|DS_LEVEL12),
+            CIX_PAD_GPIO091_FUNC_GPIO091(PULL_DOWN|ST|DS_LEVEL12),
+            CIX_PAD_GPIO093_FUNC_GPIO093(PULL_DOWN|ST|DS_LEVEL12),
+        })
+        {
+            CIX_PAD_CSI0_MCLK0,
+            CIX_PAD_I2S3_DATA_IN1,
+            CIX_PAD_GPIO090,
+            CIX_PAD_GPIO091,
+            CIX_PAD_GPIO093,
+        }
+
+    PinGroup ("pinctrl_cam1_hw", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_CSI0_MCLK1_FUNC_GPIO118(PULL_DOWN|ST|DS_LEVEL12),
+            CIX_PAD_GPIO092_FUNC_GPIO092(PULL_DOWN|ST|DS_LEVEL12),
+            CIX_PAD_GPIO094_FUNC_GPIO094(PULL_DOWN|ST|DS_LEVEL12),
+        })
+        {
+            CIX_PAD_CSI0_MCLK1,
+            CIX_PAD_GPIO092,
+            CIX_PAD_GPIO094,
+        }
+  })
+}
+
+// MUX1 For iomux S5 pins
+Device (MUX1) {
+  Name (_HID, "CIXHA017")
+  Name (_UID, 0x1)
+  Name (_STA, 0xF)
+  Name (_CRS, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, 0x16007000, 0x1000)
+
+// Platform defined pinctrl
+
+    PinGroup ("pinctrl_fch_spi0", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_SPI1_MISO_FUNC_SPI1_MISO(PULL_UP|ST|DS_LEVEL12),
+            CIX_PAD_SPI1_CS0_FUNC_SPI1_CS0(PULL_UP|ST|DS_LEVEL12),
+            CIX_PAD_SPI1_MOSI_FUNC_SPI1_MOSI(PULL_UP|ST|DS_LEVEL12),
+            CIX_PAD_SPI1_CLK_FUNC_SPI1_CLK(ST|DS_LEVEL12),
+        })
+        {
+            CIX_PAD_SPI1_MISO,
+            CIX_PAD_SPI1_CS0,
+            CIX_PAD_SPI1_MOSI,
+            CIX_PAD_SPI1_CLK,
+        }
+
+    PinGroup ("pinctrl_fch_xspi", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_SE_QSPI_CLK_FUNC_QSPI_CLK(PULL_UP|ST|DS_LEVEL12),
+            CIX_PAD_SE_QSPI_CS_L_FUNC_QSPI_CS_L(PULL_UP|ST|DS_LEVEL12),
+            CIX_PAD_SE_QSPI_DATA0_FUNC_QSPI_DATA0(PULL_UP|ST|DS_LEVEL12),
+            CIX_PAD_SE_QSPI_DATA1_FUNC_QSPI_DATA1(PULL_UP|ST|DS_LEVEL12),
+            CIX_PAD_SE_QSPI_DATA2_FUNC_QSPI_DATA2(PULL_UP|ST|DS_LEVEL12),
+            CIX_PAD_SE_QSPI_DATA3_FUNC_QSPI_DATA3(PULL_UP|ST|DS_LEVEL12),
+        })
+        {
+            CIX_PAD_SE_QSPI_CLK,
+            CIX_PAD_SE_QSPI_CS_L,
+            CIX_PAD_SE_QSPI_DATA0,
+            CIX_PAD_SE_QSPI_DATA1,
+            CIX_PAD_SE_QSPI_DATA2,
+            CIX_PAD_SE_QSPI_DATA3,
+        }
+
+    PinGroup ("usb_drive_vbus0", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO040_FUNC_GPIO040(PULL_DOWN|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO040,
+        }
+
+    PinGroup ("pinctrl_usb4", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO041_FUNC_GPIO041(PULL_DOWN|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO041,
+        }
+
+    PinGroup ("pinctrl_usb5", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO042_FUNC_GPIO042(PULL_DOWN|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO042,
+        }
+    PinGroup ("pinctrl_pcie_x8_rc", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO002_FUNC_GPIO002(PULL_DOWN|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO002,
+        }
+
+    PinGroup ("pinctrl_pcie_x4_rc", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO004_FUNC_GPIO004(PULL_DOWN|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO004,
+        }
+
+    PinGroup ("pinctrl_pcie_x2_rc", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO005_FUNC_GPIO005(PULL_DOWN|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO005,
+        }
+
+    PinGroup ("pinctrl_pcie_x1_1_rc", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO006_FUNC_GPIO006(PULL_DOWN|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO006,
+        }
+
+    PinGroup ("pinctrl_pcie_x1_0_rc", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO003_FUNC_GPIO003(PULL_DOWN|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO003,
+        }
+
+    PinGroup ("pd_reset", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO007_FUNC_GPIO007(PULL_DOWN|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO007,
+        }
+
+// Device defined pinctrl
+    PinGroup ("i2c0_grp", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_SFI_I2C0_SCL_FUNC_SFI_I2C0_SCL(PULL_UP|DS_LEVEL7),
+            CIX_PAD_SFI_I2C0_SDA_FUNC_SFI_I2C0_SDA(PULL_UP|DS_LEVEL7),
+        })
+        {
+            CIX_PAD_SFI_I2C0_SCL,
+            CIX_PAD_SFI_I2C0_SDA,
+        }
+
+    PinGroup ("i2c1_grp", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_SFI_I2C1_SCL_FUNC_SFI_I2C1_SCL(PULL_UP|DS_LEVEL7),
+            CIX_PAD_SFI_I2C1_SDA_FUNC_SFI_I2C1_SDA(PULL_UP|DS_LEVEL7),
+        })
+        {
+            CIX_PAD_SFI_I2C1_SCL,
+            CIX_PAD_SFI_I2C1_SDA,
+        }
+
+    PinGroup ("gpio001_mkey_en", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO001_FUNC_GPIO001(PULL_UP|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO001,
+        }
+
+    PinGroup ("lom_pwren", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO010_FUNC_GPIO010(PULL_UP|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO010,
+        }
+
+    PinGroup ("rtc_alarm_l", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO011_FUNC_GPIO011(PULL_UP|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO011,
+        }
+
+    PinGroup ("wlan_pwren", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO013_FUNC_GPIO013(PULL_UP|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO013,
+        }
+
+    PinGroup ("ufs_5v_en", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO014_FUNC_GPIO014(PULL_UP|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO014,
+        }
+
+    PinGroup ("phy2_pwr_en", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO022_FUNC_GPIO022(PULL_UP|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO022,
+        }
+
+    PinGroup ("tpm_pwr_en", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO023_FUNC_GPIO023(PULL_UP|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO023,
+        }
+
+    PinGroup ("gpio_leds", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_SFI_GPIO0_FUNC_GPIO015(PULL_UP|ST|DS_LEVEL7),
+            CIX_PAD_GPIO021_FUNC_GPIO021(PULL_UP|ST|DS_LEVEL7),
+        })
+        {
+            CIX_PAD_SFI_GPIO0,
+            CIX_PAD_GPIO021,
+        }
+
+    PinGroup ("wl_radio_disable_l", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO019_FUNC_GPIO019(PULL_UP|ST|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO019,
+        }
+
+    PinGroup ("bt_radio_disable_l", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO020_FUNC_GPIO020(PULL_UP|ST|DS_LEVEL4),
+        })
+        {
+            CIX_PAD_GPIO020,
+        }
+  })
+}
