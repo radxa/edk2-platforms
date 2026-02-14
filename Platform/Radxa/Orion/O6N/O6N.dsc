@@ -27,6 +27,9 @@
   SKUID_IDENTIFIER               = DEFAULT
   FLASH_DEFINITION               = Platform/Radxa/Orion/$(PLATFORM_NAME)/$(PLATFORM_NAME).fdf
   PCD_DYNAMIC_AS_DYNAMICEX       = TRUE
+  ACPI_IOMUX_INPUT               = Platform/Radxa/Orion/$(PLATFORM_NAME)/Drivers/AcpiPlatfomTables/Iomux.asl.template
+  ACPI_IOMUX_OUTPUT              = $(OUTPUT_DIRECTORY)/Iomux.asl
+  PREBUILD                       = python3 Platform/CIX/Sky1/Drivers/AcpiSocTables/tool/python3/ParseIomuxTemplate.py $(ACPI_IOMUX_INPUT) $(ACPI_IOMUX_OUTPUT)
 
 !include  Platform/CIX/Sky1/Sky1Define.dsc.inc
 !include  Platform/Radxa/RadxaDefine.dsc.inc
@@ -169,6 +172,13 @@
 [Components.common]
 # Network stack
   !include NetworkPkg/Network.dsc.inc
+# This modification is to fix a PXE bug.
+# If the Code Base is upgraded, this modification will cause a compilation error and should be deleted.
+  NetworkPkg/UefiPxeBcDxe/UefiPxeBcDxe.inf {
+    <PcdsFixedAtBuild>
+      gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|TRUE
+      gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|TRUE
+  }
 
   Platform/CIX/Sky1/PrePi/PeiUniCore.inf
 !if $(SHELL_EMBEDDED_ENABLE) == TRUE
@@ -195,7 +205,10 @@
 !endif
   Platform/CIX/Sky1/Drivers/DtbUpdateDxeSi/DtbUpdateDxe.inf
 !if $(ACPI_ENABLE) == TRUE
-  Platform/Radxa/Orion/O6N/Drivers/AcpiPlatfomTables/AcpiPlatfomTables.inf
+  Platform/Radxa/Orion/O6N/Drivers/AcpiPlatfomTables/AcpiPlatfomTables.inf {
+    <BuildOptions>
+      *_*_*_ASLCC_FLAGS = -I$(WORKSPACE)/$(OUTPUT_DIRECTORY)
+  }
   Platform/Radxa/Drivers/AcpiPlatformDxe/AcpiPlatformDxe.inf
 !endif
 !if $(SMBIOS_ENABLE) == TRUE
@@ -404,6 +417,7 @@
   gCixTokenSpaceGuid.PcdIspCamera2Power|0x00
   gCixTokenSpaceGuid.PcdIspCamera3Power|0x00
 
+  gCixPlatformTokenSpaceGuid.PcdEcAcpiI2cEn|FALSE
   # DP2_DIGON & DP2_BLON
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio3IoMask|0x00018000
   # UFS_5V_EN & USB_DRIVE_VBUS0 & USB_DRIVE_VBUS4 & USB_DRIVE_VBUS5 & PD_RESET
@@ -453,4 +467,8 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|600
 
   gCixPlatformTokenSpaceGuid.PcdDynamicUint64Test|0x11111111
+
+!if $(COMPILE_SYSTEM_LOADER) == android
+  gCixPlatformTokenSpaceGuid.AndroidFastboot|TRUE
+!endif
 [PcdsDynamicHii.common.DEFAULT]

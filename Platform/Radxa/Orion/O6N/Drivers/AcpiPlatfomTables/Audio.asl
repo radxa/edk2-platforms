@@ -13,7 +13,7 @@ Device (SNDC) {
   Name (_UID, 0x0)
   Name (_STA, 0xF)
 
-  Name (_CRS, ResourceTemplate () {
+//  Name (_CRS, ResourceTemplate () {
 //    // for alc1019
 //    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
 //                "\\_SB.GPI3", 0, ResourceConsumer) {
@@ -28,7 +28,7 @@ Device (SNDC) {
 //        13,
 //    }
 //    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_sndcard", ResourceConsumer,)
-  })
+//  })
 
 //  Name (_DSD, Package () {
 //    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),

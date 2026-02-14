@@ -300,14 +300,13 @@ Device (ERTC) {
   // Output: Status(No zero may have some error in it)
   //
   Method(CAFG, 0, Serialized){
-    Local0 = Buffer(1){HYM8563_CONTROL2_REG_OFFSET}
-    Local1 = Buffer(1){}
-    Local2 = Buffer(2){HYM8563_CONTROL2_REG_OFFSET}
-    CreateByteField (Local1, 0x00, CTL2)
+    Local0 = Buffer(1){}
+    Local1 = Buffer(2){HYM8563_CONTROL2_REG_OFFSET}
+    CreateByteField (Local0, 0x00, CTL2)
     CTL2 &= ~HYM8563_CTL2_AF
-    CreateByteField (Local2, 0x01, DATA)
+    CreateByteField (Local1, 0x01, DATA)
     DATA = CTL2
-    if (WRIT(RTC_SLAVE_ADDRESS,Sizeof(Local2),Local2,1) != I2C_SUCCESS){
+    if (WRIT(RTC_SLAVE_ADDRESS,Sizeof(Local1),Local1,1) != I2C_SUCCESS){
       Return(One)
     }
     Return(0)
