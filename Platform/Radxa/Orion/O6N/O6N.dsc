@@ -353,7 +353,7 @@
   gCixTokenSpaceGuid.PcdI2c5Runtime|FALSE
   gCixTokenSpaceGuid.PcdI2c5BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c6En|FALSE            # Board ID
-  gCixTokenSpaceGuid.PcdI2c6Runtime|TRUE
+  gCixTokenSpaceGuid.PcdI2c6Runtime|FALSE
   gCixTokenSpaceGuid.PcdI2c6BusFreq|100000
   gCixTokenSpaceGuid.PcdI2c7En|TRUE             # EEPROM & PD Management
   gCixTokenSpaceGuid.PcdI2c7Runtime|FALSE
