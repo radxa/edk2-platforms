@@ -150,7 +150,7 @@ Device (SCMI) {
   Device (DVFS) {
     Name (_HID, "CIXHA008")
     Name (_UID, 0x0)
-    Name (_STA, 0x0)
+    Name (_STA, 0xB)
 
     Name (_DSD, Package () {
       ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
@@ -162,7 +162,7 @@ Device (SCMI) {
   Device (CLKS) {
     Name (_HID, "CIXHA009")
     Name (_UID, 0x0)
-    Name (_STA, 0x0)
+    Name (_STA, 0xB)
 
     Name (_DSD, Package () {
       ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
