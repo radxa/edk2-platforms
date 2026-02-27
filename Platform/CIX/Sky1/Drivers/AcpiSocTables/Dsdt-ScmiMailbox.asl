@@ -109,6 +109,7 @@ Device (SHM0) {
     ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
         Package () {"compatible", "arm,scmi-shmem"},
+        Package () { "reg-io-width", 4 },
     }
   })
 }
@@ -127,6 +128,7 @@ Device (SHM1) {
     ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
         Package () {"compatible", "arm,scmi-shmem"},
+        Package () { "reg-io-width", 4 },
     }
   })
 }
