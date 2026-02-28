@@ -52,6 +52,12 @@ suppressif ideqval DtAcpiPref.Pref == DT_ACPI_SELECT_DT;
     flags  = INTERACTIVE | RESET_REQUIRED,
   endcheckbox;
 
+  checkbox varid = RadxaSetupVar.EnableAcpiScmi,
+    prompt = STRING_TOKEN(STR_COMPLIANCE_ACPI_SCMI),
+    help   = STRING_TOKEN(STR_COMPLIANCE_ACPI_SCMI_HELP),
+    flags  = RESET_REQUIRED,
+  endcheckbox;
+
   subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
   subtitle text = STRING_TOKEN(STR_COMPLIANCE_VENTOY_WARNING);
 

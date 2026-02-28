@@ -29,3 +29,5 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_COMPLIANCE_ACPI_CPPC_HELP           #language en-US "Disable ACPI CPPC(Collaborative Processor Performance Control) Interface."
 #string STR_COMPLIANCE_DISABLE_SMALL_CORE       #language en-US "Disable Small Cores"
 #string STR_COMPLIANCE_DISABLE_SMALL_CORE_HELP  #language en-US "Windows 11 24H2 contains a regression, that will prevent booting when small cores are enabled."
+#string STR_COMPLIANCE_ACPI_SCMI                #language en-US "Enable ACPI SCMI"
+#string STR_COMPLIANCE_ACPI_SCMI_HELP           #language en-US "Earlier Radxa kernel <= 6.6.89-3 will encounter boot issue with this enabled."
