@@ -40,6 +40,8 @@
   gCixPlatformConfigParamsManageProtocolGuid
 
 [Guids]
+  gEfiEventReadyToBootGuid
+  gRadxaSetupVariableGuid
 
 [Pcd]
   gArmTokenSpaceGuid.PcdSystemProductName

@@ -17,6 +17,7 @@ extern EFI_GUID  gRadxaSetupVariableGuid;
 
 typedef struct {
   UINT8     UFSPowerMode;
+  UINT8     EnableAcpiScmi;
 } RADXA_SETUP_DATA;
 
 #pragma pack()

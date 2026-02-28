@@ -16,6 +16,7 @@
 [Includes]
   Include
   IntelSiliconPkg/Include
+  Platforms/CIX/Sky1/Include
 
 [LibraryClasses]
   PdEcLib|Include/Library/PdEcLib.h
