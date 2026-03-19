@@ -1,10 +1,10 @@
 CC:=gcc
 CFLAGS:=-Wall -Wno-overflow
 
-all: clean csupm_bin_config
+all: csupm_bin_config
 
 .PHONY: csupm_bin_config
-csupm_bin_config: csupm_bin_config.c $(wildcard *.h)
+csupm_bin_config: csupm_bin_config.c $(wildcard *.h) clean
 	$(CC) $(CFLAGS) -o $@ $(firstword $^)
 	./$@
 
