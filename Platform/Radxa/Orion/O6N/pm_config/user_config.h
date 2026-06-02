@@ -95,6 +95,7 @@ static pm_config_pmic_t pmic_config = {
 
 #if PM_FAN_TABLE_CONFIG
 static pm_config_fan_t fan_config[MAX_FAN_NUM] = {
+    // CPU Fan
 	[0] = {
         .fan_valid = {
             .fields = {
@@ -170,35 +171,78 @@ static pm_config_fan_t fan_config[MAX_FAN_NUM] = {
         }
     },
 
+    // M.2 Fan, available for hardware >= 1.20
     [1] = {
         .fan_valid = {
             .fields = {
-                .valid = PM_CONFIG_INVALID,
+                .valid = PM_CONFIG_VALID,
             }
         },
         .rpm_table_valid = {
-            PM_CONFIG_INVALID,   // valid bit of NORMAL table
-            PM_CONFIG_INVALID,   // valid bit of PERFORMANCE table
-            PM_CONFIG_INVALID,   // valid bit of QUIET table
+            PM_CONFIG_VALID,   // valid bit of NORMAL table
+            PM_CONFIG_VALID,   // valid bit of PERFORMANCE table
+            PM_CONFIG_VALID,   // valid bit of QUIET table
         }, /* table valid bit of NORMAL/PERF/QUIET respectively */
+
+        .rpm_table_items = {
+            6,                   // table size of NORMAL,      i.e. the valid items number of fan_config[0].rpm_table[FAN_MODE_NORMAL]
+            4,                   // table size of PERFORMANCE, i.e. the valid items number of fan_config[0].rpm_table[FAN_MODE_PERFORMANCE]
+            4,                   // table size of QUIET,       i.e. the valid items number of fan_config[0].rpm_table[FAN_MODE_QUIET]
+        }, /* valid items number of NORMAL/PERF/QUIET respectively */
+
+        /* fan tables definition */
+        .rpm_table[FAN_MODE_NORMAL] = {
+              /* RPM    temp      temp
+               *        increase  decrease */
+                { 0,       0,      20 },
+                {  720,    40,     25 },
+                { 1080,    50,     46 },
+                { 1800,    60,     56 },
+                { 2760,    65,     62 },
+                { 3720,    72,     67 },
+            },
+        .rpm_table[FAN_MODE_PERFORMANCE] = {
+                {    0,     0,     20 },
+                { 1800,    60,     56 },
+                { 2760,    65,     62 },
+                { 3720,    72,     67 },
+            },
+        .rpm_table[FAN_MODE_QUIET] = {
+                {    0,     0,     20 },
+                {  720,    40,     25 },
+                { 1080,    50,     46 },
+                { 1800,    60,     56 },
+            },
+
         .fan_id = {
             .fields = {
-                .valid = PM_CONFIG_INVALID,
+                .valid = PM_CONFIG_VALID,
+                .raw_data = 1, // which pwm&tach is used to control the fan, it should be correspond to hardware design. 0/1/2 are valid value.
+            }
+        },
+        .sensor_id = {
+            .fields = {
+                .valid = PM_CONFIG_VALID,
+                .raw_data = 0xff, // which thermal sensor is used to control the fan
             }
         },
         .fan_polarity = {
             .fields = {
-                .valid = PM_CONFIG_INVALID,
+                .valid = PM_CONFIG_VALID,
+                .raw_data = 2, // it equals tachmeter counter value(per minute) divided by the real rpm;
             }
         },
         .scaleup_margin = {
             .fields = {
-                .valid = PM_CONFIG_INVALID,
-            }
+                .valid = PM_CONFIG_VALID,
+                .raw_data = 500, //if the difference between immediate rpm and expected rpm is greater than raw_data,
+                                 //pwm duty will be adjusted in coarse granularity to accelarate the progress,
+            }                    // the value depends on the fan's characteristic, (max rpm / 10) ~ (max rpm / 5) is recommended
         },
         .pwm_freq = {
             .fields = {
-                .valid = PM_CONFIG_INVALID,
+                .valid = PM_CONFIG_VALID,
+                .raw_data = 25000, // the pwm frequence. depending on the fan's characteristic, 50~1000 is recommended.
             }
         }
     },
