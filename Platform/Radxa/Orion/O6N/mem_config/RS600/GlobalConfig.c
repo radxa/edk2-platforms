@@ -9,7 +9,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_16G_HS = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS602_16G_HS_MASK
   },
-  .MaxFreq          = DDR4800_FREQUENCY,
+  .MaxFreq          = DDR5500_FREQUENCY,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 8,
@@ -79,7 +79,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_48G_HS = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS602_48G_HS_MASK
   },
-  .MaxFreq          = DDR5000_FREQUENCY,
+  .MaxFreq          = DDR5500_FREQUENCY,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 12,
