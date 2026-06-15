@@ -79,7 +79,7 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_48G_HS = {
     .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
     .BoardMask      = RS602_48G_HS_MASK
   },
-  .MaxFreq          = DDR5500_FREQUENCY,
+  .MaxFreq          = DDR5000_FREQUENCY,
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 12,
@@ -111,6 +111,20 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_64G_Rayson = {
   .ChMask           = 0xF,
   .DdrType          = DDR_TYPE_LPDDR5,
   .DeviceDensity    = 16,
+  .DeviceWidth      = 8,
+  .RankNum          = 2,
+};
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_48G_HS_v1_2 = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = RS602_48G_HS_v1_2_MASK,
+  },
+  .MaxFreq          = DDR5500_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 12,
   .DeviceWidth      = 8,
   .RankNum          = 2,
 };
