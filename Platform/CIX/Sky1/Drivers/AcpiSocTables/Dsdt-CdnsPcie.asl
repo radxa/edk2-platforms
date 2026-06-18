@@ -478,7 +478,7 @@ Device (PRC1) { /* PCIE2 X4 */
           Package () { "device_type", "pci" },
           Package () { "vendor-id", 0x1f6c },
           Package () { "device-id", 0x0001 },
-          Package () { "bus-range", Package () { 0x90, 0xbf } },
+          Package () { "bus-range", Package () { 0x90, 0xaf } },
           Package () { "max-link-speed", MLKS },
           Package () { "num-lanes", NUML },
           Package () { "cdns,no-inbound-bar", 0 },
