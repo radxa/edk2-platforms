@@ -25,7 +25,6 @@ extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G_Hynix;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_48G_Hynix;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_48G_HS;
 extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_16G_HS;
-extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_48G_HS_v1_2;
 
 #define CDCB_BLOCK_LIST \
   /* default */ \
@@ -50,6 +49,5 @@ extern MEM_CONFIG_BLOCK_CONFIG      GlobalConfigBlock_48G_HS_v1_2;
   CDCB_BLOCK(GlobalConfigBlock_48G_Hynix), \
   CDCB_BLOCK(GlobalConfigBlock_48G_HS), \
   CDCB_BLOCK(GlobalConfigBlock_16G_HS), \
-  CDCB_BLOCK(GlobalConfigBlock_48G_HS_v1_2), \
 
 #endif

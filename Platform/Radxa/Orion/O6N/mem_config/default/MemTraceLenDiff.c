@@ -21,7 +21,7 @@ MEM_CONFIG_TRACE_LEN_DIFF MemTraceLenDiffCfg_Hive_Semi_48G = {
   {
     .Signature      = MEM_CONFIG_TRACE_LEN_DIFF_SIGNAUTE,
     .BlockSize      = sizeof(MEM_CONFIG_TRACE_LEN_DIFF),
-    .BoardMask      = RS602_48G_HS_MASK | RS602_48G_HS_v1_2_MASK
+    .BoardMask      = RS602_48G_HS_MASK
   },
   {
     // Avg Flight Time      Trace Length Diff
