@@ -47,6 +47,7 @@
 [Guids]
   gCixI2cDevicePathGuid
   gEfiNetworkStackSetupGuid
+  gEfiEventReadyToBootGuid
   gPlatformSetupVariableGuid
 
 [Protocols]

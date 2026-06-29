@@ -101,7 +101,7 @@ AddSmbiosType1 (
   UINT16                   Sku;
   UINTN                    StringNumber, SysSnSize, SysUuidSize;
   CHAR16                   *SysSnPtr = NULL;
-  CHAR8                    *SysSnBuf, *SysUuidPtr;
+  CHAR8                    *SysSnBuf, *SysUuidPtr, *SysSnVar;
 
   Status = gBS->LocateProtocol (
                   &gCixFwVersionProtocolGuid,
@@ -183,12 +183,17 @@ AddSmbiosType1 (
   Status = GetVariable2 (
              L"SystemSN",
              &gCixGPNVGuid,
-             (VOID **)&SysSnBuf,
+             (VOID **)&SysSnVar,
              &SysSnSize
              );
   if (!EFI_ERROR (Status)) {
+    SysSnBuf = AllocateZeroPool (SysSnSize + 1);
+    CopyMem (SysSnBuf, SysSnVar, SysSnSize);
+    SysSnBuf[SysSnSize] = '\0';
+    FreePool (SysSnVar);
+
     StringNumber = 4;
-    Status = Smbios->UpdateString (Smbios, &SmbiosHandle, &StringNumber, SysSnBuf);
+    Status       = Smbios->UpdateString (Smbios, &SmbiosHandle, &StringNumber, SysSnBuf);
     if (EFI_ERROR (Status)) {
       DebugPrint (DEBUG_ERROR, "Fail to update serial number.\n");
     }

@@ -242,6 +242,12 @@
   gCixTokenSpaceGuid.PcdPcieRootPort2LinkUpTimeout|300|UINT16|0x00000249
   gCixTokenSpaceGuid.PcdPcieRootPort3LinkUpTimeout|300|UINT16|0x0000024A
   gCixTokenSpaceGuid.PcdPcieRootPort4LinkUpTimeout|300|UINT16|0x0000024B
+#PCIe PE Reset Pin Reverse Control
+  gCixTokenSpaceGuid.PcdPcieRootPort0PeResetReverse|FALSE|BOOLEAN|0x0000024C
+  gCixTokenSpaceGuid.PcdPcieRootPort1PeResetReverse|FALSE|BOOLEAN|0x0000024D
+  gCixTokenSpaceGuid.PcdPcieRootPort2PeResetReverse|FALSE|BOOLEAN|0x0000024E
+  gCixTokenSpaceGuid.PcdPcieRootPort3PeResetReverse|FALSE|BOOLEAN|0x0000024F
+  gCixTokenSpaceGuid.PcdPcieRootPort4PeResetReverse|FALSE|BOOLEAN|0x00000250
 
   gCixTokenSpaceGuid.PcdGmacApbClockMHz|200|UINT32|0x00000281
   gCixTokenSpaceGuid.PcdGmac0ClockMHz|100|UINT32|0x00000282
@@ -429,6 +435,8 @@
   gCixTokenSpaceGuid.PcdMemIEcc|0xFF|UINT8|0x00005D7
   gCixTokenSpaceGuid.PcdMemWrDbi|0xFF|UINT8|0x00005D8
   gCixTokenSpaceGuid.PcdMemRdDbi|0xFF|UINT8|0x00005D9
+  # SPE Enable
+  gCixTokenSpaceGuid.PcdSPEEn|0xFF|UINT8|0x00005DB
 
   #Misc
   gCixTokenSpaceGuid.PcdCixProcessorVersion|L"CIX P1"|VOID*|0x0003001
@@ -450,6 +458,7 @@
   gCixTokenSpaceGuid.PcdAcpiI2s7Enable|FALSE|BOOLEAN|0x0000A00F
   gCixTokenSpaceGuid.PcdAcpiI2s8Enable|FALSE|BOOLEAN|0x0000A010
   gCixTokenSpaceGuid.PcdAcpiI2s9Enable|FALSE|BOOLEAN|0x0000A011
+  gCixTokenSpaceGuid.PcdAcpiSmmuEnable|TRUE|BOOLEAN|0x0000A012
 
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 

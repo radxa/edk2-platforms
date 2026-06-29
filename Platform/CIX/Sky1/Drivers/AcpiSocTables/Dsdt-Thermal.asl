@@ -187,6 +187,7 @@ Method (DPRG, 1, Serialized)
 // Thermal Zone for GPU
 ThermalZone(TZGT) {
   Method(_PSV) { Return (3582) }      // Passive trip point: 85°C
+  Method(_CRT) { Return(3712) }       // Critical trip point: 98°C
   Method(SWIT) { Return(3432) }       // Switch-On trip point: 70°C
   Method(SSTP) { Return(15000) }      // sustainable power in mW
   Method(_TC1) { Return(4) }          // Thermal Constant1

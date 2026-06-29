@@ -70,7 +70,7 @@
   DEFINE STMM_SUPPORT               = $(COMPILE_STMM_SUPPORT)
   DEFINE REALTEK_LAN_DRIVER_SUPPORT = FALSE
   DEFINE PM_CONFIG_UPDATE_SUPPORT   = FALSE
-  DEFINE MEM_CONFIG_UPDATE_SUPPORT  = FALSE
+  DEFINE MEM_CONFIG_UPDATE_SUPPORT  = TRUE
   DEFINE DYNAMIC_ACPI_CPU_ENABLE    = TRUE
   DEFINE SOC_SPI_ENABLE             = TRUE
   # DEFINE SOC_GPIO_INTR_ENABLE       = TRUE
@@ -129,8 +129,7 @@
   DEFINE ACPI_ENABLE                = TRUE
   DEFINE SMBIOS_ENABLE              = TRUE
 
-
-  DEFINE SPI_VARIABLE_BASE          = 0x00380000
+  DEFINE SPI_VARIABLE_BASE          = 0x00388000
   DEFINE SPI_VARIABLE_SIZE          = 0x28000
 
   DEFINE LINUX_ACPI_CONFIG_OVERRIDE = TRUE
@@ -370,11 +369,14 @@
   gCixTokenSpaceGuid.PcdUsb2Control2Enable|TRUE
   gCixTokenSpaceGuid.PcdUsb2Control3Enable|TRUE
 
+  gCixTokenSpaceGuid.PcdAcpiI2s0Enable|FALSE
+  gCixTokenSpaceGuid.PcdAcpiI2s3Enable|FALSE
   gCixTokenSpaceGuid.PcdAcpiI2s5Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s6Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s7Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s8Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s9Enable|TRUE
+  gCixTokenSpaceGuid.PcdAudioHdaEn|TRUE
 
   gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000
   gEfiNetworkPkgTokenSpaceGuid.PcdNetworkStackSupport|FALSE

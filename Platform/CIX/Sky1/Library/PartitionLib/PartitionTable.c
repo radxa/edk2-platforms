@@ -213,12 +213,10 @@ GetBlkIOHandles (
   }
 
   if (Status != EFI_SUCCESS) {
-    DEBUG (
-      (EFI_D_ERROR, "Unable to get Filesystem Handle buffer %u\n", Status));
+    DebugPrint (DEBUG_INFO, "Unable to get Filesystem Handle buffer %u\n", Status);
     return Status;
   }
 
-  DEBUG ((EFI_D_VERBOSE, "GetBlkIOHandles get  BlkIoHandleCount %d\n", BlkIoHandleCount));
   /* Loop through to search for the ones we are interested in. */
   for (i = 0; i < BlkIoHandleCount; i++) {
     Status = gBS->HandleProtocol (
@@ -232,14 +230,14 @@ GetBlkIOHandles (
     }
 
     if (Status != EFI_SUCCESS) {
-      DEBUG ((EFI_D_ERROR, "Unable to get Filesystem Handle %u\n", Status));
+      DebugPrint (DEBUG_INFO, "Unable to get Filesystem Handle %u\n", Status);
       return Status;
     }
 
     /* Check if the media type criteria (for removable/not) satisfies */
     if (BlkIo->Media->RemovableMedia) {
       if ((SelectionAttrib & BLK_IO_SEL_MEDIA_TYPE_REMOVABLE) == 0) {
-        DEBUG ((EFI_D_INFO, "Block media type mismatch with removable\n"));
+        DebugPrint (DEBUG_INFO, "Block media type mismatch with removable\n");
         continue;
       }
     } else {
@@ -263,7 +261,7 @@ GetBlkIOHandles (
       /* If we didn't get the DevicePath Protocol then this handle
        * cannot be used */
       if (EFI_ERROR (Status)) {
-        DEBUG ((EFI_D_ERROR, "Unable to get DevPath %u\n", Status));
+        DebugPrint (DEBUG_INFO, "Unable to get DevPath %u\n", Status);
         continue;
       }
 
@@ -277,15 +275,15 @@ GetBlkIOHandles (
       TextDevPath    = DevTextPath->ConvertDevicePathToText (DevPathInst, TRUE, TRUE);
 
       UnicodeSPrint (SearchString, sizeof (SearchString), L"PciRoot(0x%d)", SelectBootId);
-      DEBUG ((
-        EFI_D_INFO,
-        "Get Device Path = %s type = %d subtype = %d  SearchString:%s  ControllerNumber = %d\n",
+      DebugPrint (
+        DEBUG_INFO,
+        "Get Device Path = %s type = %d subtype = %d  str =%s ControllerNumber = %d\n",
         TextDevPath,
         DevPathInst->Type,
         DevPathInst->SubType,
         SearchString,
         RootDevicePath->ControllerNumber
-        ));
+        );
       if (SelectBootId == BOOT_ID_UDISK) {
         // For Udisk
         if (StrStr (TextDevPath, L"USB") == NULL) {
@@ -378,12 +376,12 @@ GetBlkIOHandles (
                             (VOID **)&PartiType
                             );
             if (EFI_ERROR (Status)) {
-              DEBUG ((EFI_D_ERROR, "Unable to handle Efi Partition Type %u\n", Status));
+              DebugPrint (DEBUG_INFO, "Unable to handle Efi Partition Type %u\n", Status);
               continue;
             }
 
             if (CompareGuid (PartiType, FilterData->PartitionType) == FALSE) {
-              DEBUG ((EFI_D_ERROR, "Partition type guid not match %u\n", Status));
+              DebugPrint (DEBUG_INFO, "Partition type guid not match %u\n", Status);
               continue;
             }
           }
@@ -405,7 +403,7 @@ GetBlkIOHandles (
                       (VOID **)&Fs
                       );
       if (EFI_ERROR (Status)) {
-        DEBUG ((EFI_D_ERROR, "Unable to handle Efi Simple File System Protocol %u\n", Status));
+        DebugPrint (DEBUG_INFO, "Unable to handle Efi Simple File System Protocol %u\n", Status);
         continue;
       }
 
@@ -417,7 +415,7 @@ GetBlkIOHandles (
         }
 
         if (CompareVolumeLabel (Fs, FilterData->VolumeName) != 0) {
-          DEBUG ((EFI_D_ERROR, "Volume label not match\n"));
+          DebugPrint (DEBUG_INFO, "Volume label not match\n");
           continue;
         }
       }
@@ -448,7 +446,7 @@ GetBlkIOHandles (
         continue;
       }
 
-      DEBUG ((EFI_D_INFO, "GetBlkIOHandles read partition: %s success\n", PartitionInfo->Info.Gpt.PartitionName));
+      DebugPrint (DEBUG_INFO, "GetBlkIOHandles read partition: %s success\n", PartitionInfo->Info.Gpt.PartitionName);
     }
 
     /* We came here means, this handle satisfies all the conditions needed,
@@ -520,17 +518,39 @@ SetBootId  (
   UINT8  SelectBootId
   )
 {
-  EFI_STATUS  Status = EFI_SUCCESS;
+  EFI_STATUS  Status;
+  EFI_STATUS  GetStatus;
+  UINT32      Attr;
+  UINTN       DataSize;
+  UINT8       ExistingId;
+
+  Attr      = 0;
+  DataSize  = sizeof (ExistingId);
+  GetStatus = gRT->GetVariable (
+                     SELECT_BOOT_ID,
+                     &gCixGlobalVariableGuid,
+                     &Attr,
+                     &DataSize,
+                     &ExistingId
+                     );
+  if (EFI_ERROR (GetStatus)) {
+    if (GetStatus == EFI_NOT_FOUND) {
+      Attr = EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS;
+    } else {
+      DebugPrint (DEBUG_INFO, "SetBootId: GetVariable SelectBootId failed: %r\n", GetStatus);
+      return GetStatus;
+    }
+  }
 
   gSelectBootId = SelectBootId;
   Status        = gRT->SetVariable (
                          SELECT_BOOT_ID,
                          &gCixGlobalVariableGuid,
-                         EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS,
+                         Attr,
                          sizeof (gSelectBootId),
                          &gSelectBootId
                          );
-
+  DebugPrint (DEBUG_INFO, "SetBootId: SelectBootId:%d Status:%r \n", SelectBootId, Status);
   return Status;
 }
 
@@ -543,10 +563,11 @@ EnumeratePartitions (
 {
   EFI_STATUS         Status;
   PartiSelectFilter  HandleFilter;
-  UINT32             Attribs          = 0;
-  UINTN              SelectBootIdSize = sizeof (gSelectBootId);
+  UINT32             Attribs = 0;
 
  #ifdef FASTBOOT_NVME
+  UINTN  SelectBootIdSize = sizeof (gSelectBootId);
+
   Status = gRT->GetVariable (
                   SELECT_BOOT_ID,
                   &gCixGlobalVariableGuid,
@@ -578,13 +599,9 @@ EnumeratePartitions (
   HandleFilter.RootDeviceType = NULL;
 
   Status = GetBlkIOHandles (Attribs, &HandleFilter, &gPtable.HandleInfoList[0], &gPtable.MaxHandles, gSelectBootId);
-
-  if (gPtable.MaxHandles == 0) {
-    Status = EFI_NO_MEDIA;
-  }
-
-  if (EFI_ERROR (Status)) {
-    DebugPrint (DEBUG_INFO, "%s: GetBlkIOHandles failed: %u Max Handles: %d Boot Id:%d\n", __func__, Status, gPtable.MaxHandles, gSelectBootId);
+  if ((Status != EFI_SUCCESS) || (gPtable.MaxHandles == 0)) {
+    DebugPrint (DEBUG_INFO, "%s: GetBlkIOHandles failed: %u gPtable.MaxHandles%d \n", __func__, Status, gPtable.MaxHandles);
+    return Status;
   }
 
   return Status;
@@ -691,7 +708,7 @@ GetPartitionSize (
   UINT64  PartitionSize;
 
   if (!BlockIo) {
-    DEBUG ((EFI_D_ERROR, "Invalid parameter, pleae check BlockIo info!!!\n"));
+    DebugPrint (DEBUG_INFO, "Invalid parameter, pleae check BlockIo info!!!\n");
     return 0;
   }
 
@@ -701,14 +718,14 @@ GetPartitionSize (
   }
 
   if (CHECK_ADD64 (BlockIo->Media->LastBlock, 1)) {
-    DEBUG ((EFI_D_ERROR, "Integer overflow while adding LastBlock and 1\n"));
+    DebugPrint (DEBUG_INFO, "Integer overflow while adding LastBlock and 1\n");
     return 0;
   }
 
   if ((MAX_UINT64 / (BlockIo->Media->LastBlock + 1)) <
       (UINT64)BlockIo->Media->BlockSize)
   {
-    DEBUG ((EFI_D_ERROR, "Integer overflow while multiplying LastBlock and BlockSize\n"));
+    DebugPrint (DEBUG_INFO, "Integer overflow while multiplying LastBlock and BlockSize\n");
     return 0;
   }
 
@@ -845,7 +862,7 @@ WriteGpt (
     ));
   Status = GetStorageHandle (BlockIoHandle, &MaxHandles);
   if (Status || (MaxHandles != 1)) {
-    DEBUG ((EFI_D_ERROR, "Failed to get BlockIo status = %d maxhandles = %d\n", Status, MaxHandles));
+    DebugPrint (DEBUG_INFO, "Failed to get BlockIo status = %d maxhandles = %ld\n", Status, MaxHandles);
     return Status;
   }
 
@@ -859,7 +876,7 @@ WriteGpt (
 
   Status = EnumeratePartitions ();
   if (EFI_ERROR (Status)) {
-    DEBUG ((EFI_D_ERROR, "Enumeration of partitions failed\n"));
+    DebugPrint (DEBUG_INFO, "Enumeration of partitions failed\n");
     return Status;
   }
 
@@ -1139,7 +1156,7 @@ GetBlockSize (
 
   Status = GetStorageHandle (BlockIoHandle, &MaxHandles);
   if (Status || (MaxHandles != 1)) {
-    DEBUG ((EFI_D_ERROR, "GetBlockSize Failed to get BlockIo status = %d maxhandles = %d\n", Status, MaxHandles));
+    DebugPrint (DEBUG_INFO, "GetBlockSize Failed to get BlockIo status = %d maxhandles = %ld\n", Status, MaxHandles);
     return Status;
   }
 

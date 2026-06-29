@@ -36,6 +36,7 @@
   SecurityPkg/SecurityPkg.dec
   ArmPkg/ArmPkg.dec
   Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
 
 [LibraryClasses]
   BaseLib
@@ -52,6 +53,9 @@
   EdkiiSystemCapsuleLib
   DevicePathLib
 
+[Guids]
+  gCixNorFlashDevicePathGuid
+
 [FixedPcd]
   gArmTokenSpaceGuid.PcdFdSize
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareRevision
@@ -62,6 +66,7 @@
 
 [Protocols]
   gEfiFirmwareManagementProtocolGuid     ## PRODUCES
+  gEfiDiskIoProtocolGuid                 ## CONSUMES
   gCixFirmwareUpdateProtocolGuid
 
 [Depex]

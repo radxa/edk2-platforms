@@ -69,12 +69,14 @@
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultStopBits
   gEfiMdePkgTokenSpaceGuid.PcdDefaultTerminalType
   gCixPlatformTokenSpaceGuid.PcdRegisterBootShellSupport
+  gCixPlatformTokenSpaceGuid.PcdLinuxBootSelectSupport
 
 [Pcd]
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut
   gEfiMdeModulePkgTokenSpaceGuid.PcdBootDiscoveryPolicy
   gCixPlatformTokenSpaceGuid.PcdAndroidBoot
   gEfiMdeModulePkgTokenSpaceGuid.PcdPlatformRecoverySupport           ## CONSUMES
+  gCixPlatformTokenSpaceGuid.PcdRegisterFastBootSupport
 
 [Guids]
   gBootDiscoveryPolicyMgrFormsetGuid
@@ -93,6 +95,9 @@
   gCixAbselectGuid
   gCixExitConsoleCallBackGuid
   gCixFarmEnableFlagGuid
+  gCixLinuxBootSelectGuid
+  gCixFastBootAppGuid
+  gPlatformSetupVariableGuid
 
 [Protocols]
   gEdkiiNonDiscoverableDeviceProtocolGuid

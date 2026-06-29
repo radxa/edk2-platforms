@@ -26,11 +26,11 @@
 
 [FD.SKY1_BL33_UEFI]
 BaseAddress   = 0x84400000|gArmTokenSpaceGuid.PcdFdBaseAddress
-Size          = 0x00200000|gArmTokenSpaceGuid.PcdFdSize
+Size          = 0x001F0000|gArmTokenSpaceGuid.PcdFdSize
 ErasePolarity = 1
 
 BlockSize     = 0x00001000
-NumBlocks     = 0x200
+NumBlocks     = 0x1F0
 
 ################################################################################
 #
@@ -48,9 +48,9 @@ NumBlocks     = 0x200
 #
 ################################################################################
 #
-# UEFI image size 0x200000
+# UEFI image size 0x1F0000
 #
-0x00000000|0x00200000
+0x00000000|0x001F0000
 gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
 FV = FVMAIN_COMPACT
 

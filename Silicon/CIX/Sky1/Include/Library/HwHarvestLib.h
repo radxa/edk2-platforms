@@ -72,7 +72,13 @@ IsIpHarvested (
   IN HARVEST_TYPE  IpType
   );
 
+UINT32
+HwHarvestGetCpuCoreHarvestMask (
+  VOID
+  );
+
 BOOLEAN
 IsApWatchdogEnable (
   );
+
 #endif /* __HARVEST_H__ */

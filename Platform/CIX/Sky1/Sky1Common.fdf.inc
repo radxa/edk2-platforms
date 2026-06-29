@@ -255,6 +255,9 @@
   INF Platform/CIX/Sky1/Application/ABSelect/ABSelect.inf
   INF Platform/CIX/Sky1/Drivers/AndroidConfigDxe/AndroidConfigDxe.inf
 !endif
+!if $(LINUX_AB_BOOT_SELECT) == TRUE
+  INF Platform/CIX/Sky1/Application/LinuxBootSelect/LinuxBootSelect.inf
+!endif
   #INF Platform/CIX/Sky1/Application/HelloWorld/HelloWorld.inf
   #INF MdeModulePkg/Application/HelloWorld/HelloWorld.inf
   #
@@ -295,6 +298,12 @@
   # NVMe boot devices
   #
   INF Platform/CIX/Sky1/Drivers/NvmExpressDxe/NvmExpressDxe.inf
+  #
+  # SATA/AHCI boot devices
+  #
+  INF MdeModulePkg/Bus/Pci/SataControllerDxe/SataControllerDxe.inf
+  INF MdeModulePkg/Bus/Ata/AtaBusDxe/AtaBusDxe.inf
+  INF MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf
 !endif
 
 !if $(CAPSULE_ENABLE) == TRUE
@@ -329,6 +338,9 @@
 !endif
 !if $(FW_VERSION_ENABLE) == TRUE
   INF Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionProtocolTest.inf
+!endif
+!if $(TFA_CONFIG_UPDATE_SUPPORT) == TRUE
+  INF Platform/CIX/Sky1/Drivers/TrustZoneConfigUpdateDxe/TrustZoneConfigUpdateDxe.inf
 !endif
 !if $(NETWORK_ENABLE) == TRUE
   #

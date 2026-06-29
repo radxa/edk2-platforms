@@ -1006,7 +1006,8 @@ CixFirmwareRawEntryUpdate (
     }
   } */
 
-  if (((Type != FIRMWARE_TYPE_SECURE_DEBUG) && (Type != FIRMWARE_TYPE_MEM_CONF) && (Type != FIRMWARE_TYPE_PM_CONF)) || (ImageSize != SIZE_4KB)) {
+  if (((Type != FIRMWARE_TYPE_SECURE_DEBUG) && (Type != FIRMWARE_TYPE_MEM_CONF) && (Type != FIRMWARE_TYPE_PM_CONF) && \
+       (Type != FIRMWARE_TYPE_TFA_CONF)) || (ImageSize != SIZE_4KB)) {
     ReturnCode = Type << 8 | FIRMWARE_RET_ERR_INPUT;
     return ReturnCode;
   }

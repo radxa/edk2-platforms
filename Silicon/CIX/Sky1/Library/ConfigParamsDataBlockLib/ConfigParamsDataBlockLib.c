@@ -28,6 +28,7 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
     },
     0,
     FixedPcdGet8 (PcdAcpiCpuLpiState),
+    FixedPcdGet8 (PcdSPEEn),
   },
   {
     // CONFIG_PARAMS_GPU
@@ -174,6 +175,13 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
       FixedPcdGet16 (PcdPcieRootPort2LinkUpTimeout),
       FixedPcdGet16 (PcdPcieRootPort3LinkUpTimeout),
       FixedPcdGet16 (PcdPcieRootPort4LinkUpTimeout),
+    },
+    {
+      FixedPcdGet8 (PcdPcieRootPort0PeResetReverse),
+      FixedPcdGet8 (PcdPcieRootPort1PeResetReverse),
+      FixedPcdGet8 (PcdPcieRootPort2PeResetReverse),
+      FixedPcdGet8 (PcdPcieRootPort3PeResetReverse),
+      FixedPcdGet8 (PcdPcieRootPort4PeResetReverse),
     },
   },
   {
@@ -415,6 +423,7 @@ CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock = {
   {
     // CONFIG_PARAMS_MISC
     FixedPcdGet8 (PcdAcpiCppcType),
+    FixedPcdGetBool (PcdAcpiSmmuEnable),  // SmmuEnable
   },
   {
     // CONFIG_USB20_PHY
@@ -585,6 +594,7 @@ CONFIG_PARAMS_DATA_ENTRY  mConfigDataEntryTable[] = {
   { PARAMS_DATA_CPU_CORE_9_ENABLE_ID,          PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[9]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 9",                   L"0:Disable, 1:Enable"                                                             },
   { PARAMS_DATA_CPU_CORE_10_ENABLE_ID,         PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[10]),          PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 10",                  L"0:Disable, 1:Enable"                                                             },
   { PARAMS_DATA_CPU_CORE_11_ENABLE_ID,         PARAMS_DATA_OFFSET_SIZE (Cpu.CoreEnable[11]),          PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU Core 11",                  L"0:Disable, 1:Enable"                                                             },
+  { PARAMS_DATA_CPU_SPE_ENABLE_ID,             PARAMS_DATA_OFFSET_SIZE (Cpu.SPEEnable),               PARAMS_DATA_MULTI_OPTION_TYPE, L"CPU SPE Enable",               L"0:Disable, 1:Enable"                                                             },
   { PARAMS_DATA_DPU0_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[0]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp0 Enable",                   L"0:Disable, 1:Enable"                                                             },
   { PARAMS_DATA_DPU1_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[1]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp1 Enable",                   L"0:Disable, 1:Enable"                                                             },
   { PARAMS_DATA_DPU2_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Dpu.DpEnable[2]),             PARAMS_DATA_MULTI_OPTION_TYPE, L"Dp2 Enable",                   L"0:Disable, 1:Enable"                                                             },
@@ -596,6 +606,7 @@ CONFIG_PARAMS_DATA_ENTRY  mConfigDataEntryTable[] = {
   { PARAMS_DATA_DPU_PRIORITY_3_ID,             PARAMS_DATA_OFFSET_SIZE (Dpu.DpPriority[3]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"Display Priority3",            L"0:Dp0, 1:Dp1, 2:Dp2, 3:Dp3, 4:Dp4"                                               },
   { PARAMS_DATA_DPU_PRIORITY_4_ID,             PARAMS_DATA_OFFSET_SIZE (Dpu.DpPriority[4]),           PARAMS_DATA_MULTI_OPTION_TYPE, L"Display Priority4",            L"0:Dp0, 1:Dp1, 2:Dp2, 3:Dp3, 4:Dp4"                                               },
   { PARAMS_DATA_CPU_CPPC_TYPE_ID,              PARAMS_DATA_OFFSET_SIZE (Misc.CpuCppcType),            PARAMS_DATA_MULTI_OPTION_TYPE, L"CPPC Interface Type",          L"0:Disable, 1:Fast Channel, 2:Pcc"                                                },
+  { PARAMS_DATA_SMMU_ENABLE_ID,                PARAMS_DATA_OFFSET_SIZE (Misc.SmmuEnable),             PARAMS_DATA_MULTI_OPTION_TYPE, L"SMMU Enable",                  L"0:Disable, 1:Enable"                                                             },
 };
 
 UINT32  mConfigDataEntryNum = sizeof (mConfigDataEntryTable) / sizeof (CONFIG_PARAMS_DATA_ENTRY);

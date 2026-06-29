@@ -38,6 +38,16 @@
          endoneof;
       endif;
 
+      suppressif ideqval PlatformSetupVar.SPEEnable == 0xFF;
+         oneof varid   = PlatformSetupVar.SPEEnable,
+            prompt      = STRING_TOKEN(STR_CPU_SPE_ENABLE_PROMPT),
+            help        = STRING_TOKEN(STR_EMPTY_STRING),
+            default     = FixedPcdGetBool (PcdSPEEn),
+            option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
+         endoneof;
+      endif;
+
       suppressif ideqval PlatformSetupVar.CpuCoreNum < 2 ;
          oneof varid   = PlatformSetupVar.CpuCoreEnable[1],
          prompt      = STRING_TOKEN(STR_CPU_CORE1_PROMPT),

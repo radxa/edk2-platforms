@@ -12,7 +12,11 @@
 #include <Uefi.h>
 
 #define MAX_PMIC_NUM  3
-
+#define CSU_PM_MSG_ID_firmwareVersion        1
+#define CSU_PM_MSG_ID_DecraseScmiClkRefCnt   0x61
+#define CSU_PM_MSG_ID_RegisterS3ScriptTable  0x62
+#define CSU_PM_MSG_ID_GetPmicVersion         0x63
+#define CSU_PM_MSG_ID_SendFanTable           0x802
 #pragma pack(1)
 
 typedef struct _PMIC_VERSION_INFO {
@@ -56,4 +60,10 @@ CsuPmIpcCommandExecute (
   OUT    UINT32  **ReturnValues OPTIONAL
   );
 
+EFI_STATUS
+CsuPmMsgSend (
+  IN UINT32  MsgId,
+  IN UINT32  *Payload,
+  IN UINT32  PayloadLength
+  );
 #endif // CSU_PM_IPC_LIB

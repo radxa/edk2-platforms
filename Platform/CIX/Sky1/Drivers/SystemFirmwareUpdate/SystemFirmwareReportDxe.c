@@ -15,22 +15,168 @@
 **/
 
 #include "SystemFirmwareDxe.h"
+#include <Protocol/DiskIo.h>
+#include <Protocol/DevicePath.h>
 
 //
 // SystemFmp driver private data
 //
-SYSTEM_FMP_PRIVATE_DATA  *mSystemFmpPrivate = NULL;
-CIX_FW_UPDATE_PROTOCOL  *FlashUpdateProtocol = NULL;
+SYSTEM_FMP_PRIVATE_DATA                        *mSystemFmpPrivate   = NULL;
+CIX_FW_UPDATE_PROTOCOL                         *FlashUpdateProtocol = NULL;
 EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  ProgressFunc;
+
+STATIC EFI_DISK_IO_PROTOCOL  *mNorFlashDiskIo = NULL;
+STATIC UINT32                mNorFlashMediaId = 0;
+
+#pragma pack (1)
+typedef struct {
+  VENDOR_DEVICE_PATH          Vendor;
+  UINT8                       Index;
+  EFI_DEVICE_PATH_PROTOCOL    End;
+} NOR_FLASH_DEVICE_PATH;
+#pragma pack ()
+
+//
+// NVRAM region passed via DSC BuildOptions (see Sky1Common.dsc.inc SPI_VARIABLE_*).
+//
+#ifndef SPI_VARIABLE_BASE
+#define SPI_VARIABLE_BASE  0x0
+#endif
+#ifndef SPI_VARIABLE_SIZE
+#define SPI_VARIABLE_SIZE  0x0
+#endif
+
+STATIC
+BOOLEAN
+IsNorFlashDevicePath (
+  IN EFI_DEVICE_PATH_PROTOCOL  *DevicePath
+  )
+{
+  EFI_DEVICE_PATH_PROTOCOL  *TempDevicePath;
+  VENDOR_DEVICE_PATH        *VendorDevicePath;
+
+  TempDevicePath = DevicePath;
+  while (!IsDevicePathEnd (TempDevicePath)) {
+    if ((DevicePathType (TempDevicePath) == HARDWARE_DEVICE_PATH) &&
+        (DevicePathSubType (TempDevicePath) == HW_VENDOR_DP))
+    {
+      VendorDevicePath = (VENDOR_DEVICE_PATH *)TempDevicePath;
+      if (CompareGuid (&VendorDevicePath->Guid, &gCixNorFlashDevicePathGuid)) {
+        return TRUE;
+      }
+    }
+
+    TempDevicePath = NextDevicePathNode (TempDevicePath);
+  }
+
+  return FALSE;
+}
+
+STATIC
+EFI_STATUS
+LocateNorFlashDiskIoProtocol (
+  VOID
+  )
+{
+  EFI_HANDLE                *DiskIoHandles;
+  UINTN                     NumberDiskIoHandles;
+  UINTN                     Index;
+  EFI_DEVICE_PATH_PROTOCOL  *DevicePath;
+  EFI_STATUS                Status;
+
+  if (mNorFlashDiskIo != NULL) {
+    return EFI_SUCCESS;
+  }
+
+  Status = gBS->LocateHandleBuffer (
+                  ByProtocol,
+                  &gEfiDiskIoProtocolGuid,
+                  NULL,
+                  &NumberDiskIoHandles,
+                  &DiskIoHandles
+                  );
+  if (EFI_ERROR (Status)) {
+    return EFI_NOT_FOUND;
+  }
+
+  for (Index = 0; Index < NumberDiskIoHandles; Index++) {
+    DevicePath = DevicePathFromHandle (DiskIoHandles[Index]);
+    if (DevicePath == NULL) {
+      continue;
+    }
+
+    if (IsNorFlashDevicePath (DevicePath)) {
+      mNorFlashMediaId = ((NOR_FLASH_DEVICE_PATH *)DevicePath)->Index;
+      Status           = gBS->HandleProtocol (
+                                DiskIoHandles[Index],
+                                &gEfiDiskIoProtocolGuid,
+                                (VOID **)&mNorFlashDiskIo
+                                );
+      if (!EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_INFO, "NorFlash DiskIo located, MediaId %d\n", mNorFlashMediaId));
+        FreePool (DiskIoHandles);
+        return EFI_SUCCESS;
+      }
+    }
+  }
+
+  FreePool (DiskIoHandles);
+  return EFI_NOT_FOUND;
+}
+
+STATIC
+EFI_STATUS
+NorFlashDiskIoRead (
+  IN  UINT32  Offset,
+  IN  UINT32  Length,
+  OUT VOID    *Buffer
+  )
+{
+  if ((mNorFlashDiskIo == NULL) || (Buffer == NULL) || (Length == 0)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  return mNorFlashDiskIo->ReadDisk (
+                            mNorFlashDiskIo,
+                            mNorFlashMediaId,
+                            Offset,
+                            Length,
+                            Buffer
+                            );
+}
+
+STATIC
+EFI_STATUS
+NorFlashDiskIoWrite (
+  IN UINT32  Offset,
+  IN UINT32  Length,
+  IN VOID    *Buffer
+  )
+{
+  if ((mNorFlashDiskIo == NULL) || (Buffer == NULL) || (Length == 0)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  return mNorFlashDiskIo->WriteDisk (
+                            mNorFlashDiskIo,
+                            mNorFlashMediaId,
+                            Offset,
+                            Length,
+                            Buffer
+                            );
+}
 
 EFI_STATUS
 SystemFirmwareUpdateWithProgress (
-  IN UINT8  *pImage,
-  UINTN     Length,
+  IN UINT8                                       *pImage,
+  UINTN                                          Length,
   EFI_FIRMWARE_MANAGEMENT_UPDATE_IMAGE_PROGRESS  Progress
   )
 {
-  EFI_STATUS  Status;
+  EFI_STATUS  Status           = EFI_SUCCESS;
+  EFI_STATUS  FlashStatus      = EFI_SUCCESS;
+  UINT8       *NvramBackup     = NULL;
+  BOOLEAN     NvramBackupValid = FALSE;
 
   Status = gBS->LocateProtocol (&gCixFirmwareUpdateProtocolGuid, NULL, (VOID **)&FlashUpdateProtocol);
   if (EFI_ERROR (Status)) {
@@ -38,16 +184,49 @@ SystemFirmwareUpdateWithProgress (
     return Status;
   }
 
-  // CheckAndDisplayImageInfo(pImage);
-  //  Status = FlashUpdateProtocol->FirmwarePackageProgram (pImage, Length, (FIRMWARE_PROGRAM_CALLBACK)ProgressCallback);
-  Status = FlashUpdateProtocol->FirmwarePackageProgram (pImage, Length, Progress);
-
-  Status &= 0xFF;
-  if (EFI_ERROR (Status)) {
-    Print (L"\nFlash fail status:%x\n", Status);
+  if (SPI_VARIABLE_BASE != 0) {
+    Status = LocateNorFlashDiskIoProtocol ();
+    if (!EFI_ERROR (Status)) {
+      NvramBackup = AllocatePool (SPI_VARIABLE_SIZE + SPI_VARIABLE_SIZE + SPI_VARIABLE_SIZE);  // cover the entire NVRAM region
+      if (NvramBackup != NULL) {
+        Status = NorFlashDiskIoRead (SPI_VARIABLE_BASE, SPI_VARIABLE_SIZE + SPI_VARIABLE_SIZE + SPI_VARIABLE_SIZE, NvramBackup);
+        if (!EFI_ERROR (Status)) {
+          DEBUG ((DEBUG_INFO, "%a: NVRAM backed up successfully\n", __FUNCTION__));
+          Print (L"NVRAM backed up successfully\n");
+          NvramBackupValid = TRUE;
+        } else {
+          DEBUG ((DEBUG_ERROR, "%a: NVRAM backup read failed: %r\n", __FUNCTION__, Status));
+          Print (L"NVRAM backup read failed: %r\n", Status);
+        }
+      }
+    }
   }
 
-  return Status;
+  // CheckAndDisplayImageInfo(pImage);
+  //  Status = FlashUpdateProtocol->FirmwarePackageProgram (pImage, Length, (FIRMWARE_PROGRAM_CALLBACK)ProgressCallback);
+  FlashStatus = FlashUpdateProtocol->FirmwarePackageProgram (pImage, Length, Progress);
+
+  FlashStatus &= 0xFF;
+  if (EFI_ERROR (FlashStatus)) {
+    Print (L"\nFlash fail status:%x\n", FlashStatus);
+  }
+
+  if (SPI_VARIABLE_BASE != 0) {
+    if (NvramBackupValid == TRUE) {
+      Status = NorFlashDiskIoWrite (SPI_VARIABLE_BASE, SPI_VARIABLE_SIZE + SPI_VARIABLE_SIZE + SPI_VARIABLE_SIZE, NvramBackup);
+      if (!EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_INFO, "%a: NVRAM restore written successfully\n", __FUNCTION__));
+        Print (L"NVRAM restore written successfully\n");
+      } else {
+        DEBUG ((DEBUG_ERROR, "%a: NVRAM restore write failed: %r\n", __FUNCTION__, Status));
+        Print (L"NVRAM restore write failed: %r\n", Status);
+      }
+
+      FreePool (NvramBackup);
+    }
+  }
+
+  return FlashStatus;
 }
 
 EFI_STATUS
@@ -60,7 +239,7 @@ PlatformFlashSystemFirmware  (
   UINT32              FmpHeaderSize = 0;
   FMP_PAYLOAD_HEADER  *FmpPayloadHeader;
   UINT32              SystemFirmwareSize = 0;
-  UINT8               *SystemFirmware    = NULL;
+  UINT8               *SystemFirmware = NULL;
   UINT32              Version, LowestSupportedVersion;
 
   FmpHeaderSize    = sizeof (FMP_PAYLOAD_HEADER);
@@ -221,11 +400,11 @@ FmpSetImage (
 
   SystemFmpPrivate = SYSTEM_FMP_PRIVATE_DATA_FROM_FMP (This);
   *AbortReason     = NULL;
-  ProgressFunc = Progress;
+  ProgressFunc     = Progress;
 
-  // if ((ImageIndex == 0) || (ImageIndex > SystemFmpPrivate->DescriptorCount)) {
-  //   return EFI_INVALID_PARAMETER;
-  // }
+  if ((ImageIndex == 0) || (ImageIndex > SystemFmpPrivate->DescriptorCount)) {
+    return EFI_INVALID_PARAMETER;
+  }
 
   //
   // Process FV
@@ -233,7 +412,7 @@ FmpSetImage (
   Status = DispatchSystemFmpImages ((VOID *)Image, ImageSize, &SystemFmpPrivate->LastAttempt.LastAttemptVersion, &SystemFmpPrivate->LastAttempt.LastAttemptStatus);
   DEBUG ((DEBUG_INFO, "ImageIndex 0x%x\n", ImageIndex));
 
-  return EFI_SUCCESS;
+  return Status;
 }
 
 /**
@@ -274,11 +453,11 @@ SystemFirmwareReportMainDxe (
   // Install FMP protocol.
   //
   Status = gBS->InstallProtocolInterface (
-                                          &mSystemFmpPrivate->Handle,
-                                          &gEfiFirmwareManagementProtocolGuid,
-                                          EFI_NATIVE_INTERFACE,
-                                          &mSystemFmpPrivate->Fmp
-                                          );
+                  &mSystemFmpPrivate->Handle,
+                  &gEfiFirmwareManagementProtocolGuid,
+                  EFI_NATIVE_INTERFACE,
+                  &mSystemFmpPrivate->Fmp
+                  );
   if (EFI_ERROR (Status)) {
     FreePool (mSystemFmpPrivate);
     mSystemFmpPrivate = NULL;

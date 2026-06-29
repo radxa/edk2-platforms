@@ -16,7 +16,9 @@
 
 #define PMCG_COUNT       (PCIE_PMCG_ENABLE + MM_HUB_PMCG_ENABLE + SUB_SYSTEM_PMCG_ENABLE)
 #define MM_NODE_COUNT    (MM_HUB_SMMU_ENABLE + DPU_SMMU_ENABLE*10 + NPU_SMMU_ENABLE*1 + ISP_SMMU_ENABLE*1 + CSI_SMMU_ENABLE*2)
-#define IORT_NODE_COUNT  (PCIE_SMMU_ENABLE*3 + MM_NODE_COUNT + SUB_SYSTEM_SMMU_ENABLE*1 + RMR_GOP_ENABLE*1 + PMCG_COUNT)
+// PCIe: ITS + RC always (2); when SMMU enabled add SMMU + optional PMCG
+#define PCIE_NODE_COUNT  (2 + PCIE_SMMU_ENABLE * (1 + PCIE_PMCG_ENABLE))
+#define IORT_NODE_COUNT  (PCIE_NODE_COUNT + MM_NODE_COUNT + SUB_SYSTEM_SMMU_ENABLE*1 + RMR_GOP_ENABLE*1 + PMCG_COUNT)
 
 #pragma pack(1)
 
@@ -53,14 +55,15 @@ typedef struct {
 
 typedef struct {
   EFI_ACPI_6_0_IO_REMAPPING_TABLE             Header;
- #if PCIE_SMMU_ENABLE
+  // PCIe ITS and RC always present for MSI; SMMU/PMCG only when PCIE_SMMU_ENABLE
   ARM_EFI_ACPI_6_0_IO_REMAPPING_ITS_NODE      ItsNode;
+ #if PCIE_SMMU_ENABLE
   ARM_EFI_ACPI_6_0_IO_REMAPPING_SMMU3_NODE    PcieSmmuNode;
   #if PCIE_PMCG_ENABLE
   SKY1_EFI_ACPI_6_0_IO_REMAPPING_PMCG_NODE    PciePmcgNode;
   #endif
-  ARM_EFI_ACPI_6_0_IO_REMAPPING_RC_NODE       RcNode;
  #endif
+  ARM_EFI_ACPI_6_0_IO_REMAPPING_RC_NODE       RcNode;
  #if MM_HUB_SMMU_ENABLE
   EFI_ACPI_6_0_IO_REMAPPING_SMMU3_NODE        MmSmmuNode;
   #if MM_HUB_PMCG_ENABLE
@@ -145,8 +148,7 @@ ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE  Iort =
     sizeof (EFI_ACPI_6_0_IO_REMAPPING_TABLE), // NodeOffset
     0,                                        // Reserved
   },
- #if PCIE_SMMU_ENABLE
-  // ItsNode
+  // ItsNode (always present for PCIe MSI)
   {
     // EFI_ACPI_6_0_IO_REMAPPING_ITS_NODE
     {
@@ -163,6 +165,7 @@ ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE  Iort =
     },
     0,      // GIC ITS Identifiers
   },
+ #if PCIE_SMMU_ENABLE
   // PcieSmmuNode
   {
     // EFI_ACPI_6_0_IO_REMAPPING_SMMU3_NODE
@@ -216,10 +219,9 @@ ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE  Iort =
     },
   },
   #endif
-  // RcNode
+ #endif
+  // RcNode (always present; maps to SMMU when enabled, else directly to ITS for MSI)
   {
-    // 
-    
     {
       // EFI_ACPI_6_0_IO_REMAPPING_NODE
       {
@@ -243,11 +245,14 @@ ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE  Iort =
       0x0000,                                                        // InputBase
       0xffff,                                                        // NumIds
       0x0000,                                                        // OutputBase
-      OFFSET_OF (ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE, PcieSmmuNode), // OutputReference
+ #if PCIE_SMMU_ENABLE
+      OFFSET_OF (ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE, PcieSmmuNode), // OutputReference -> SMMU
+ #else
+      OFFSET_OF (ARM_EFI_ACPI_6_0_IO_REMAPPING_TABLE, ItsNode),      // OutputReference -> ITS (MSI only)
+ #endif
       0,                                                             // Flags
     }
   },
- #endif
  #if MM_HUB_SMMU_ENABLE
   // MmSmmuNode
   {

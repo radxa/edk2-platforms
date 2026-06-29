@@ -15,6 +15,8 @@
 #include <Protocol/EcPlatformProtocol.h>
 #include <Protocol/I2cDevicePath.h>
 #include <Library/CixSipLib.h>
+#include <Library/CixFwBootPerfLib.h>
+#include <Library/CixPostCodeLib.h>
 #include <Library/EcLib.h>
 #include <Guid/NetworkStackSetup.h>
 #include <PlatformSetupVar.h>
@@ -753,6 +755,37 @@ InitEcDefaultSetting (
   DEBUG ((DEBUG_INFO, "EC Set Fan control mode Status:%r\n", Status));
 }
 
+STATIC
+VOID
+EFIAPI
+CixFwBootPerfEndNotify (
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
+  )
+{
+  POST_CODE (DxeReadyToBoot);
+  cix_set_boot_phase (BLOADER_PHASE, RECORD_END);
+}
+
+static EFI_EVENT  ReadyToBootEvent;
+EFI_STATUS
+EFIAPI
+CixFwBootPerfInit (
+  )
+{
+  EFI_STATUS  Status = EFI_SUCCESS;
+
+  Status = gBS->CreateEventEx (
+                  EVT_NOTIFY_SIGNAL,
+                  TPL_CALLBACK,
+                  CixFwBootPerfEndNotify,
+                  NULL,
+                  &gEfiEventReadyToBootGuid,
+                  &ReadyToBootEvent
+                  );
+  return Status;
+}
+
 STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 InitGpio                },
   { NULL,                        NULL,                 InitPinmux              },
@@ -764,6 +797,7 @@ STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 FarmFunctionControl     },
   { &gEfiI2cMasterProtocolGuid,  InstallRtcProtocol,   NULL                    },
   { &gCixEcPlatformProtocolGuid, InitEcDefaultSetting, NULL                            },
+  { NULL,                        NULL,                 CixFwBootPerfInit               },
   // add platform initialization routines on ENV phase BEFORE this line, and they were invoked from top to down.
   { NULL,                        NULL,                 NULL                    }
 };

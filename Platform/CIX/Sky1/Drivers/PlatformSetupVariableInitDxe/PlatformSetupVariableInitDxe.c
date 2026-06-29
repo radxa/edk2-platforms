@@ -86,26 +86,6 @@ CheckCpuShareInfo (
   return Status;
 }
 
-BOOLEAN
-IsRtcPowerfailure (
-  )
-{
-  EFI_STATUS                                  Status;
-  PLATFORM_CONFIG_PARAMS_DATA_BLOCK           *ConfigData = NULL;
-  CIX_PLATFORM_CONFIG_PARAMS_MANAGE_PROTOCOL  *ConfigManage;
-
-  Status = gBS->LocateProtocol (&gCixPlatformConfigParamsManageProtocolGuid, NULL, (VOID **)&ConfigManage);
-  if (!EFI_ERROR (Status)) {
-    ConfigData = ConfigManage->Data;
-    if (ConfigData != NULL) {
-      DEBUG ((DEBUG_INFO, "RTC voltage drop status : %a\n", ConfigData->RtcVoltDrop ? "TRUE" : "FALSE"));
-      return ConfigData->RtcVoltDrop;
-    }
-  }
-
-  return FALSE;
-}
-
 VOID
 EFIAPI
 UpdateConfigParams (
@@ -125,7 +105,7 @@ UpdateConfigParams (
                   &VarSize,
                   &PlatformSetupVar
                   );
-  if (!EFI_ERROR (Status) && !IsRtcPowerfailure ()) {
+  if (!EFI_ERROR (Status)) {
     for (UINT8 i = 0; i < MAX_PCIE_PORT_NUM; i++) {
       ConfigData->Pcie.PcieRpEnable[i]        = PlatformSetupVar.PcieRpEnable[i];
       ConfigData->Pcie.PcieWidth[i]           = PlatformSetupVar.PcieWidth[i];
@@ -151,6 +131,7 @@ UpdateConfigParams (
     ConfigData->Usb20[3].Enable     = PlatformSetupVar.Usb2Control3Enable;
     ConfigData->Usb32Drd[0].Enable  = PlatformSetupVar.Usb3Control0Enable;
     ConfigData->Usb32Drd[1].Enable  = PlatformSetupVar.Usb3Control1Enable;
+    ConfigData->Usb32Drd[0].DataRole = PlatformSetupVar.Usb3Control0DataRole;
     ConfigData->UsbCDrd[0].Enable   = PlatformSetupVar.UsbCDrdControl0Enable;
     ConfigData->UsbC[0].Enable      = PlatformSetupVar.UsbCControl0Enable;
     ConfigData->UsbC[1].Enable      = PlatformSetupVar.UsbCControl1Enable;
@@ -237,6 +218,7 @@ UpdateConfigParams (
     ConfigData->Pm.VpuClkGating          = PlatformSetupVar.VpuClkGating;
     ConfigData->Misc.CpuCppcType         = PlatformSetupVar.CpuCppcType;
     ConfigData->Spi.TPMDeviceSelect      = PlatformSetupVar.TPMDeviceSelect;
+    ConfigData->Misc.SmmuEnable          = PlatformSetupVar.SmmuEnable;
   }
 }
 
@@ -261,7 +243,7 @@ UpdatePlatformConfigParams (
                   &VarSize,
                   &PlatformSetupVar
                   );
-  if (!EFI_ERROR (Status) && !IsRtcPowerfailure ()) {
+  if (!EFI_ERROR (Status)) {
     ConfigData->DtbMenuEntry     = PlatformSetupVar.DtbMenuEntry;
     ConfigData->GfxPower         = PlatformSetupVar.GfxPower;
     ConfigData->TouchPanelPower  = PlatformSetupVar.TouchPanelPower;
@@ -292,7 +274,7 @@ UpdatePlatformConfigParams (
                   &SystemTableVarSize,
                   &SystemTableVar
                   );
-  if (!EFI_ERROR (Status) && !IsRtcPowerfailure ()) {
+  if (!EFI_ERROR (Status)) {
     ConfigData->SystemTableSelect = SystemTableVar.SystemTableSelect;
   }
 }
@@ -512,6 +494,8 @@ ConstructSetupVariable (
   PlatformSetupVar->LightSensorCtrl       = FixedPcdGet8 (PcdLightSensorCtrl);
   PlatformSetupVar->SpcrEnable            = FixedPcdGetBool (PcdAcpiSpcrEnable);
   PlatformSetupVar->EcFanMode             = FixedPcdGetBool (PcdEcDefaultFanMode);
+  PlatformSetupVar->SmmuEnable            = FixedPcdGetBool (PcdAcpiSmmuEnable);
+  PlatformSetupVar->FastBootHotKeyEnable  = 0x0;
 
   PlatformSetupVar->Usb2Control0Enable      = FixedPcdGetBool (PcdUsb2Control0Enable);
   PlatformSetupVar->Usb2Control1Enable      = FixedPcdGetBool (PcdUsb2Control1Enable);
@@ -519,6 +503,7 @@ ConstructSetupVariable (
   PlatformSetupVar->Usb2Control3Enable      = FixedPcdGetBool (PcdUsb2Control3Enable);
   PlatformSetupVar->Usb3Control0Enable      = FixedPcdGetBool (PcdUsb3Control0Enable);
   PlatformSetupVar->Usb3Control1Enable      = FixedPcdGetBool (PcdUsb3Control1Enable);
+  PlatformSetupVar->Usb3Control0DataRole    = FixedPcdGetBool (PcdUsb3Control0DataRole);
   PlatformSetupVar->UsbCDrdControl0Enable   = FixedPcdGetBool (PcdUsbCDrdControl0Enable);
   PlatformSetupVar->UsbCControl0Enable      = FixedPcdGetBool (PcdUsbCControl0Enable);
   PlatformSetupVar->UsbCControl1Enable      = FixedPcdGetBool (PcdUsbCControl1Enable);
@@ -541,6 +526,7 @@ ConstructSetupVariable (
   PlatformSetupVar->CpuLpiState             = FixedPcdGet8 (PcdAcpiCpuLpiState);
   PlatformSetupVar->CpuCppcType             = FixedPcdGet8 (PcdAcpiCppcType);
   PlatformSetupVar->TPMDeviceSelect         = FixedPcdGet8 (PcdDefaultTpmDeviceSelect);
+  PlatformSetupVar->SPEEnable               = FixedPcdGet8 (PcdSPEEn);
 }
 
 EFI_STATUS
@@ -561,7 +547,7 @@ PlatformSetupVariableInit (
                   &VarSize,
                   &PlatformSetupVar
                   );
-  if (EFI_ERROR (Status) || IsRtcPowerfailure ()) {
+  if (EFI_ERROR (Status)) {
     //
     // Variable does not exist yet - create it
     //
@@ -603,7 +589,7 @@ NetworkStackVariableInit (
                   &VarSize,
                   &NetworkStack
                   );
-  if (EFI_ERROR (Status) || IsRtcPowerfailure ()) {
+  if (EFI_ERROR (Status)) {
     ZeroMem (&NetworkStack, VarSize);
     //
     // Variable does not exist yet - create it
@@ -649,7 +635,7 @@ SystemTableVariableInit (
                   &SystemTableVar
                   );
 
-  if (EFI_ERROR (Status) || IsRtcPowerfailure ()) {
+  if (EFI_ERROR (Status)) {
     //
     // Variable does not exist yet - create it
     //

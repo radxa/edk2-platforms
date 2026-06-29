@@ -189,11 +189,14 @@ MemoryPeim (
     EfiBootServicesData
     );
 
+ #if FixedPcdGetBool (PcdRamdiskEnable) == 1
   BuildMemoryAllocationHob (
     FixedPcdGet32 (PcdKernelBootImgBase),
     FixedPcdGet32 (PcdKernelBootImgSize),
     EfiReservedMemoryType
     );
+ #endif
+
  #ifdef PI_TEST_SUPPORT
   BuildMemoryAllocationHob (
     0x100000000,
@@ -247,6 +250,12 @@ MemoryPeim (
     FixedPcdGet64 (PcdReservedFwShareMemoryBase),
     FixedPcdGet64 (PcdReservedFwShareMemorySize),
     EfiRuntimeServicesData
+    );
+
+  BuildMemoryAllocationHob (
+    FixedPcdGet32 (PcdReservedAudioBase),
+    FixedPcdGet32 (PcdReservedAudioSize),
+    EfiReservedMemoryType
     );
 
   // Build Memory Allocation Hob

@@ -116,6 +116,16 @@ endif;
       endoneof;
 #endif
 
+suppressif NOT FixedPcdGetBool (PcdRegisterFastBootSupport);
+      oneof varid   = PlatformSetupVar.FastBootHotKeyEnable,
+        prompt      = STRING_TOKEN(STR_FASTBOOT_HOTKEY),
+        help        = STRING_TOKEN(STR_FASTBOOT_HOTKEY_HELP),
+        default     = 0x0,
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+endif;
+
 suppressif ideqval SystemTableVar.SystemTableSelect == 0x01;
       goto DEVICE_POWER_CONTROL_FORM_ID,
         prompt = STRING_TOKEN(STR_DEVICE_POWER_CONTROL_FORM_TITLE),

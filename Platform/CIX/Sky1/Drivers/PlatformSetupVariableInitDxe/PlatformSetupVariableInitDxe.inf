@@ -244,8 +244,10 @@
   gCixTokenSpaceGuid.PcdCpuCore10En
   gCixTokenSpaceGuid.PcdCpuCore11En
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
+  gCixTokenSpaceGuid.PcdSPEEn
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable
   gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode
+  gCixTokenSpaceGuid.PcdAcpiSmmuEnable
   gCixTokenSpaceGuid.PcdAcpiCppcType
   gCixPlatformTokenSpaceGuid.PcdDefaultTpmDeviceSelect
 

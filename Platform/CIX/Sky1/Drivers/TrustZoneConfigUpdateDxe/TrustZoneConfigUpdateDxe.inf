@@ -1,0 +1,45 @@
+#/** @file
+#
+#  Copyright 2024 Cix Technology Group Co., Ltd. All Rights Reserved.
+#
+#**/
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = TrustZoneConfigUpdateDxe
+  FILE_GUID                      = ac8a912d-99cc-4d90-9a19-c548c1b8c4cd
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = TrustZoneConfigUpdateDxeEntryPoint
+
+[Sources]
+  TrustZoneConfigUpdateDxe.c
+  TrustZoneConfigUpdateDxe.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+  Silicon/CIX/Sky1/CixPkg.dec
+
+[LibraryClasses]
+  UefiLib
+  DxeServicesLib
+  PcdLib
+  IoLib
+  BaseMemoryLib
+  DebugLib
+  UefiRuntimeServicesTableLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  ShMemLib
+
+[Protocols]
+  gCixFirmwareUpdateProtocolGuid
+
+[Guids]
+  gPlatformSetupVariableGuid
+  gSetupSaveVariableCallBackGuid
+
+[Depex]
+  TRUE

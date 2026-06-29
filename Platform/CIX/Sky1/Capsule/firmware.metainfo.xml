@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="firmware">
+  <id>com.cixtch.firmware</id>
+  <name>CIX SKY1 EVB PHECDA BIOS</name>
+  <summary>BIOS for CIX sky1 evb platform</summary>
+  <description>
+    <p>UEFI system firmware update for CIX EVB board.</p>
+  </description>
+  <provides>
+    <firmware type="flashed">351c9808-4b53-4363-9314-d339386e5685</firmware>
+  </provides>
+  <url type="homepage">https://www.cixtech.com/</url>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>proprietary</project_license>
+  <developer_name>CIX Technology</developer_name>
+  <releases>
+    <release version="7" date="2026-06-11">
+      <description>
+      <p>CIX EVB BIOS version 7</p>
+      </description>
+    </release>
+  </releases>
+  <custom>
+    <value key="LVFS::UpdateProtocol">org.uefi.capsule</value>
+    <value key="LVFS::UpdateCategory">X-System</value>
+  </custom>
+</component>

@@ -12,6 +12,7 @@
 
 #include <Library/BaseLib.h>
 #include "NorFlashLib.h"
+#include <Library/UefiBootServicesTableLib.h>
 
 //
 // DiskIO Protocol function EFI_DISK_IO_PROTOCOL.ReadDisk

@@ -129,15 +129,16 @@ SecureBootDxeEntry (
   //
   // Register EFI_END_OF_DXE_EVENT_GROUP_GUID event.
   //
-  Status = gBS->CreateEventEx (
-                  EVT_NOTIFY_SIGNAL,
-                  TPL_CALLBACK,
-                  EnroolKeysFromDefault,
-                  NULL,
-                  &gEfiEndOfDxeEventGroupGuid,
-                  &EndOfDxeEvent
-                  );
-  ASSERT_EFI_ERROR (Status);
+  if (PcdGetBool (PcdSecureBootEnrollDefaultKeys) == TRUE) {
+    Status = gBS->CreateEventEx (
+                    EVT_NOTIFY_SIGNAL,
+                    TPL_CALLBACK,
+                    EnroolKeysFromDefault,
+                    NULL,
+                    &gEfiEndOfDxeEventGroupGuid,
+                    &EndOfDxeEvent
+                    );
+  }
 
   return Status;
 }

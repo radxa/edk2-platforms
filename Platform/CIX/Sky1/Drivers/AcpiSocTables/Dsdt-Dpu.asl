@@ -96,6 +96,7 @@
               Package () { "aclk_freq_fixed", 800000000 },  \
               Package () { "enabled_by_gop", 0 }, \
               Package () { "device-id", DeviceId }, \
+              Package () { "cix,linlon-dpu-slave", One }, \
             },\
             ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),\
             Package () {\
@@ -344,9 +345,6 @@ Device (DP02) {
     Package() {\_SB.RST0, SKY1_DP_RESET2_N, \_SB.DP02, "dp_reset"},
     Package() {\_SB.RST0, SKY1_DP_PHY_RST_N , \_SB.DP02, "phy_reset"},
     Package() {\_SB.RST0, SKY1_DP2_RCSU_RESET_N, \_SB.DP02, "dp_rcsu_reset"},
-  })
-  Name (DLKL, Package() {
-    Package() {\_SB.EDP0, \_SB.DP02, 0},
   })
 }
 
@@ -781,6 +779,28 @@ Device (DPU4) {
   Name (RSTL, Package() {
     Package() {\_SB.RST0, SKY1_DPU4_RCSU_RESET_N, \_SB.DPU4,  "rcsu_reset"},
     Package() {\_SB.RST0, SKY1_DPU_RESET4_N, \_SB.DPU4,  "ip_reset"},
+  })
+}
+
+//
+// Linlon display cluster (see linux linlondp_cluster.c): _HID must match driver
+// acpi_match_table. ACPI requires the last 4 chars of EISA IDs to be hex digits
+// (so not "CIXH50CL"); use CIXH50C0. "cix,dpu-acpi-paths" lists full ACPI paths.
+//
+Device (LNCL) {
+  Name (_HID, "CIXH50C0")
+  Name (_UID, Zero)
+  Method (_STA, 0x0, Serialized) {
+    If (LOr (LOr (LOr (LOr (\_SB.GETV (ARV_DPU_00_SUPPORT_OFFSET), \_SB.GETV (ARV_DPU_01_SUPPORT_OFFSET)), \_SB.GETV (ARV_DPU_02_SUPPORT_OFFSET)), \_SB.GETV (ARV_DPU_03_SUPPORT_OFFSET)), \_SB.GETV (ARV_DPU_04_SUPPORT_OFFSET))) {
+      Return (0xB)
+    }
+    Return (Zero)
+  }
+  Name (_DSD, Package () {
+    ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () { "cix,dpu-acpi-paths", "\\_SB.DPU0,\\_SB.DPU1,\\_SB.DPU2,\\_SB.DPU3,\\_SB.DPU4" },
+    }
   })
 }
 

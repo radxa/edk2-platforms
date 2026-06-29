@@ -222,6 +222,7 @@
   gCixTokenSpaceGuid.PcdUsb2Control2Enable
   gCixTokenSpaceGuid.PcdUsb2Control3Enable
   gCixTokenSpaceGuid.PcdUsb3Control0Enable
+  gCixTokenSpaceGuid.PcdUsb3Control0DataRole
   gCixTokenSpaceGuid.PcdUsb3Control1Enable
   gCixTokenSpaceGuid.PcdUsbCDrdControl0Enable
   gCixTokenSpaceGuid.PcdUsbCDrdControl0DataRole
@@ -244,7 +245,10 @@
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
   gCixPlatformTokenSpaceGuid.PcdAcpiSpcrEnable
   gCixPlatformTokenSpaceGuid.PcdEcDefaultFanMode
+  gCixTokenSpaceGuid.PcdAcpiSmmuEnable
   gCixTokenSpaceGuid.PcdAcpiCppcType
+  gCixTokenSpaceGuid.PcdSPEEn
+  gCixPlatformTokenSpaceGuid.PcdRegisterFastBootSupport
 
 [Depex]
   TRUE

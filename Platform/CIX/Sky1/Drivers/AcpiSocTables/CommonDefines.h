@@ -32,7 +32,7 @@
 #define RAMOOPS_RES_SIZE   0xa0000
 
 // IORT
-#define PCIE_SMMU_ENABLE        1
+#define PCIE_SMMU_ENABLE        0
 #define MM_HUB_SMMU_ENABLE      1
 #define SUB_SYSTEM_SMMU_ENABLE  0
 

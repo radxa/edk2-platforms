@@ -7,6 +7,8 @@
 **/
 #include <Protocol/sky1-audss.h>
 
+External (\_SB.SNDC, DeviceObj)
+
 Device (ADSS) {
   Name (_HID, "CIXH6060")
   Name (_UID, 0x0)
@@ -67,7 +69,11 @@ Device (ADSS) {
         Package() {CLK_I2S7, "i2s", \_SB.I2S7},
         Package() {CLK_I2S8, "i2s", \_SB.I2S8},
         Package() {CLK_I2S9, "i2s", \_SB.I2S9},
-        Package() {CLK_MCLK0, "mclk", \_SB.I2S0},
+        Package() {CLK_MCLK0, "mclk0", \_SB.SNDC},
+        Package() {CLK_MCLK1, "mclk1", \_SB.SNDC},
+        Package() {CLK_MCLK2, "mclk2", \_SB.SNDC},
+        Package() {CLK_MCLK3, "mclk3", \_SB.SNDC},
+        Package() {CLK_MCLK4, "mclk4", \_SB.SNDC},
         Package() {CLK_DMAC_AXI, "", \_SB.DMA1},
         Package() {CLK_HDA_SYS, "sysclk", \_SB.HDA},
         Package() {CLK_HDA_HDA, "clk48m", \_SB.HDA},

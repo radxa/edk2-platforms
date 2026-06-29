@@ -382,6 +382,9 @@
 !if $(CIX_GPNV_ENABLE) == TRUE
   GCC:*_*_*_CC_FLAGS          = -DCIX_GPNV_ENABLE
 !endif
+!if $(VARIABLE_SUPPORT) == "SPI"
+  GCC:*_*_*_CC_FLAGS          = -DSPI_VARIABLE_BASE=$(SPI_VARIABLE_BASE) -DSPI_VARIABLE_SIZE=$(SPI_VARIABLE_SIZE)
+!endif
 
 [BuildOptions.common.EDKII.DXE_RUNTIME_DRIVER]
   GCC:*_*_AARCH64_DLINK_FLAGS = -z common-page-size=0x10000
@@ -403,7 +406,7 @@
 !else
   gEfiMdeModulePkgTokenSpaceGuid.PcdVariableCollectStatistics|TRUE
 !endif
-
+  gEfiMdeModulePkgTokenSpaceGuid.PcdPciBusHotplugDeviceSupport|FALSE
 [PcdsDynamicExDefault.common.DEFAULT]
 !if $(CAPSULE_ENABLE)                                    #351c9808-4b53-4363-9314-d339386e5685
   gEfiSignedCapsulePkgTokenSpaceGuid.PcdEdkiiSystemFirmwareImageDescriptor|{0x0}|VOID*|0x100
@@ -500,6 +503,8 @@
   gArmPlatformTokenSpaceGuid.PcdArmLcdDdrFrameBufferSize|0x00800000
   gCixPlatformTokenSpaceGuid.PcdReservedLinuxBase|0x86000000
   gCixPlatformTokenSpaceGuid.PcdReservedLinuxSize|0x06200000
+  gCixPlatformTokenSpaceGuid.PcdReservedAudioBase|0xCDE00000
+  gCixPlatformTokenSpaceGuid.PcdReservedAudioSize|0x03200000
   gCixPlatformTokenSpaceGuid.PcdReservedAndroidBase|0x140000000
   gCixPlatformTokenSpaceGuid.PcdReservedAndroidSize|0x120000000
   #
@@ -591,6 +596,10 @@
 
 !if $(COMPILE_ACPI_ENABLE) == 1
   gCixTokenSpaceGuid.PcdSystemTableSelect|0x00
+!endif
+
+!if $(TOKEN_RAM_DISK_SUPPORT) == TRUE
+  gCixPlatformTokenSpaceGuid.PcdRamdiskEnable|TRUE
 !endif
 
 [PcdsPatchableInModule]
@@ -920,6 +929,15 @@
   #
   Platform/CIX/Sky1/Drivers/NvmExpressDxe/NvmExpressDxe.inf
 
+!if $(PCIE_HOST_ENABLE) == TRUE
+  #
+  # SATA/AHCI boot devices
+  #
+  MdeModulePkg/Bus/Pci/SataControllerDxe/SataControllerDxe.inf
+  MdeModulePkg/Bus/Ata/AtaBusDxe/AtaBusDxe.inf
+  MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf
+!endif
+
   # SCMI Driver
   Platform/CIX/Sky1/Drivers/ArmScmiDxe/ArmScmiDxe.inf
   # reset
@@ -990,6 +1008,9 @@
 !if $(MEM_CONFIG_UPDATE_SUPPORT) == TRUE
   Platform/CIX/Sky1/Drivers/MemConfigUpdateDxe/MemConfigUpdateDxe.inf
 !endif
+!if $(TFA_CONFIG_UPDATE_SUPPORT) == TRUE
+  Platform/CIX/Sky1/Drivers/TrustZoneConfigUpdateDxe/TrustZoneConfigUpdateDxe.inf
+!endif
   Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionDxe.inf
   Platform/CIX/Sky1/Drivers/FwVersionDxe/FwVersionProtocolTest.inf
   #
@@ -1015,7 +1036,7 @@ ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf {
   Platform/CIX/Sky1/Application/ABSelect/ABSelect.inf 
   Platform/CIX/Sky1/Drivers/AndroidConfigDxe/AndroidConfigDxe.inf 
 !endif
-
+  Platform/CIX/Sky1/Application/LinuxBootSelect/LinuxBootSelect.inf
 !if $(PD_FW_UPDATE_ENABLE) == TRUE
   Platform/CIX/Sky1/Application/PdFwUpdate/PdFwUpdate.inf
 !endif

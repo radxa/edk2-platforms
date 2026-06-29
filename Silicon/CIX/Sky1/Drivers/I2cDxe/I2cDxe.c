@@ -24,7 +24,7 @@
 STATIC EFI_EVENT  mI2cMemoryInitEvent;
 STATIC EFI_EVENT  mI2cVirtualAddrChangeEvent;
 
-STATIC I2C_CONTROLLER_CONTEXT  *mI2cBusRuntime[7] = { NULL };
+STATIC I2C_CONTROLLER_CONTEXT  *mI2cBusRuntime[I2C_CTRL_NUM] = { NULL };
 
 STATIC CONST EFI_I2C_CONTROLLER_CAPABILITIES  mI2cControllerCapabilities = {
   0,
@@ -199,14 +199,12 @@ I2cHostInit (
 
     if (EFI_ERROR (Status)) {
       FreePool (I2c);
+    } else if (IsI2cBusRuntime (I2cBus)) {
+      mI2cBusRuntime[I2cBus] = I2c;
     }
   } else {
-    DEBUG ((DEBUG_ERROR, "%a failed to allocate buffer(size %x) for I2C host(base %x)\n", __FUNCTION__, sizeof (I2C_CONTROLLER_CONTEXT), I2c->Descriptor.MemBase));
+    DEBUG ((DEBUG_ERROR, "%a failed to allocate buffer(size %x) for I2C host(base %x)\n", __FUNCTION__, sizeof (I2C_CONTROLLER_CONTEXT), I2cGetMemBase (I2cBus)));
     Status = EFI_OUT_OF_RESOURCES;
-  }
-
-  if (IsI2cBusRuntime (I2cBus)) {
-    mI2cBusRuntime[I2cBus] = I2c;
   }
 
   return Status;
@@ -225,8 +223,9 @@ I2cMemoryInitEventNotify (
   UINTN                            NumberOfDescriptors, Index;
   UINT32                           I2cBus;
   EFI_GCD_MEMORY_SPACE_DESCRIPTOR  *MemSpaceMap;
+  BOOLEAN                          RegionAlreadyInMap;
 
-  for (I2cBus = 0; I2cBus <= 7; I2cBus++) {
+  for (I2cBus = 0; I2cBus < I2C_CTRL_NUM; I2cBus++) {
     if (!IsI2cBusRuntime (I2cBus)) {
       continue;
     }
@@ -235,7 +234,13 @@ I2cMemoryInitEventNotify (
     RuntimeMmioRegionBase = I2cGetMemBase (I2cBus);
     RuntimeMmioRegionSize = SIZE_4KB;
 
-    Status = gDS->GetMemorySpaceMap (&NumberOfDescriptors, &MemSpaceMap);
+    MemSpaceMap        = NULL;
+    RegionAlreadyInMap = FALSE;
+    Status             = gDS->GetMemorySpaceMap (&NumberOfDescriptors, &MemSpaceMap);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a: GetMemorySpaceMap failed %r\n", __FUNCTION__, Status));
+      continue;
+    }
 
     for (Index = 0; Index < NumberOfDescriptors; Index++) {
       if ((RuntimeMmioRegionBase >= MemSpaceMap[Index].BaseAddress) &&
@@ -243,8 +248,17 @@ I2cMemoryInitEventNotify (
           (MemSpaceMap[Index].GcdMemoryType == EfiGcdMemoryTypeMemoryMappedIo))
       {
         DEBUG ((DEBUG_INFO, "%a: memory space base 0x%x, length 0x%x already added\n", __FUNCTION__, RuntimeMmioRegionBase, RuntimeMmioRegionSize));
-        return;
+        RegionAlreadyInMap = TRUE;
+        break;
       }
+    }
+
+    if (MemSpaceMap != NULL) {
+      FreePool (MemSpaceMap);
+    }
+
+    if (RegionAlreadyInMap) {
+      continue;
     }
 
     Status = gDS->AddMemorySpace (
@@ -283,8 +297,12 @@ LibI2cVirtualNotifyEvent (
 {
   UINT32  I2cBus;
 
-  for (I2cBus = 0; I2cBus <= 7; I2cBus++) {
+  for (I2cBus = 0; I2cBus < I2C_CTRL_NUM; I2cBus++) {
     if (!IsI2cBusRuntime (I2cBus)) {
+      continue;
+    }
+
+    if (mI2cBusRuntime[I2cBus] == NULL) {
       continue;
     }
 

@@ -84,12 +84,16 @@
 #define PCIE_X8_VCC_SUPPLY       0
 #define PCIE_X4_VCC_SUPPLY       0
 #define PCIE_X2_VCC_SUPPLY       0
-#define PCIE_X1_1_VCC_SUPPLY     0
+#define PCIE_X1_1_VCC_SUPPLY     1
+#define PCIE_X1_1_VCC_REGULATOR  \_SB.PVC3
 #define PCIE_X1_0_VCC_SUPPLY     1
 #define PCIE_X1_0_VCC_REGULATOR  \_SB.PVC4
 
 #define PCIE_X1_0_STR_PWRON  1
 #define PCIE_X1_0_STD_PWRON  1
+
+#define PCIE_X1_1_STD_PWRON  1
+#define PCIE_X1_1_STR_PWRON  1
 
 /* HDA */
 #define HDA_EXT_CRS \

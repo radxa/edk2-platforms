@@ -131,12 +131,13 @@
   DEFINE SMBIOS_ENABLE              = TRUE
 
 
-  DEFINE SPI_VARIABLE_BASE          = 0x00380000
+  DEFINE SPI_VARIABLE_BASE          = 0x00388000
   DEFINE SPI_VARIABLE_SIZE          = 0x28000
 
   DEFINE DTPM_SUPPORT               = FALSE
   DEFINE FTPM_SUPPORT               = FALSE
   DEFINE I2S_MC_SUPPORT             = TRUE
+  DEFINE CAPSULE_ENABLE             = TRUE
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
 !include NetworkPkg/NetworkDefines.dsc.inc
@@ -382,11 +383,14 @@
   gCixTokenSpaceGuid.PcdUsb2Control2Enable|TRUE
   gCixTokenSpaceGuid.PcdUsb2Control3Enable|TRUE
 
+  gCixTokenSpaceGuid.PcdAcpiI2s0Enable|FALSE
+  gCixTokenSpaceGuid.PcdAcpiI2s3Enable|FALSE
   gCixTokenSpaceGuid.PcdAcpiI2s5Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s6Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s7Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s8Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s9Enable|TRUE
+  gCixTokenSpaceGuid.PcdAudioHdaEn|TRUE
 
   gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000
 
@@ -420,6 +424,8 @@
   gCixPlatformTokenSpaceGuid.PcdFTPMSupport|$(FTPM_SUPPORT)
   gCixPlatformTokenSpaceGuid.PcdDTPMSpiBus|0x0          # 0:SPI1=0x04090000  1:SPI2=0x040A0000
   gCixPlatformTokenSpaceGuid.PcdDTPMSpiChipSelect|0x1   # 1:Slave Select 0   2:Slave Select 1
+
+  gCixPlatformTokenSpaceGuid.PcdRegisterFastBootSupport|TRUE
 
 [PcdsDynamicDefault.common]
 

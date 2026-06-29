@@ -58,6 +58,8 @@
   gCixFarmEnableFlagGuid = {0x3f7b73c7, 0xfb70, 0x4e91, { 0x86, 0xe7, 0x34, 0xea, 0xd7, 0x6a, 0xc7, 0x4d } }
   gOpteeFtpmTaGuid = { 0xbc50d971, 0xd4c9, 0x42c4, { 0x82, 0xcb, 0x34, 0x3f, 0xb7, 0xf3, 0x78, 0x96 }}
   gCixMmStmmInfoCommunicateGuid = { 0xCDE34D96, 0x7209, 0x4751, { 0xAD, 0xB0, 0x3E, 0x0E, 0xEF, 0x32, 0x14, 0x87 } }
+  gCixLinuxBootSelectGuid = { 0x4f3dfc2a, 0x3bb0, 0x4f6a, { 0x89, 0x52, 0xb5, 0x5, 0x8b, 0x62, 0xf7, 0x5b } }
+  gCixFastBootAppGuid = { 0xb68cf5da, 0x4610, 0x4aea, { 0x88, 0xfe, 0x21, 0x7a, 0x08, 0x44, 0x17, 0x86} }
 
 [PcdsFixedAtBuild.common]
 
@@ -75,6 +77,9 @@
   gCixPlatformTokenSpaceGuid.PcdReservedAndroidBase|0x160000000|UINT64|0x1CB
   gCixPlatformTokenSpaceGuid.PcdReservedAndroidSize|0x100000000|UINT64|0x1CC
   gCixPlatformTokenSpaceGuid.PcdRamLogLastBootSaveAddress|0x83DB2000|UINT64|0x000001CD
+  gCixPlatformTokenSpaceGuid.PcdReservedAudioBase|0xCDE00000|UINT32|0x1E8
+  gCixPlatformTokenSpaceGuid.PcdReservedAudioSize|0x03200000|UINT32|0x1E9
+
   gCixPlatformTokenSpaceGuid.PcdDramHighSpaceBase|0x8000000000|UINT64|0x000001CE
   gCixPlatformTokenSpaceGuid.PcdReservedFwShareMemoryBase|0x85F00000|UINT32|0x1CF
   gCixPlatformTokenSpaceGuid.PcdReservedFwShareMemorySize|0x00100000|UINT32|0x1D0
@@ -168,6 +173,14 @@
   gCixPlatformTokenSpaceGuid.PcdStmmFirmwareVersionString|L""|VOID*|0x00002006
   gCixPlatformTokenSpaceGuid.PcdRegisterBootShellSupport|TRUE|BOOLEAN|0x00003002
   gCixPlatformTokenSpaceGuid.PcdOemPublicKeyFileGuid|{0x9a, 0x3e, 0xd3, 0x10, 0x25, 0x99, 0x4d, 0xa8, 0xaa, 0x4b, 0xd9, 0xfd, 0x9f, 0x68, 0xd3, 0x82}|VOID*|0x00003003
+  gCixPlatformTokenSpaceGuid.PcdLinuxBootSelectSupport|FALSE|BOOLEAN|0x00003004
+  gCixPlatformTokenSpaceGuid.PcdRegisterFastBootSupport|FALSE|BOOLEAN|0x00003005
+
+  #Ramdisk
+  gCixPlatformTokenSpaceGuid.PcdRamdiskEnable|FALSE|BOOLEAN|0x0003014
+
+  # Secure Boot
+  gCixPlatformTokenSpaceGuid.PcdSecureBootEnrollDefaultKeys|FALSE|BOOLEAN|0x0003040
 
 [PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
 

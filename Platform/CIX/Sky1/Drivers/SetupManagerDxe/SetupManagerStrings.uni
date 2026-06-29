@@ -103,3 +103,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_FORM_NETWORK_DEVICE_LIST_TITLE           #language en-US "Network Device List"
 #string STR_NETWORK_DEVICE_LIST_STRING               #language en-US "Network Device List"
 #string STR_NETWORK_DEVICE_HELP                      #language en-US "Network Device"
+
+#string STR_ENABLE_SMMU_PROMPT                       #language en-US "SMMU Enable"
+#string STR_ENABLE_SMMU_PROMPT_HELP                  #language en-US "Enable or Disable SMMU. When disabled, IORT without SMMU is exposed to OS."

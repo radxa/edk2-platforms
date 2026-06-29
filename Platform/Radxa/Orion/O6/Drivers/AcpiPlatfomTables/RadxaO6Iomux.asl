@@ -76,12 +76,10 @@ Device (MUX0) {
         RawDataBuffer ()
         {
             CIX_PAD_I2S3_RSCK_FUNC_GPIO082(PULL_DOWN|ST|DS_LEVEL12),
-            CIX_PAD_I2S3_MCLK_FUNC_GPIO081(ST|DS_LEVEL12),
             CIX_PAD_I2S3_TWS_FUNC_GPIO085(PULL_DOWN|ST|DS_LEVEL12),
         })
         {
             CIX_PAD_I2S3_RSCK,
-            CIX_PAD_I2S3_MCLK,
             CIX_PAD_I2S3_TWS,
         }
 

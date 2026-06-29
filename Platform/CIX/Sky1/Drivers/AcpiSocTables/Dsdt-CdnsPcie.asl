@@ -977,6 +977,7 @@ Device (PRC3) { /* PCIE4 X1_1 */
 #endif
 #if PCIE_X1_1_VCC_SUPPLY
           Package () { "vcc-pcie-supply", PCIE_X1_1_VCC_REGULATOR },
+          Package () { "sky1,re-pwron-ms", 120 },
 #endif
 #if PCIE_X1_1_STR_PWRON
           Package () { "sky1,str-pwron", 1 },

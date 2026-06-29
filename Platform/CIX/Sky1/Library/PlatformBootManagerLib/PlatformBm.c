@@ -37,6 +37,7 @@
 #include <Guid/SerialPortLibVendor.h>
 #include <Library/CixPostCodeLib.h>
 #include <Library/Tcg2PhysicalPresenceLib.h>
+#include <PlatformSetupVar.h>
 #include "PlatformBm.h"
 
 #define DP_NODE_LEN(Type)  { (UINT8)sizeof (Type), (UINT8)(sizeof (Type) >> 8) }
@@ -477,6 +478,120 @@ PlatformRegisterFvBootOption (
   EfiBootManagerFreeLoadOptions (BootOptions, BootOptionCount);
 }
 
+STATIC BOOLEAN  mFastBootHotKeyTriggered = FALSE;
+
+STATIC
+BOOLEAN
+IsFastBootHotKeyEnabled (
+  VOID
+  )
+{
+  EFI_STATUS           Status;
+  PLATFORM_SETUP_DATA  PlatformSetupVar;
+  UINTN                VarSize;
+
+  if (!FixedPcdGetBool (PcdRegisterFastBootSupport)) {
+    return FALSE;
+  }
+
+  VarSize = sizeof (PlatformSetupVar);
+  Status  = gRT->GetVariable (
+                   PLATFORM_SETUP_VAR,
+                   &gPlatformSetupVariableGuid,
+                   NULL,
+                   &VarSize,
+                   &PlatformSetupVar
+                   );
+  if (EFI_ERROR (Status) || (VarSize != sizeof (PlatformSetupVar))) {
+    return TRUE;
+  }
+
+  return (PlatformSetupVar.FastBootHotKeyEnable == 0x01);
+}
+
+STATIC
+EFI_STATUS
+PlatformLaunchFvApplication (
+  IN CONST EFI_GUID  *FileGuid
+  )
+{
+  EFI_STATUS                         Status;
+  EFI_BOOT_MANAGER_LOAD_OPTION       BootOption;
+  MEDIA_FW_VOL_FILEPATH_DEVICE_PATH  FileNode;
+  EFI_LOADED_IMAGE_PROTOCOL          *LoadedImage;
+  EFI_DEVICE_PATH_PROTOCOL           *DevicePath;
+
+  Status = gBS->HandleProtocol (
+                  gImageHandle,
+                  &gEfiLoadedImageProtocolGuid,
+                  (VOID **)&LoadedImage
+                  );
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
+
+  EfiInitializeFwVolDevicepathNode (&FileNode, FileGuid);
+  DevicePath = DevicePathFromHandle (LoadedImage->DeviceHandle);
+  if (DevicePath == NULL) {
+    return EFI_NOT_FOUND;
+  }
+
+  DevicePath = AppendDevicePathNode (
+                 DevicePath,
+                 (EFI_DEVICE_PATH_PROTOCOL *)&FileNode
+                 );
+  if (DevicePath == NULL) {
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  Status = EfiBootManagerInitializeLoadOption (
+             &BootOption,
+             LoadOptionNumberUnassigned,
+             LoadOptionTypeBoot,
+             LOAD_OPTION_ACTIVE,
+             L"Fast Boot",
+             DevicePath,
+             NULL,
+             0
+             );
+  FreePool (DevicePath);
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
+
+  EfiBootManagerBoot (&BootOption);
+  EfiBootManagerFreeLoadOption (&BootOption);
+
+  return EFI_SUCCESS;
+}
+
+STATIC
+VOID
+PlatformCheckFastBootHotKey (
+  VOID
+  )
+{
+  EFI_STATUS     Status;
+  EFI_INPUT_KEY  Key;
+
+  if (mFastBootHotKeyTriggered || !IsFastBootHotKeyEnabled () || (gST->ConIn == NULL)) {
+    return;
+  }
+
+  while (TRUE) {
+    Status = gST->ConIn->ReadKeyStroke (gST->ConIn, &Key);
+    if (EFI_ERROR (Status)) {
+      break;
+    }
+
+    if ((Key.UnicodeChar == L'f') || (Key.UnicodeChar == L'F')) {
+      mFastBootHotKeyTriggered = TRUE;
+      PlatformLaunchFvApplication (&gCixFastBootAppGuid);
+      break;
+    }
+  }
+}
+
 STATIC
 VOID
 GetPlatformOptions (
@@ -643,18 +758,19 @@ PlatformRegisterOptionsAndKeys (
   ASSERT (Status == EFI_SUCCESS || Status == EFI_ALREADY_STARTED);
 }
 
-
 #define ISO_DEBIAN_BOOT_FILE_NAME  L"\\EFI\\DEBIAN\\GRUBAA64.EFI"
 
 VOID
-RegisterIsoDebianBootOption(CHAR16 *FileName)
+RegisterIsoDebianBootOption (
+  CHAR16  *FileName
+  )
 {
-  EFI_DEVICE_PATH_PROTOCOL        *FilePath;
-  EFI_BOOT_MANAGER_LOAD_OPTION    PlatformDefaultBootOption;
+  EFI_DEVICE_PATH_PROTOCOL      *FilePath;
+  EFI_BOOT_MANAGER_LOAD_OPTION  PlatformDefaultBootOption;
   // EFI_BOOT_MANAGER_LOAD_OPTION    *LoadOptions;
   // UINTN                           LoadOptionCount;
   // UINTN                           Index;
-  EFI_STATUS                      Status;
+  EFI_STATUS  Status;
 
   FilePath = FileDevicePath (NULL, FileName);
   if (FilePath == NULL) {
@@ -674,10 +790,8 @@ RegisterIsoDebianBootOption(CHAR16 *FileName)
              );
   DEBUG ((DEBUG_INFO, "[cixboot] register grubaa64.efi status: %r\n", Status));
   if (EFI_ERROR (Status)) {
-
     return;
   }
-
 
   //
   // System firmware must include a PlatformRecovery#### variable specifying
@@ -687,13 +801,11 @@ RegisterIsoDebianBootOption(CHAR16 *FileName)
   if (PcdGetBool (PcdPlatformRecoverySupport)) {
     Status = EfiBootManagerLoadOptionToVariable (&PlatformDefaultBootOption);
     DEBUG ((DEBUG_INFO, "[cixboot] write grubaa64.efi boot to variable status: %r\n", Status));
-
   }
 
   FreePool (FilePath);
-
-
 }
+
 //
 // BDS Platform Functions
 //
@@ -719,9 +831,11 @@ PlatformBootManagerBeforeConsole (
   EFI_HANDLE                *HandleBuffer;
   UINTN                     Index;
   EFI_DEVICE_PATH_PROTOCOL  *ConDevicePath;
+
   if (PcdGetBool (PcdAndroidBoot) == FALSE) {
-    RegisterIsoDebianBootOption(ISO_DEBIAN_BOOT_FILE_NAME);
+    RegisterIsoDebianBootOption (ISO_DEBIAN_BOOT_FILE_NAME);
   }
+
   //
   // Signal EndOfDxe PI Event
   //
@@ -1056,6 +1170,12 @@ PlatformBootManagerAfterConsole (
     }
   }
 
+  if (FixedPcdGetBool (PcdLinuxBootSelectSupport) == TRUE) {
+    Key.ScanCode    = SCAN_NULL;
+    Key.UnicodeChar = L'l';
+    PlatformRegisterFvBootOption (&gCixLinuxBootSelectGuid, L"Linux S1 Loader", LOAD_OPTION_ACTIVE, &Key);
+  }
+
   //
   // Connect device specified by BootDiscoverPolicy variable and
   // refresh Boot order for newly discovered boot devices
@@ -1151,6 +1271,10 @@ PlatformBootManagerWaitCallback (
   UINT16                               Timeout;
   EFI_STATUS                           Status;
 
+  if (IsFastBootHotKeyEnabled ()) {
+    PlatformCheckFastBootHotKey ();
+  }
+
   Timeout = PcdGet16 (PcdPlatformBootTimeOut);
 
   Black.Raw = 0x00000000;
@@ -1184,51 +1308,6 @@ PlatformBootManagerUnableToBoot (
 {
   EFI_STATUS                    Status;
   EFI_BOOT_MANAGER_LOAD_OPTION  BootManagerMenu;
-  EFI_BOOT_MANAGER_LOAD_OPTION  *BootOptions;
-  UINTN                         OldBootOptionCount;
-  UINTN                         NewBootOptionCount;
-
-  //
-  // Record the total number of boot configured boot options
-  //
-  BootOptions = EfiBootManagerGetLoadOptions (
-                  &OldBootOptionCount,
-                  LoadOptionTypeBoot
-                  );
-  EfiBootManagerFreeLoadOptions (BootOptions, OldBootOptionCount);
-
-  //
-  // Connect all devices, and regenerate all boot options
-  //
-  EfiBootManagerConnectAll ();
-  EfiBootManagerRefreshAllBootOption ();
-
-  //
-  // Record the updated number of boot configured boot options
-  //
-  BootOptions = EfiBootManagerGetLoadOptions (
-                  &NewBootOptionCount,
-                  LoadOptionTypeBoot
-                  );
-  EfiBootManagerFreeLoadOptions (BootOptions, NewBootOptionCount);
-
-  //
-  // If the number of configured boot options has changed, reboot
-  // the system so the new boot options will be taken into account
-  // while executing the ordinary BDS bootflow sequence.
-  // *Unless* persistent varstore is being emulated, since we would
-  // then end up in an endless reboot loop.
-  //
-  if (!PcdGetBool (PcdEmuVariableNvModeEnable)) {
-    if (NewBootOptionCount != OldBootOptionCount) {
-      DEBUG ((
-        DEBUG_WARN,
-        "%a: rebooting after refreshing all boot options\n",
-        __FUNCTION__
-        ));
-      gRT->ResetSystem (EfiResetCold, EFI_SUCCESS, 0, NULL);
-    }
-  }
 
   Status = EfiBootManagerGetBootManagerMenu (&BootManagerMenu);
   if (EFI_ERROR (Status)) {

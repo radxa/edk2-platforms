@@ -195,8 +195,12 @@ GetFwVersion (
       // DEBUG ((DEBUG_INFO, "[VER] ATF:%s\n", FwVerAddr));
       break;
     case FwVerUEFI:
-      *FwVerBuff = (CHAR16 *)PcdGetPtr (PcdFirmwareVersionString);
-      *FwVerSize = StrLen (*FwVerBuff);
+      *FwVerSize = StrSize ((CHAR16 *)PcdGetPtr (PcdFirmwareVersionString));
+      *FwVerBuff = AllocateZeroPool ((*FwVerSize) );
+      if (*FwVerBuff == NULL) {
+        return EFI_OUT_OF_RESOURCES;
+      }
+      CopyMem (*FwVerBuff, PcdGetPtr (PcdFirmwareVersionString), *FwVerSize);
       return EFI_SUCCESS;
 
     case FwVerSTMM:

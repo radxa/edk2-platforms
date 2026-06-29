@@ -47,15 +47,17 @@ LibResetSystem (
 {
   ARM_SMC_ARGS              ArmSmcArgs;
   EC_PARAMS_FORCE_EC_RESET  Params;
+  EFI_STATUS                Status;
 
   switch (ResetType) {
     case EfiResetPlatformSpecific:
       // Map the platform specific reset as reboot
       Params.Reserved = 0;
-      ForceEcReset (&Params);
-
-      DEBUG ((DEBUG_INFO, "%a: force EC reset\n", __FUNCTION__));
-      CpuDeadLoop ();
+      Status = ForceEcReset (&Params);
+      if (!EFI_ERROR(Status)) {
+        DEBUG ((DEBUG_INFO, "%a: force EC reset\n", __FUNCTION__));
+        CpuDeadLoop ();
+      }
     case EfiResetWarm:
     // Map a warm reset into a cold reset
     case EfiResetCold:

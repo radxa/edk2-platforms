@@ -23,7 +23,7 @@ typedef struct {
 STATIC FW_VERTYPE_NAME  gFwTypeNameMapTable[] = {
   { FwVerSE,   "SE    Firmware\0" },
   { FwVerPM,   "PM    Firmware\0" },
-  { FwVerPM,   "PBL   Firmware\0" },
+  { FwVerPBL,  "PBL   Firmware\0" },
   { FwVerATF,  "ATF   Firmware\0" },
   { FwVerTEE,  "TEE   Firmware\0" },
   { FwVerEC,   "EC    Firmware\0" },
@@ -73,6 +73,10 @@ InstallType45Structure (
   SMBIOS_TABLE_TYPE45      *SmbiosType45;
   CIX_FW_VERSION_PROTOCOL  *CixFwVerProtocol;
 
+  if (Event != NULL) {
+    gBS->CloseEvent (Event);
+  }
+
   DEBUG ((DEBUG_INFO, "%a Entry\n", __FUNCTION__));
   CixFwVerProtocol = (CIX_FW_VERSION_PROTOCOL *)Context;
   ASSERT (CixFwVerProtocol != NULL);
@@ -101,36 +105,43 @@ InstallType45Structure (
                                  &FwVerSize
                                  );
     if (EFI_ERROR (Status)) {
-      SmbiosType45->State = FirmwareInventoryStateUnknown;
       DEBUG ((DEBUG_ERROR, "GetFwVersion failed for type %d: %r\n", i, Status));
       FwVerSize = 0;
     } else {
-      // Calulate ascii size
-      DEBUG ((DEBUG_INFO, "%a %d Calulate StrLen...\n", __FUNCTION__, __LINE__));
+      // Calculate ascii size
+      DEBUG ((DEBUG_INFO, "%a %d Calculate StrLen...\n", __FUNCTION__, __LINE__));
       FwVerSize = StrLen (FwVerBuff) + 1; // Add 1 for the null terminator
     }
 
     DEBUG ((DEBUG_INFO, "%a %d Sta:%r \n", __FUNCTION__, __LINE__, Status));
 
+    if (FwVerSize > 0) {
+      DEBUG ((DEBUG_INFO, "GetFwVersion for type %d: %s\n", i, FwVerBuff));
+    }
+
     Type45Size = sizeof (SMBIOS_TABLE_TYPE45) +
                  AsciiStrSize (StrNull) +
                  AsciiStrSize (gFwTypeNameMapTable[i].FwVerName) +
-                 (FwVerSize == 0 ? AsciiStrSize (StrNull) : (FwVerSize)) +
+                 (FwVerSize == 0 ? 0 : FwVerSize) +
                  AsciiStrSize (Manufacturer) + 1;
-    DEBUG ((DEBUG_INFO, "%a: Type45Size = 0x%x\n", __FUNCTION__, Type45Size));
-
     SmbiosType45 = AllocateZeroPool (Type45Size);
     if (SmbiosType45 == NULL) {
       DEBUG ((DEBUG_ERROR, "Failed to allocate memory for SMBIOS Type 45\n"));
+      if ((FwVerSize > 0) && (FwVerBuff != NULL)) {
+        FreePool (FwVerBuff);
+      }
+
       return;
     }
 
+    DEBUG ((DEBUG_INFO, "%a %d Sta:%r \n", __FUNCTION__, __LINE__, Status));
+
+    CopyMem (SmbiosType45, &SmbiosType45Temple, sizeof (SMBIOS_TABLE_TYPE45));
+    // Set state to Unknown if GetFwVersion failed
     if (EFI_ERROR (Status)) {
-      // Update state since CixFwVerProtocol->GetFwVersion failed
       SmbiosType45->State = FirmwareInventoryStateUnknown;
     }
 
-    CopyMem (SmbiosType45, &SmbiosType45Temple, sizeof (SMBIOS_TABLE_TYPE45));
     StrPtr = (CHAR8 *)((UINT8 *)SmbiosType45 + sizeof (SMBIOS_TABLE_TYPE45));
     // Firmware ID & RELEASE Date & LowestSupportedVersion == NULL
     AsciiStrCpyS (StrPtr, AsciiStrSize (StrNull), StrNull);
@@ -147,17 +158,19 @@ InstallType45Structure (
     // Firmware Version
     if (FwVerSize == 0) {
       SmbiosType45->FirmwareVersion = 0x01; // Use NULL for FirmwareVersion
+      SmbiosType45->Manufacturer-=1;
     } else {
       UnicodeStrToAsciiStrS (
         FwVerBuff,
         AsciiFwVerBuff,
         sizeof (AsciiFwVerBuff)
         );
-      AsciiStrCpyS (StrPtr, FwVerSize + 1, (CHAR8 *)AsciiFwVerBuff);
+      // Use AsciiStrSize to ensure correct size including null terminator
+      AsciiStrCpyS (StrPtr, AsciiStrSize (AsciiFwVerBuff), AsciiFwVerBuff);
+      StrPtr += AsciiStrSize (AsciiFwVerBuff);
     }
 
     DEBUG ((DEBUG_INFO, "%p %a \n", StrPtr, StrPtr));
-    StrPtr += FwVerSize;
     // Manufacturer
     AsciiStrCpyS (StrPtr, AsciiStrSize (Manufacturer), Manufacturer);
     StrPtr += AsciiStrSize (Manufacturer); // Null terminator for Manufacturer
@@ -176,6 +189,11 @@ InstallType45Structure (
     }
 
     FreePool (SmbiosType45);
+    // Free the firmware version buffer if it was allocated
+    if ((FwVerSize > 0) && (FwVerBuff != NULL)) {
+      FreePool (FwVerBuff);
+    }
+
     DEBUG ((DEBUG_INFO, "%a %d Sta:%r \n", __FUNCTION__, __LINE__, Status));
   }
 

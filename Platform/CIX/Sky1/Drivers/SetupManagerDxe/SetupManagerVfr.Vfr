@@ -237,6 +237,14 @@ endif;
       prompt = STRING_TOKEN(STR_GMAC_FORM_SET_TITLE),
       help   = STRING_TOKEN(STR_GMAC_FORM_SET_TITLE_HELP);
 
+    oneof varid = PlatformSetupVar.SmmuEnable,
+      prompt  = STRING_TOKEN(STR_ENABLE_SMMU_PROMPT),
+      help    = STRING_TOKEN(STR_ENABLE_SMMU_PROMPT_HELP),
+      default = FixedPcdGet8 (PcdAcpiSmmuEnable),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
   endform;
 
 #include "Platform.hfr"

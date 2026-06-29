@@ -9,7 +9,111 @@
 #include <Library/HwHarvestLib.h>
 #include <Library/DtbCommonLib.h>
 #include <Protocol/PlatformConfigParamsManageProtocol.h>
+#include <Protocol/ConfigParamsManageProtocol.h>
+// #ifdef DEBUG
+// #undef DEBUG
+// #define DEBUG(Expression) DebugPrint Expression
+// #endif
 
+/* Paths match linux arch/arm64/boot/dts/cix/sky1.dtsi cpus / cpu-map. */
+STATIC CONST CHAR8 *const  mCpuMapCorePath[] = {
+  "/cpus/cpu-map/cluster0/core0",
+  "/cpus/cpu-map/cluster0/core1",
+  "/cpus/cpu-map/cluster0/core2",
+  "/cpus/cpu-map/cluster0/core3",
+  "/cpus/cpu-map/cluster0/core4",
+  "/cpus/cpu-map/cluster0/core5",
+  "/cpus/cpu-map/cluster0/core6",
+  "/cpus/cpu-map/cluster0/core7",
+  "/cpus/cpu-map/cluster0/core8",
+  "/cpus/cpu-map/cluster0/core9",
+  "/cpus/cpu-map/cluster0/core10",
+  "/cpus/cpu-map/cluster0/core11",
+};
+
+STATIC CONST CHAR8 *const  mCpuNodePath[] = {
+  "/cpus/cpu0@0",
+  "/cpus/cpu1@100",
+  "/cpus/cpu2@200",
+  "/cpus/cpu3@300",
+  "/cpus/cpu4@400",
+  "/cpus/cpu5@500",
+  "/cpus/cpu6@600",
+  "/cpus/cpu7@700",
+  "/cpus/cpu8@800",
+  "/cpus/cpu9@900",
+  "/cpus/cpu10@a00",
+  "/cpus/cpu11@b00",
+};
+
+STATIC
+VOID
+HwHarvestFdtDelPath (
+  IN VOID         *Fdt,
+  IN CONST CHAR8  *Path
+  )
+{
+  INT32  Node;
+  INT32  Rc;
+
+  Node = fdt_path_offset (Fdt, Path);
+  if (Node < 0) {
+    return;
+  }
+
+  Rc = fdt_del_node (Fdt, Node);
+  if (Rc < 0) {
+    DEBUG ((
+      DEBUG_ERROR,
+      "HwHarvest: fdt_del_node '%a' failed: %a\n",
+      Path,
+      fdt_strerror (Rc)
+      ));
+  } else {
+    DEBUG ((DEBUG_INFO, "HwHarvest: deleted '%a'\n", Path));
+  }
+}
+
+/**
+  For each Core0..Core11 with fuse harvest set, remove /cpus/cpu-map/cluster0/coreN
+  and matching /cpus/cpuN@* (uses HwHarvestGetCpuCoreHarvestMask).
+**/
+STATIC
+VOID
+HwHarvestPruneFdtByCpuHarvest (
+  IN VOID  *Fdt
+  )
+{
+  UINTN   Index;
+  UINT32  CoreMask;
+
+  if (fdt_path_offset (Fdt, "/") < 0) {
+    DEBUG ((DEBUG_ERROR, "HwHarvest: FDT root not found, skip CPU prune\n"));
+    return;
+  }
+
+  CoreMask = HwHarvestGetCpuCoreHarvestMask ();
+  DEBUG ((
+    DEBUG_INFO,
+    "HwHarvest: CPU map prune (harvest register low 12 bits mask 0x%x)\n",
+    CoreMask
+    ));
+
+  for (Index = 0; Index < ARRAY_SIZE (mCpuMapCorePath); Index++) {
+    if ((CoreMask & (1U << Index)) == 0) {
+      continue;
+    }
+
+    DEBUG ((
+      DEBUG_INFO,
+      "HwHarvest: Core%u harvested, pruning DTB\n",
+      (UINT32)Index
+      ));
+
+    HwHarvestFdtDelPath (Fdt, mCpuMapCorePath[Index]);
+    HwHarvestFdtDelPath (Fdt, mCpuNodePath[Index]);
+  }
+}
 
 UINT32
 fdt_check_header_ext_si (
@@ -230,6 +334,9 @@ UpdateDtbStatus (
 {
   UINT32 NpuHarvestStatus = 0;
   UINT32 HarvestInfoValue = 3;
+
+  HwHarvestPruneFdtByCpuHarvest (fdt);
+
   // PCIE
   if (IsIpHarvested (PcieX8)) {
     DisableDtbNode (fdt, DT_NODE_PCIEX8_RC);

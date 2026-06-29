@@ -20,6 +20,8 @@
 #define EFI_ACPI_CREATOR_REVISION  0x00000001
 #define EFI_ACPI_OEM_ID_PCI        {'C','I','X','T','E','K'}              // OEMID: due to pci.sys driver
 
+#define CIX_ACPI_SIMPLE_IO_REMAPPING_TABLE_SIGNATURE      SIGNATURE_32('S', 'I', 'O', 'R')
+
 #define PLAT_CPU_COUNT     12
 #define PLAT_CPU_L0_COUNT  4
 #define PLAT_CPU_M0_COUNT  2

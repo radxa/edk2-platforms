@@ -13,9 +13,10 @@
 #define SUB_REBOOT_REASON_MASK   0xFFFF00FF
 
 typedef enum {
-  DefaultException         = 0x01,
-  WatchDogInterruptTrigger = 0x02,
-  RebootReasonWarmReset    = 0x04,
+  FastBootEnable           = 0x01,
+  DefaultException         = 0x02,
+  WatchDogInterruptTrigger = 0x03,
+  WarmReset                = 0x04,
   RebootReasonMax          = 0xFF
 } REBOOT_REASON;
 

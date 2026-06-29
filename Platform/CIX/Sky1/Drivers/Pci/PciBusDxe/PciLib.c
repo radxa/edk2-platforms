@@ -454,6 +454,38 @@ AdjustPciDeviceBarSize (
 }
 
 /**
+  Check whether all resources proposed for a root bridge were allocated.
+
+  @param[in]  AcpiConfig  ACPI resource descriptors returned by GetProposedResources().
+
+  @retval TRUE   All submitted resource descriptors are satisfied.
+  @retval FALSE  At least one submitted resource descriptor was not allocated.
+**/
+STATIC
+BOOLEAN
+IsRootBridgeResourceSatisfied (
+  IN VOID  *AcpiConfig
+  )
+{
+  EFI_ACPI_ADDRESS_SPACE_DESCRIPTOR  *Descriptor;
+
+  if (AcpiConfig == NULL) {
+    return FALSE;
+  }
+
+  Descriptor = (EFI_ACPI_ADDRESS_SPACE_DESCRIPTOR *)AcpiConfig;
+  while (Descriptor->Desc == ACPI_ADDRESS_SPACE_DESCRIPTOR) {
+    if (Descriptor->AddrTranslationOffset != EFI_RESOURCE_SATISFIED) {
+      return FALSE;
+    }
+
+    Descriptor++;
+  }
+
+  return TRUE;
+}
+
+/**
   Submits the I/O and memory resource requirements for the specified PCI Host Bridge.
 
   @param PciResAlloc  Point to protocol instance of EFI_PCI_HOST_BRIDGE_RESOURCE_ALLOCATION_PROTOCOL.
@@ -500,8 +532,10 @@ PciHostBridgeResourceAllocator (
   EFI_RESOURCE_ALLOC_FAILURE_ERROR_DATA_PAYLOAD  AllocFailExtendedData;
   BOOLEAN                                        ResizableBarNeedAdjust;
   BOOLEAN                                        ResizableBarAdjusted;
+  BOOLEAN                                        ResourceAllocationFailed;
 
-  ResizableBarNeedAdjust = PcdGetBool (PcdPcieResizableBarSupport);
+  ResizableBarNeedAdjust   = PcdGetBool (PcdPcieResizableBarSupport);
+  ResourceAllocationFailed = FALSE;
 
   //
   // It may try several times if the resource allocation fails
@@ -684,14 +718,23 @@ PciHostBridgeResourceAllocator (
       //
       if (EFI_ERROR (Status)) {
         //
-        // Allocation failed, then return
+        // Keep the resources that were successfully allocated so one
+        // over-sized root bridge does not block the other root bridges.
         //
-        return EFI_OUT_OF_RESOURCES;
+        if (Status != EFI_OUT_OF_RESOURCES) {
+          return Status;
+        }
+
+        DEBUG ((
+          DEBUG_WARN,
+          "PciBus: resource conflict found, continue with satisfied root bridges\n"
+          ));
+        ResourceAllocationFailed = TRUE;
       }
 
       //
       // Allocation succeed.
-      // Get host bridge handle for status report, and then skip the main while
+      // Get host bridge handle for status report, and then skip the main while.
       //
       HandleExtendedData.Handle = RootBridgeDev->PciRootBridgeIo->ParentHandle;
 
@@ -705,6 +748,10 @@ PciHostBridgeResourceAllocator (
         // Allocation succeed, then continue the following
         //
         break;
+      }
+
+      if (Status != EFI_OUT_OF_RESOURCES) {
+        return Status;
       }
 
       //
@@ -796,7 +843,9 @@ PciHostBridgeResourceAllocator (
         ResizableBarNeedAdjust = FALSE;
       }
 
-      if (!ResizableBarAdjusted) {
+      if (ResizableBarAdjusted) {
+        Status = EFI_SUCCESS;
+      } else {
         Status = PciHostBridgeAdjustAllocation (
                    &IoPool,
                    &Mem32Pool,
@@ -811,6 +860,19 @@ PciHostBridgeResourceAllocator (
                    );
       }
 
+      if (EFI_ERROR (Status)) {
+        //
+        // No device can be rejected to resolve the conflict. Keep the
+        // already-allocated root bridges active and skip only failed ones.
+        //
+        DEBUG ((
+          DEBUG_WARN,
+          "PciBus: hotplug resource conflict cannot be adjusted, continue with satisfied root bridges\n"
+          ));
+        ResourceAllocationFailed = TRUE;
+        break;
+      }
+
       //
       // Destroy all the resource tree
       //
@@ -821,10 +883,6 @@ PciHostBridgeResourceAllocator (
       DestroyResourceTree (&PMem64Pool);
 
       NotifyPhase (PciResAlloc, EfiPciHostBridgeFreeResources);
-
-      if (EFI_ERROR (Status)) {
-        return Status;
-      }
     }
   }
 
@@ -877,6 +935,25 @@ PciHostBridgeResourceAllocator (
 
     if (EFI_ERROR (Status)) {
       return Status;
+    }
+
+    if (AcpiConfig == NULL) {
+      DEBUG ((
+        DEBUG_WARN,
+        "PciBus: skip RootBridge [%02x] because proposed resources are unavailable\n",
+        RootBridgeDev->BusNumber
+        ));
+      continue;
+    }
+
+    if (ResourceAllocationFailed && !IsRootBridgeResourceSatisfied (AcpiConfig)) {
+      DEBUG ((
+        DEBUG_WARN,
+        "PciBus: skip RootBridge [%02x] due to unsatisfied resources\n",
+        RootBridgeDev->BusNumber
+        ));
+      FreePool (AcpiConfig);
+      continue;
     }
 
     //

@@ -43,6 +43,7 @@ typedef struct {
   UINT8     Usb2Control3Enable;
   UINT8     Usb3Control0Enable;
   UINT8     Usb3Control1Enable;
+  UINT8     Usb3Control0DataRole;
   UINT8     UsbCDrdControl0Enable;
   UINT8     UsbCControl0Enable;
   UINT8     UsbCControl1Enable;
@@ -130,6 +131,9 @@ typedef struct {
   UINT8     CpuCppcType;
   UINT8     DebugMode;
   UINT8     TPMDeviceSelect;
+  UINT8     SmmuEnable;
+  UINT8     SPEEnable;
+  UINT8     FastBootHotKeyEnable;
 } PLATFORM_SETUP_DATA;
 
 typedef struct {

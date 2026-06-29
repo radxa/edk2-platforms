@@ -20,37 +20,37 @@
         {
             "image_type": 2,
             "address": "0x288000",
-            "size": "0x0F8000",
+            "size": "0x100000",
             "file": "Firmwares/bootloader2.img"
         },
         {
             "image_type": 100,
-            "address": "0x380000",
+            "address": "0x388000",
             "size": "0x78000",
             "file": "Firmwares/dummy.bin"
         },
         {
             "image_type": 3,
-            "address": "0x3F8000",
+            "address": "0x400000",
             "size": "0x4000",
             "file": "Firmwares/memory_config.bin"
         },
         {
             "image_type": 4,
-            "address": "0x3FC000",
+            "address": "0x404000",
             "size": "0x1000",
             "file": "Firmwares/csu_pm_config.bin"
         },
         {
             "image_type": 6,
-            "address": "0x3FD000",
+            "address": "0x405000",
             "size": "0x1000",
             "file": "Firmwares/se_config.bin"
         },
         {
             "image_type": 7,
-            "address": "0x3FE000",
-            "size": "0x202000",
+            "address": "0x406000",
+            "size": "0x1FA000",
             "file": "Firmwares/bootloader3.img"
         }
     ]

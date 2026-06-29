@@ -8,11 +8,13 @@
 #include "AcpiSocDxe.h"
 #include <PlatformSetupVar.h>
 #include <AcpiRamVariable.h>
+#include <Library/BaseLib.h>
 #include <Library/SerialPortLib.h>
 #include <Library/PL011UartClockLib.h>
 #include <Library/PL011UartLib.h>
 #include <Library/HwHarvestLib.h>
 #include <Protocol/PlatformConfigParamsManageProtocol.h>
+#include <IndustryStandard/Acpi62.h>
 
 typedef struct {
   UINT8    SupportStatus;
@@ -30,7 +32,7 @@ EFI_ACPI_TABLE_PROTOCOL         *AcpiTableProtocol = NULL;
 static EFI_ACPI_SDT_PROTOCOL    *mAcpiSdt          = NULL;
 static EFI_ACPI_TABLE_PROTOCOL  *mAcpiTable        = NULL;
 
-ACPI_FUNCTION_ON_READ_TO_BOOT_HOOK  mAcpiFunctionOReadyToBootHook[] = { InstallAcpiOnReadyToBoot, SpcrDisable, UpdateAcpiGpnv, NULL };
+ACPI_FUNCTION_ON_READ_TO_BOOT_HOOK  mAcpiFunctionOReadyToBootHook[] = { InstallAcpiOnReadyToBoot, SpcrDisable, ConfigureIortForSmmu, UpdateAcpiGpnv, UpdateGTDTFlags, NULL };
 
 EFI_ACPI_MEMORY_MAPPED_CONFIGURATION_BASE_ADDRESS_TABLE_HEADER  McfgHeader = {
   {
@@ -436,6 +438,81 @@ UpdateAcpiGpnv (
   return Status;
 }
 
+EFI_STATUS
+EFIAPI
+UpdateGTDTFlags (
+  VOID
+  )
+{
+  EFI_STATUS                                        Status;
+  CIX_CONFIG_PARAMS_MANAGE_PROTOCOL                *ConfigManage;
+  UINT32                                            TimerFlags;
+
+  EFI_ACPI_DESCRIPTION_HEADER                      *Table = NULL;
+  EFI_ACPI_TABLE_PROTOCOL                          *pAcpiTable    = NULL;
+  EFI_ACPI_6_4_GENERIC_TIMER_DESCRIPTION_TABLE     *Gtdt         = NULL;
+  UINTN                                             Handle        = 0;
+
+  Status = gBS->LocateProtocol (
+                  &gCixConfigParamsManageProtocolGuid,
+                  NULL,
+                  (VOID **)&ConfigManage
+                  );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: config parameters invalid %r\n", __FUNCTION__, Status));
+  }
+
+  if (pPlatformAcpiConfigProtocol == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a: Not find pPlatformAcpiConfigProtocol\n", __FUNCTION__));
+    return EFI_NOT_FOUND;
+  }
+
+  // Check if GTDT Table Exist
+  Status = pPlatformAcpiConfigProtocol->GetAcpiTableBySignature (
+                                          pPlatformAcpiConfigProtocol,
+                                          EFI_ACPI_6_4_GENERIC_TIMER_DESCRIPTION_TABLE_SIGNATURE,
+                                          (EFI_ACPI_DESCRIPTION_HEADER **)&Table,
+                                          &Handle
+                                          );
+
+  if (EFI_ERROR (Status)) {
+    DEBUG ((EFI_D_ERROR, "GetAcpiTableBySignature 'GTDT' failed"));
+    return EFI_NOT_FOUND;
+  }
+
+  pAcpiTable = pPlatformAcpiConfigProtocol->pAcpiTableProtocol;
+
+  if (ConfigManage->Data->Cpu.LpiState < 0x2) {
+    TimerFlags = EFI_ACPI_6_4_GTDT_TIMER_FLAG_TIMER_INTERRUPT_POLARITY | EFI_ACPI_6_4_GTDT_TIMER_FLAG_ALWAYS_ON_CAPABILITY;
+  } else {
+    TimerFlags = EFI_ACPI_6_4_GTDT_TIMER_FLAG_TIMER_INTERRUPT_POLARITY;
+  }
+
+  Gtdt = (EFI_ACPI_6_4_GENERIC_TIMER_DESCRIPTION_TABLE *)Table;
+
+  Gtdt->SecurePL1TimerFlags = TimerFlags;
+  Gtdt->NonSecurePL1TimerFlags = TimerFlags;
+  Gtdt->VirtualTimerFlags = TimerFlags;
+  Gtdt->NonSecurePL2TimerFlags = TimerFlags;
+  Gtdt->VirtualPL2TimerFlags = TimerFlags;
+
+  Status = pAcpiTable->UninstallAcpiTable (
+                             pAcpiTable,
+                             Handle
+                             );
+
+  Handle = 0;
+  Status = pAcpiTable->InstallAcpiTable (
+                          pAcpiTable,
+                          Table,
+                          Table->Length,
+                          &Handle
+                          );
+
+  FreePool (Table);
+  return Status;
+}
+
 /** Initialise the serial port for SPCR table.
 
   @retval RETURN_SUCCESS            The serial device was initialised.
@@ -533,6 +610,145 @@ SpcrDisable (
       // Uninstall SPCR Table
       UninstallSpcrTable ();
     }
+  }
+
+  return Status;
+}
+
+/**
+  Configure IORT exposure based on SMMU enable setting.
+  When SMMU is enabled: expose IORT with SMMU (uninstall the no-SMMU SIOR table).
+  When SMMU is disabled: expose IORT without SMMU (uninstall IORT with SMMU,
+  then present the no-SMMU table content as IORT to the OS).
+
+  @retval EFI_SUCCESS  Operation completed.
+  @retval Other        Error from protocol or table operations.
+**/
+EFI_STATUS
+EFIAPI
+ConfigureIortForSmmu (
+  VOID
+  )
+{
+  EFI_STATUS                         Status;
+  CIX_CONFIG_PARAMS_MANAGE_PROTOCOL  *ConfigManage;
+  EFI_ACPI_DESCRIPTION_HEADER       *Table;
+  EFI_ACPI_DESCRIPTION_HEADER       *TableCopy;
+  UINTN                             Handle;
+  static BOOLEAN                    mIortConfigured = FALSE;
+
+  if (mIortConfigured) {
+    return EFI_SUCCESS;
+  }
+
+  if (pPlatformAcpiConfigProtocol == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a: Not find pPlatformAcpiConfigProtocol\n", __FUNCTION__));
+    return EFI_NOT_FOUND;
+  }
+
+  Status = gBS->LocateProtocol (
+                  &gCixConfigParamsManageProtocolGuid,
+                  NULL,
+                  (VOID **)&ConfigManage
+                  );
+  if (EFI_ERROR (Status) || (ConfigManage->Data == NULL)) {
+    DEBUG ((DEBUG_ERROR, "%a: SoC config parameters invalid %r\n", __FUNCTION__, Status));
+    return Status;
+  }
+
+  if (ConfigManage->Data->Misc.SmmuEnable) {
+    //
+    // IORT with SMMU: uninstall the no-SMMU table (SIOR), keep IORT.
+    //
+    Status = pPlatformAcpiConfigProtocol->GetAcpiTableBySignature (
+                                            pPlatformAcpiConfigProtocol,
+                                            CIX_ACPI_SIMPLE_IO_REMAPPING_TABLE_SIGNATURE,
+                                            &Table,
+                                            &Handle
+                                            );
+    if (EFI_ERROR (Status)) {
+      if (Status == EFI_NOT_FOUND) {
+        mIortConfigured = TRUE;
+        return EFI_SUCCESS;
+      }
+
+      return Status;
+    }
+
+    Status = pPlatformAcpiConfigProtocol->pAcpiTableProtocol->UninstallAcpiTable (
+                                                               pPlatformAcpiConfigProtocol->pAcpiTableProtocol,
+                                                               Handle
+                                                               );
+    FreePool (Table);
+    if (!EFI_ERROR (Status)) {
+      mIortConfigured = TRUE;
+    }
+
+    return Status;
+  }
+
+  //
+  // IORT without SMMU: uninstall IORT with SMMU, then expose no-SMMU content as IORT.
+  //
+  Status = pPlatformAcpiConfigProtocol->GetAcpiTableBySignature (
+                                          pPlatformAcpiConfigProtocol,
+                                          EFI_ACPI_6_2_IO_REMAPPING_TABLE_SIGNATURE,
+                                          &Table,
+                                          &Handle
+                                          );
+  if (!EFI_ERROR (Status)) {
+    Status = pPlatformAcpiConfigProtocol->pAcpiTableProtocol->UninstallAcpiTable (
+                                                             pPlatformAcpiConfigProtocol->pAcpiTableProtocol,
+                                                             Handle
+                                                             );
+    FreePool (Table);
+    if (EFI_ERROR (Status)) {
+      return Status;
+    }
+  } else if (Status != EFI_NOT_FOUND) {
+    return Status;
+  }
+
+  Status = pPlatformAcpiConfigProtocol->GetAcpiTableBySignature (
+                                          pPlatformAcpiConfigProtocol,
+                                          CIX_ACPI_SIMPLE_IO_REMAPPING_TABLE_SIGNATURE,
+                                          &Table,
+                                          &Handle
+                                          );
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
+
+  TableCopy = AllocateCopyPool (Table->Length, Table);
+  if (TableCopy == NULL) {
+    FreePool (Table);
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  TableCopy->Signature = EFI_ACPI_6_2_IO_REMAPPING_TABLE_SIGNATURE;
+  TableCopy->Checksum  = 0;
+  TableCopy->Checksum  = CalculateCheckSum8 ((UINT8 *)TableCopy, TableCopy->Length);
+
+  Status = pPlatformAcpiConfigProtocol->pAcpiTableProtocol->UninstallAcpiTable (
+                                                             pPlatformAcpiConfigProtocol->pAcpiTableProtocol,
+                                                             Handle
+                                                             );
+  FreePool (Table);
+  if (EFI_ERROR (Status)) {
+    FreePool (TableCopy);
+    return Status;
+  }
+
+  Handle = 0;
+  Status = pPlatformAcpiConfigProtocol->pAcpiTableProtocol->InstallAcpiTable (
+                                                           pPlatformAcpiConfigProtocol->pAcpiTableProtocol,
+                                                           TableCopy,
+                                                           TableCopy->Length,
+                                                           &Handle
+                                                           );
+  FreePool (TableCopy);
+  if (!EFI_ERROR (Status)) {
+    mIortConfigured = TRUE;
   }
 
   return Status;

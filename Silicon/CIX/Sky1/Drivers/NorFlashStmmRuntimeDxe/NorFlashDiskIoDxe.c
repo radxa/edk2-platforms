@@ -49,6 +49,7 @@ NorFlashDiskIoReadDisk (
   UINT32              BlockSize;
   UINT32              BlockOffset;
   EFI_LBA             Lba;
+  EFI_TPL             OldTpl;
 
   Instance = INSTANCE_FROM_DISKIO_THIS (This);
 
@@ -59,7 +60,9 @@ NorFlashDiskIoReadDisk (
   BlockSize = Instance->Media.BlockSize;
   Lba       = (EFI_LBA)DivU64x32Remainder (DiskOffset, BlockSize, &BlockOffset);
 
+  OldTpl = gBS->RaiseTPL (TPL_NOTIFY);
   Status = NorFlashRead (Instance, Lba, BlockOffset, BufferSize, Buffer);
+  gBS->RestoreTPL (OldTpl);
 
   return Status;
 }
@@ -97,6 +100,7 @@ NorFlashDiskIoWriteDisk (
   UINT32              BlockSize;
   UINT32              BlockOffset;
   EFI_LBA             Lba;
+  EFI_TPL             OldTpl;
 
   Instance = INSTANCE_FROM_DISKIO_THIS (This);
 
@@ -107,7 +111,9 @@ NorFlashDiskIoWriteDisk (
   BlockSize = Instance->Media.BlockSize;
   Lba       = (EFI_LBA)DivU64x32Remainder (DiskOffset, BlockSize, &BlockOffset);
 
+  OldTpl = gBS->RaiseTPL (TPL_NOTIFY);
   Status = NorFlashWrite (Instance, Lba, BlockOffset, BufferSize, Buffer);
+  gBS->RestoreTPL (OldTpl);
 
   return Status;
 }

@@ -6,6 +6,9 @@
 
 **/
 
+#include <Protocol/ClockId.h>
+
+External (\_SB.ACRU, DeviceObj)
 External (\_SB.HDA, DeviceObj)
 External (\_SB.I2C2, DeviceObj)
 
@@ -49,30 +52,30 @@ Device (SNDC) {
   Name (_STA, 0xF)
 
   Name (_CRS, ResourceTemplate () {
-//    // for alc1019
-//    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
-//                "\\_SB.GPI3", 0, ResourceConsumer) {
-//        5,
-//        6,
-//        7,
-//        8,
-//    }
-//    // for alc5682
-//    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
-//                "\\_SB.GPI4", 0, ResourceConsumer) {
-//        13,
-//    }
+    // for alc1019
+    GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
+                "\\_SB.GPI3", 0, ResourceConsumer) {
+        5,
+        6,
+        7,
+        8,
+    }
     PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_sndcard", ResourceConsumer,)
   })
 
   Name (_DSD, Package () {
     ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
       Package () {
-//        Package () { "pdb0-gpios"     , Package () { ^SNDC, 0, 0, 0 } },
-//        Package () { "pdb1-gpios"     , Package () { ^SNDC, 0, 1, 0 } },
-//        Package () { "pdb2-gpios"     , Package () { ^SNDC, 0, 2, 0 } },
-//        Package () { "pdb3-gpios"     , Package () { ^SNDC, 0, 3, 0 } },
-//        Package () { "hpmicdet-gpios" , Package () { ^SNDC, 1, 0, 0 } },
+        Package () { "cru-ctrl", \_SB.ACRU },
+        Package () { "pdb0-gpios"     , Package () { ^SNDC, 0, 0, 0 } },
+        Package () { "pdb1-gpios"     , Package () { ^SNDC, 0, 1, 0 } },
+        Package () { "pdb2-gpios"     , Package () { ^SNDC, 0, 2, 0 } },
+        Package () { "pdb3-gpios"     , Package () { ^SNDC, 0, 3, 0 } },
       }
+  })
+
+  Name (CLKT, Package() {
+    Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", ^SNDC},
+    Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", ^SNDC},
   })
 }

@@ -69,7 +69,19 @@ SpcrDisable (
 
 EFI_STATUS
 EFIAPI
+ConfigureIortForSmmu (
+  VOID
+  );
+
+EFI_STATUS
+EFIAPI
 UpdateAcpiGpnv (
+  VOID
+  );
+
+EFI_STATUS
+EFIAPI
+UpdateGTDTFlags (
   VOID
   );
 

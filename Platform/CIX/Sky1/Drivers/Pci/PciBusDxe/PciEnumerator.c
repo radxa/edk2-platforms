@@ -10,6 +10,17 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 #include "PciBus.h"
 
+typedef struct _PCI_BAD_DEVICE {
+  UINT16    VendorId;
+  UINT16    DeviceId;
+} PCI_BAD_DEVICE;
+
+PCI_BAD_DEVICE  mPciBadDeviceList[] = {
+  { 0x1F2E, 0x00C1 },
+  { 0x1D97, 0x5220 },
+  { 0x20C3, 0x3118 },
+};
+
 /**
   This routine is used to enumerate entire pci bus system
   in a given platform.
@@ -286,6 +297,7 @@ ProcessOptionRom (
 {
   LIST_ENTRY     *CurrentLink;
   PCI_IO_DEVICE  *Temp;
+  BOOLEAN        IsBadDev = FALSE;
 
   //
   // Go through bridges to reach all devices
@@ -304,7 +316,17 @@ ProcessOptionRom (
       //
       // Load and process the option rom
       //
-      LoadOpRomImage (Temp, RomBase);
+      DEBUG ((-1, "[%a][%d] VID:%x,DID:%x\n", __FUNCTION__, __LINE__, Temp->Pci.Hdr.VendorId, Temp->Pci.Hdr.DeviceId));
+      for (UINT8 i = 0; i < sizeof (mPciBadDeviceList)/sizeof (PCI_BAD_DEVICE); i++) {
+        if ((Temp->Pci.Hdr.VendorId == mPciBadDeviceList[i].VendorId) && (Temp->Pci.Hdr.DeviceId == mPciBadDeviceList[i].DeviceId)) {
+          IsBadDev = TRUE;
+          break;
+        }
+      }
+
+      if (!IsBadDev) {
+        LoadOpRomImage (Temp, RomBase);
+      }
     }
 
     CurrentLink = CurrentLink->ForwardLink;

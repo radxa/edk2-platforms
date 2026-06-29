@@ -26,6 +26,7 @@
 #  Madt.aslc
   Dbg2.aslc
   Iort.aslc
+  Iort-NoSmmu.aslc
   Sdei.aslc
   Csrt.aslc
   Spcr.aslc
@@ -83,7 +84,6 @@
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio4IoMask
   gCixPlatformTokenSpaceGuid.PcdAcpiGpio5IoMask
   gCixPlatformTokenSpaceGuid.PcdAcpiPrefPmProf
-  gCixPlatformTokenSpaceGuid.PcdTPMPPIMemoryBase
 
   gCixTokenSpaceGuid.PcdI2c0MutexId
   gCixTokenSpaceGuid.PcdI2c1MutexId
@@ -109,5 +109,6 @@
   gCixTokenSpaceGuid.PcdAcpiI2s7Enable
   gCixTokenSpaceGuid.PcdAcpiI2s8Enable
   gCixTokenSpaceGuid.PcdAcpiI2s9Enable
+  gCixTokenSpaceGuid.PcdAudioHdaEn
 
   gCixPlatformTokenSpaceGuid.PcdTpm2AcpiBufferBase

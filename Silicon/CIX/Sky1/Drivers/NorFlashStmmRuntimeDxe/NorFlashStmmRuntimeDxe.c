@@ -99,7 +99,7 @@ NOR_FLASH_INSTANCE  mNorFlashInstanceTemplate = {
 STATIC NOR_FLASH_REGION_DESCRIPTION  mNorFlashDevices[] = {
   {
     XSPI_FLASH_DIRECT_MMIO_ADDR,  // Memory mapped IO base address for nor flash
-    SIZE_8MB,
+    SIZE_16MB,
     FixedPcdGet32 (PcdNorFlashNvramAddr),
     FixedPcdGet32 (PcdNorFlashNvramSize),
     SIZE_4KB,

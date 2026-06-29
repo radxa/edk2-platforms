@@ -21,6 +21,7 @@
   MdeModulePkg/MdeModulePkg.dec
   MdePkg/MdePkg.dec
   SecurityPkg/SecurityPkg.dec
+  Platform/CIX/Sky1/Sky1.dec
 
 [Guids]
   gEfiEndOfDxeEventGroupGuid
@@ -38,6 +39,9 @@
   UefiDriverEntryPoint
   SecureBootVariableLib
   SecureBootVariableProvisionLib
+
+[Pcd]
+  gCixPlatformTokenSpaceGuid.PcdSecureBootEnrollDefaultKeys
 
 [Depex]
   gEfiVariableArchProtocolGuid      AND

@@ -176,6 +176,12 @@
   gCixTokenSpaceGuid.PcdPcieRootPort2LinkUpTimeout
   gCixTokenSpaceGuid.PcdPcieRootPort3LinkUpTimeout
   gCixTokenSpaceGuid.PcdPcieRootPort4LinkUpTimeout
+  gCixTokenSpaceGuid.PcdPcieRootPort0PeResetReverse
+  gCixTokenSpaceGuid.PcdPcieRootPort1PeResetReverse
+  gCixTokenSpaceGuid.PcdPcieRootPort2PeResetReverse
+  gCixTokenSpaceGuid.PcdPcieRootPort3PeResetReverse
+  gCixTokenSpaceGuid.PcdPcieRootPort4PeResetReverse
+
   #USB2.0 Control
   gCixTokenSpaceGuid.PcdUsb2Control0Enable
   gCixTokenSpaceGuid.PcdUsb2Control0MaxSpeed
@@ -215,6 +221,7 @@
   gCixTokenSpaceGuid.PcdSocWatchdogTimer
   # CPU LPI state
   gCixTokenSpaceGuid.PcdAcpiCpuLpiState
+  gCixTokenSpaceGuid.PcdSPEEn
 
   # DPU Config
   gCixTokenSpaceGuid.PcdDP0Enable
@@ -292,3 +299,4 @@
 
   gCixTokenSpaceGuid.PcdAcpiCppcType
   gCixPlatformTokenSpaceGuid.PcdDefaultTpmDeviceSelect
+  gCixTokenSpaceGuid.PcdAcpiSmmuEnable

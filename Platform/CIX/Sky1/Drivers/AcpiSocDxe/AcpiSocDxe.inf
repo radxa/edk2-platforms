@@ -32,6 +32,7 @@
   ArmPlatformPkg/ArmPlatformPkg.dec
 
 [LibraryClasses]
+  BaseLib
   UefiLib
   DxeServicesLib
   PcdLib

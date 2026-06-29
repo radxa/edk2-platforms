@@ -31,8 +31,6 @@ Device (I2S0) {
     Package () {
       Package () { "id", 0 },
       Package () { "dma-names", Package () { "tx", "rx" } },
-      Package () { "cdns,mclk-idx", 0 },
-      Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
   })
 
@@ -75,7 +73,6 @@ Device (I2S1) {
     Package () {
       Package () { "id", 1 },
       Package () { "dma-names", Package () { "tx", "rx" } },
-      Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
   })
 
@@ -108,7 +105,7 @@ Device (I2S2) {
   Name (_CRS, ResourceTemplate () {
     Memory32Fixed (ReadWrite, AUDIO_I2S2_BASE, AUDIO_I2S2_SIZE)
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_SC2_INTERRUPT_ID }
-    FixedDMA (36, 255, Width32Bit, ) // 5 + CSRT_AUD_REQUEST_BASE(32), idx 0 as tx
+    FixedDMA (36, 255, Width32Bit, ) // 4 + CSRT_AUD_REQUEST_BASE(32), idx 0 as tx
     FixedDMA (37, 255, Width32Bit, ) // 5 + CSRT_AUD_REQUEST_BASE(32), idx 1 as rx
   })
 
@@ -116,8 +113,7 @@ Device (I2S2) {
     ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
     Package () {
       Package () { "id", 2 },
-      Package () { "dma-names", Package () { "rx" } },
-      Package () { "cdns,cru-ctrl", \_SB.ACRU },
+      Package () { "dma-names", Package () { "tx", "rx" } },
     }
   })
 
@@ -162,15 +158,12 @@ Device (I2S3) {
       Package () { "cdns,pin-out-num", 6 },
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 60 },
-      Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
   })
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S3},
-    Package() {CLK_TREE_AUDIO_CLK1, "audio_clk1", \_SB.I2S3},
     Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S3},
-    Package() {CLK_TREE_AUDIO_CLK3, "audio_clk3", \_SB.I2S3},
   })
   Name (RSTL, Package() {
     Package() {\_SB.ADSS.ARST, AUDSS_I2S3_SW_RST_N ,\_SB.I2S3, "i2s"},
@@ -209,15 +202,12 @@ Device (I2S4) {
       Package () { "cdns,pin-out-num", 4 },
       Package () { "cdns,pin-rx-mask", 15 },
       Package () { "cdns,pin-tx-mask", 0 },
-      Package () { "cdns,cru-ctrl", \_SB.ACRU },
     }
   })
 
   Name (CLKT, Package() {
     Package() {CLK_TREE_AUDIO_CLK0, "audio_clk0", \_SB.I2S4},
-    Package() {CLK_TREE_AUDIO_CLK1, "audio_clk1", \_SB.I2S4},
     Package() {CLK_TREE_AUDIO_CLK2, "audio_clk2", \_SB.I2S4},
-    Package() {CLK_TREE_AUDIO_CLK3, "audio_clk3", \_SB.I2S4},
   })
   Name (RSTL, Package() {
     Package() {\_SB.ADSS.ARST, AUDSS_I2S4_SW_RST_N ,\_SB.I2S4, "i2s"},
@@ -256,7 +246,6 @@ Device (I2S5) {
       Package () { "cdns,pin-out-num", 4 },
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 15 },
-      Package () { "cdns,cru-ctrl", \_SB.ACRU },
       Package () { "dp_pair_id", 0 },
     }
   })
@@ -302,7 +291,6 @@ Device (I2S6) {
       Package () { "cdns,pin-out-num", 4 },
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 15 },
-      Package () { "cdns,cru-ctrl", \_SB.ACRU },
       Package () { "dp_pair_id", 1 },
     }
   })
@@ -348,7 +336,6 @@ Device (I2S7) {
       Package () { "cdns,pin-out-num", 4 },
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 15 },
-      Package () { "cdns,cru-ctrl", \_SB.ACRU },
       Package () { "dp_pair_id", 2 },
     }
   })
@@ -394,7 +381,6 @@ Device (I2S8) {
       Package () { "cdns,pin-out-num", 4 },
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 15 },
-      Package () { "cdns,cru-ctrl", \_SB.ACRU },
       Package () { "dp_pair_id", 3 },
     }
   })
@@ -440,7 +426,6 @@ Device (I2S9) {
       Package () { "cdns,pin-out-num", 4 },
       Package () { "cdns,pin-rx-mask", 0 },
       Package () { "cdns,pin-tx-mask", 15 },
-      Package () { "cdns,cru-ctrl", \_SB.ACRU },
       Package () { "dp_pair_id", 4 },
     }
   })

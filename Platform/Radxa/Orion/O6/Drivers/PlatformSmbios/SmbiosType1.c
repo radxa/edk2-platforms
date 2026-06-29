@@ -5,8 +5,6 @@
  */
 
 #include "PlatformSmbios.h"
-#include <Protocol/FwVersionProtocol.h>
-#include <Protocol/EcPlatformProtocol.h>
 
 #define TYPE1_STRINGS                                                                         \
   "Radxa Computer (Shenzhen) Co., Ltd.\0"   /* Manufacturer */                                \

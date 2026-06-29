@@ -234,7 +234,7 @@ Scope (\_SB.I2C0)
       PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_lt7911_hw", ResourceConsumer, , RawDataBuffer () { 0x0 })
       PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_lt7911_hw", ResourceConsumer, , RawDataBuffer () { 0x1 })
       GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
-      "\\_SB.GPI0", 0, ResourceConsumer) { 15 }
+      "\\_SB.GPI1", 0, ResourceConsumer) { 15 }
       GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
       "\\_SB.GPI1", 0, ResourceConsumer) { 16, 18, 12 }
     })

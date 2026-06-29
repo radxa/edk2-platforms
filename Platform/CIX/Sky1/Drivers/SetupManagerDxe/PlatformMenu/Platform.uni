@@ -140,3 +140,6 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 #string STR_DEBUG_MODE_PROMPT                            #language en-US "Debug Mode"
 #string STR_DEBUG_MODE_HELP                              #language en-US "Enable Debug Mode"
+
+#string STR_FASTBOOT_HOTKEY                              #language en-US "Fastboot hotkey (F)"
+#string STR_FASTBOOT_HOTKEY_HELP                         #language en-US "Enable or disable pressing F during boot countdown to enter Fastboot."

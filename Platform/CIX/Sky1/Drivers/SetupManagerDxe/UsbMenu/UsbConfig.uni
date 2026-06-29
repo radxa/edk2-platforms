@@ -18,6 +18,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #string STR_USB2_CONTROL_PROMPT3         #language en-US "USB2 Controller 3"
 #string STR_USB3_CONTROL_PROMPT0         #language en-US "USB3 Controller 0"
 #string STR_USB3_CONTROL_PROMPT1         #language en-US "USB3 Controller 1"
+#string STR_USB3_DRD_DATA_ROLE_PROMPT    #language en-US "USB3 DRD Controller 0 Role"
 #string STR_USBC_DRD_CONTROL_PROMPT      #language en-US "USBC DRD Controller"
 #string STR_USBC_CONTROL_PROMPT0         #language en-US "USBC Controller 0"
 #string STR_USBC_CONTROL_PROMPT1         #language en-US "USBC Controller 1"

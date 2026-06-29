@@ -52,6 +52,14 @@
         option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
       endoneof;
 
+      oneof varid   = PlatformSetupVar.Usb3Control0DataRole,
+        prompt      = STRING_TOKEN(STR_USB3_DRD_DATA_ROLE_PROMPT),
+        help        = STRING_TOKEN(STR_USB_DATA_ROLE_HELP),
+        default     = FixedPcdGetBool(PcdUsb3Control0DataRole),
+        option text = STRING_TOKEN(STR_USB_DATA_ROLE_HOST), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_USB_DATA_ROLE_DEVICE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
       oneof varid   = PlatformSetupVar.UsbCDrdControl0DataRole,
         prompt      = STRING_TOKEN(STR_USBC_DRD_DATA_ROLE_PROMPT),
         help        = STRING_TOKEN(STR_USB_DATA_ROLE_HELP),

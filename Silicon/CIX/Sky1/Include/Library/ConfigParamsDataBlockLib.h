@@ -30,6 +30,7 @@ typedef struct _CONFIG_PARAMS_CPU {
   UINT8     CoreEnable[12];
   UINT32    ShareInfo;
   UINT8     LpiState;
+  UINT8     SPEEnable;
 } CONFIG_PARAMS_CPU;
 
 typedef struct _CONFIG_PARAMS_GPU {
@@ -93,6 +94,7 @@ typedef struct _CONFIG_PARAMS_PCIE {
   UINT8     PciePeResetPin[5];
   UINT8     PcieDtiEnable[5];
   UINT16    PcieLinkTimeout[5];
+  UINT8     PciePeResetReverse[5];
 } CONFIG_PARAMS_PCIE;
 
 typedef struct _CONFIG_PARAMS_DPU {
@@ -234,6 +236,7 @@ typedef struct _CONFIG_PARAMS_PM {
 
 typedef struct _CONFIG_PARAMS_MISC {
   UINT8    CpuCppcType;
+  UINT8    SmmuEnable;
 } CONFIG_PARAMS_MISC;
 
 typedef struct _CONFIG_PARAMS_SPI {
@@ -489,6 +492,7 @@ typedef struct _CONFIG_PARAMS_DATA_OPTIONS {
 #define  PARAMS_DATA_CPU_CORE_10_ENABLE_ID  (PARAMS_DATA_CPU_ID_GROUP | 0x000C)
 #define  PARAMS_DATA_CPU_CORE_11_ENABLE_ID  (PARAMS_DATA_CPU_ID_GROUP | 0x000D)
 #define  PARAMS_DATA_CPU_SHARE_INFO_ID      (PARAMS_DATA_CPU_ID_GROUP | 0x000E)
+#define  PARAMS_DATA_CPU_SPE_ENABLE_ID      (PARAMS_DATA_CPU_ID_GROUP | 0x000F)
 
 #define  PARAMS_DATA_DPU0_ENABLE_ID  (PARAMS_DATA_DPU_ID_GROUP | 0x0000)
 #define  PARAMS_DATA_DPU1_ENABLE_ID  (PARAMS_DATA_DPU_ID_GROUP | 0x0001)
@@ -559,6 +563,7 @@ typedef struct _CONFIG_PARAMS_DATA_OPTIONS {
 #define  PARAMS_DATA_VPU_CLK_GATING_ID              (PARAMS_DATA_PM_ID_GROUP | 0x0016)
 
 #define  PARAMS_DATA_CPU_CPPC_TYPE_ID  (PARAMS_DATA_MISC_ID_GROUP | 0x0001)
+#define  PARAMS_DATA_SMMU_ENABLE_ID    (PARAMS_DATA_MISC_ID_GROUP | 0x0002)
 
 extern CONFIG_PARAMS_DATA_BLOCK  mConfigParamsDataBlock;
 extern CONFIG_PARAMS_DATA_ENTRY  mConfigDataEntryTable[];
