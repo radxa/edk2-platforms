@@ -129,8 +129,7 @@
   DEFINE ACPI_ENABLE                = TRUE
   DEFINE SMBIOS_ENABLE              = TRUE
 
-
-  DEFINE SPI_VARIABLE_BASE          = 0x00380000
+  DEFINE SPI_VARIABLE_BASE          = 0x00388000
   DEFINE SPI_VARIABLE_SIZE          = 0x28000
 
   DEFINE LINUX_ACPI_CONFIG_OVERRIDE = TRUE
@@ -402,6 +401,7 @@
   gCixTokenSpaceGuid.PcdAcpiI2s7Enable|FALSE
   gCixTokenSpaceGuid.PcdAcpiI2s8Enable|FALSE
   gCixTokenSpaceGuid.PcdAcpiI2s9Enable|TRUE
+  gCixTokenSpaceGuid.PcdAudioHdaEn|FALSE     # N/A
 
   gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000
   gEfiNetworkPkgTokenSpaceGuid.PcdNetworkStackSupport|FALSE
@@ -451,7 +451,6 @@
 
   gCixPlatformTokenSpaceGuid.PcdAcpiPrefPmProf|0x01  # Desktop
   gCixTokenSpaceGuid.PcdAcpiCsiDmaEnable|FALSE
-  gCixTokenSpaceGuid.PcdAcpiHdaEnable|FALSE     # N/A
 
   gRadxaTokenSpaceGuid.PcdUFSPowerMode|0x00
   gRadxaTokenSpaceGuid.PcdUFSPowerDetectGPIO|27
