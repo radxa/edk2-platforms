@@ -70,7 +70,7 @@
   DEFINE STMM_SUPPORT               = $(COMPILE_STMM_SUPPORT)
   DEFINE REALTEK_LAN_DRIVER_SUPPORT = FALSE
   DEFINE PM_CONFIG_UPDATE_SUPPORT   = FALSE
-  DEFINE MEM_CONFIG_UPDATE_SUPPORT  = FALSE
+  DEFINE MEM_CONFIG_UPDATE_SUPPORT  = TRUE
   DEFINE DYNAMIC_ACPI_CPU_ENABLE    = TRUE
   DEFINE SOC_SPI_ENABLE             = TRUE
   # DEFINE SOC_GPIO_INTR_ENABLE       = TRUE
@@ -396,6 +396,8 @@
   gCixTokenSpaceGuid.PcdAcpiUart2Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiUart3Enable|FALSE
 
+  gCixTokenSpaceGuid.PcdAcpiI2s0Enable|FALSE
+  gCixTokenSpaceGuid.PcdAcpiI2s3Enable|FALSE
   gCixTokenSpaceGuid.PcdAcpiI2s5Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s6Enable|TRUE
   gCixTokenSpaceGuid.PcdAcpiI2s7Enable|FALSE

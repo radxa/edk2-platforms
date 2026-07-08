@@ -14,6 +14,8 @@
 #include <Library/TimerLib.h>
 #include <Protocol/I2cDevicePath.h>
 #include <Library/CixSipLib.h>
+#include <Library/CixFwBootPerfLib.h>
+#include <Library/CixPostCodeLib.h>
 #include <Guid/NetworkStackSetup.h>
 #include <PlatformSetupVar.h>
 #include "../../../..//Platforms/CIX/Sky1/Include/RadxaSetupVar.h"
@@ -525,6 +527,37 @@ RtcWakupEnable (
   return EFI_SUCCESS;
 }
 
+STATIC
+VOID
+EFIAPI
+CixFwBootPerfEndNotify (
+  IN EFI_EVENT  Event,
+  IN VOID       *Context
+  )
+{
+  POST_CODE (DxeReadyToBoot);
+  cix_set_boot_phase (BLOADER_PHASE, RECORD_END);
+}
+
+static EFI_EVENT  ReadyToBootEvent;
+EFI_STATUS
+EFIAPI
+CixFwBootPerfInit (
+  )
+{
+  EFI_STATUS  Status = EFI_SUCCESS;
+
+  Status = gBS->CreateEventEx (
+                  EVT_NOTIFY_SIGNAL,
+                  TPL_CALLBACK,
+                  CixFwBootPerfEndNotify,
+                  NULL,
+                  &gEfiEventReadyToBootGuid,
+                  &ReadyToBootEvent
+                  );
+  return Status;
+}
+
 STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 InitPinmux              },
   { NULL,                        NULL,                 InitGpio                },
@@ -534,6 +567,7 @@ STATIC PLATFORM_ENV_INIT_TABLE  mPlatformEnvInitTable[] = {
   { NULL,                        NULL,                 RtcWakupEnable          },
   { &gRadxaSetupVariableGuid,    SetUFSPower,          NULL                    },
   { &gEfiI2cMasterProtocolGuid,  InstallRtcProtocol,   NULL                    },
+  { NULL,                        NULL,                 CixFwBootPerfInit               },
   // add platform initialization routines on ENV phase BEFORE this line, and they were invoked from top to down.
   { NULL,                        NULL,                 NULL                    }
 };

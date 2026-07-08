@@ -10,7 +10,6 @@
 #include <PiDxe.h>
 #include <Library/DebugLib.h>
 #include <Library/PrintLib.h>
-#include <Library/UefiBootServicesTableLib.h>
 #include <Protocol/Smbios.h>
 #include <IndustryStandard/SmBios.h>
 
