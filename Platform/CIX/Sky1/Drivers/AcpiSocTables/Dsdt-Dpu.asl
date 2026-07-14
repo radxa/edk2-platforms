@@ -178,28 +178,28 @@ Device (VDP0) {
   Name (_HID, "CIXH503F")
   Name (_UID, 0x0)
   Name (_STA, 0x0)
-  VDP_PORT_INIT(\_SB.DPU0,"pipepline0", "port@0", "endpoint@0")
+  VDP_PORT_INIT(\_SB.DPU0,"pipeline0", "port@0", "endpoint@0")
 }
 
 Device (VDP1) {
   Name (_HID, "CIXH503F")
   Name (_UID, 0x1)
   Name (_STA, 0x0)
-  VDP_PORT_INIT(\_SB.DPU0,"pipepline1", "port@1", "endpoint@1")
+  VDP_PORT_INIT(\_SB.DPU0,"pipeline1", "port@1", "endpoint@1")
 }
 
 Device (VDP2) {
   Name (_HID, "CIXH503F")
   Name (_UID, 0x2)
   Name (_STA, 0x0)
-  VDP_PORT_INIT(\_SB.DPU1,"pipepline0", "port@0", "endpoint@0")
+  VDP_PORT_INIT(\_SB.DPU1,"pipeline0", "port@0", "endpoint@0")
 }
 
 Device (VDP3) {
   Name (_HID, "CIXH503F")
   Name (_UID, 0x3)
   Name (_STA, 0x0)
-  VDP_PORT_INIT(\_SB.DPU1,"pipepline1", "port@1", "endpoint@1")
+  VDP_PORT_INIT(\_SB.DPU1,"pipeline1", "port@1", "endpoint@1")
 }
 
 Device (VDP4) {
@@ -220,28 +220,28 @@ Device (VDP6) {
   Name (_HID, "CIXH503F")
   Name (_UID, 0x6)
   Name (_STA, 0x0)
-  VDP_PORT_INIT(\_SB.DPU3,"pipepline0", "port@0", "endpoint@0")
+  VDP_PORT_INIT(\_SB.DPU3,"pipeline0", "port@0", "endpoint@0")
 }
 
 Device (VDP7) {
   Name (_HID, "CIXH503F")
   Name (_UID, 0x7)
   Name (_STA, 0x0)
-  VDP_PORT_INIT(\_SB.DPU3,"pipepline1", "port@1", "endpoint@1")
+  VDP_PORT_INIT(\_SB.DPU3,"pipeline1", "port@1", "endpoint@1")
 }
 
 Device (VDP8) {
   Name (_HID, "CIXH503F")
   Name (_UID, 0x8)
   Name (_STA, 0x0)
-  VDP_PORT_INIT(\_SB.DPU4,"pipepline0", "port@0", "endpoint@0")
+  VDP_PORT_INIT(\_SB.DPU4,"pipeline0", "port@0", "endpoint@0")
 }
 
 Device (VDP9) {
   Name (_HID, "CIXH503F")
   Name (_UID, 0x9)
   Name (_STA, 0x0)
-  VDP_PORT_INIT(\_SB.DPU4,"pipepline1", "port@1", "endpoint@1")
+  VDP_PORT_INIT(\_SB.DPU4,"pipeline1", "port@1", "endpoint@1")
 }
 
 Device (DP00) {
