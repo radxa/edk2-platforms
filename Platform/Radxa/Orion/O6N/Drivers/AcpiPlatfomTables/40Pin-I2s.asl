@@ -17,7 +17,7 @@ Name (M98S, 0)  // max98357a STA, change to 1 to enable the codec
 Device (MAXM) {
   Name (_HID, "MX98357A")
   Name (_DDN, "Maxim Integrated 98357A Amplifier")
-  Name (_UID, 1)
+  Name (_UID, 0)
   Name (_CCA, Zero)
   Method (_STA, 0x0, Serialized) {
     if (M98S == 0x1) {
