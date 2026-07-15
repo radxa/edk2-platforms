@@ -132,6 +132,11 @@
   DEFINE SPI_VARIABLE_BASE          = 0x00388000
   DEFINE SPI_VARIABLE_SIZE          = 0x28000
 
+  DEFINE DTPM_SUPPORT               = FALSE
+  DEFINE FTPM_SUPPORT               = FALSE
+  DEFINE I2S_MC_SUPPORT             = TRUE
+  DEFINE CAPSULE_ENABLE             = TRUE
+
   DEFINE LINUX_ACPI_CONFIG_OVERRIDE = TRUE
 
 !include Platform/CIX/Sky1/Sky1Common.dsc.inc
@@ -397,12 +402,15 @@
   gCixTokenSpaceGuid.PcdAcpiUart3Enable|FALSE
 
   gCixTokenSpaceGuid.PcdAcpiI2s0Enable|FALSE
+  gCixTokenSpaceGuid.PcdAcpiI2s1Enable|FALSE # M.2 E-Key
+  gCixTokenSpaceGuid.PcdAcpiI2s2Enable|FALSE # 40-pin
   gCixTokenSpaceGuid.PcdAcpiI2s3Enable|FALSE
-  gCixTokenSpaceGuid.PcdAcpiI2s5Enable|TRUE
-  gCixTokenSpaceGuid.PcdAcpiI2s6Enable|TRUE
-  gCixTokenSpaceGuid.PcdAcpiI2s7Enable|FALSE
-  gCixTokenSpaceGuid.PcdAcpiI2s8Enable|FALSE
-  gCixTokenSpaceGuid.PcdAcpiI2s9Enable|TRUE
+  gCixTokenSpaceGuid.PcdAcpiI2s4Enable|FALSE
+  gCixTokenSpaceGuid.PcdAcpiI2s5Enable|TRUE  # DP0
+  gCixTokenSpaceGuid.PcdAcpiI2s6Enable|TRUE  # DP1
+  gCixTokenSpaceGuid.PcdAcpiI2s7Enable|FALSE # DP2
+  gCixTokenSpaceGuid.PcdAcpiI2s8Enable|FALSE # DP3
+  gCixTokenSpaceGuid.PcdAcpiI2s9Enable|TRUE  # DP4
   gCixTokenSpaceGuid.PcdAudioHdaEn|FALSE     # N/A
 
   gArmTokenSpaceGuid.PcdSystemMemorySize|0x400000000

@@ -107,6 +107,7 @@ Device (I2S2) {
     Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { AUDIO_IRQ_O_I2S_SC2_INTERRUPT_ID }
     FixedDMA (36, 255, Width32Bit, ) // 4 + CSRT_AUD_REQUEST_BASE(32), idx 0 as tx
     FixedDMA (37, 255, Width32Bit, ) // 5 + CSRT_AUD_REQUEST_BASE(32), idx 1 as rx
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "pinctrl_substrate_i2s4", ResourceConsumer,)
   })
 
   Name (_DSD, Package () {

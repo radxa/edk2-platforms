@@ -80,6 +80,23 @@ Device (MUX0) {
             CIX_PAD_I2S1_DATA_OUT,
         }
 
+    PinGroup ("pinctrl_substrate_i2s4", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO090_FUNC_I2S4_MCLK_LB(ST|DS_LEVEL12),   /* i2s4_mclk_lb */
+            CIX_PAD_GPIO091_FUNC_I2S4_SCK_LB(ST|DS_LEVEL12),    /* i2s4_sck_lb */
+            CIX_PAD_GPIO092_FUNC_I2S4_WS_LB(ST|DS_LEVEL12),     /* i2s4_ws_lb */
+            CIX_PAD_GPIO093_FUNC_I2S4_DATA_IN_LB(ST|DS_LEVEL12),/* i2s4_data_in_lb */
+            CIX_PAD_GPIO094_FUNC_I2S4_DATA_OUT_LB(ST|DS_LEVEL12),  /* i2s4_data_out_lb */
+        })
+        {
+            CIX_PAD_GPIO090,
+            CIX_PAD_GPIO091,
+            CIX_PAD_GPIO092,
+            CIX_PAD_GPIO093,
+            CIX_PAD_GPIO094,
+        }
+
 // Device defined pinctrl
 
     PinGroup ("3v3_bkey", ResourceProducer, ,
@@ -123,29 +140,19 @@ Device (MUX0) {
         {
             CIX_PAD_CSI0_MCLK0_FUNC_GPIO117(PULL_DOWN|ST|DS_LEVEL12),
             CIX_PAD_I2S3_DATA_IN1_FUNC_GPIO087(PULL_DOWN|ST|DS_LEVEL12),
-            CIX_PAD_GPIO090_FUNC_GPIO090(PULL_DOWN|ST|DS_LEVEL12),
-            CIX_PAD_GPIO091_FUNC_GPIO091(PULL_DOWN|ST|DS_LEVEL12),
-            CIX_PAD_GPIO093_FUNC_GPIO093(PULL_DOWN|ST|DS_LEVEL12),
         })
         {
             CIX_PAD_CSI0_MCLK0,
             CIX_PAD_I2S3_DATA_IN1,
-            CIX_PAD_GPIO090,
-            CIX_PAD_GPIO091,
-            CIX_PAD_GPIO093,
         }
 
     PinGroup ("pinctrl_cam1_hw", ResourceProducer, ,
         RawDataBuffer ()
         {
             CIX_PAD_CSI0_MCLK1_FUNC_GPIO118(PULL_DOWN|ST|DS_LEVEL12),
-            CIX_PAD_GPIO092_FUNC_GPIO092(PULL_DOWN|ST|DS_LEVEL12),
-            CIX_PAD_GPIO094_FUNC_GPIO094(PULL_DOWN|ST|DS_LEVEL12),
         })
         {
             CIX_PAD_CSI0_MCLK1,
-            CIX_PAD_GPIO092,
-            CIX_PAD_GPIO094,
         }
   })
 }

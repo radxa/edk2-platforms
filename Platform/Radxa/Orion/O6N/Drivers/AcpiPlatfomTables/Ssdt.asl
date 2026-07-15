@@ -28,5 +28,6 @@ DefinitionBlock("SsdtTable.aml", "SSDT", 2, "RADXA", "ORIONO6N", 1) {
     include("TPM.asl")
     include("UsbPwr.asl")
     include("Wireless.asl")
+    include("40Pin-I2s.asl")
   }
 }
