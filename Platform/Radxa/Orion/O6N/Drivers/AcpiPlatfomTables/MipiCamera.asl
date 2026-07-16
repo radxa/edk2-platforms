@@ -24,7 +24,7 @@ Device (CPE4) {
   Name (_STA, 0x0B)
 
   Name (_CRS, ResourceTemplate () {
-    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "cam_pwren", ResourceConsumer,)
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "cam_pwren", ResourceConsumer,)
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
     "\\_SB.GPI1", 0, ResourceConsumer) { 6 }  // GPIO081
   })
@@ -49,7 +49,7 @@ Device (CPE5) {
   Name (_STA, 0x0B)
 
   Name (_CRS, ResourceTemplate () {
-    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX1", 0, "cam_5v_pwren", ResourceConsumer,)
+    PinGroupFunction(Exclusive, 0x0, "\\_SB.MUX0", 0, "cam_5v_pwren", ResourceConsumer,)
     GpioIo (Exclusive, PullNone, 0, 0, IoRestrictionOutputOnly,
     "\\_SB.GPI1", 0, ResourceConsumer) { 0 }  // GPIO075
   })
