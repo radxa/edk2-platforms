@@ -589,10 +589,16 @@ Device (MUX1) {
         RawDataBuffer ()
         {
             CIX_PAD_GPIO036_FUNC_GPIO036(PULL_UP|DS_LEVEL4),
-            CIX_PAD_GPIO040_FUNC_GPIO040(PULL_DOWN|DS_LEVEL4),
         })
         {
             CIX_PAD_GPIO036,
+        }
+    PinGroup ("usb_drive_vbus0", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO040_FUNC_GPIO040(PULL_DOWN|DS_LEVEL4),
+        })
+        {
             CIX_PAD_GPIO040,
         }
     PinGroup ("pinctrl_usb1", ResourceProducer, ,
@@ -623,20 +629,32 @@ Device (MUX1) {
         RawDataBuffer ()
         {
             CIX_PAD_GPIO034_FUNC_GPIO034(PULL_UP|DS_LEVEL4),
-            CIX_PAD_GPIO041_FUNC_GPIO041(PULL_DOWN|DS_LEVEL4),
         })
         {
             CIX_PAD_GPIO034,
+        }
+    PinGroup ("usb_drive_vbus4", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO041_FUNC_GPIO041(PULL_DOWN|DS_LEVEL4),
+        })
+        {
             CIX_PAD_GPIO041,
         }
     PinGroup ("pinctrl_usb5", ResourceProducer, ,
         RawDataBuffer ()
         {
             CIX_PAD_GPIO035_FUNC_GPIO035(PULL_UP|DS_LEVEL4),
-            CIX_PAD_GPIO042_FUNC_GPIO042(PULL_DOWN|DS_LEVEL4),
         })
         {
             CIX_PAD_GPIO035,
+        }
+    PinGroup ("usb_drive_vbus5", ResourceProducer, ,
+        RawDataBuffer ()
+        {
+            CIX_PAD_GPIO042_FUNC_GPIO042(PULL_DOWN|DS_LEVEL4),
+        })
+        {
             CIX_PAD_GPIO042,
         }
     PinGroup ("pinctrl_usb7", ResourceProducer, ,
