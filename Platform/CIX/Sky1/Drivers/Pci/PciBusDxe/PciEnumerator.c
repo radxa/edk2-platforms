@@ -19,6 +19,7 @@ PCI_BAD_DEVICE  mPciBadDeviceList[] = {
   { 0x1F2E, 0x00C1 },
   { 0x1D97, 0x5220 },
   { 0x20C3, 0x3118 },
+  { 0x1000, 0x005D },   // MegaRAID SAS 9361-8i
 };
 
 /**
