@@ -133,7 +133,7 @@
   DEFINE SPI_VARIABLE_SIZE          = 0x28000
 
   DEFINE DTPM_SUPPORT               = FALSE
-  DEFINE FTPM_SUPPORT               = FALSE
+  DEFINE FTPM_SUPPORT               = TRUE
   DEFINE I2S_MC_SUPPORT             = TRUE
   DEFINE CAPSULE_ENABLE             = TRUE
 
@@ -311,6 +311,11 @@
 [PcdsFixedAtBuild.common]
   gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateFileName|L"sky1-orion-o6n.dtb"
   gCixPlatformTokenSpaceGuid.PcdSiliconDtbUpdateEnable|TRUE
+
+  # Firmware TPM (no SPI dTPM on O6N)
+  gCixPlatformTokenSpaceGuid.PcdDTPMSupport|FALSE
+  gCixPlatformTokenSpaceGuid.PcdFTPMSupport|TRUE
+  gCixPlatformTokenSpaceGuid.PcdDefaultTpmDeviceSelect|0x02
 
   gCixTokenSpaceGuid.PcdPcieRootPort0Enable|TRUE
   gCixTokenSpaceGuid.PcdPcieRootPort1Enable|TRUE

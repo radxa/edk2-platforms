@@ -38,8 +38,11 @@
 
 [LibraryClasses]
   BaseLib
+  BaseMemoryLib
+  DebugLib
   PcdLib
   UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
   TimerLib
   DTpmDeviceLib
   FTpmDeviceLib
