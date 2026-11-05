@@ -114,3 +114,17 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_64G_Rayson = {
   .DeviceWidth      = 8,
   .RankNum          = 2,
 };
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_24G_CXMT = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = RS602_24G_CXMT_MASK
+  },
+  .MaxFreq          = DDR5000_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 12,
+  .DeviceWidth      = 16,
+  .RankNum          = 2,
+};

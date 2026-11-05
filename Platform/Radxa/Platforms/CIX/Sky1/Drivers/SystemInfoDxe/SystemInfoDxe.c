@@ -91,6 +91,9 @@ Decode4BitMemType (
     case 3:
       pFmtStr = "12 GiB (Hynix)";
       break;
+    case 4:
+      pFmtStr = "6 GiB (CXMT)";
+      break;
     case 5:
       pFmtStr = "3 GiB";
       break;
