@@ -1,0 +1,40 @@
+## @file
+#  Install the TPM2 ACPI table (CRB + TrEE start method 9).
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x0001001A
+  BASE_NAME                      = Tcg2Acpi
+  FILE_GUID                      = C2D0ADA3-3755-4996-861A-83BEF5CA3310
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = Tcg2AcpiEntryPoint
+
+[Sources]
+  Tcg2Acpi.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PcdLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+
+[Protocols]
+  gEfiAcpiTableProtocolGuid
+
+[Pcd]
+  gCixPlatformTokenSpaceGuid.PcdTpm2AcpiBufferBase
+  gCixPlatformTokenSpaceGuid.PcdTpm2AcpiTableRev
+
+[Depex]
+  gEfiAcpiTableProtocolGuid

@@ -1,0 +1,26 @@
+## @file
+#  Thin OP-TEE client init wrapper around CIX OpteeLib.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = OpteeClientApiLib
+  FILE_GUID                      = 9E880310-33B0-41CA-90DB-1F50AF84886E
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = OpteeClientApiLib|DXE_DRIVER UEFI_DRIVER UEFI_APPLICATION
+
+[Sources]
+  OpteeClientApiLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  OpteeLib

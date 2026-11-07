@@ -1,0 +1,25 @@
+## @file
+#  Null discrete TPM (SPI) device library.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DTpmDeviceLibNull
+  FILE_GUID                      = CF32C22E-B877-4D40-ACD2-6953D7FA5388
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = DTpmDeviceLib|DXE_DRIVER DXE_SMM_DRIVER UEFI_DRIVER UEFI_APPLICATION
+
+[Sources]
+  DTpmDeviceLibNull.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
