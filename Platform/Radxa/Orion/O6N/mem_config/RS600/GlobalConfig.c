@@ -128,3 +128,17 @@ MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_24G_CXMT = {
   .DeviceWidth      = 16,
   .RankNum          = 2,
 };
+
+MEM_CONFIG_BLOCK_CONFIG  GlobalConfigBlock_32G_Foresee = {
+  {
+    .Signature      = MEM_CONFIG_BLOCK_CONFIG_SIGNAUTE,
+    .BlockSize      = sizeof(MEM_CONFIG_BLOCK_CONFIG),
+    .BoardMask      = RS602_32G_FORESEE_MASK
+  },
+  .MaxFreq          = DDR5000_FREQUENCY,
+  .ChMask           = 0xF,
+  .DdrType          = DDR_TYPE_LPDDR5,
+  .DeviceDensity    = 16,
+  .DeviceWidth      = 16,
+  .RankNum          = 2,
+};

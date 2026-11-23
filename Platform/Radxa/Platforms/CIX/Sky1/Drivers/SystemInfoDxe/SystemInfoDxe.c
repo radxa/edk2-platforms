@@ -125,7 +125,7 @@ Decode4BitMemType (
       pFmtStr = "8 GiB (Hynix)";
       break;
     case 15:
-      pFmtStr = "Development Sample";
+      pFmtStr = "8 GiB (Foresee)";
       break;
     case (UINT16) -1:
       pFmtStr = "Internal Error";
