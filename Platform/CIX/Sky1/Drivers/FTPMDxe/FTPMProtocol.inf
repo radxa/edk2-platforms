@@ -1,0 +1,46 @@
+## @file
+#  Open an OP-TEE session to the fTPM TA and publish FTPM_INIT_PROTOCOL.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x0001001A
+  BASE_NAME                      = FTPMProtocol
+  FILE_GUID                      = FCB8BB9A-B91E-4D8E-A5C4-949C9815DFDB
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = FTPMProtocolEntryPoint
+
+[Sources]
+  FTPMProtocol.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PcdLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  OpteeLib
+  OpteeClientApiLib
+  FTpmDeviceLib
+
+[Protocols]
+  gCixFtpmInitProtocolGuid
+
+[Guids]
+  gOpteeFtpmTaGuid
+
+[Pcd]
+  gCixPlatformTokenSpaceGuid.PcdTpm2AcpiBufferBase
+  gCixPlatformTokenSpaceGuid.PcdTpm2AcpiBufferSize
+
+[Depex]
+  TRUE

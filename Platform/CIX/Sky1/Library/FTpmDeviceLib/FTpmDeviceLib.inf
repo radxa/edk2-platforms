@@ -1,0 +1,31 @@
+## @file
+#  Firmware TPM device library using CIX OpteeLib and the Microsoft fTPM TA.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = FTpmDeviceLib
+  FILE_GUID                      = 002B05FE-E81C-4289-86CA-53DBCAA8E5C7
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = FTpmDeviceLib|DXE_DRIVER DXE_SMM_DRIVER UEFI_DRIVER UEFI_APPLICATION
+
+[Sources]
+  FTpmDeviceLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  Platform/CIX/Sky1/Sky1.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  OpteeLib
+  OpteeClientApiLib
+
+[Guids]
+  gOpteeFtpmTaGuid
